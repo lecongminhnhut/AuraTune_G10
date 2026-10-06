@@ -1,0 +1,24 @@
+# Thông tin nhạy cảm & Môi trường
+.env
+.env.*
+*.pem
+*.key
+secret/
+credentials.json
+
+# Node.js (Frontend & Backend)
+node_modules/
+dist/
+build/
+npm-debug.log
+
+# Python (AI Service)
+__pycache__/
+*.py[cod]
+venv/
+env/
+
+# Hệ điều hành & IDE
+.DS_Store
+.vscode/
+.idea/
