@@ -31,6 +31,7 @@ auratune/
 │
 ├── .gitignore                        ← Ignored files and environment variables
 └── README.md                         ← Project root index
+```
 
 ## Quick Links
 
@@ -38,4 +39,3 @@ auratune/
 - [Git Workflow Guidelines](docs/management/git-workflow.md)
 - [AI Usage Guidelines](docs/ai-log/README.md)
 - [API Contract](docs/analysis-and-design/api-contract.md)
-```
