@@ -69,8 +69,6 @@ Hai ứng dụng đều sử dụng Sidebar, thẻ Card UI và thanh Player cố
 
 ## 5. Điểm khác biệt và cải tiến UI/UX AuraTune hướng tới
 
-Các điểm dưới đây dựa trên [Danh sách tính năng dự định thực hiện](https://docs.google.com/document/d/1fe-eC8Y-Pt5BgrCJ2wWGuOb266fswu9P/edit) của nhóm, tập trung vào các chức năng dự kiến mang lại giá trị cho trải nghiệm khám phá và quản lý nhạc.
-
 ### 5.1. Đề xuất bài hát bằng AI theo thói quen nghe
 
 AuraTune dự định đề xuất bài hát dựa trên lịch sử nghe, bài hát yêu thích, nghệ sĩ thường nghe, thể loại thường nghe và các bài hát phổ biến. Trang chủ có khu vực hiển thị bài hát đề xuất.
