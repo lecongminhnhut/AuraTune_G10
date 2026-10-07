@@ -1,7 +1,7 @@
 =========== 07/10, Sprint 1 ===============
 
 Team members present:
-- Lê Công Minh Nhật
+- Lê Công Minh Nhựt
 - Nguyễn Khánh Đăng
 - Mai Đăng Khoa
 - Thái Hoàng
@@ -12,7 +12,7 @@ Team members absent:
 
 Status reports:
 
-- Lê Công Minh Nhật
+- Lê Công Minh Nhựt
   - Completed tasks
     - Finalize Group Name & Collect Student ID, Full Name, Email From All Members
     - Take Confirmation Photo of Group
