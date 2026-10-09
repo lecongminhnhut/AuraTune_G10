@@ -1,117 +1,117 @@
-# Khảo sát UI/UX Các Ứng Dụng Nghe Nhạc
+# UI/UX Survey of Music Streaming Applications
 _Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy_
 
-## 1. Lý do chọn ứng dụng khảo sát
+## 1. Reasons for Selecting the Applications
 
-**Spotify** được chọn vì có giao diện phổ biến trên toàn cầu và cách tổ chức layout thông minh. Sidebar, khu vực nội dung và thanh phát nhạc được phân chia rõ ràng, giúp người dùng khám phá âm nhạc và quản lý playlist thuận tiện.
+**Spotify** was selected for its globally popular interface and smart layout. The sidebar, content area, and music player are clearly separated, making music discovery and playlist management convenient.
 
-**Zing MP3** được chọn vì phù hợp với thói quen nghe nhạc của người Việt. Nội dung được trình bày gần gũi, đồng thời giao diện lời bài hát hỗ trợ người nghe theo dõi lyrics trong quá trình phát nhạc.
+**Zing MP3** was selected because it suits the listening habits of Vietnamese users. Its content is presented in a familiar way, and its lyrics interface helps listeners follow the lyrics during playback.
 
-Khảo sát tập trung vào bố cục, cách trình bày nội dung, thao tác phát nhạc và trải nghiệm theo dõi lời bài hát để lựa chọn các pattern phù hợp với AuraTune.
+The survey focuses on layout, content presentation, playback controls, and the lyrics experience to identify suitable patterns for AuraTune.
 
-## 2. Khảo sát Spotify
+## 2. Spotify Survey
 
-### 2.1. Trang chủ
+### 2.1. Home Page
 
-- Sidebar cung cấp điểm truy cập quen thuộc tới các khu vực chính và thư viện cá nhân.
-- Nội dung được chia thành các section như playlist gợi ý và nội dung đã nghe. Tiêu đề section giúp người dùng nhanh chóng xác định nhóm nội dung cần xem.
-- Card sử dụng ảnh bìa, tên playlist và mô tả ngắn để người dùng nhận biết nội dung trước khi mở.
-- Dark theme làm nổi bật ảnh bìa và tạo sự thống nhất giữa khu vực khám phá với player.
+- The sidebar provides familiar access points to the main sections and the personal library.
+- Content is organized into sections such as recommended playlists and previously played content. Section headings help users quickly identify the content they want to explore.
+- Cards use cover art, playlist titles, and short descriptions to help users recognize content before opening it.
+- The dark theme highlights cover art and creates visual consistency between the discovery area and the player.
 
-**Bài học cho AuraTune:** tổ chức trang chủ theo các section, dùng Card component tái sử dụng và giữ điều hướng rõ ràng khi người dùng chuyển trang.
+**Lesson for AuraTune:** organize the home page into sections, use a reusable Card component, and maintain clear navigation when users switch pages.
 
-![Trang chủ Spotify](./images/spotify_home.png)
+![Spotify home page](./images/spotify_home.png)
 
-### 2.2. Trang Playlist
+### 2.2. Playlist Page
 
-- Khu vực đầu trang tập trung vào ảnh bìa, tên playlist, mô tả và thông tin tổng quan.
-- Nút Play nổi bật giúp người dùng bắt đầu nghe playlist dễ dàng.
-- Danh sách bài hát trình bày theo hàng, ưu tiên tên bài và nghệ sĩ; thông tin album, thời lượng và các thao tác phụ được đặt ở vị trí dễ quét mắt.
-- Các hành động xuất hiện khi hover giúp giảm mật độ nút trên màn hình, nhưng vẫn cần hỗ trợ thao tác rõ ràng trên thiết bị cảm ứng.
+- The top section focuses on the cover art, playlist title, description, and summary information.
+- A prominent Play button helps users start listening to the playlist easily.
+- Songs are presented in rows that prioritize the song title and artist; album details, duration, and secondary actions are placed where users can easily scan them.
+- Actions that appear on hover reduce the number of visible buttons, but clear interactions are still needed on touch devices.
 
-**Bài học cho AuraTune:** phân cấp thông tin playlist, làm rõ thao tác phát và sử dụng SongRow/SongTable để giữ cách trình bày bài hát nhất quán.
+**Lesson for AuraTune:** establish a clear information hierarchy for playlists, make playback actions obvious, and use SongRow/SongTable to present songs consistently.
 
-![Trang Playlist Spotify](./images/spotify_playlist.png)
+![Spotify playlist page](./images/spotify_playlist.png)
 
 ### 2.3. Bottom Player
 
-- Thanh player cố định dưới đáy giúp người dùng luôn truy cập được các điều khiển phát nhạc.
-- Cụm bên trái hiển thị bài đang nghe; cụm giữa chứa Play/Pause, Previous, Next và tiến trình; cụm bên phải chứa các điều khiển bổ sung như âm lượng.
-- Player tồn tại xuyên suốt khi chuyển nội dung, giúp người dùng không phải quay lại trang bài hát để điều khiển nhạc.
+- The player is fixed at the bottom, keeping playback controls accessible at all times.
+- The left section displays the current song; the center contains Play/Pause, Previous, Next, and playback progress; the right section contains additional controls such as volume.
+- The player remains available as users navigate through content, so they do not need to return to the song page to control playback.
 
-**Bài học cho AuraTune:** đặt Bottom Player tại layout chính, tách trạng thái player khỏi từng trang và chừa đủ khoảng trống để player không che nội dung.
+**Lesson for AuraTune:** place the Bottom Player in the main layout, manage player state separately from individual pages, and leave enough space so the player does not cover the content.
 
-![Bottom Player Spotify](./images/spotify_player.png)
+![Spotify bottom player](./images/spotify_player.png)
 
-## 3. Khảo sát Zing MP3
+## 3. Zing MP3 Survey
 
-### 3.1. Giao diện Lời bài hát (Lyrics)
+### 3.1. Lyrics Interface
 
-- Lời bài hát được chia thành từng dòng, giúp người nghe dễ theo dõi nội dung.
-- Dòng lời đang phát được làm nổi bật để thể hiện vị trí hiện tại trong bài hát.
-- Thao tác cuộn và chuyển giữa các dòng lời cần mượt mà, tránh nhảy vị trí đột ngột làm mất tập trung.
-- Màu nền và chữ cần có độ tương phản phù hợp để đọc được lời ngay cả khi sử dụng ảnh bìa làm nền.
+- Lyrics are divided into individual lines, making them easy to follow.
+- The current line is highlighted to indicate the current position in the song.
+- Scrolling and transitions between lines should be smooth, avoiding abrupt jumps that distract listeners.
+- The background and text should have sufficient contrast to keep lyrics readable, including when cover art is used as the background.
 
-**Bài học cho AuraTune:** khi triển khai Lyrics, sử dụng cuộn mượt, nhấn mạnh dòng hiện tại và duy trì khả năng đọc. Đồng bộ lời với thời gian phát cần được bổ sung khi có dữ liệu lyrics và audio.
+**Lesson for AuraTune:** use smooth scrolling, highlight the current line, and maintain readability when implementing Lyrics. Synchronization with playback time should be added when lyrics and audio data become available.
 
-![Giao diện Lyrics Zing MP3](./images/zingmp3_lyrics.png)
+![Zing MP3 lyrics interface](./images/zingmp3_lyrics.png)
 
-## 4. So sánh chung
+## 4. General Comparison
 
-| Thành phần | Spotify | Zing MP3 | Hướng áp dụng cho AuraTune |
+| Component | Spotify | Zing MP3 | Application to AuraTune |
 | --- | --- | --- | --- |
-| Sidebar | Điều hướng và truy cập thư viện | Điều hướng các khu vực khám phá âm nhạc | Sidebar trái với các mục rõ ràng |
-| Card UI | Trình bày playlist và nội dung gợi ý | Trình bày playlist, album và chủ đề | Card có ảnh bìa, tên và mô tả ngắn |
-| Sticky Bottom Player | Điều khiển nhạc luôn khả dụng | Thanh phát nhạc cố định dưới đáy | Player cố định, không che nội dung |
-| Lyrics | Theo dõi lời bài hát | Chú trọng trải nghiệm theo dõi lời và cuộn | Cuộn mượt, nhấn mạnh dòng đang phát |
+| Sidebar | Navigation and library access | Navigation through music discovery sections | A left sidebar with clear navigation items |
+| Card UI | Presents playlists and recommended content | Presents playlists, albums, and themes | Cards with cover art, titles, and short descriptions |
+| Sticky Bottom Player | Playback controls remain accessible | Music player fixed at the bottom | A fixed player that does not cover content |
+| Lyrics | Helps listeners follow song lyrics | Emphasizes following lyrics and scrolling | Smooth scrolling with the current line highlighted |
 
-Hai ứng dụng đều sử dụng Sidebar, thẻ Card UI và thanh Player cố định dưới đáy để tạo cấu trúc điều hướng và nghe nhạc quen thuộc.
+Both applications use a sidebar, Card UI, and a player fixed at the bottom to provide a familiar structure for navigation and listening.
 
-## 5. Điểm khác biệt và cải tiến UI/UX AuraTune hướng tới
+## 5. AuraTune Differentiators and Intended UI/UX Improvements
 
-### 5.1. Đề xuất bài hát bằng AI theo thói quen nghe
+### 5.1. AI Song Recommendations Based on Listening Habits
 
-AuraTune dự định đề xuất bài hát dựa trên lịch sử nghe, bài hát yêu thích, nghệ sĩ thường nghe, thể loại thường nghe và các bài hát phổ biến. Trang chủ có khu vực hiển thị bài hát đề xuất.
+AuraTune plans to recommend songs based on listening history, liked songs, frequently played artists, frequently played genres, and popular songs. The home page includes a section for recommended songs.
 
-**Giá trị UX:** giúp người dùng khám phá bài hát phù hợp với sở thích và giảm công sức tự tìm kiếm. Nguồn: mục 2 và 10 của tài liệu tính năng.
+**UX value:** helps users discover songs that match their preferences and reduces the effort of searching manually. Source: sections 2 and 10 of the feature document.
 
-### 5.2. Tìm bài hát bằng lời bài hát với AI
+### 5.2. AI Search by Song Lyrics
 
-Ngoài tìm theo tên bài hát, nghệ sĩ, album và playlist, AuraTune có chức năng tìm theo lời bài hát bằng AI.
+In addition to searching by song title, artist, album, and playlist, AuraTune includes AI search by song lyrics.
 
-**Giá trị UX:** cung cấp thêm cách tìm nhạc khi người dùng nhớ lời nhưng chưa biết tên bài hoặc nghệ sĩ. Nguồn: mục 3 của tài liệu tính năng.
+**UX value:** provides another way to find music when users remember the lyrics but do not know the song title or artist. Source: section 3 of the feature document.
 
-### 5.3. Tạo playlist bằng AI
+### 5.3. AI Playlist Creation
 
-Tài liệu xác định chức năng tạo playlist bằng AI, cùng các thao tác quản lý playlist như chỉnh sửa thông tin, thêm hoặc xóa bài hát và thay đổi thứ tự bài hát.
+The document specifies AI playlist creation alongside playlist management actions such as editing information, adding or removing songs, and changing the song order.
 
-**Giá trị UX:** hỗ trợ người dùng tạo danh sách nghe nhạc thuận tiện hơn. Nguồn: mục 6 của tài liệu tính năng.
+**UX value:** helps users create listening collections more conveniently. Source: section 6 of the feature document.
 
-### 5.4. Playlist chung
+### 5.4. Collaborative Playlists
 
-AuraTune dự định hỗ trợ tạo playlist chung, bên cạnh các chức năng tạo, chỉnh sửa và phát playlist.
+AuraTune plans to support collaborative playlists alongside playlist creation, editing, and playback.
 
-**Giá trị UX:** tạo không gian nghe nhạc chung cho người dùng có nhu cầu cùng xây dựng một playlist. Nguồn: mục 6 của tài liệu tính năng.
+**UX value:** provides a shared music space for users who want to build a playlist together. Source: section 6 of the feature document.
 
-### 5.5. Lịch sử nghe kèm thống kê cá nhân
+### 5.5. Listening History and Personal Statistics
 
-Người dùng có thể xem bài hát đã nghe gần đây, số lượt nghe mỗi bài, thời lượng nghe theo từng nghệ sĩ và bảng xếp hạng top N nghệ sĩ, bài hát được nghe nhiều nhất.
+Users can view recently played songs, play counts for each song, listening time for each artist, and top N rankings of their most played artists and songs.
 
-**Giá trị UX:** giúp người dùng tìm lại bài đã nghe và theo dõi sở thích âm nhạc qua số liệu cá nhân. Nguồn: mục 7 của tài liệu tính năng.
+**UX value:** helps users find songs they previously listened to and understand their musical preferences through personal statistics. Source: section 7 of the feature document.
 
-## 6. UI/UX Pattern áp dụng
+## 6. UI/UX Patterns to Adopt
 
-- **Dark theme & Card layout — Spotify:** dùng nền tối, phân cấp nội dung theo section và Card component nhất quán trên trang chủ.
-- **Thao tác cuộn Lyrics — Zing MP3:** áp dụng cuộn mượt và nhấn mạnh dòng lời hiện tại khi triển khai giao diện Lyrics.
-- **Player cố định tại layout:** giữ điều khiển nhạc ở vị trí ổn định trong quá trình điều hướng.
+- **Dark theme & Card layout — Spotify:** use dark backgrounds, organize content into sections, and present consistent Card components on the home page.
+- **Lyrics scrolling — Zing MP3:** use smooth scrolling and highlight the current line when implementing the Lyrics interface.
+- **A fixed player in the layout:** keep playback controls in a stable position while users navigate.
 
-## 7. Ảnh chụp màn hình thực tế
+## 7. Actual Screenshots
 
-Các ảnh được chụp trực tiếp từ Spotify Web và Zing MP3 Web ngày 07/10/2026, lưu trong thư mục `images/`:
+The screenshots were captured directly from Spotify Web and Zing MP3 Web on 07/10/2026 and saved in the `images/` folder:
 
 1. `spotify_home.png`
 2. `spotify_playlist.png`
 3. `spotify_player.png`
 4. `zingmp3_lyrics.png`
 
-Trang chủ và playlist Spotify được chụp ở trạng thái chưa đăng nhập. Bottom Player được chụp sau khi đăng nhập, khi đang phát “Để Dành Khi Thức Giấc” của SIVAN. Ảnh Zing MP3 ghi lại chế độ Lời bài hát của “Ngân Hàng Nỗi Nhớ” — Đạt G. Giao diện thực tế có thể thay đổi theo tài khoản và thời điểm truy cập.
+The Spotify home and playlist pages were captured while signed out. The Bottom Player was captured after signing in, while playing “Để Dành Khi Thức Giấc” by SIVAN. The Zing MP3 screenshot shows Lyrics mode for “Ngân Hàng Nỗi Nhớ” by Đạt G. The actual interface may vary by account and time of access.
