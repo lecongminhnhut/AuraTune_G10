@@ -1,12 +1,12 @@
 # Team Contract
 
-_Performed by: [Name], Reviewed by: Thái Hoàng, Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 This agreement applies to the 5 members of the **AuraTune** project team. All members must read, agree, and sign in [Section 9](#9-member-confirmation) before the project begins.
 
 ## 1. Team Roles and Responsibilities
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 In accordance with the course's learning objectives, all team members will act as **Full-stack Engineers**. However, to ensure smooth execution, the 12 primary functional groups are distributed as follows:
 
@@ -27,7 +27,7 @@ Each member takes full responsibility for their assigned features: specification
 
 ## 2. Communication Plan
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 - **Discord:** Primary platform for official team meetings (audio/video calls) and complex technical discussions.
 - **Zalo:** Used for immediate announcements and quick text exchanges.
@@ -36,7 +36,7 @@ _Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
 
 ## 3. Work Schedule and Deadlines
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 - **Task Assignment Schedule:** Main tasks are officially assigned every **Monday**. If necessary, additional secondary tasks may be assigned on **Wednesday**.
 - **Time & Platform:** Official weekly review meeting will be held on **Sunday morning, 09:00** via Discord.
@@ -45,7 +45,7 @@ _Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
 
 ## 4. Code and Documentation Standards
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 - **Documentation:** All project documents must be written in English using Markdown format. Diagrams will be drawn using Mermaid syntax.
 - **AI Tools:** The team will use educational AI tools (Gemini, ChatGPT, Claude) to assist with coding and problem-solving. Members must thoroughly explain any AI-generated code they submit.
@@ -54,7 +54,7 @@ _Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
 
 ## 5. Accountability and Performance
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 All tasks must be logged in Jira with creation, assignment, and real-time completion dates (no shared tasks).
 
@@ -72,25 +72,25 @@ All tasks must be logged in Jira with creation, assignment, and real-time comple
 
 ## 6. Decision-Making Process
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 Routine project decisions will be made through a majority vote among the team members. In the event of a tie or a critical architectural/technical dispute, Leader (Nhựt) holds the final decision-making authority.
 
 ## 7. Conflict Resolution
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 Any internal disputes or conflicts will first be addressed transparently via open discussion on Discord. If a consensus cannot be reached and the conflict hinders project progress, the issue will be formally escalated to the Teaching Assistant (TA) or Instructor for mediation.
 
 ## 8. Review and Update Process
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 This contract will be reviewed regularly during the weekly meetings. Any amendments to this contract require a Pull Request targeting `docs/management/team-contract.md`. Approval requires agreement from at least **4/5 members** during a meeting or via GitHub PR approvals.
 
 ## 9. Member Confirmation
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Lê Công Minh Nhựt], Reviewed by: [Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng, Nguyễn Thanh Huy], Edited by: [Lê Công Minh Nhựt]_
 
 By signing below (or approving the PR adding this file), I agree to fulfill the terms outlined above.
 

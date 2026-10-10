@@ -1,6 +1,7 @@
 =========== 07/10, Sprint 1 ===============
-
+_Performed by: [Thái Hoàng], Reviewed by: [Lê Công Minh Nhựt, Mai Đăng Khoa, Nguyễn Thanh Huy, Nguyễn Khánh Đăng], Edited by: [Thái Hoàng]_
 Team members present:
+
 - Lê Công Minh Nhựt
 - Nguyễn Khánh Đăng
 - Mai Đăng Khoa
@@ -8,6 +9,7 @@ Team members present:
 - Nguyễn Thanh Huy
 
 Team members absent:
+
 - (None)
 
 Status reports:
@@ -84,6 +86,7 @@ Status reports:
     - (None)
 
 Actions (if any)
+
 - All tasks completed on schedule
 - All deliverables ready for final submission to Moodle
 - Prepare for PA2 sprint planning

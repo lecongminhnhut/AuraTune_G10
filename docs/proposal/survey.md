@@ -1,5 +1,6 @@
 # UI/UX Survey of Music Streaming Applications
-_Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy_
+
+_Performed by: [Nguyễn Thanh Huy], Reviewed by: [Lê Công Minh Nhựt, Mai Đăng Khoa, Thái Hoàng, Nguyễn Khánh Đăng], Edited by: [Nguyễn Thanh Huy]_
 
 ## 1. Reasons for Selecting the Applications
 
@@ -58,12 +59,12 @@ The survey focuses on layout, content presentation, playback controls, and the l
 
 ## 4. General Comparison
 
-| Component | Spotify | Zing MP3 | Application to AuraTune |
-| --- | --- | --- | --- |
-| Sidebar | Navigation and library access | Navigation through music discovery sections | A left sidebar with clear navigation items |
-| Card UI | Presents playlists and recommended content | Presents playlists, albums, and themes | Cards with cover art, titles, and short descriptions |
-| Sticky Bottom Player | Playback controls remain accessible | Music player fixed at the bottom | A fixed player that does not cover content |
-| Lyrics | Helps listeners follow song lyrics | Emphasizes following lyrics and scrolling | Smooth scrolling with the current line highlighted |
+| Component            | Spotify                                    | Zing MP3                                    | Application to AuraTune                              |
+| -------------------- | ------------------------------------------ | ------------------------------------------- | ---------------------------------------------------- |
+| Sidebar              | Navigation and library access              | Navigation through music discovery sections | A left sidebar with clear navigation items           |
+| Card UI              | Presents playlists and recommended content | Presents playlists, albums, and themes      | Cards with cover art, titles, and short descriptions |
+| Sticky Bottom Player | Playback controls remain accessible        | Music player fixed at the bottom            | A fixed player that does not cover content           |
+| Lyrics               | Helps listeners follow song lyrics         | Emphasizes following lyrics and scrolling   | Smooth scrolling with the current line highlighted   |
 
 Both applications use a sidebar, Card UI, and a player fixed at the bottom to provide a familiar structure for navigation and listening.
 
