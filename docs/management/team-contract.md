@@ -96,8 +96,8 @@ By signing below (or approving the PR adding this file), I agree to fulfill the 
 
 | Code | Full Name | Signature / GitHub Approve | Date |
 | ---- | --------- | -------------------------- | ---- |
-| A    | Nhựt      |                            |      |
-| B    | Khoa      |                            |      |
-| C    | Đăng      |                            |      |
-| D    | Hoàng     |                            |      |
-| E    | Huy       |                            |      |
+| A    | Nhựt      | Approved                   |      |
+| B    | Khoa      | Approved                   |      |
+| C    | Đăng      | Approved                   |      |
+| D    | Hoàng     | Approved                   |      |
+| E    | Huy       | Approved                   |      |
