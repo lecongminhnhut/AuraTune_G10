@@ -1,6 +1,6 @@
 # Team Contract
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Name], Reviewed by: Thái Hoàng, Edited by: [Name]_
 
 This agreement applies to the 5 members of the **AuraTune** project team. All members must read, agree, and sign in [Section 9](#9-member-confirmation) before the project begins.
 
