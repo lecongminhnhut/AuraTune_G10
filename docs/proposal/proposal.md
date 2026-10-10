@@ -4,7 +4,7 @@
 
 ## 1. INTRODUCTION
 
-_Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
+_Performed by: Nguyễn Khánh Đăng, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt_
 
 AuraTune is a smart music streaming platform that combines an open-copyright music distribution model with artificial intelligence. Unlike systems relying solely on standard SQL queries, AuraTune utilizes LLMs and Vector Databases to act as an AI DJ capable of deep semantic analysis, understanding the listener's mood and context. The system not only provides a continuous streaming experience but also builds a micro-social network where users can share playlists, follow artists, and receive personalized listening habit analytics.
 
@@ -12,7 +12,7 @@ AuraTune is a smart music streaming platform that combines an open-copyright mus
 
 ## 2. TARGET USERS AND ENVIRONMENTS
 
-_Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
+_Performed by: Nguyễn Khánh Đăng, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt_
 
 * **Target Users**: Students, office workers, or individuals needing to adjust their focus and mood through complex music queries. The second group consists of independent artists needing an accessible launchpad for their music.
 * **Environments**: A responsive Web Application that operates smoothly on web browsers.
@@ -21,7 +21,7 @@ _Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
 
 ## 3. ACTORS IDENTIFICATION
 
-_Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
+_Performed by: Nguyễn Khánh Đăng, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt_
 
 * **Listener**: General users who want to listen to music, search using AI, create/share playlists, follow others, and store their listening history.
 * **Artist**: Independent artists who have the right to manage their artist profiles, and upload albums and songs to the system.
@@ -31,7 +31,7 @@ _Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
 
 ## 4. LEGAL ISSUES & COMPLIANCE
 
-_Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
+_Performed by: Nguyễn Khánh Đăng, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt_
 
 ### 4.1. Legal Safe Zone
 If the AuraTune system remains an internal research project, running on a localhost or internal server for academic reporting, database architecture testing, or AI recommendation model training, it will not violate Vietnamese copyright laws. According to Article 25 of the Intellectual Property Law, the non-commercial use of published works for teaching or scientific research is exempt from permission and royalty payments. Fetching APIs from external data repositories to serve as mock data within this scope does not constitute a copyright infringement.
@@ -49,7 +49,7 @@ If the team wishes to move the website out of the university environment to serv
 
 ## 5. FUNCTIONAL GROUPS & USE CASES
 
-_Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
+_Performed by: Nguyễn Khánh Đăng, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt_
 
 1. **Authentication** — sign up via email/OAuth, log in, log out.
 2. **Home dashboard** — view AI-recommended songs and playlists, view recent plays, browse trending charts and new albums.
@@ -67,7 +67,7 @@ _Performed by: Nguyễn Khánh Đăng, Reviewed by: [name], Edited by: [name]_
 
 ## 6. KEY FEATURES
 
-_Performed by: Nguyễn Khánh Đăng & Mai Đăng Khoa, Reviewed by: [name], Edited by: [name]_
+_Performed by: Nguyễn Khánh Đăng & Mai Đăng Khoa, Reviewed by: Lê Công Minh Nhựt, Edited by: Thái Hoàng_
 
 ### 6.1. Authentication
 The authentication feature provides a secure onboarding process by allowing users to sign up and log in using either a local email account or quick OAuth integrations like Google and Facebook. This is essential because it allows the system to establish a distinct identity for each user, enabling the secure storage of their listening history and the continuous personalization of AI-driven music recommendations.
@@ -106,7 +106,7 @@ Platform administration offers a centralized management interface for administra
 
 ## 7. AI FEATURE & USER EXPERIENCE IMPROVEMENTS
 
-_Performed by: Mai Đăng Khoa, Reviewed by: [name], Edited by: [name]_
+_Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Lê Công Minh Nhựt_
 
 ### Semantic Vector Search
 
@@ -120,7 +120,7 @@ _Performed by: Mai Đăng Khoa, Reviewed by: [name], Edited by: [name]_
 
 ## 8. MERMAID WORKFLOW DIAGRAMS FOR AI FEATURES
 
-_Performed by: Mai Đăng Khoa, Reviewed by: [name], Edited by: [name]_
+_Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Lê Công Minh Nhựt_
 
 <div style="break-inside: avoid; page-break-inside: avoid;">
 
