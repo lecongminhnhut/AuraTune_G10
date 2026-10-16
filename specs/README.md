@@ -72,20 +72,20 @@ specs/
 
 The following ownership follows the team contract.
 
-| Group | Functional area | Owner |
-|---|---|---|
-| `010` | Authentication | Khoa (B) |
-| `020` | Home Dashboard | Huy (E) |
-| `030` | Search (Text and AI Semantic) | Đăng (C) |
-| `040` | Music Player | Huy (E) |
-| `050` | Queue Management | Huy (E) |
-| `060` | Playlist Management | Khoa (B) |
-| `070` | Listening History | Khoa (B) |
-| `080` | Album Details | Đăng (C) |
-| `090` | Artist Profile | Hoàng (D) |
-| `100` | AI Recommendations | Nhựt (A) |
-| `110` | Admin Functions | Hoàng (D) |
-| `120` | AI Conversational Agent (Real-time Host) | Nhựt (A) |
+| Group | Functional area                          | Owner     |
+| ----- | ---------------------------------------- | --------- |
+| `010` | Authentication                           | Khoa (B)  |
+| `020` | Home Dashboard                           | Huy (E)   |
+| `030` | Search (Text and AI Semantic)            | Đăng (C)  |
+| `040` | Music Player                             | Huy (E)   |
+| `050` | Queue Management                         | Huy (E)   |
+| `060` | Playlist Management                      | Khoa (B)  |
+| `070` | Listening History                        | Khoa (B)  |
+| `080` | Album Details                            | Đăng (C)  |
+| `090` | Artist Profile                           | Hoàng (D) |
+| `100` | AI Recommendations                       | Nhựt (A)  |
+| `110` | Admin Functions                          | Hoàng (D) |
+| `120` | AI Conversational Agent (Real-time Host) | Nhựt (A)  |
 
 Each assigned member is responsible for their feature's specification, UI/UX, logic, testing, documentation, and demonstration, as described in the team contract. Shared architecture and integration decisions must still be coordinated with the team.
 
@@ -96,21 +96,44 @@ Each assigned member is responsible for their feature's specification, UI/UX, lo
 - Use lowercase kebab-case for directory names.
 - Keep identifiers unique and stable after they have been referenced by specifications, tasks, pull requests, or team discussions.
 - Directory identifiers organize specifications; they do not replace Jira issue IDs or Git branch naming conventions.
-- Git branches must follow the team's Git workflow, including the Jira ID, such as `feature/AT-12-google-login`.
+- Git branches must follow the team's Git workflow:
+  Format: NNN-name-work
+
+NNN: The three-digit feature number corresponding to the feature folder in specs/.
+
+name: A short, descriptive name for the feature.
+
+work: The type of work being performed, such as spec, ui, implementation, or fix.
+
+Examples:
+
+010-authentication-spec
+
+020-home-dashboard-ui
+
+030-search-spec
+
+040-music-player-implementation
+
+050-queue-management-fix
+
+100-ai-recommendations-spec
+
+Branch names do not require Jira IDs. The feature number must match the corresponding feature folder in specs/.
 
 ## 5. Recommended Contents of a Feature Directory
 
 A feature directory is initially created as a place to develop that feature's specification. Depending on the configured Spec Kit workflow, it may contain some of the following artifacts:
 
-| Artifact | Purpose |
-|---|---|
-| `spec.md` | User scenarios, requirements, acceptance criteria, and edge cases |
-| `plan.md` | Technical implementation plan |
-| `research.md` | Findings and decisions from technical research |
-| `data-model.md` | Feature-specific data model, when needed |
-| `quickstart.md` | Steps to run or verify the feature, when needed |
-| `contracts/` | API or integration contracts, when needed |
-| `tasks.md` | Actionable implementation tasks |
+| Artifact        | Purpose                                                           |
+| --------------- | ----------------------------------------------------------------- |
+| `spec.md`       | User scenarios, requirements, acceptance criteria, and edge cases |
+| `plan.md`       | Technical implementation plan                                     |
+| `research.md`   | Findings and decisions from technical research                    |
+| `data-model.md` | Feature-specific data model, when needed                          |
+| `quickstart.md` | Steps to run or verify the feature, when needed                   |
+| `contracts/`    | API or integration contracts, when needed                         |
+| `tasks.md`      | Actionable implementation tasks                                   |
 
 Not every feature needs every artifact. Follow the templates and commands configured in the repository's Spec Kit setup rather than creating files solely because they appear in this guide.
 
