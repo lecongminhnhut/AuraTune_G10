@@ -8,6 +8,8 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ               | 10   |
 | 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại | 10   |
 | 4   | 2026-10-24 | Hoàn thiện metadata Performed by / Reviewed by / Edited by cho Project Plan theo phân công DL4 và bằng chứng Git | Project Plan / DL4 (không thuộc functional group) |
+| 5   | 2026-10-24 | Viết spec 011 – Local Authentication bằng `$speckit-specify`                               | 01   |
+| 6   | 2026-10-24 | Làm rõ spec 011 bằng `$speckit-clarify` – email verification, password recovery, locking, token và display name | 01   |
 
 ---
 
@@ -187,3 +189,98 @@ _Skill `speckit-clarify` được cung cấp kèm invocation; feature context l�
 **Kết quả kiểm chứng:** Đạt cho mapping Performer/Reviewer và định dạng metadata của 70 heading DL4.
 
 **Ghi chú:** Git history khả dụng chỉ có baseline commit b2a4e88. Metadata Editor của heading tổng quan 3 và 4 cần xác minh thủ công vì baseline không có metadata cho hai heading này; trạng thái hiện tại được giữ nguyên.
+
+---
+
+## Mục 5: Viết spec 011 – Local Authentication
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-24 |
+| Người thực hiện | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 01 – Authentication, Feature 011: Local Authentication (`specs/010-authentication/011-local-authentication`) |
+| Công cụ AI | Gemini 3.5, `$speckit-specify` |
+| Mục đích | Tạo đặc tả nghiệp vụ cho tính năng đăng ký/đăng nhập bằng email cục bộ dựa trên Proposal và ER Diagram. |
+
+### Prompt đã dùng
+
+```text
+/speckit.specify
+
+Đặc tả tính năng Local Authentication (011) cho AuraTune. Tính năng này cho phép người dùng đăng ký và đăng nhập bằng tài khoản email cục bộ.
+
+Yêu cầu cụ thể:
+1. Đăng ký (Sign up): Người dùng cung cấp email (duy nhất), mật khẩu và tên hiển thị. Cần kiểm tra định dạng email và độ mạnh của mật khẩu.
+2. Đăng nhập (Log in): Xác thực người dùng bằng email và mật khẩu đã đăng ký.
+3. Phân quyền (Roles): Mặc định người dùng mới có role là 'user'. Hệ thống cần hỗ trợ các role 'artist' và 'admin' như đã nêu trong ER Diagram.
+4. Tiêu chí chấp nhận:
+   - Đăng ký thành công tạo mới một record trong bảng 'users'.
+   - Đăng nhập thành công trả về thông tin người dùng và phiên làm việc (token).
+   - Xử lý lỗi khi email đã tồn tại, sai mật khẩu hoặc định dạng không hợp lệ.
+5. Ràng buộc: Tuân thủ cấu trúc database PostgreSQL đã thống nhất (bảng users, cột email UNIQUE).
+
+Tập trung vào mô tả hành vi, yêu cầu bảo mật cơ bản và trải nghiệm người dùng; không tự đưa ra quyết định về thư viện mã hóa cụ thể cho đến bước Plan.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Tạo spec hoàn chỉnh với các mục User Stories, Functional Requirements, Edge Cases, Key Entities và Success Criteria.
+- Ánh xạ đúng các role người dùng từ ER Diagram.
+- Đưa ra các giả định về JWT và Bcrypt để làm cơ sở cho bước Plan.
+- Tạo checklist chất lượng với 16/16 mục đạt yêu cầu ban đầu.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cấu trúc Spec | Dùng | Tuân thủ đúng template của dự án. |
+| Role người dùng | Dùng | Khớp với thiết kế database đã có. |
+| Giả định kỹ thuật | Dùng | Cần thiết để định hướng cho phase Plan nhưng không đưa vào FR chính thức. |
+
+### Cách kiểm chứng
+
+- Đối chiếu với `docs/proposal/proposal.md` và `docs/design/database/er-diagram.md`.
+- Rà soát acceptance scenarios và edge cases.
+- Kiểm tra checklist chất lượng tại `specs/010-authentication/011-local-authentication/checklists/requirements.md`.
+
+**Kết quả kiểm chứng:** Đạt.
+
+---
+
+## Mục 6: Làm rõ spec 011 – Local Authentication
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-24 |
+| Người thực hiện | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 01 – Authentication, Feature 011: Local Authentication |
+| Công cụ AI | Gemini 3.5, `$speckit-clarify` |
+| Mục đích | Làm rõ các biên của tính năng, chính sách bảo mật và các ràng buộc dữ liệu. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đặt 5 câu hỏi trọng tâm về: Email verification, Password recovery, Account locking, Refresh token, và Display name uniqueness.
+- Tự động tích hợp câu trả lời vào spec và cập nhật checklist.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bỏ Email Verification | Dùng | Giảm ma sát cho người dùng trong giai đoạn MVP. |
+| Khóa tài khoản (Locking) | Dùng | Tăng cường bảo mật chống brute-force. |
+| Không dùng Refresh Token | Dùng | Đơn giản hóa kiến trúc API cho phase đầu. |
+| Tên hiển thị không duy nhất | Dùng | Theo mô hình của Spotify, dùng ID làm định danh chính. |
+
+### Cách kiểm chứng
+
+- Kiểm tra mục `## Clarifications` trong `spec.md`.
+- Xác nhận các FR (FR-001, FR-004, FR-008, FR-009) đã được cập nhật tương ứng.
+- Kiểm tra checklist chất lượng (16/16 items passing).
+
+**Kết quả kiểm chứng:** Đạt.
