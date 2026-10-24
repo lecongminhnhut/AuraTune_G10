@@ -1,6 +1,6 @@
 # **1. Introduction**
 
-*Performed by: Lê Công Minh Nhựt, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt*
+*Performed by: Lê Công Minh Nhựt, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt, Nguyễn Khánh Đăng*
 
 ## 1.1. Purpose of the Document
 
@@ -25,35 +25,37 @@ The details of individual features will be further clarified in related requirem
 
 ## 1.3. Document Organization
 
-*Performed by: Lê Công Minh Nhựt, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt*
+*Performed by: Lê Công Minh Nhựt, Reviewed by: Mai Đăng Khoa, Edited by: Nguyễn Khánh Đăng*
 
 The Vision Document is organized into six main sections:
-1.  **Introduction:** Presents the purpose of the document and its references.
+1.  **Introduction:** Presents the purpose, scope, and organization of the document, along with its references.
 2.  **Positioning:** Describes the problem to be solved and the positioning of AuraTune.
 3.  **Stakeholder and User Descriptions:** Identifies stakeholders, user groups, the user environment, key needs, and competing alternatives.
 4.  **Product Overview:** Presents the product perspective, assumptions, and dependencies.
 5.  **Product Features:** Describes AuraTune’s key features and illustrates important user workflows.
 6.  **Non-Functional Requirements:** Presents the non-functional requirements applicable to the product.
 
-## 1.4 References
+## 1.4. References
 
-*Performed by: Lê Công Minh Nhựt, Reviewed by: Mai Đăng Khoa, Edited by: Lê Công Minh Nhựt*
+*Performed by: Lê Công Minh Nhựt, Reviewed by: Mai Đăng Khoa, Edited by: Nguyễn Khánh Đăng*
 
 This section lists the documents and information sources used to develop the Vision Document. The initial references include:
 |  |  |  |
 | :- | :- | :- |
 | **No.** | **Document** | **Purpose** |
-| 1 | **PA2-2026 - Project Assignment 2**, Introduction to Software Engineering | Defines the required sections and requirements for the Vision Document in PA2. |
+| 1 | **PA2-2026 - Project Assignment 2**, Introduction to Software Engineering | Defines the required sections and evaluation criteria for the Vision Document in PA2. |
 | 2 | **Project Proposal - PA1**, AuraTune | Provides background information about the project idea, goals, scope, and planned features. |
-| 3 | **Existing Application Survey - PA1** | Supports the analysis of alternative solutions, competing applications, and the needs that AuraTune aims to address. |
-| 4 | **Vision Template - rup_vision_sp.docx** | Provides the structure and guidance for preparing the Vision Document. |
+| 3 | **Existing Application Survey - PA1**, AuraTune | Supports the analysis of alternative solutions, competing applications, and the user needs that AuraTune aims to address. |
+| 4 | **Project Plan (SPMP) - PA2**, AuraTune | Defines the agreed project scope, functional groups (G01–G12), sprint schedule, and the Assumptions and Constraints register. |
+| 5 | **Team Contract - PA1**, AuraTune | Establishes team roles, workflow agreements, and feature ownership referenced across project artifacts. |
+| 6 | **Vision Template - rup_vision_sp.docx** | Provides the structure and guidance for preparing the Vision Document. |
 
 
 # **2. Positioning**
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
-## 2.1 Problem Statement
+## 2.1. Problem Statement
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
@@ -65,7 +67,7 @@ This section lists the documents and information sources used to develop the Vis
 | **The impact of which is** | Frustration during music discovery, repetitive listening due to lack of discovery tools, and inability to find specific songs from memory. |
 | **A successful solution would be** | A smart music platform utilizing AI-powered semantic vector search to understand emotional contexts and retrieve tracks based on natural language descriptions. |
 
-## 2.2 Product Position Statement
+## 2.2. Product Position Statement
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 | | |
@@ -84,24 +86,24 @@ This section lists the documents and information sources used to develop the Vis
 
 This section describes the various stakeholders and users involved in the AuraTune project, outlining their roles, responsibilities, and the environments in which they will interact with the system.
 
-## 3.1 Stakeholder Summary
+## 3.1. Stakeholder Summary
 
 *Performed by: Nguyễn Khánh Đăng, Reviewed by: Thái Hoàng, Edited by: Nguyễn Khánh Đăng*
 
 Stakeholders are individuals or groups who have an interest in the project but may not necessarily use the core streaming features as end-users. For AuraTune, the key stakeholders include:
   - **Development Team**: A five-member team of undergraduate students acting as Full-stack Engineers. They are responsible for planning, designing, implementing, testing, and delivering the AuraTune system within the academic semester timeframe.
   - **Course Evaluators / Instructors**: Academic staff who evaluate the project artifacts, review the system's alignment with software engineering principles, and grade the final live demonstration.
-  - **System Administrators**: Personnel responsible for managing the platform's ecosystem. They handle content moderation, manage user account permissions, ban violating users, and ensure that the platform strictly operates without commercially copyrighted music.
 
-## 3.2 User Summary
+## 3.2. User Summary
 
 *Performed by: Nguyễn Khánh Đăng, Reviewed by: Thái Hoàng, Edited by: Nguyễn Khánh Đăng*
 
-Users are the individuals who directly interact with AuraTune's core features. The system targets two primary user groups:
+Users are the individuals who directly interact with AuraTune's core features. The system targets three primary user groups:
   - **Listeners**: General users—specifically students, office workers, or individuals looking to adjust their mood and focus. Their responsibilities and interactions include streaming music, utilizing AI-powered semantic search to find songs based on mood/lyrics, creating and sharing playlists, and tracking their listening analytics.
-  - **Independent Artists**: Musicians who use the platform as a launchpad for their original works. Their responsibilities include managing their dedicated artist profiles, uploading albums and audio files, and maintaining full ownership and control over their distributed content.
+  - **Artists**: Musicians who use the platform as a launchpad for their original works. Their responsibilities include managing their dedicated artist profiles, uploading albums and audio files, and maintaining full ownership and control over their distributed content.
+   - **Administrators**: Personnel responsible for managing the platform's ecosystem. They handle content moderation, manage user account permissions, ban violating users, and ensure that the platform strictly operates without commercially copyrighted music.
 
-## 3.3 User Environment
+## 3.3. User Environment
 
 *Performed by: Nguyễn Khánh Đăng, Reviewed by: Thái Hoàng, Edited by: Nguyễn Khánh Đăng*
 
@@ -111,37 +113,37 @@ The AuraTune application will be accessed and operated under the following envir
   - **Playback Technology**: The environment relies on standard HTML5 audio playback capabilities (\<audio\> element) without requiring Digital Rights Management (DRM) or custom streaming protocols.
   - **Connectivity Requirements**: Users are assumed to have a stable internet connection to stream audio, fetch AI recommendations, and interact with the database. Offline playback functionality is strictly out of scope.
 
-## 3.4 Summary of Key Stakeholder or User Needs
+## 3.4. Summary of Key Stakeholder or User Needs
 
-*Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
+*Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Nguyễn Khánh Đăng*
 
 This section summarizes what the users and stakeholders of AuraTune need and why. The users are the Listener, the Artist and the Administrator (Project Proposal, Section 3). The project team and the university also have a stakeholder need, which is to operate within legal limits. Each need has an ID so that features and use cases can refer to it later.
 **Priority.** High means the product does not meet its purpose without the need. Medium means the need improves the experience but the core product can work without it. The priorities are the team's initial judgement and are reviewed when the use cases are written.
 |  |  |  |  |  |  |  |
 | :- | :- | :- | :- | :- | :- | :- |
 | **ID** | **Need** | **Who** | **Priority** | **Current solution** | **Proposed solution in AuraTune** | **Related feature** |
-| N-01 | Create an account and sign in quickly and safely | All users | High | A separate account for each music service | Sign-up and login by email or OAuth (Google, Facebook), so that one identity keeps the listening history and recommendations | Authentication |
-| N-02 | Find a song without knowing its exact title | Listener | High | Text matching by title, artist or album (Proposal, Section 7) | Text search, plus AI semantic search by description, mood or lyric fragment, with filters and sorting | Advanced search |
-| N-03 | Discover music that matches taste and mood without searching manually | Listener | High | Recommended sections on the home pages of existing apps (survey, Section 2.1) | AI recommendation engine and a home dashboard with personalized sections, recent plays, trending charts and new albums | Home dashboard, AI recommendation engine |
-| N-04 | Listen without interruption and control playback from any page | Listener | High | A player fixed at the bottom of the screen in Spotify and Zing MP3 (survey, Section 4) | A persistent player with play, pause, skip, seek, volume, shuffle and repeat, and a queue that can be viewed, reordered and edited | Core music player, Queue management |
-| N-05 | Follow the lyrics while listening | Listener | Medium | Lyrics views in both apps; Zing MP3 highlights the current line (survey, Section 3.1) | Synchronized lyrics with the current line highlighted and smooth scrolling, when lyrics data is available | Core music player |
-| N-06 | Organize and share personal collections of music | Listener | High | Playlists in existing apps (survey, Section 2.2) | Create, edit and delete playlists, AI-assisted playlists, collaborative playlists, and sharing of songs and albums | Playlist management, Album interaction |
-| N-07 | Understand one's own listening habits | Listener | Medium | Not covered by the PA1 survey | Listening history, total listening time, and top artists and genres | Listening analytics |
-| N-08 | Explore albums and artists | Listener | Medium | Content cards and detail pages in existing apps (survey, Sections 2.1 and 2.2) | Album details (cover, release year, duration, tracklist), saving and sharing albums, artist biographies and following artists | Album interaction, Artist profile and studio |
-| N-09 | Publish music and manage one's own content directly | Artist | High | Not covered by the PA1 survey | A profile with a biography, upload of new songs, and the ability to edit, hide or delete one's own tracks | Artist profile and studio |
-| N-10 | Keep the platform safe and moderated | Administrator | High | Not covered by the PA1 survey, because administration tools are not visible to listeners | An administration interface to ban users, manage account permissions, remove copyrighted songs and view system statistics | Platform administration |
+| N-01 | Create an account and sign in quickly and safely | All users | High | A separate account for each music service | Sign-up and login by email or OAuth (Google, Facebook), so that one identity keeps the listening history and recommendations | G01 Account Registration and Sign-In |
+| N-02 | Find a song without knowing its exact title | Listener | High | Text matching by title, artist or album (Proposal, Section 7) | Text search, plus AI semantic search by description, mood or lyric fragment, with filters and sorting | G03 Search and AI Semantic Search |
+| N-03 | Discover music that matches taste and mood without searching manually | Listener | High | Recommended sections on the home pages of existing apps (survey, Section 2.1) | AI recommendation engine and a home dashboard with personalized sections, recent plays, trending charts and new albums | G02 Home Page, G10 AI Recommendations |
+| N-04 | Listen without interruption and control playback from any page | Listener | High | A player fixed at the bottom of the screen in Spotify and Zing MP3 (survey, Section 4) | A persistent player with play, pause, skip, seek, volume, shuffle and repeat, and a queue that can be viewed, reordered and edited | G04 Music Player (Full and Mini), G05 Queue Management |
+| N-05 | Follow the lyrics while listening | Listener | Medium | Lyrics views in both apps; Zing MP3 highlights the current line (survey, Section 3.1) | Synchronized lyrics with the current line highlighted and smooth scrolling, when lyrics data is available | G04 Music Player (Full and Mini) |
+| N-06 | Organize and share personal collections of music | Listener | High | Playlists in existing apps (survey, Section 2.2) | Create, edit and delete playlists, AI-assisted playlists, collaborative playlists, and sharing of songs and albums | G06 Playlist Management and AI Playlist, G08 Album Details |
+| N-07 | Understand one's own listening habits | Listener | Medium | Not covered by the PA1 survey | Listening history, total listening time, and top artists and genres | G07 Listening History and Statistics |
+| N-08 | Explore albums and artists | Listener | Medium | Content cards and detail pages in existing apps (survey, Sections 2.1 and 2.2) | Album details (cover, release year, duration, tracklist), saving and sharing albums, artist biographies and following artists | Album interaction, G08 Album Details, G09 Artist Profile |
+| N-09 | Publish music and manage one's own content directly | Artist | High | Not covered by the PA1 survey | A profile with a biography, upload of new tracks and albums, and the ability to edit, hide, or delete one's own content | G09 Artist Profile |
+| N-10 | Keep the platform safe and moderated | Administrator | High | Not covered by the PA1 survey, because administration tools are not visible to listeners | An administration interface to ban users, manage account permissions, remove copyrighted songs and view system statistics | G11 Administration |
 | N-11 | Operate within legal limits for music and personal data | Project team, university | High | Commercial services sign licence contracts with rights organizations (Proposal, Section 4.2) | A non-commercial academic scope; royalty-free or CC0 music for any public demonstration; a privacy policy, user consent and data encryption (Decree 13/2023/ND-CP) | All features |
-| N-12 | Get music help through a natural conversation | Listener | Medium | An AI DJ in Spotify, for Premium subscribers | An AI conversational agent that acts as a real-time host and DJ for the listener | AI conversational agent |
+| N-12 | Get music help through a natural conversation | Listener | Medium | An AI DJ in Spotify, for Premium subscribers | An AI conversational agent that acts as a real-time host and DJ for the listener | G12 AI Conversational Agent / Real-time Host |
 
 Related features follow the Project Proposal (Section 5) and the Team Contract; the AI conversational agent is the "AI DJ" of the Proposal introduction.
 
-## 3.5 Alternatives and Competition
+## 3.5. Alternatives and Competition
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
 Listeners who want to stream music today have three alternatives: use Spotify, use Zing MP3, or keep the habits they already have. Spotify and Zing MP3 are the two applications examined in the PA1 UI/UX survey. Spotify is also a possible source of song metadata for AuraTune, which is described in the Product Overview.
 
-### 3.5.1 Alternatives
+### 3.5.1. Alternatives
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
@@ -152,7 +154,7 @@ Listeners who want to stream music today have three alternatives: use Spotify, u
 | Zing MP3 | Familiar to Vietnamese listeners. A lyrics view that follows the song and highlights the current line. Free to use, with paid subscription tiers for extra features | No AI-assisted discovery was observed in the PA1 survey, which covered layout, playback controls and lyrics. Some features are in paid tiers. Lyrics can be hard to read over cover-art backgrounds (survey, Section 3.1) | Smooth lyric scrolling, a highlighted current line, and enough contrast for the text |
 | Keeping the current habits | No effort to switch and no new account | Listeners must use several services to combine large catalogues, AI search and direct access to independent artists | None |
 
-### 3.5.2 Comparison of capabilities
+### 3.5.2. Comparison of capabilities
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
@@ -168,7 +170,7 @@ Listeners who want to stream music today have three alternatives: use Spotify, u
 | Open-copyright catalogue with direct upload by independent artists | Not assessed | Not assessed | Yes (Proposal, Sections 1 and 5) |
 | Personal listening analytics | Not assessed | Not assessed | Yes |
 
-### 3.5.3 Position of AuraTune
+### 3.5.3. Position of AuraTune
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
@@ -184,7 +186,7 @@ AuraTune does not aim to match the catalogue or the scale of commercial services
 
 # **4. Product Overview**
 
-*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy*
+*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy, Nguyễn Khánh Đăng*
 
 This section places AuraTune in the context of its users and of the external services it relies on. It also lists the assumptions and dependencies that would change this Vision Document if they stopped being true. Implementation details, such as frameworks, database design, and API structure, are left to the requirements and design artifacts produced in later Sprints.
 
@@ -252,7 +254,7 @@ flowchart TB
 
 ## 4.2. Assumptions and Dependencies
 
-*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy*
+*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Khánh Đăng*
 
 The factors below affect the features described in Section 5. An **assumption** is a condition the team currently treats as true but has not yet verified. A **dependency** is an external service, dataset, or condition that AuraTune relies on. For each item, the last column but one states how the vision would change if the item stopped holding. The last column links each item to the Assumptions and Constraints register in the Project Plan (Section 2.2), where its verification step, owner, and schedule are recorded.
 |  |  |  |  |  |  |
@@ -266,12 +268,12 @@ The factors below affect the features described in Section 5. An **assumption** 
 | AD-06 | Dependency | AI-assisted features rely on external AI services: a language model, a text-embedding model, and vector search. Providers have not been selected yet. A proof of concept in Sprint 3 (PA3) will choose a free-tier option with acceptable quality, speed, and data-use terms. | G03, G06, G10, G12 | If no adequate free option exists, AI features are reduced in scope (e.g., fewer AI requests or shorter conversations) rather than removed. When an AI service is unavailable, each feature switches to the fallback described in Section 5.2. | ED-07, ED-08 |
 | AD-07 | Dependency | Google and Facebook sign-in remain available, and course evaluators can sign in through them, either because the sign-in apps are published or because evaluators are registered as test users. | G01 | If social sign-in is unavailable, users sign in with a local email and password account. | ED-09 |
 | AD-08 | Assumption | Free-tier hosting, database, and service quotas are sufficient for demo-scale use by team members and course evaluators. | All | If quotas or start-up times are not acceptable, the hosting choice is reviewed in Sprint 3 (PA3), and the performance targets in Section 6 may need adjustment. | PC-03, TA-05 |
-| AD-09 | Assumption | AuraTune is used only by team members, course evaluators, and test accounts. Personal data is limited to what each feature needs, and no direct identifiers, such as names or email addresses, are sent to external AI services. | G01, G07, G10, G12 | If AuraTune were opened to the public, privacy, consent, and content moderation requirements would have to be added to this vision. | PC-06 |
+| AD-09 | Assumption | During the academic evaluation phase, AuraTune is accessed primarily by team members, course evaluators, and test accounts. Basic data protection measures (encryption, password hashing, and stripping personal identifiers such as names or email addresses before sending requests to external AI services) are enforced in alignment with Decree 13/2023/ND-CP. | G01, G07, G10, G12 | If AuraTune were opened to the general public, formal legal compliance workflows, explicit cookie/tracking consent banners, and full-scale content moderation pipelines would have to be expanded in this vision. | PC-06 |
 | AD-10 | Assumption | Artist accounts upload only tracks they have the right to distribute. During the project, artist accounts are test accounts that use licensed or team-created content. | G09, G11 | If the rights to uploaded content cannot be trusted, an administrator review step must be added before uploaded tracks become playable. | PC-04 |
 
 # **5. Product Features**
 
-*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy*
+*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy, Nguyễn Khánh Đăng*
 
 AuraTune's features are organized into twelve functional groups, G01 to G12, which are the same groups used in the Project Plan. They refine the Key Features of the PA1 Project Proposal according to the scope agreed in the Project Plan. Features are described as users perceive them. How each one is implemented will be specified later in use cases and Spec Kit specifications.
 AuraTune serves three user roles:
@@ -300,7 +302,7 @@ AuraTune serves three user roles:
 
 ## 5.2. Feature Descriptions
 
-*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy*
+*Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy, Nguyễn Khánh Đăng*
 
 **G01 — Account Registration and Sign-In.** Users can create an AuraTune account with an email address and password, or sign in with an existing Google or Facebook account. An account lets AuraTune keep each listener's playlists, liked tracks, listening history, and recommendations between sessions and devices. It also gives artists and administrators access to the functions of their role. Social sign-in saves new users from creating another password, while email sign-in remains available to anyone without a Google or Facebook account.
 
@@ -314,15 +316,15 @@ AuraTune serves three user roles:
 
 **G06 — Playlist Management and AI Playlist.** Listeners can create, rename, describe, and delete playlists, add and remove tracks, reorder them, and play a playlist in order or shuffled, and tracks they like are kept in a "Liked Songs" playlist. A playlist can also be made collaborative so that several listeners add and arrange tracks together. With AI Playlist, a listener describes an occasion or a mood in one sentence, and AuraTune proposes a playlist that the listener can review, edit, and save. Playlists let listeners keep and return to the music they have chosen, and AI Playlist saves them from assembling a playlist track by track. Listeners who want ready-made playlists for specific activities benefit most, and collaborative playlists let friends or study groups share music.
 
-**G07 — Listening History and Statistics.** AuraTune records every track that a listener plays. Listeners can view their recently played tracks, the number of plays of each track, their listening time per artist, and their most-played tracks and artists. History helps listeners find a track they heard but did not save, and the statistics show how their taste changes over time. The same history is the main input for AI Recommendations (G10), so collecting it benefits both the listener and the quality of personalization.
+**G07 — Listening History and Statistics.** AuraTune records every track that a listener plays. Listeners can view their recently played tracks, the number of plays of each track, their total listening time and listening time per artist, as well as their most-played tracks, artists, and genres. History helps listeners find a track they heard but did not save, and the statistics show how their taste changes over time. The same history is the main input for AI Recommendations (G10), so collecting it benefits both the listener and the quality of personalization.
 
 **G08 — Album Details.** An album page shows the album's title, cover art, artist, release year, total duration, and track list, with the play count of each track. Listeners can play the whole album or a single track, save the album to their library, and share it. Album pages are needed because many listeners prefer to hear a release as a whole and in the order the artist intended. Listeners get a complete view of a release, and artists benefit from having their albums presented as a whole.
 
-**G09 — Artist Profile.** An artist profile shows the artist's name, picture, biography, most-played tracks on AuraTune, albums, and related playlists, and listeners can follow or share the artist. Artist accounts can upload their own tracks and edit, hide, or remove them (see AD-10). Profiles are needed so that listeners can explore more music from an artist they like and keep track of the artists they follow. Listeners discover music more easily, and artists gain a space to present and manage their work.
+**G09 — Artist Profile.** An artist profile shows the artist's name, picture, biography, most-played tracks on AuraTune, albums, and related playlists, and listeners can follow or share the artist. Artist accounts can upload their own tracks, organize them into albums, and edit, hide, or remove their published content (see AD-10). Profiles are needed so that listeners can explore more music from an artist they like and keep track of the artists they follow. Listeners discover music more easily, and artists gain a space to present and manage their work.
 
 **G10 — AI Recommendations.** AuraTune suggests tracks to each listener based on their listening history, their liked tracks, and the artists and genres they play most, combined with tracks that are popular on AuraTune. Recommendations appear on the Home page and change as the listener's history grows. They are needed because a catalogue is hard to explore without guidance, and listeners otherwise tend to stay with the few tracks they already know. Listeners discover new music that matches their taste, and less well-known artists in the catalogue gain a chance to be heard.
 
-**G11 — Administration.** Administrators manage the platform through a dedicated dashboard. They can add, edit, and remove tracks and artists, create editorial playlists, view platform-wide statistics such as the numbers of users and plays, and suspend or ban accounts that break the platform rules. These functions keep the catalogue accurate, keep its content within the licensing limits in AD-03, and allow administrators to deal with misuse such as abusive comments. Administrators use these functions directly, while listeners and artists benefit from a well-maintained and safe platform.
+**G11 — Administration.** Administrators manage the platform through a dedicated dashboard. They can add, edit, and remove tracks, albums, and artists, create editorial playlists, view platform-wide statistics such as the numbers of users and plays, and suspend or ban accounts that break the platform rules. These functions keep the catalogue accurate, keep its content within the licensing limits in AD-03, and allow administrators to deal with misuse such as abusive comments. Administrators use these functions directly, while listeners and artists benefit from a well-maintained and safe platform.
 
 **G12 — AI Conversational Agent / Real-time Host.** The AI host is a chat assistant that listeners can talk to in everyday language while they listen. Listeners can ask it for music for a situation, such as "something upbeat for a morning run", ask about the track or artist that is playing, or ask it to add suggested tracks to the queue. Its answers are based on AuraTune's own catalogue, so it suggests only tracks that can actually be played. This feature is needed because some listeners find it easier to say what they want than to search or browse, and it makes discovery feel like talking to a radio host. Listeners who are new to the catalogue or unsure what they want to hear benefit most.
 
@@ -397,9 +399,9 @@ flowchart TD
 
 # **6. Non-Functional Requirements**
 
-*Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
+*Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa, Nguyễn Khánh Đăng*
 
-## 6.1 Performance
+## 6.1. Performance
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
@@ -408,15 +410,16 @@ flowchart TD
   - AI semantic search results are targeted to return within 3 seconds.
   - Audio playback is intended to start within 500ms of the user clicking the play button for a buffered track.
 
-## 6.2 Security
+## 6.2. Security
 
-*Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
+*Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa, Nguyễn Khánh Đăng*
 
   - User passwords must be hashed using industry-standard algorithms (e.g., Argon2 or bcrypt) before storage.
   - All data transmission between the client and server must be encrypted via HTTPS/TLS 1.3.
   - Personal data access (OAuth tokens, listening history) must be strictly restricted to the authorized user and the system's personalization engine.
+  - No direct personal identifiers (such as full names or email addresses) may be transmitted to external third-party AI services.
 
-## 6.3 Platform Requirements
+## 6.3. Platform Requirements
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
@@ -424,7 +427,7 @@ flowchart TD
   - The UI must be responsive, adapting to different screen sizes on PCs, laptops, tablets, and mobile phones.
   - The application must provide a consistent user experience across devices, with interfaces optimized for mouse, keyboard, and touch interactions.
 
-## 6.4 Quality Attributes
+## 6.4. Quality Attributes
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
