@@ -68,14 +68,13 @@ This section lists the documents and information sources used to develop the Vis
 ## 2.2 Product Position Statement
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
-
+| | |
 | :- | :- |
 | **Item** | **Description** |
 | **For** | Music enthusiasts and focused workers. |
 | **Who** | Seek a deeply personalized and intuitive music discovery experience. |
 | **The product name** | AuraTune |
 | **That** | Is an AI-powered smart music streaming platform providing seamless playback and emotion-driven recommendations. |
-| **Unlike** | Traditional platforms that rely primarily on keyword matching and static metadata. |
 | **Our product** | Offers an "AI DJ" experience through advanced vector search and deep listening habit analytics. |
 
 
@@ -421,8 +420,9 @@ flowchart TD
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
-  - The web application must be fully functional on the latest stable versions of modern browsers: Chrome, Safari, Firefox, and Microsoft Edge.
-  - The UI must be responsive, providing a consistent experience across desktop screens (\>= 1280px).
+  - The web application must support the latest stable versions of Google Chrome, Safari, Mozilla Firefox, and Microsoft Edge on both desktop and mobile devices.
+  - The UI must be responsive, adapting to different screen sizes on PCs, laptops, tablets, and mobile phones.
+  - The application must provide a consistent user experience across devices, with interfaces optimized for mouse, keyboard, and touch interactions.
 
 ## 6.4 Quality Attributes
 
