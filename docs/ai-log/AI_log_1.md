@@ -7,6 +7,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 1   | 2026-10-20 | Viết spec 101 – Listening History Analysis bằng `$speckit-specify`                               | 10   |
 | 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ               | 10   |
 | 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại | 10   |
+| 4   | 2026-10-24 | Hoàn thiện metadata Performed by / Reviewed by / Edited by cho Project Plan theo phân công DL4 và bằng chứng Git | Project Plan / DL4 (không thuộc functional group) |
 
 ---
 
@@ -143,3 +144,46 @@ _Skill `speckit-clarify` được cung cấp kèm invocation; feature context l�
 - Kiểm tra các câu trả lời nhất quán trong clarification log, stories, requirements và entities; xác nhận không còn clarification markers.
 - Checklist: 14/16 mục trước khi tích hợp các câu trả lời còn lại, 16/16 sau khi cập nhật; không có mục bị thoái lui.
 - Không chạy tests vì đây là cập nhật spec/checklist, chưa có implementation.
+
+## Mục 4: Hoàn thiện metadata quyền sở hữu các section của Project Plan
+
+| Trường | Nội dung |
+| --- | --- |
+| Ngày | 2026-10-24 |
+| Người thực hiện | Nhựt |
+| Nhóm tính năng liên quan | Project-wide: Project Plan, các section được ánh xạ theo DL4; không gắn với functional group riêng |
+| Công cụ AI | Codex (GPT-6) |
+| Mục đích | Cập nhật metadata Performed by và Reviewed by theo bảng phân công DL4; xác định Editor từ nội dung section và Git diff/history có sẵn, không suy đoán với heading thiếu căn cứ. |
+
+### Prompt đã dùng (tóm lược)
+
+    Chỉnh sửa docs/proposal/project_plan.md để hoàn thiện metadata cho các heading thuộc PA2 theo bảng phân công DL4. Ánh xạ Performer và Reviewer theo nội dung công việc. Với section đã được chỉnh sửa trước đây, đặt Editor là Lê Công Minh Nhựt; với section chưa chỉnh sửa, giữ Editor ban đầu theo phân công. Đối chiếu Git diff/history nếu có thể; nếu không đủ căn cứ thì giữ Editor hiện tại và ghi rõ cần xác minh thủ công. Chỉ sửa metadata, bảo toàn các thay đổi chưa commit, không truy cập Jira/Google Sheets, không sửa file khác và không commit/push.
+
+### Tóm tắt phản hồi của AI
+
+- Kiểm tra trạng thái repository và Git history/diff hiện có trước khi sửa; giữ nguyên thay đổi chưa commit ngoài phạm vi.
+- Cập nhật metadata cho 70 heading thuộc mapping DL4, ánh xạ Performer/Reviewer theo task và đặt metadata ngay sau heading.
+- Đối chiếu Editor với baseline Git: đổi Editor từ một giá trị khác sang Lê Công Minh Nhựt ở 8 heading; giữ Editor đã là Lê Công Minh Nhựt tại 4.1; giữ Editor baseline ở section không đổi; với section không có metadata baseline, dùng Performer cho section không đổi và Lê Công Minh Nhựt cho section có nội dung khác baseline.
+- Không gán ownership theo số của heading tổng quan 2–4. Giữ trạng thái hiện tại ở các heading không có task mapping rõ ràng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Performer và Reviewer | Dùng mapping DL4 cho 70 heading | Mapping được cung cấp rõ; kiểm tra lại để bảo đảm reviewer khác performer. |
+| Editor | Dùng Git diff/history sẵn có và quy tắc của người dùng | Không suy ra người chỉnh sửa từ số heading; khi thiếu dữ liệu baseline, giữ hoặc dùng trạng thái được quy tắc cho phép. |
+| Heading tổng quan 2–4 | Không tự ánh xạ vào task nội dung | Đây là heading tích hợp, không thuộc mapping section; mục 3 và 4 còn cần xác minh lịch sử Editor thủ công. |
+| Nội dung chuyên môn | Không sửa trong lượt metadata này | Phạm vi yêu cầu chỉ là metadata; các thay đổi nội dung chưa commit từ lượt trước được giữ nguyên. |
+
+### Cách kiểm chứng
+
+- Đếm và kiểm tra 73 heading đánh số, gồm 70 heading thuộc mapping DL4; xác nhận đủ metadata ngay sau heading.
+- So sánh Performer/Reviewer với mapping: không có mismatch; tất cả reviewer khác performer.
+- Chạy git diff --check: không có lỗi whitespace; Git chỉ in cảnh báo chuyển đổi line ending.
+- Kiểm tra git status và git diff --name-only: project_plan.md là file tracked duy nhất được chỉnh sửa; docs/PA/ vẫn là thay đổi untracked có sẵn.
+- In diff tích lũy của project_plan.md ra terminal theo các đoạn vì output vượt giới hạn hiển thị. Diff còn bao gồm nội dung đã chỉnh sửa ở các lượt trước; không dùng nó để khẳng định lịch Jira đã được xác minh.
+- Không truy cập Jira hoặc Google Sheets; không render/kiểm tra trực quan PDF; không commit hoặc push.
+
+**Kết quả kiểm chứng:** Đạt cho mapping Performer/Reviewer và định dạng metadata của 70 heading DL4.
+
+**Ghi chú:** Git history khả dụng chỉ có baseline commit b2a4e88. Metadata Editor của heading tổng quan 3 và 4 cần xác minh thủ công vì baseline không có metadata cho hai heading này; trạng thái hiện tại được giữ nguyên.
