@@ -346,6 +346,7 @@ The two workflows below illustrate the most important journeys in AuraTune. The 
 
 **Workflow 1 — Discover and play music (G01, G02, G03, G04, G05, G07, G10).** A listener signs in, finds a track by browsing the Home page or by searching, and plays it. While the track plays, the listener can use the player's functions or keep browsing with the mini player. Each completed play is recorded in the listening history, which updates future recommendations.
 
+
 ```mermaid
 flowchart TD
     A[Listener opens AuraTune] --> B{Signed in?}
