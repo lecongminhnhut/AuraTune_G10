@@ -1,6 +1,6 @@
 # AuraTune Project Repository
 
-_Performed by: [Name], Reviewed by: [Name], Edited by: [Name]_
+_Performed by: [Name], Reviewed by: Thái Hoàng, Edited by: [Name]_
 
 AuraTune is a web application designed for music streaming and community connection, featuring an advanced AI Conversational Agent. This repository contains both the source code and the official documentation for the project.
 

@@ -1,6 +1,6 @@
 # AI Usage Guidelines
 
-\_Performed by: Nhựt, Reviewed by: [], Edited by: []
+\_Performed by: Nhựt, Reviewed by: Thái Hoàng, Edited by: []
 
 This directory contains the rules and logs for Artificial Intelligence (AI) tool usage in the AuraTune project. According to the course guidelines, every instance of AI assistance must be logged to ensure transparency, fairness, and academic integrity.
 
