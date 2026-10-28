@@ -31,21 +31,23 @@
 
 ## Required Source Verification
 
-- [ ] Feature scope, actors, business value, and proposed targets checked against the vision document and proposal.
-- [ ] Conceptual ownership, uniqueness, artist identity, follow time, and lifecycle checked against database documentation and ER diagram.
-- [ ] Account isolation, access boundaries, hidden-profile behavior, and failure scenarios checked against documented security policy.
-- [ ] Feature hierarchy, numbering, and specification conventions checked against the specs index.
-- [ ] Presentation structure and detail checked against sample 101.
-- [ ] Public-profile eligibility, public fields, and restricted-content boundaries checked against spec 091 if available; it remains absent on this branch.
+- [x] Feature scope, actors, business value, and behavioral outcomes checked against the vision document and proposal.
+- [x] Conceptual ownership, uniqueness, artist identity, follow time, and lifecycle checked against database documentation and ER diagram.
+- [x] Account isolation, access boundaries, hidden-profile behavior, and failure scenarios checked against documented security policy.
+- [x] Feature hierarchy, numbering, and specification conventions checked against the specs index.
+- [x] Presentation structure and detail checked against sample 101.
+- [x] Public-profile eligibility, public fields, and restricted-content boundaries checked against spec 091, including its identical not-found outcome and non-disclosure rules.
 
 ## Notes
 
-- Revalidated on 2026-10-28: the 16 built-in specification-quality criteria are satisfied for the written draft. Six source-verification criteria remain unchecked. This is not an overall readiness pass, evidence of implementation, or a claim that acceptance targets were measured.
-- Q1 resolved by explicit user instruction: omit hidden artists without placeholders, retain relationships and original follow times, restore entries when public, allow valid owner unfollow requests without names/images/internal status disclosure, and add no hidden-artist interface. Covered by FR-002, FR-008, FR-013, stories 2–3, and SC-005.
-- Q2 resolved by explicit user instruction: follow time descending, artist ID ascending for ties; duplicate follow preserves original time. Covered by FR-004, FR-014, stories 1–3, and SC-001/SC-005.
-- Workspace root: `C:/Users/Admin/Documents/AuraTune_G10`. A repeated repository-wide inventory included hidden and ignored files outside Git internals; content searches also checked alternate-name references. No corresponding replacement for any of the seven sources was found.
-- Missing: `docs/proposal/Auratune_Vision_Document.md`; `docs/proposal/proposal.md`; `docs/design/database/README.md`; `docs/design/database/er-diagram.md`; `docs/design/security/README.md`; `specs/README.md`; `specs/100-ai-recommendations/101-listening-history-analysis/spec.md`. Spec 091 is also absent.
-- See the specification's Verification Still Required table for the affected requirements. The existing API Contract supports follow, unfollow, and own following-list capabilities, but does not establish list order or hidden-profile lifecycle rules. Those two rules come from user instructions, not inferred team approval.
-- API references are existing-contract traceability only; no new endpoint, schema, payload, technology, or source document was added. Proposed acceptance targets and assumptions remain identified as such.
-- No extension hook configuration exists. Branch remains `092-follow-artist-spec`; no other specification was changed. Only Specify continued; Plan, Tasks, and Implement were not run.
-- Overall status: Draft — source verification required. Do not mark the unchecked source criteria complete or declare readiness for planning without the missing evidence.
+- Revalidated on 2026-10-28 after reading all ten requested/reference sources on `092-follow-artist-spec`: 16/16 built-in quality criteria and 6/6 source-review criteria pass. These marks record specification review, not implemented behavior or measured acceptance results.
+- No sources remain missing. The specification's Source Review and Alignment table records each source, relevant sections, and its effect on feature 092. No other specification or source document was changed.
+- Q1 is preserved: hide non-public entries without placeholders, retain relationships and original follow times, restore when public unless unfollowed, and allow valid owner unfollow while hidden without revealing names, images, or internal profile status. No hidden-artist interface is added. Covered by FR-002/FR-008/FR-013, stories 2–3, and SC-005.
+- Q2 is preserved: follow time descending, artist ID ascending for ties, and duplicate follow preserves the original time. Covered by FR-004/FR-014, stories 1–3, and SC-001/SC-005.
+- No Q1/Q2 conflict was found. Spec 091 governs public-profile access; Q1 governs removal of the authenticated owner's retained relationship. Follow/profile access now uses the same artist-not-found outcome for nonexistent and non-public artists (FR-011). Hidden information is not inferable from counts, labels, placeholders, or errors (FR-007).
+- Removed the unsupported 90% usability target and replaced it with verifiable primary-journey outcomes (SC-004). SC-003 now distinguishes operational states without implying that nonexistent and hidden artists must be distinguishable.
+- Database review confirms a documented account–artist relationship and composite identity. It does not confirm follow-time storage, final schema, or deletion cascades. Q1/Q2 are explicit user decisions; no schema or broader team approval is inferred. Permanent deletion remains outside this feature's lifecycle decisions, consistent with the database sources' warning.
+- Existing API references serve contract traceability only. No endpoint, payload field, response code, technology, or authentication mechanism was added. Endpoint-specific duplicate/no-op responses remain governed by the shared contract rather than invented here.
+- Sample 101 informed structure and detail, including recorded decisions and account-isolation scenarios; no analytics business rules were copied.
+- Pre/post hook check: no `.specify/extensions.yml` exists. Current branch is unchanged. Only Specify was completed; Clarify, Plan, Tasks, and Implement were not run.
+- Overall status: Draft — Ready for Planning as a specification artifact. This is not implementation approval or a claim that undecided shared technical designs have been finalized. No subsequent workflow has been started.
