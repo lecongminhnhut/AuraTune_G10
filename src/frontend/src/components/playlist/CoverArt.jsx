@@ -19,7 +19,7 @@ export default function CoverArt({ variant = 'aurora', title, className = '', sh
       <div className="absolute -bottom-[30%] -left-[12%] h-[75%] w-[75%] rounded-full border border-white/20 bg-black/10" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/10" />
       <div className="absolute inset-0 grid place-items-center">
-        <span className="select-none font-serif text-[clamp(3rem,8vw,6rem)] leading-none text-white/80 drop-shadow-[0_4px_20px_rgba(0,0,0,.25)] transition duration-500 group-hover:scale-110">{motifs[variant] ?? '◒'}</span>
+        <span className="cover-motif select-none font-serif text-[clamp(3rem,8vw,6rem)] leading-none text-white/80 drop-shadow-[0_4px_20px_rgba(0,0,0,.25)] transition duration-500 group-hover:scale-110">{motifs[variant] ?? '◒'}</span>
       </div>
       {showLabel && <span className="absolute bottom-3 left-3 right-3 truncate text-[9px] font-bold uppercase tracking-[0.24em] text-white/75">{title}</span>}
     </div>
