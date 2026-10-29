@@ -1,7 +1,5 @@
 # Nhật ký sử dụng AI – Metadata Search (031)
 
-_Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự thực hiện._
-
 | # | Ngày | Nội dung | Nhóm |
 |---|---|---|---|
 | 1 | 2026-10-28 | Viết spec 031 – Metadata Search bằng `/speckit-specify` | 030 |
@@ -114,3 +112,119 @@ Spec có nhắc đến tham số limit nhưng chưa đề cập đến cách l�
 - Xác nhận không có sai lệch (regression) so với tài liệu thiết kế ban đầu.
 
 **Kết quả kiểm chứng:** Đạt.
+
+# Nhật ký sử dụng AI – AI Lyrics Search (032)
+
+| # | Ngày | Nội dung | Nhóm |
+|---|---|---|---|
+| 1 | 2026-10-29 | Viết spec 032 – AI Lyrics Search bằng `/speckit-specify` | 030 |
+| 2 | 2026-10-29 | Làm rõ spec 032 bằng `/speckit-clarify` – giới hạn đầu vào, xử lý timeout, UI/UX fallback và xung đột luồng | 030 |
+
+---
+
+## Mục 1: Viết spec 032 – AI Lyrics Search
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-29 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search (`specs/030-search/032-ai-lyrics-search`) |
+| Công cụ AI | Codex, lệnh `/speckit-specify` |
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng tìm kiếm bằng lời bài hát AI, xử lý kịch bản fallback khi AI Service gặp lỗi 503 hoặc timeout. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify Đặc tả tính năng tìm kiếm bằng lời bài hát AI (032-ai-lyrics-search) cho AuraTune.
+Yêu cầu cụ thể:
+1. Người dùng có thể tìm bài hát thông qua các đoạn lời bài hát (lyrics fragment) mà họ nhớ.
+​2. Hệ thống gọi qua AI Service (POST /ai/search/lyrics) để phân tích ngữ nghĩa và match với dữ liệu lời bài hát.
+3. Xử lý kịch bản fallback: Nếu AI Service quá tải hoặc timeout (lỗi 503), hệ thống tự động chuyển về tìm kiếm văn bản cơ bản (keyword search) và hiển thị thông báo cho người dùng.
+4. Tiêu chí chấp nhận:
+- Tìm chính xác bài hát dù người dùng chỉ nhập một đoạn lời không hoàn chỉnh.
+- Xử lý lỗi 503 mượt mà theo đúng API contract.
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ proposal.md và speckit-workflow-guide.md.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khởi tạo cấu trúc tính năng với `spec.md`, `requirements.md` (checklist 16/16 passing), và `feature.json`.
+- Tài liệu được sinh ra 100% bằng tiếng Anh, đáp ứng đúng yêu cầu `CRITICAL REQUIREMENT`.
+- Tích hợp chuẩn xác logic gọi API `POST /ai/search/lyrics`, tìm kiếm ngữ nghĩa, và luồng fallback keyword search khi HTTP 503/timeout xảy ra.
+- Xác định rõ các acceptance scenarios, states trống/lỗi, và yêu cầu bảo vệ quyền riêng tư người dùng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp, đồng bộ dự án và tuân thủ `speckit-workflow-guide.md`. |
+| API Contract (`POST /ai/search/lyrics`) | Dùng | Khớp với thiết kế API đã duyệt cho truy vấn ngữ nghĩa AI. |
+| Fallback Logic (503/Timeout) | Dùng | Giữ cho hành trình trải nghiệm của người dùng không bị gián đoạn khi AI quá tải. |
+
+### Cách kiểm chứng
+
+- Đối chiếu tài liệu sinh ra (`spec.md`, `requirements.md`) với yêu cầu ban đầu.
+- Xác nhận trạng thái checklist đạt đầy đủ, không còn tag `[NEEDS CLARIFICATION]`.
+- **Kết quả kiểm chứng:** Đạt, sẵn sàng chuyển sang bước clarify.
+
+---
+
+## Mục 2: Làm rõ spec 032 – AI Lyrics Search
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-29 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search |
+| Công cụ AI | Codex, lệnh `/speckit-clarify` |
+| Mục đích | Giải quyết các điểm mơ hồ về giới hạn đầu vào, ngưỡng thời gian timeout, UI/UX thông báo dự phòng, và các kịch bản ngoại lệ (429, Race condition). |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify 
+Làm rõ các vấn đề sau:
+1. Các giới hạn và ngưỡng định lượng (Thresholds & Limits)
+
+- Thời gian Timeout chưa xác định: Các yêu cầu (FR-008) và Tiêu chí (SC-003) nhắc đến việc "hết thời gian phản hồi (timeout)" nhưng không quy định rõ timeout là bao nhiêu giây (ví dụ: 3s, 5s hay 10s).
+- Độ dài truy vấn tối thiểu/tối đa:
+- Ở phần Edge Cases có nhắc đến "Đoạn lời quá ngắn..." nhưng không định nghĩa rõ bao nhiêu ký tự/từ là quá ngắn để chặn tìm kiếm.
+- Tương tự, "dài hơn giới hạn đầu vào được hỗ trợ" cũng không nêu rõ giới hạn này là bao nhiêu ký tự (ví dụ: tối đa 200 ký tự hay 500 ký tự).
+2. Giao diện và Trải nghiệm Người dùng (UI/UX)
+- Vị trí và tính chất của "Thông báo dự phòng": Yêu cầu (FR-010, FR-011) quy định phải có "thông báo rõ ràng" khi dùng tìm kiếm từ khóa thay cho AI. Tuy nhiên, spec chưa làm rõ thông báo này hiển thị dưới dạng nào (Toast message, Banner, Text inline trên kết quả), thời gian hiển thị bao lâu, và người dùng có thể bấm tắt (dismiss) được không.
+- Xử lý phân trang/Số lượng kết quả: Spec không đề cập đến việc nếu có quá nhiều kết quả khớp thì sẽ hiển thị tối đa bao nhiêu bài hát trên một trang, và có hỗ trợ cuộn vô hạn (infinite scroll) hay phân trang (pagination) hay không.
+- Phản hồi lỗi đầu vào (FR-013): Khi người dùng nhập khoảng trắng hoặc không hợp lệ, "phản hồi đầu vào rõ ràng" là thông báo lỗi tại chỗ (inline validation) chặn nút Search, hay là gửi đi rồi mới trả về lỗi popup?
+3. Logic và Thuật toán Tìm kiếm
+
+- Định nghĩa sự "khác biệt thông thường": User Story 1 đề cập hệ thống xử lý được "sự khác biệt thông thường về khoảng trắng, viết hoa hoặc dấu câu". Vậy hệ thống có hỗ trợ lỗi sai chính tả (typos), từ viết tắt, hay tiếng lóng không?
+- Phạm vi của "Tìm kiếm từ khóa cơ bản" (Fallback): Khi chuyển sang tìm kiếm từ khóa dự phòng, hệ thống chỉ tìm đúng (exact match) cụm từ đó trong trường `lyrics`, hay có tìm trong cả `title` (tiêu đề) và `artist` (nghệ sĩ) không?
+- Tiêu chí xếp hạng "phù hợp nhất" (Relevance): Kịch bản nghiệm thu 3 của User Story 1 yêu cầu kết quả sắp xếp để "người dùng nhận diện bài hát phù hợp nhất trước tiên". Tuy nhiên, tiêu chí nào để đánh giá độ phù hợp (điểm semantic score, số lượt nghe của bài hát, hay độ dài đoạn khớp)?
+4. Xử lý các Edge Cases đặc thù
+- Rate Limiting (Giới hạn tỷ lệ gửi): Nếu người dùng spam nút tìm kiếm liên tục, hệ thống xử lý chặn luồng (debounce/throttle) ở phía Client hay đợi server trả về lỗi 429 (Too Many Requests)? Spec có nhắc đến 503 nhưng chưa thấy đề cập đến 429.
+- Race Condition (Xung đột trạng thái): Ở Edge Cases có ghi "Người dùng gửi truy vấn mới trong khi tìm kiếm trước đó đang tải". Hệ thống sẽ hủy (abort) yêu cầu trước đó, hay vẫn để chạy ngầm và bỏ qua kết quả trả về chậm?
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ proposal.md và speckit-workflow-guide.md
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đã hỏi và tích hợp thành công 5/5 quyết định vào tài liệu `spec.md` (giữ nguyên tiếng Anh).
+- **Chốt các giới hạn định lượng:** Đặt timeout AI là 5 giây; giới hạn truy vấn tối thiểu 3 từ và tối đa 200 ký tự.
+- **Chốt quy tắc hiển thị (UI/UX):** Thông báo fallback dùng dismissible inline banner ở trên cùng tập kết quả; phân trang 20 bài hát/trang.
+- **Chốt thuật toán Fallback:** Chỉ tìm kiếm từ khóa trong trường lyrics đã được chuẩn hóa (normalized lyrics), ưu tiên exact phrase.
+- **Chốt Edge Cases:** Lỗi HTTP 429 hiển thị thông báo lỗi retryable (không kích hoạt fallback); xử lý race condition bằng cách lấy truy vấn mới nhất làm authoritative (bỏ qua response cũ).
+- Cập nhật checklist đạt chuẩn 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Timeout 5s & Giới hạn Input | Dùng | Đủ thời gian cho AI xử lý mà không làm người dùng chờ lâu; ngăn chặn payload lớn làm sập server. |
+| Fallback Banner (Dismissible) | Dùng | Cung cấp thông tin minh bạch về việc hạ cấp tìm kiếm nhưng không gây gián đoạn luồng hiển thị kết quả. |
+| Cơ chế lỗi 429 và Race Condition | Dùng | Phân định rõ ràng lỗi spam/rate limit với lỗi sập hệ thống (503), giải quyết triệt để lỗi hiển thị chéo kết quả cũ-mới. |
+| Ngôn ngữ đặc tả (Tiếng Anh) | Dùng | Đảm bảo tính nhất quán của hệ thống tài liệu dự án theo CRITICAL REQUIREMENT. |
+
+### Cách kiểm chứng
+
+- Kiểm tra file `spec.md`, các giới hạn như `5 seconds timeout`, `3 words min`, `200 chars max` đã được bổ sung rõ ràng vào phần yêu cầu chức năng.
+- Xác nhận logic UI cho Fallback Notice và 429 Rate Limit đã có mặt trong tài liệu.
+- **Kết quả kiểm chứng:** Đạt. Sẵn sàng cho bước kế tiếp (`$speckit-plan`).
