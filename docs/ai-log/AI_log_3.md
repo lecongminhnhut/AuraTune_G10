@@ -228,3 +228,121 @@ CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việ
 - Kiểm tra file `spec.md`, các giới hạn như `5 seconds timeout`, `3 words min`, `200 chars max` đã được bổ sung rõ ràng vào phần yêu cầu chức năng.
 - Xác nhận logic UI cho Fallback Notice và 429 Rate Limit đã có mặt trong tài liệu.
 - **Kết quả kiểm chứng:** Đạt. Sẵn sàng cho bước kế tiếp (`$speckit-plan`).
+
+# Nhật ký sử dụng AI – Semantic Vector Music Search (033)
+
+| #  | Ngày | Nội dung  | Nhóm |
+| -- | ---- | --------  | ---- |
+| 1   | 2026-10-29 | Viết spec 033 – Semantic Vector Music Search bằng `$speckit-specify`   | 030   |
+| 2   | 2026-10-29 | Làm rõ spec 033 bằng `$speckit-clarify` – ranking, audio fields, privacy, thresholds và metrics | 030   |
+
+---
+
+## Mục 1: Viết spec 033 – Semantic Vector Music Search
+
+| Trường | Nội dung        |
+| ------ | --------------- |
+| Ngày   | 2026-10-29      |
+| Người thực hiện        | Nguyễn Khánh Đăng  |
+| Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search (`specs/030-search/033-semantic-vector-search`) |
+| Công cụ AI               | Gemini, `$speckit-specify`      |
+| Mục đích                 | Tạo đặc tả nghiệp vụ (bằng tiếng Anh) cho tính năng tìm kiếm nhạc ngữ nghĩa; đảm bảo quy tắc an toàn dữ liệu cá nhân (tên, email) và xử lý dự phòng (fallback) khi AI service lỗi.       |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+
+Đặc tả tính năng tìm kiếm ngữ nghĩa bằng Vector (033-semantic-vector-search) cho AuraTune.
+Yêu cầu cụ thể:
+1. Cho phép người dùng tìm kiếm nhạc dựa trên mô tả cảm xúc, ngữ cảnh hoặc tâm trạng (ví dụ: "nhạc buồn cho đêm mưa").
+​2. Tính năng sử dụng LLM và Vector Database để phân tích embedding từ metadata, lyrics và audio features, sau đó đối chiếu không gian vector để trả về kết quả.
+3. Đảm bảo dữ liệu cá nhân (tên, email) không bao giờ được gửi sang third-party AI services để bảo mật.
+4. Xử lý kịch bản fallback về keyword search nếu AI Service không khả dụng.
+
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ ranh giới hệ thống, không tự quyết định framework/DB chi tiết nếu chưa có trong kiến trúc.
+Đã hoàn tất đặc tả feature 033-semantic-vector-search.
+- Spec: [spec.md](C:/Users/Admin/OneDrive/Máy tính/AuraTune_G10/specs/030-search/033-semantic-vector-search/spec.md)
+- Checklist: [requirements.md](C:/Users/Admin/OneDrive/Máy tính/AuraTune_G10/specs/030-search/033-semantic-vector-search/checklists/requirements.md)
+- Đã cập nhật .specify/feature.json trỏ đến feature này.
+- Checklist đạt toàn bộ tiêu chí; không còn marker cần làm rõ.
+- Sẵn sàng cho bước $speckit-plan.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Tạo thành công tài liệu đặc tả `spec.md` và `requirements.md` đáp ứng tiêu chí CRITICAL REQUIREMENT (100% tiếng Anh).
+- Cấu trúc đầy đủ: User Stories, Functional Requirements, Edge Cases, Key Entities và Success Criteria.
+- Phân tích và liệt kê chi tiết các điểm cần làm rõ (NEEDS CLARIFICATION) chia làm 4 nhóm: Logic thuật toán, Xử lý ngôn ngữ và quyền riêng tư, Giới hạn hệ thống (UX), và Đánh giá kết quả.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| ---- | ---------- | ----- |
+| Spec 100% tiếng Anh | Dùng | Đáp ứng đúng ràng buộc đặc tả kỹ thuật của dự án dù prompt nhập bằng tiếng Việt. |
+| Fallback keyword search | Dùng | Đảm bảo tính sẵn sàng của luồng cốt lõi (tìm kiếm) khi third-party AI gặp sự cố. |
+| Các điểm cần làm rõ (Clarification markers) | Dùng (sẽ làm rõ tiếp) | Tài liệu ban đầu cần bổ sung tham số định lượng cụ thể để Engineering và Design có thể làm việc. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt, chuyển tiếp sang bước làm rõ.
+
+**Ghi chú:** Spec nằm tại `specs/030-search/033-semantic-vector-search/spec.md`; checklist nằm trong thư mục `checklists/`.
+
+---
+
+## Mục 2: Làm rõ spec 033 – `$speckit-clarify`
+
+| Trường | Nội dung |
+| ------ | -------- |
+| Ngày   | 2026-10-29  |
+| Người thực hiện   | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search |
+| Công cụ AI | Gemini, `$speckit-clarify` |
+| Mục đích | Trả lời 5 câu hỏi trọng tâm để chốt tham số kỹ thuật, quy tắc quyền riêng tư và công thức xếp hạng, qua đó loại bỏ toàn bộ `[NEEDS CLARIFICATION]` marker. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify 
+Làm rõ các điểm sau:
+1. Về Quy tắc xử lý và Thuật toán (Logic & Algorithms)
+[...] (Nội dung chi tiết 4 nhóm vấn đề)
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ ranh giới hệ thống, không tự quyết định framework/DB chi tiết nếu chưa có trong kiến trúc.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Hỏi tuần tự 5 câu hỏi theo hình thức trắc nghiệm có phương án đề xuất (Option A).
+- Chốt thuật toán ranking: sử dụng weighted ensemble (metadata 30%, lyrics 40%, audio 30%).
+- Chốt danh sách audio fields: đầy đủ 13 trường (tempo, key, mode, energy, valence, danceability, acousticness, instrumentalness, speechiness, loudness, liveness, time signature, duration).
+- Chốt cơ chế bảo mật PII: Phát hiện cục bộ tên/email, giữ lại tên nghệ sĩ có trong danh mục, nếu không xác định được an toàn thì dùng keyword fallback.
+- Chốt giới hạn đầu vào UX: tối đa 150 ký tự, timeout 1500ms cho semantic search.
+- Chốt thang đo Relevance: Thang 1-5, điểm 4-5 được tính là đạt.
+- Cập nhật trực tiếp `spec.md` và xóa toàn bộ các marker cần làm rõ, nâng điểm checklist lên 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần  | Quyết định | Lý do |
+| ----- | ---------- | ----- |
+| Trọng số xếp hạng 30/40/30 (Option A) | Dùng       | Cân bằng được tín hiệu từ cả ý nghĩa ca từ lẫn cảm giác âm nhạc, xử lý tốt khi dữ liệu bài hát bị khuyết. |
+| Full 13 Audio fields (Option A) | Dùng       | Độ bao phủ rộng, định nghĩa chính xác "musical feel" mà không bị phụ thuộc vào 1 vector DB cụ thể. |
+| PII Detection & Artist retention (Option A) | Dùng       | Bảo vệ nghiêm ngặt quyền riêng tư nhưng không làm hỏng trải nghiệm tìm kiếm hợp lệ (ví dụ tìm tên ca sĩ). |
+| Giới hạn 150 chars & 1.5s timeout (Option A) | Dùng | Ngăn chặn lạm dụng độ dài truy vấn và giúp hệ thống nhảy sang keyword fallback đủ nhanh để không làm phiền người dùng. |
+| Thang đánh giá 1-5 (Option A) | Dùng | Phù hợp với tính chủ quan của âm nhạc, linh hoạt hơn việc đánh giá nhị phân. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Checklist đạt 16/16 mục.
+
+**Ghi chú:** Do giới hạn 5 câu hỏi của phiên clarify, một số điểm nhỏ (như định nghĩa chi tiết duplicate, tiêu chí unsafe AI response, bộ trường hiển thị) đã được deferred và sẽ được xử lý ở giai đoạn Architecture/Design.
