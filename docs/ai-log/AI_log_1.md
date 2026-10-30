@@ -11,6 +11,8 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 5   | 2026-10-30 | Viết spec 102 – Personalized Recommendations bằng `/speckit-specify` và tích hợp làm rõ                          | 10                                                |
 | 6   | 2026-10-30 | Viết spec 103 – Mood and Context Recommendations bằng `/speckit-specify`                                         | 10                                                |
 | 7   | 2026-10-30 | Làm rõ spec 103 bằng `/speckit-clarify` – phương thức nhập, nội dung đề xuất và fallback                         | 10                                                |
+| 8   | 2026-10-30 | Viết spec 121 – Conversational Interface bằng `/speckit-specify`                                                 | 12                                                |
+| 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                     | 12                                                |
 
 ---
 
@@ -360,3 +362,108 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ---
 
+
+## Mục 8: Viết spec 121 – Conversational Interface
+
+| Trường                   | Nội dung                                                                                                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                           |
+| Người thực hiện          | Nhựt                                                                                                                                                 |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface`)              |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                   |
+| Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho giao diện hội thoại tương tác với AI host; phân định ranh giới với các spec liên quan 122, 123. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/120-ai-conversational-agent/121-conversational-interface
+
+Người dùng AuraTune tương tác với AI Conversational Agent thông qua giao diện hội thoại. Giao diện cho phép người dùng gửi nội dung tin nhắn và xem phản hồi từ AI trong cùng một cuộc hội thoại. Làm rõ cách bắt đầu cuộc hội thoại, gửi tin nhắn, hiển thị tin nhắn của người dùng và phản hồi của AI, trạng thái đang xử lý, cũng như cách xử lý khi gửi tin nhắn thất bại hoặc dịch vụ AI không khả dụng. Đảm bảo nội dung hội thoại được phân tách theo đúng tài khoản người dùng.
+
+Không bao gồm: phân tích ý định âm nhạc từ tin nhắn (spec `122-music-intent-understanding`), hỗ trợ phát nhạc theo thời gian thực hoặc thực hiện hành động âm nhạc (spec `123-real-time-music-assistance`), xây dựng mô hình AI, huấn luyện AI hoặc tự quyết định kiến trúc xử lý hội thoại nếu tài liệu nguồn chưa xác định.
+
+Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/management/team-contract.md`, `docs/design/database/README.md`, API contract và các spec liên quan trong repository. Làm rõ dependency với Authentication, AI Conversational Agent và các thành phần lưu trữ hội thoại nếu được xác định. Nếu tài liệu chưa xác định cấu trúc tin nhắn, vòng đời hội thoại, cách lưu lịch sử hoặc hành vi khi lỗi, ghi nhận là điểm cần clarification thay vì tự giả định.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Rà soát các tài liệu liên quan: `docs/proposal/proposal.md`, `docs/proposal/Auratune_Vision_Document.md` (mục G12 & Section 3.5), `docs/design/database/README.md` (chưa có bảng lưu trữ chat/tin nhắn), `docs/design/architecture/feature-modules.md`, và API contract.
+- Thiết lập thư mục và spec tại `specs/120-ai-conversational-agent/121-conversational-interface/spec.md`, cập nhật `.specify/feature.json`.
+- Xây dựng spec chuẩn Spec Kit gồm: 4 User Stories (P1: Start & View, P1: Send & Receive with processing indicator, P2: Failure & Unavailability handling, P1: Account isolation & privacy), Acceptance Scenarios dạng Given-When-Then, Edge Cases, Functional Requirements (FR-001 đến FR-012), Key Entities (Conversation, Message, User Session), Success Criteria đo lường được (SC-001 đến SC-005) và Assumptions.
+- Phân định rõ phạm vi loại trừ (Exclusions): không bao gồm phân tích ý định âm nhạc (122), hỗ trợ phát nhạc/thao tác queue theo thời gian thực (123), xây dựng/huấn luyện mô hình AI hoặc tự quyết định kiến trúc backend chưa xác định.
+- Nhận diện 3 điểm chưa đủ căn cứ trong schema database hiện hữu và đánh dấu `[NEEDS CLARIFICATION]`:
+  1. Vòng đời hội thoại và lưu trữ lịch sử (FR-008).
+  2. Định dạng nội dung tin nhắn giữa người dùng và AI (FR-007).
+  3. Hành vi phục hồi khi gửi tin nhắn thất bại hoặc dịch vụ AI không khả dụng (FR-009).
+- Khởi tạo `checklists/requirements.md` với 15/16 tiêu chí đạt, ghi nhận 3 điểm cần làm rõ trước khi chuyển sang pha kế hoạch.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Cấu trúc kịch bản và yêu cầu cốt lõi | Dùng | Đầy đủ luồng gửi/nhận, trạng thái đang xử lý (typing indicator), hiển thị tin nhắn hai chiều và tự động cuộn. |
+| Phân tách dữ liệu tài khoản (Privacy Isolation) | Dùng | Đảm bảo tính riêng tư tuyệt đối theo Nghị định 13/2023/NĐ-CP; cuộc trò chuyện của mỗi user là độc lập, cấm rò rỉ dữ liệu chéo. |
+| Không làm gián đoạn phát nhạc | Dùng | Giao diện hội thoại và AI host hoạt động độc lập với trình phát nhạc nền (Group 040); khi AI lỗi nhạc vẫn phát bình thường theo Vision Doc. |
+| 3 điểm chưa có trong database/tài liệu nguồn | Ghi nhận clarification | Database hiện hữu chưa có bảng chat/messages; không tự suy diễn cấu trúc dữ liệu hoặc vòng đời hội thoại. |
+
+### Cách kiểm chứng
+
+- Đối chiếu với `docs/proposal/proposal.md`, `docs/proposal/Auratune_Vision_Document.md` (G12, bảng fallback), `docs/design/database/README.md`, `docs/design/architecture/feature-modules.md`.
+- Kiểm tra tính đầy đủ của file spec và checklist chất lượng: 15/16 tiêu chí đạt, còn 1 tiêu chí chờ hoàn tất clarify.
+- Không chạy automated tests vì đây là công việc phân tích yêu cầu (Specification phase).
+
+**Kết quả kiểm chứng:** Đạt yêu cầu khởi tạo spec sơ bộ, chuyển sang pha clarify.
+
+**Ghi chú:** Spec lưu tại `specs/120-ai-conversational-agent/121-conversational-interface/spec.md`; checklist tại `checklists/requirements.md`.
+
+---
+
+## Mục 9: Làm rõ spec 121 bằng `/speckit-clarify`
+
+| Trường                   | Nội dung                                                                                                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                           |
+| Người thực hiện          | Nhựt                                                                                                                                                 |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface`)              |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                   |
+| Mục đích                 | Giải quyết 3 điểm cần làm rõ trong spec 121 thông qua vòng lặp câu hỏi tuần tự: vòng đời hội thoại, định dạng tin nhắn, và hành vi phục hồi khi lỗi. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify
+```
+
+Chuỗi phản hồi làm rõ tuần tự:
+- Câu 1 (Conversation Lifecycle & History): `A`
+- Câu 2 (Message Formatting & Content Structure): `A`
+- Câu 3 (Failure Recovery & Outage Behavior): `A`
+
+### Tóm tắt phản hồi của AI
+
+- Chạy `check-prerequisites.sh` xác định nhánh `feat/121-conversational-interface` và đường dẫn file spec của feature 121.
+- Thực hiện tuần tự từng câu hỏi theo chuẩn format của Spec Kit, đưa ra lý do và khuyến nghị rõ ràng:
+  - **Câu 1 (FR-008)**: Chốt lựa chọn Option A – duy trì một luồng hội thoại liên tục (single persistent thread) cho mỗi tài khoản người dùng, tự động tải lại lịch sử tin nhắn theo thứ tự thời gian khi mở giao diện chat; phù hợp vai trò AI Host đồng hành lâu dài mà không làm phức tạp hóa UI quản lý nhiều luồng ở v1.
+  - **Câu 2 (FR-007)**: Chốt lựa chọn Option A – AI phản hồi bằng văn bản định dạng Markdown chuẩn (in đậm, in nghiêng, danh sách gạch đầu dòng, liên kết) giúp hiển thị gợi ý bài hát/nghệ sĩ rõ ràng; tin nhắn người dùng được làm sạch và hiển thị dưới dạng plain text.
+  - **Câu 3 (FR-009)**: Chốt lựa chọn Option A – tin nhắn gửi thất bại giữ nguyên trong luồng chat kèm huy hiệu lỗi (inline error badge) và nút "Thử lại" (Retry) một chạm; khi dịch vụ AI không khả dụng hiển thị thông báo hệ thống nội tuyến, tuyệt đối không làm gián đoạn việc phát nhạc nền hay điều hướng ứng dụng.
+- Cập nhật tức thời vào file `spec.md`: thêm mục `## Clarifications` với session ngày 2026-10-30, cập nhật FR-007, FR-008, FR-009 và các thực thể Conversation, Message; chuyển trạng thái spec sang `Draft — Ready for Planning`.
+- Tái đánh giá checklist chất lượng: 16/16 tiêu chí đạt (100%), hoàn tất việc loại bỏ toàn bộ các marker `[NEEDS CLARIFICATION]`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Luồng hội thoại duy nhất lưu trên backend | Dùng (Option A) | Tạo sự liền mạch cho người dùng khi trò chuyện với AI Host; tránh giao diện cồng kềnh quản lý multi-thread trong phiên bản đầu. |
+| Markdown cho phản hồi AI, plain text cho user | Dùng (Option A) | Giúp định dạng câu trả lời AI sinh động, dễ đọc các danh sách bài hát/album; đầu vào user đơn giản, an toàn. |
+| Báo lỗi inline kèm nút Retry | Dùng (Option A) | Giữ nguyên ngữ cảnh câu hỏi của người dùng để có thể thử lại ngay khi có kết nối, không làm gián đoạn phát nhạc. |
+
+### Cách kiểm chứng
+
+- Kiểm tra tính nhất quán giữa câu trả lời trong mục Clarifications và nội dung các yêu cầu chức năng FR-007, FR-008, FR-009.
+- Xác nhận không còn marker `[NEEDS CLARIFICATION]` nào trong `spec.md`.
+- Kiểm tra lại checklist chất lượng: 16/16 mục đạt (`checklists/requirements.md`).
+- Không chạy automated tests vì spec chưa bước vào pha implementation.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu làm rõ, đặc tả hoàn chỉnh và sẵn sàng cho pha lập kế hoạch (`/speckit-plan`).
+
+**Ghi chú:** Spec hoàn thiện nằm tại `specs/120-ai-conversational-agent/121-conversational-interface/spec.md`.
