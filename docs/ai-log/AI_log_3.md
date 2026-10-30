@@ -582,3 +582,167 @@ speckit-clarify Làm rõ những điểm sau:
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt. Checklist hoàn thiện 16/16, sẵn sàng chuyển sang bước tiếp theo (`$speckit-plan`). Lỗi hiển thị thông báo chung của hệ thống sẽ được chốt chi tiết ở bước thiết kế.
+
+# Nhật ký sử dụng AI – Save and Share Album (083)
+
+| \# | Ngày | Nội dung | Nhóm | 
+| ----- | ----- | ----- | ----- | 
+| 1 | 2026-10-30 | Viết spec 083 – Save and Share Album bằng `/speckit-specify` | 080 | 
+| 2 | 2026-10-30 | Làm rõ spec 083 bằng `/speckit-clarify` – UI/UX loading, lỗi, nút share và quota | 080 | 
+| 3 | 2026-10-30 | Làm rõ spec 083 (bổ sung) bằng `/speckit-clarify` – Hành vi bỏ lưu trong thư viện | 080 | 
+
+## Mục 1: Viết spec 083 – Save and Share Album
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-10-30 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album (`specs/080-album-interaction/083-save-and-share-album`) | 
+| Công cụ AI | Gemini, lệnh `/speckit-specify` | 
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng lưu và chia sẻ album, tuân thủ đúng 2 API contract được cung cấp và định nghĩa luồng thao tác cơ bản. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+Đặc tả tính năng lưu trữ và chia sẻ Album (083-save-and-share-album) cho AuraTune.
+Yêu cầu cụ thể:
+1. Người dùng đã đăng nhập có thể lưu (save/like) album vào thư viện cá nhân (Liked Albums / Saved Albums).
+2. Bất kỳ người dùng nào cũng có thể chia sẻ (share) album thông qua URL hoặc các nút chia sẻ mạng xã hội.
+3. Tuân thủ API Contract: PUT /albums/:id/save và DELETE /albums/:id/save.
+4. Tiêu chí chấp nhận:
+- Trạng thái "Đã lưu" được đồng bộ chính xác với tài khoản user.
+- Link chia sẻ khi truy cập phải dẫn đúng vào trang 081-album-details.
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Không tự đưa ra các quyết định kỹ thuật chưa được duyệt.
+```
+
+### Tóm tắt phản hồi của AI
+
+* Khởi tạo thành công 3 file: `spec.md`, `requirements.md` (checklist ban đầu 16/16), và `.specify/feature.json`.
+* Tài liệu được viết 100% bằng tiếng Anh theo đúng `CRITICAL REQUIREMENT`.
+* Tích hợp chính xác API Contract (`PUT /albums/:id/save` và `DELETE /albums/:id/save`).
+* Bao gồm đầy đủ các kịch bản: lưu/gỡ lưu gắn với đúng tài khoản, yêu cầu đăng nhập khi lưu, chia sẻ bằng URL và điều hướng URL tới đúng trang chi tiết album mà không làm thay đổi các quy tắc truy cập công khai hiện có.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp và tuân thủ yêu cầu bắt buộc của dự án. | 
+| API Contract cho Lưu/Xóa | Dùng | Khớp hoàn toàn với tài liệu API đã được cung cấp. | 
+| Quy tắc truy cập chia sẻ | Dùng | Giữ nguyên quyền xem chi tiết album hiện có, không tự ý tạo thêm rules truy cập public dư thừa. | 
+
+### Cách kiểm chứng
+
+* \[x\] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+* \[x\] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+* \[x\] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+* \[x\] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt.
+
+**Ghi chú:** Đặc tả ban đầu bám rất sát yêu cầu. Chuyển sang bước làm rõ để xử lý các chi tiết về UI/UX và giới hạn hệ thống.
+
+## Mục 2: Làm rõ spec 083 – Save and Share Album
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-10-30 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | Gemini, lệnh `/speckit-clarify` | 
+| Mục đích | Giải quyết các điểm mơ hồ về xử lý UI/UX trạng thái chờ (loading), thông báo lỗi, hình ảnh trực quan của nút lưu, danh sách mạng xã hội chia sẻ, và giới hạn lưu trữ của hệ thống. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify Làm rõ các vấn đề sau:
+1. Giao diện và Trải nghiệm Người dùng (UI/UX)
+- Xử lý trạng thái chờ (Loading State): Yêu cầu FR-005 chỉ định không được hiển thị thay đổi chưa được xác nhận là thành công...
+- Chi tiết về "Phản hồi rõ ràng" (Clear Feedback): Ở các luồng thất bại...
+- Trạng thái hình ảnh của nút Lưu/Chia sẻ...
+2. Tính năng Chia sẻ (Social Sharing)
+- Các nền tảng được hỗ trợ...
+3. Giới hạn Hệ thống và Luồng Nghiệp vụ (Business & System Limits)
+- Giới hạn số lượng (Quota)...
+- Hành vi "Bỏ lưu" (Unsave) ở Thư viện cá nhân...
+CRITICAL REQUIREMENT: Toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Không tự đưa ra các quyết định kỹ thuật chưa được duyệt.
+```
+
+### Tóm tắt phản hồi của AI
+
+* Đưa ra một "Clarification Session" với 5 câu hỏi trắc nghiệm tập trung vào các điểm mù của đặc tả.
+* **Loading State:** Chọn Option A – Tạm khóa nút Lưu/Bỏ lưu trong lúc yêu cầu đang xử lý, hiển thị tiến trình và giữ nguyên trạng thái đã xác nhận cho tới khi có phản hồi.
+* **Error Feedback:** Chọn Option A – Hiển thị thông báo inline ngắn, riêng biệt cho từng hành động, kèm gợi ý thử lại khi phù hợp.
+* **Visual State:** Chọn Option A – Nút "Chưa lưu" hiển thị tim viền (Outlined heart) + text “Save”; Nút "Đã lưu" hiển thị tim đặc (Filled heart) + text “Saved”.
+* **Social Sharing:** Chọn Option A – Hỗ trợ Copy Link, Facebook, Instagram, X và Zalo.
+* **System Quota:** Chọn Option A – Không đặt quota giới hạn riêng cho tính năng này; áp dụng giới hạn chung hiện có của nền tảng.
+* **Cập nhật Checklist:** Sau khi cập nhật các quyết định trên (hoàn toàn bằng tiếng Anh) vào `spec.md`, checklist đạt 15/16. Mục "Requirements are testable and unambiguous" được bỏ đánh dấu do có một câu hỏi bị hoãn (deferred) vì giới hạn 5 câu hỏi của phiên (câu hỏi về hành vi bỏ lưu ngay trong màn hình Saved Albums).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Khóa nút khi loading (Option A) | Dùng | Ngăn chặn spam click từ người dùng và giữ tính trung thực của trạng thái (tránh Optimistic UI sai lệch). | 
+| Thông báo lỗi Inline (Option A) | Dùng | Ít làm gián đoạn luồng duyệt web của người dùng nhất, đồng thời giữ context rõ ràng. | 
+| UI icon Tim viền/Tim đặc (Option A) | Dùng | Pattern chuẩn của ngành âm nhạc (Spotify/Apple Music), dễ hiểu, kết hợp cùng text để tăng tính rõ ràng. | 
+| Danh sách 5 mạng xã hội (Option A) | Dùng | Bao phủ đúng các nền tảng phổ biến tại Việt Nam và nền tảng chuẩn mực, có fallback an toàn là "Copy Link". | 
+| Không đặt quota (Option A) | Dùng | Giữ cho hệ thống đơn giản, không tự chế thêm business logic chưa được duyệt từ Product. | 
+
+### Cách kiểm chứng
+
+* \[x\] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+* \[x\] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+* \[x\] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+* \[x\] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Tích hợp thành công 5 lựa chọn vào `spec.md`.
+
+**Ghi chú:** Vấn đề chưa được chốt về *hành vi khi "Bỏ lưu" ở ngay trong màn hình Saved Albums (biến mất ngay lập tức hay cần reload)* đã được ghi chú vào mục Notes của file `requirements.md`. Phần cốt lõi của tính năng 083 đã rõ ràng, sẵn sàng chuyển sang bước `$speckit-plan`. Có thể cần trao đổi thêm với team Design/Product về hành vi của màn hình Saved Albums trước khi tạo task.
+
+---
+
+## Mục 3: Làm rõ spec 083 (bổ sung) – Hành vi Bỏ lưu trong Saved Albums
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-10-30 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | Gemini, lệnh `/speckit-clarify` | 
+| Mục đích | Xử lý nốt câu hỏi bị hoãn từ phiên trước, làm rõ hành vi UX khi người dùng gỡ một album ngay bên trong giao diện danh sách Saved Albums. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify Làm rõ vấn đề về *hành vi khi "Bỏ lưu" ở ngay trong màn hình Saved Albums (biến mất ngay lập tức hay cần reload)
+Question: When a listener removes an album while viewing Saved Albums, when should that album disappear from the visible list?
+Why it matters: This determines whether the list stays consistent with the confirmed account state without showing an unconfirmed removal.
+Recommended: Option A — Keep the album visible while the request is pending, then remove it from the current list as soon as removal is confirmed. This avoids optimistic UI while keeping the open library in sync without requiring a reload.
+OptionDescriptionARemove it from the current list immediately after the removal is confirmed.BKeep it visible until the listener navigates away or reloads the page.CAsk the listener to refresh the list after a successful removal.ShortProvide a different brief behavior.
+
+You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.
+Đã chốt: trong Saved Albums, album vẫn hiển thị khi yêu cầu bỏ lưu đang chờ; sau khi thành công, album biến mất khỏi danh sách đang mở mà không cần tải lại. Nếu thao tác thất bại, album vẫn hiển thị và có thông báo lỗi inline.
+```
+
+### Tóm tắt phản hồi của AI
+
+* Xác nhận lựa chọn **Option A**: Trong lúc chờ API xử lý, album vẫn hiển thị. Ngay sau khi có xác nhận bỏ lưu thành công từ server, album sẽ tự động biến mất khỏi danh sách giao diện đang hiển thị mà không cần người dùng tải lại trang. Trường hợp lỗi, album vẫn giữ nguyên trên danh sách kèm thông báo lỗi inline.
+* Đã cập nhật quyết định này (bằng tiếng Anh) vào các mục: Clarifications, Acceptance Scenarios, FR-002, Success Criteria và Assumptions trong file `spec.md`.
+* Checklist `requirements.md` đã được xóa toàn bộ marker cần làm rõ, đánh dấu đạt mục cuối cùng, nâng tổng điểm lên 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Xóa ngay sau khi xác nhận (Option A) | Dùng | Tránh việc sử dụng Optimistic UI (hiển thị xóa trước khi server xác nhận) gây sai lệch dữ liệu, nhưng vẫn đảm bảo tính phản hồi ngay lập tức cho người dùng sau khi thao tác thành công. | 
+
+### Cách kiểm chứng
+
+* \[x\] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+* \[x\] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+* \[x\] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+* \[x\] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Toàn bộ các khía cạnh hành vi, luồng UX, ranh giới dữ liệu và tiêu chí nghiệm thu đều đã được xử lý xong.
+
+**Ghi chú:** Đạt. Tính năng đã sẵn sàng để chuyển tiếp qua giai đoạn lập kế hoạch nhiệm vụ (`$speckit-plan`).
