@@ -13,6 +13,8 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 7   | 2026-10-30 | Làm rõ spec 103 bằng `/speckit-clarify` – phương thức nhập, nội dung đề xuất và fallback                         | 10                                                |
 | 8   | 2026-10-30 | Viết spec 121 – Conversational Interface bằng `/speckit-specify`                                                 | 12                                                |
 | 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                     | 12                                                |
+| 10  | 2026-10-30 | Viết spec 122 – Music Intent Understanding bằng `/speckit-specify`                                               | 12                                                |
+| 11  | 2026-10-30 | Làm rõ spec 122 bằng `/speckit-clarify` – danh mục ý định, smart defaults và kiến trúc orchestrator              | 12                                                |
 
 ---
 
@@ -467,3 +469,109 @@ Chuỗi phản hồi làm rõ tuần tự:
 **Kết quả kiểm chứng:** Đạt yêu cầu làm rõ, đặc tả hoàn chỉnh và sẵn sàng cho pha lập kế hoạch (`/speckit-plan`).
 
 **Ghi chú:** Spec hoàn thiện nằm tại `specs/120-ai-conversational-agent/121-conversational-interface/spec.md`.
+
+---
+
+## Mục 10: Viết spec 122 – Music Intent Understanding
+
+| Trường                   | Nội dung                                                                                                                                                                                |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding`)                                             |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                                                      |
+| Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho khả năng hiểu ý định âm nhạc từ tin nhắn hội thoại; phân định ranh giới rõ ràng với giao diện chat (121), hành động âm nhạc thời gian thực (123) và tìm kiếm/đề xuất (030/100). |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/120-ai-conversational-agent/122-music-intent-understanding
+
+AI Conversational Agent của AuraTune có khả năng hiểu ý định âm nhạc của người dùng từ nội dung tin nhắn trong cuộc hội thoại. Hệ thống phân tích yêu cầu bằng ngôn ngữ tự nhiên để xác định người dùng đang muốn thực hiện hành động hoặc tìm kiếm thông tin âm nhạc nào. Làm rõ các loại ý định được hỗ trợ, cách trích xuất thông tin liên quan từ tin nhắn, cách xử lý khi một yêu cầu có nhiều ý định, thiếu thông tin hoặc không thể xác định ý định. Kết quả nhận diện phải được chuyển tiếp đến thành phần phù hợp để xử lý theo phạm vi chức năng được tài liệu dự án xác định.
+
+Không bao gồm: giao diện hội thoại và quản lý tin nhắn (spec `121-conversational-interface`), thực hiện hành động âm nhạc theo thời gian thực như phát nhạc hoặc điều khiển Music Player (spec `123-real-time-music-assistance`), xây dựng hoặc huấn luyện mô hình AI, tự quyết định thuật toán NLP hoặc mô hình LLM nếu tài liệu nguồn chưa xác định.
+
+Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/management/team-contract.md`, `docs/design/database/README.md`, API contract và các spec liên quan trong repository. Làm rõ dependency với Conversational Interface, Songs, Albums, Artists, Playlists, Music Player và các chức năng âm nhạc khác nếu được xác định. Nếu tài liệu chưa xác định danh sách ý định, cấu trúc kết quả nhận diện, cách xử lý yêu cầu mơ hồ hoặc cơ chế chuyển tiếp kết quả, ghi nhận là điểm cần clarification thay vì tự giả định.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Rà soát các tài liệu liên quan: `docs/proposal/proposal.md`, `docs/proposal/Auratune_Vision_Document.md` (mục G12 AI DJ / Real-time Host, mục fallback dịch vụ AI), `docs/design/database/README.md`, `specs/120-ai-conversational-agent/121-conversational-interface/spec.md`.
+- Thiết lập thư mục và file đặc tả tại `specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md`, đồng bộ cấu hình nhánh tại `.specify/feature.json`.
+- Xây dựng tài liệu đặc tả chuẩn Spec Kit: 5 User Stories (P1: Hiểu yêu cầu phát nhạc và điều khiển, P1: Hiểu yêu cầu tìm kiếm và khám phá âm nhạc, P2: Hiểu truy vấn thông tin âm nhạc/nghệ sĩ, P2: Xử lý yêu cầu mơ hồ/thiếu thông tin/ngoài phạm vi, P1: Bảo vệ quyền riêng tư dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP), Acceptance Scenarios dạng Given-When-Then, Edge Cases (song ngữ Anh-Việt, lỗi chính tả/slang, đa ý định, dịch vụ AI timeout), Functional Requirements (FR-001 đến FR-012), Key Entities (Intent Analysis Request, Intent Understanding Result, Music Entity Slot), Success Criteria đo lường được (SC-001 đến SC-005) và Assumptions.
+- Phân định rõ phạm vi loại trừ (Exclusions): Không render giao diện hội thoại hay quản lý tin nhắn (thuộc 121), không trực tiếp thực thi phát nhạc hay can thiệp Audio Player / Queue (thuộc 123, Group 040/050), không tự giả định thuật toán NLP hay quy trình huấn luyện mô hình AI cục bộ.
+- Nhận diện 3 điểm chưa được tài liệu nguồn quy định cụ thể và đánh dấu `[NEEDS CLARIFICATION]`:
+  1. Danh mục các nhóm ý định âm nhạc chính thức được hỗ trợ (FR-002).
+  2. Chiến lược xử lý khi yêu cầu mơ hồ, thiếu thông tin (missing slot) hoặc chứa nhiều ý định cùng lúc (FR-005).
+  3. Cấu trúc kết quả nhận diện và kiến trúc chuyển tiếp/điều hướng đến các thành phần hạ tầng (FR-007).
+- Khởi tạo bảng kiểm tra chất lượng tại `checklists/requirements.md` với 15/16 tiêu chí đạt, sẵn sàng chuyển sang bước làm rõ yêu cầu.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Cấu trúc kịch bản người dùng và trích xuất thực thể âm nhạc | Dùng | Phân tách rõ ràng giữa phân loại ý định (intent) và bóc tách thực thể (slots: bài hát, nghệ sĩ, album, thể loại, tâm trạng, hoạt động). |
+| Bảo vệ dữ liệu cá nhân (PII Stripping) | Dùng | Loại bỏ email, số điện thoại, thông tin định danh cá nhân trước khi gửi đến dịch vụ NLP bên ngoài theo Nghị định 13/2023/NĐ-CP. |
+| Ranh giới không thực thi audio và không render chat UI | Dùng | Giữ vững tính đóng gói và độc lập giữa 121 (Giao diện), 122 (Hiểu ý định) và 123 (Thực thi hành động). |
+
+### Cách kiểm chứng
+
+- Đối chiếu tài liệu đề xuất (`docs/proposal/proposal.md`), `Auratune_Vision_Document.md` (mục G12, Section 3.5), và spec `121-conversational-interface`.
+- Kiểm tra tính đầy đủ của file spec và checklist chất lượng: 15/16 tiêu chí đạt, còn 1 tiêu chí chờ hoàn tất clarify.
+- Không chạy automated tests vì đây là công việc phân tích yêu cầu (Specification phase).
+
+**Kết quả kiểm chứng:** Đạt yêu cầu khởi tạo spec sơ bộ, chuyển sang pha clarify.
+
+**Ghi chú:** Spec lưu tại `specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md`; checklist tại `checklists/requirements.md`.
+
+---
+
+## Mục 11: Làm rõ spec 122 bằng `/speckit-clarify`
+
+| Trường                   | Nội dung                                                                                                                                                                                |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding`)                                             |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                      |
+| Mục đích                 | Giải quyết 3 điểm cần làm rõ trong spec 122 thông qua vòng lặp câu hỏi tương tác tuần tự: danh mục ý định hỗ trợ, phương án xử lý yêu cầu mơ hồ/thiếu thông tin/đa ý định, và kiến trúc chuyển tiếp kết quả nhận diện. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify
+```
+
+Chuỗi phản hồi làm rõ tuần tự:
+- Câu 1 (Supported Music Intent Categories): `B`
+- Câu 2 (Resolution Strategy for Ambiguous, Incomplete, or Multi-Intent Messages): `C`
+- Câu 3 (Intent Result Delivery and Routing Architecture): `A`
+
+### Tóm tắt phản hồi của AI
+
+- Chạy `check-prerequisites.sh` xác định nhánh `122-music-intent-understanding` và đường dẫn file spec của feature 122.
+- Thực hiện tuần tự từng câu hỏi theo chuẩn format Spec Kit, đưa ra lý do và bảng đối chiếu các phương án:
+  - **Câu 1 (FR-002)**: Chốt lựa chọn Option B – mở rộng phạm vi hỗ trợ 5 nhóm ý định chính thức: phát nhạc (`play_music`), tìm kiếm khám phá (`search_music`), tra cứu thông tin âm nhạc/nghệ sĩ (`query_music_info`), quản lý thư viện cá nhân (`manage_library`: tạo playlist, thêm vào playlist, thích bài hát, theo dõi nghệ sĩ qua chat), và trò chuyện chung (`general_chitchat`).
+  - **Câu 2 (FR-005)**: Chốt lựa chọn Option C – áp dụng cơ chế giá trị mặc định thông minh (Smart heuristic defaults): khi câu lệnh thiếu thực thể bắt buộc (như "bật nhạc đi"), hệ thống tự động suy luận phát danh sách thịnh hành hoặc bài hát đề xuất mà không cần dừng lại hỏi người dùng; với câu lệnh chứa nhiều ý định, ưu tiên thực hiện ngay ý định hành động phát nhạc cốt lõi và lưu lại ý định phụ trong metadata ngữ cảnh.
+  - **Câu 3 (FR-007)**: Chốt lựa chọn Option A – áp dụng kiến trúc Centralized AI Agent Orchestrator: module nhận diện ý định trả về payload JSON có cấu trúc chuẩn (`intent_type`, `confidence_score`, `completeness_status`, `extracted_entities`, `suggested_action`) cho backend Orchestrator Controller để điều phối tập trung đến Real-time Music Assistance (`123`), Search/Recommendation (`030`/`100`), hoặc Conversational Interface (`121`).
+- Cập nhật tức thời vào file `spec.md`: bổ sung mục `## Clarifications` với session ngày 2026-10-30, cập nhật chi tiết các yêu cầu chức năng FR-002, FR-003, FR-005, FR-007, User Story 4, Edge Cases, Key Entities và chuyển trạng thái spec sang `Draft — Ready for Planning`.
+- Tái đánh giá checklist chất lượng tại `checklists/requirements.md`: 16/16 tiêu chí đạt (100%), hoàn tất việc loại bỏ toàn bộ các marker `[NEEDS CLARIFICATION]`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| 5 nhóm ý định gồm cả quản lý thư viện cá nhân | Dùng (Option B) | Cho phép người dùng ra lệnh tạo playlist, like bài hát hoặc theo dõi nghệ sĩ ngay trong luồng chat tự nhiên. |
+| Giá trị mặc định thông minh (Smart defaults) | Dùng (Option C) | Mang lại trải nghiệm phản hồi tức thì, mượt mà khi người dùng nói ngắn gọn (ví dụ "bật nhạc đi"), không bắt người dùng giải thích dài dòng. |
+| Điều phối tập trung qua Centralized AI Orchestrator | Dùng (Option A) | Giữ kiến trúc lỏng (loose coupling), phân tách rõ ràng giữa module phân tích ngữ nghĩa (122) và module thực thi âm nhạc (123) hoặc sinh câu thoại (121). |
+
+### Cách kiểm chứng
+
+- Kiểm tra tính nhất quán giữa câu trả lời trong mục Clarifications và nội dung các yêu cầu chức năng FR-002, FR-003, FR-005, FR-007.
+- Xác nhận không còn marker `[NEEDS CLARIFICATION]` nào sót lại trong `spec.md`.
+- Kiểm tra lại checklist chất lượng: 16/16 mục đạt (`checklists/requirements.md`).
+- Không chạy automated tests vì spec chưa bước vào pha implementation.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu làm rõ, đặc tả hoàn chỉnh và sẵn sàng cho pha lập kế hoạch (`/speckit-plan`).
+
+**Ghi chú:** Spec hoàn thiện nằm tại `specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md`.
