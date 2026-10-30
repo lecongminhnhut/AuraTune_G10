@@ -8,6 +8,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ               | 10   |
 | 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại | 10   |
 | 4   | 2026-10-24 | Hoàn thiện metadata Performed by / Reviewed by / Edited by cho Project Plan theo phân công DL4 và bằng chứng Git | Project Plan / DL4 (không thuộc functional group) |
+| 5   | 2026-10-30 | Viết spec 102 – Personalized Recommendations bằng /speckit-specify và tích hợp làm rõ                          | 10                                                |
 
 ---
 
@@ -187,6 +188,67 @@ _Skill `speckit-clarify` được cung cấp kèm invocation; feature context l�
 **Kết quả kiểm chứng:** Đạt cho mapping Performer/Reviewer và định dạng metadata của 70 heading DL4.
 
 **Ghi chú:** Git history khả dụng chỉ có baseline commit b2a4e88. Metadata Editor của heading tổng quan 3 và 4 cần xác minh thủ công vì baseline không có metadata cho hai heading này; trạng thái hiện tại được giữ nguyên.
+
+---
+
+## Mục 5: Viết spec 102 – Personalized Recommendations
+
+| Trường                   | Nội dung                                                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ngày                     | 2026-10-30                                                                                                                                 |
+| Người thực hiện          | Nhựt                                                                                                                                       |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations`)     |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-specify`                                                                            |
+| Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ, làm rõ hành vi cold-start, xử lý lỗi service AI và phân định phạm vi với các spec khác. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/100-ai-recommendations/102-personalized-recommendations
+
+Người dùng AuraTune nhận danh sách gợi ý âm nhạc được cá nhân hóa theo lịch sử nghe và sở thích của mình. Hệ thống cung cấp các đề xuất phù hợp với từng người dùng dựa trên dữ liệu và quy tắc đã được xác định trong tài liệu dự án. Người dùng có thể xem danh sách đề xuất và chọn nội dung để mở bài hát, album, nghệ sĩ hoặc playlist tương ứng nếu loại nội dung đó được hỗ trợ. Làm rõ hành vi khi người dùng mới chưa có đủ dữ liệu nghe, danh sách đề xuất trống, dữ liệu cá nhân hóa chưa cập nhật hoặc dịch vụ AI không khả dụng. Đề xuất của mỗi người dùng phải được phân tách đúng theo tài khoản và không để lộ dữ liệu cá nhân của người khác.
+
+Không bao gồm: phân tích và hiển thị thống kê lịch sử nghe (spec `101-listening-history-analysis`), gợi ý theo tâm trạng hoặc ngữ cảnh (spec `103-mood-and-context-recommendations`), tìm kiếm âm nhạc, phát nhạc, quản lý lịch sử nghe hoặc chức năng trò chuyện với AI (AI Conversational Agent). Không tự quyết định thuật toán gợi ý, mô hình AI, tiêu chí xếp hạng hoặc cơ chế cập nhật nếu tài liệu nguồn chưa xác định.
+
+Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/management/team-contract.md`, `docs/design/database/README.md`, API contract và các spec liên quan trong repository. Làm rõ dependency với Listening History, Songs, Albums, Artists, Playlists và Music Player. Nếu tài liệu chưa xác định loại nội dung được đề xuất, dữ liệu đầu vào, tiêu chí cá nhân hóa hoặc hành vi khi lỗi, ghi nhận là điểm cần clarification thay vì tự giả định.
+```
+
+Lượt phản hồi làm rõ tiếp theo:
+
+```text
+1B, 2A, 3A
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đối chiếu Proposal, Vision Document, Team Contract, Thiết kế Database, API Contract (`/recommendations/songs`, `/ai/recommend`) và Feature Modules.
+- Khởi tạo cấu trúc spec chuẩn Spec Kit gồm User Scenarios (P1, P2), Functional Requirements (FR-001 đến FR-015), Key Entities, Success Criteria (SC-001 đến SC-005), Assumptions và Checklist kiểm tra chất lượng.
+- Nhận diện 3 điểm cần làm rõ và đặt câu hỏi tương tác theo chuẩn Spec Kit:
+  1. Loại thực thể đề xuất: Chọn Option 1B (Đa thực thể: Bài hát, Album, Nghệ sĩ, Playlist).
+  2. Xử lý cold-start / người dùng mới: Chọn Option 2A (Fallback về danh sách bài hát phổ biến/trending).
+  3. Xử lý sự cố dịch vụ AI / timeout: Chọn Option 3A (Graceful degradation về nội dung phổ biến kèm thông báo tinh tế).
+- Cập nhật toàn bộ các câu trả lời clarification vào spec, loại bỏ hoàn toàn marker `[NEEDS CLARIFICATION]` và cập nhật `checklists/requirements.md` đạt 100%.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Đa thực thể đề xuất (Song, Album, Artist, Playlist) | Dùng (Option 1B) | Bám sát luồng khám phá trong Vision Document Workflow 1 và hỗ trợ đa dạng nội dung cho người dùng. |
+| Fallback nội dung phổ biến cho Cold-Start | Dùng (Option 2A) | Đảm bảo người dùng mới luôn có nhạc nghe ngay lập tức, tránh màn hình trống hoặc lỗi hệ thống. |
+| Graceful degradation khi AI service lỗi/timeout | Dùng (Option 3A) | Giữ trải nghiệm Dashboard thông suốt, không làm crash trang khi dịch vụ AI backend gặp sự cố. |
+| Bảo mật và cách ly tài khoản | Dùng | Tuân thủ Nghị định 13/2023/ND-CP theo Proposal; mỗi tài khoản chỉ thấy gợi ý cá nhân của chính mình. |
+| Giới hạn phạm vi (Exclusions) | Dùng | Tách biệt ranh giới rõ ràng với Feature 101 (History Analysis), 103 (Mood/Context), 040 (Player), 070 (History), 120 (AI Agent). |
+
+### Cách kiểm chứng
+
+- Đối chiếu các yêu cầu với `docs/proposal/proposal.md`, `docs/proposal/Auratune_Vision_Document.md`, `docs/design/database/README.md`, `docs/analysis-and-design/api-contract.md` và `docs/design/architecture/feature-modules.md`.
+- Kiểm tra tính đầy đủ của spec: 4 User Stories độc lập với kịch bản Given-When-Then, 15 Functional Requirements, 5 Success Criteria đo lường được, không rò rỉ chi tiết code/công nghệ.
+- Kiểm tra checklist `specs/100-ai-recommendations/102-personalized-recommendations/checklists/requirements.md`: 12/12 mục đã đạt, không còn marker `[NEEDS CLARIFICATION]`.
+- Không chạy automated tests vì đây là công việc xây dựng đặc tả nghiệp vụ (Specification phase).
+
+**Kết quả kiểm chứng:** Đạt yêu cầu chất lượng spec, sẵn sàng cho pha lập kế hoạch (`$speckit-plan`).
+
+**Ghi chú:** Spec được lưu tại `specs/100-ai-recommendations/102-personalized-recommendations/spec.md`; checklist nằm tại `checklists/requirements.md`.
 
 ---
 
