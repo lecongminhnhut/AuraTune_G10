@@ -469,3 +469,116 @@ CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việ
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt. Checklist đạt 16/16 và không còn marker `[NEEDS CLARIFICATION]`. Spec sẵn sàng cho bước `$speckit-plan`.
+
+# Nhật ký sử dụng AI – Album Tracklist (082)
+
+| # | Ngày | Nội dung | Nhóm |
+|---|---|---|---|
+| 1 | 2026-10-30 | Viết spec 082 – Album Tracklist Playback bằng `/speckit-specify` | 080 |
+| 2 | 2026-10-30 | Làm rõ spec 082 bằng `$speckit-clarify` – hành vi queue, chế độ shuffle, track không khả dụng, chống trùng lặp và phân trang | 080 |
+
+---
+
+## Mục 1: Viết spec 082 – Album Tracklist 
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist (`specs/080-album-interaction/082-album-tracklist`) |
+| Công cụ AI | Gemini, lệnh `/speckit-specify` |
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng tương tác với danh sách bài hát trong Album, thiết lập hành vi hiển thị và tích hợp mượt mà với Music Player / Queue Management. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+Đặc tả tính năng tương tác với danh sách bài hát trong Album (082-album-tracklist) cho AuraTune.
+Yêu cầu cụ thể:
+1. Hiển thị toàn bộ danh sách bài hát (tracklist) thuộc album.
+2. Người dùng có thể chọn phát toàn bộ album (play all) hoặc phát một bài hát cụ thể trong danh sách.
+3. Hành động phát nhạc cần tích hợp mượt mà với Music Player và Queue Management (đẩy tracklist vào Queue).
+4. Tiêu chí chấp nhận:
+- Thứ tự bài hát hiển thị đúng với dụng ý của nghệ sĩ.
+- Bấm play album sẽ nạp đúng danh sách vào hàng đợi phát nhạc.
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh, tuan thủ chặc chẽ các quy tắc đã được nhóm định ra trong proposal.md
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khởi tạo thành công tài liệu đặc tả `spec.md` và `requirements.md` (đạt 16/16).
+- Tài liệu được viết 100% bằng tiếng Anh, tuân thủ chặt chẽ `CRITICAL REQUIREMENT`.
+- Xác định rõ User Stories, Acceptance Scenarios, Functional Requirements cho các thao tác Play Album, Play Selected Track, và giữ nguyên player khi điều hướng (navigation).
+- Chỉ ra các điểm còn mơ hồ (Hành vi ghi đè hàng đợi, Xung đột Shuffle, Partial Availability, Duplicate Prevention, và Performance cho album dài) để chuẩn bị cho bước làm rõ.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp và tuân thủ yêu cầu bắt buộc của dự án. |
+| Tích hợp Music Player / Queue | Dùng | Phù hợp với kiến trúc dùng chung, không tạo thêm player riêng biệt gây xung đột. |
+| Các điểm cần làm rõ (Clarification markers) | Dùng | Làm tiền đề tốt để đưa ra các quyết định kỹ thuật và UI/UX chính xác ở bước sau. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Sẵn sàng cho bước `$speckit-clarify`.
+
+---
+
+## Mục 2: Làm rõ spec 082 – Album Tracklist
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist |
+| Công cụ AI | Gemini, lệnh `$speckit-clarify` |
+| Mục đích | Giải quyết các điểm mơ hồ về cơ chế chèn hàng đợi, xung đột chế độ trộn bài, xử lý track không khả dụng, chống nhân bản queue và xử lý hiển thị album dài. |
+
+### Prompt đã dùng
+
+```text
+speckit-clarify Làm rõ những điểm sau:
+- Hành vi ghi đè hay chèn vào Hàng đợi (Queue Handling)...
+- Xung đột với Chế độ Trộn bài (Shuffle Mode)...
+- Xử lý các bài hát khả dụng một phần (Partial Availability)...
+- Định nghĩa rõ việc "Chống trùng lặp" (Duplicate Prevention)...
+- Giao diện và Trạng thái lỗi (UI/UX Feedback)...
+- Giới hạn tải cho Album lớn (Performance/Pagination)...
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Mở một "Clarification Session" với 5 câu hỏi trọng tâm đi kèm các đề xuất lựa chọn (Option A, B, C).
+- Nhận phản hồi "yes" / chọn option và tự động cập nhật 5 quyết định nghiệp vụ vào `spec.md` (giữ nguyên tiếng Anh):
+  1. **Queue Handling:** Chèn các track của album ngay sau track hiện tại, giữ lại queue cũ phía sau (Insert Next).
+  2. **Shuffle Mode:** Tự động tắt Shuffle khi Play Album để đảm bảo thứ tự nghệ sĩ.
+  3. **Partial Availability:** Hiển thị track không khả dụng dưới dạng disabled kèm lý do, tự động bỏ qua khi phát.
+  4. **Duplicate Prevention:** Khởi động lại (restart) phần album từ track đầu và làm mới các track thuộc album trong queue, không ảnh hưởng đến các track khác.
+  5. **Large Albums:** Tải toàn bộ danh sách để Play Album chạy đúng, nhưng hiển thị dần các hàng trên UI (Lazy render).
+- Hoàn thiện toàn bộ đặc tả, checklist đạt 16/16, không còn placeholder cần làm rõ.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chèn album vào queue (Insert next) | Dùng | Không làm mất phiên nghe đang xếp sẵn của người dùng mà vẫn phát album ngay lập tức. |
+| Tắt chế độ Shuffle | Dùng | Tôn trọng trải nghiệm nghe album nguyên bản theo chủ ý nghệ sĩ. |
+| Hiển thị track disabled kèm lý do | Dùng | Cung cấp UI/UX minh bạch, người dùng hiểu tại sao track bị bỏ qua mà luồng phát không gián đoạn. |
+| Khởi động lại album & làm mới queue | Dùng | Giải quyết triệt để lỗi trùng lặp track (duplicate) mà vẫn cho phép người dùng chủ động nghe lại từ đầu. |
+| Tải toàn bộ & hiển thị dần | Dùng | Đáp ứng yêu cầu Play toàn bộ album không bị thiếu track do phân trang, đồng thời tối ưu hiệu năng render. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Checklist hoàn thiện 16/16, sẵn sàng chuyển sang bước tiếp theo (`$speckit-plan`). Lỗi hiển thị thông báo chung của hệ thống sẽ được chốt chi tiết ở bước thiết kế.
