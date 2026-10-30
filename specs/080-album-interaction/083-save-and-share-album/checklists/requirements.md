@@ -14,7 +14,7 @@
 ## Requirement Completeness
 
 - [x] No [NEEDS CLARIFICATION] markers remain
-- [ ] Requirements are testable and unambiguous
+- [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic
 - [x] All acceptance scenarios are defined
@@ -34,4 +34,4 @@
 - The save and share scenarios align with the approved proposal's Album Details capability.
 - The specified save and remove API contract is included without selecting additional technical mechanisms.
 - Social destinations and sharing mechanisms remain product/architecture choices and are not prescribed here.
-- Whether an album disappears from an already-open Saved Albums view immediately after a confirmed removal or only after navigation/reload remains unresolved.
+- A confirmed removal updates the currently open Saved Albums view without requiring a reload; a pending or failed removal leaves the album visible.

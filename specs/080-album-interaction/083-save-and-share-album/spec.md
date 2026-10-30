@@ -17,6 +17,7 @@
 - Q: How should the album control visually distinguish an unsaved album from a saved one? → A: Use an outlined heart with “Save” when unsaved and a filled heart with “Saved” when saved.
 - Q: Which sharing destinations should AuraTune include alongside the album URL? → A: Provide Copy Link, Facebook, Instagram, X, and Zalo.
 - Q: Should AuraTune set a feature-specific maximum number of albums a listener can save? → A: Do not add a feature-specific quota; existing platform limits still apply.
+- Q: When a listener removes an album while viewing Saved Albums, when should that album disappear from the visible list? → A: Keep it visible while the request is pending, then remove it from the current list as soon as removal is confirmed; if removal fails, keep it visible.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -38,6 +39,8 @@ As a signed-in listener, I want to save or like an album so that I can find it a
 6. **Given** a save or remove action cannot be completed, **When** the action fails, **Then** the interface does not present an unconfirmed state as saved and shows a short, action-specific inline message near the control, with a retry hint where appropriate.
 7. **Given** a save or remove request is pending, **When** the listener views the album action, **Then** the action is temporarily disabled, a progress indicator is shown, and the last confirmed saved state remains visible until the request completes.
 8. **Given** a listener saves albums under ordinary account conditions, **When** they save another album, **Then** no feature-specific album count limit prevents the save.
+9. **Given** a listener removes an album from the Saved Albums view, **When** the removal is pending, **Then** the album remains visible; when removal is confirmed, **Then** the album disappears from the current list without requiring a reload.
+10. **Given** a listener removes an album from the Saved Albums view, **When** the removal fails, **Then** the album remains visible and the interface shows the specified inline error feedback.
 
 ---
 
@@ -72,7 +75,7 @@ As a visitor, I want to share an album through its link or a social sharing cont
 ### Functional Requirements
 
 - **FR-001**: The system MUST allow a signed-in listener to save an album to that listener's personal saved album library.
-- **FR-002**: The system MUST allow a signed-in listener to remove an album from that listener's personal saved album library.
+- **FR-002**: The system MUST allow a signed-in listener to remove an album from that listener's personal saved album library; in an open Saved Albums view, the album MUST remain visible while removal is pending, disappear from the current list after removal is confirmed, and remain visible if removal fails.
 - **FR-003**: The system MUST associate each saved album state with the account that performed the save; one listener's save or removal MUST NOT change another listener's library.
 - **FR-004**: The system MUST show the saved or unsaved state that corresponds to the currently signed-in listener's account when album details are viewed; an unsaved album MUST use an outlined heart and the “Save” label, and a saved album MUST use a filled heart and the “Saved” label.
 - **FR-005**: The system MUST keep the saved state consistent with the result of the save or remove action and MUST NOT show an unconfirmed change as successful; while an action is pending, it MUST temporarily disable that action and show a progress indicator while retaining the last confirmed saved state.
@@ -104,11 +107,13 @@ As a visitor, I want to share an album through its link or a social sharing cont
 - **SC-005**: At least 90% of representative listener-test participants can save an album or share its details without assistance.
 - **SC-006**: In failure-state acceptance testing, 100% of unsuccessful save, remove, or share attempts avoid displaying a false success state and show an action-specific inline message near the relevant control.
 - **SC-007**: Acceptance testing confirms that no feature-specific saved-album count quota prevents a listener from saving additional albums.
+- **SC-008**: In acceptance testing, 100% of confirmed removals from Saved Albums remove the album from the current list without a reload, while failed removals leave the album visible.
 
 ## Assumptions
 
 - The existing account and album catalog capabilities provide the signed-in identity and album identity required by this feature; no new identity or catalog model is introduced.
 - Saved Albums is a personal collection associated with the listener's account and is distinct from the general album catalog.
+- The currently open Saved Albums view reflects a confirmed removal immediately; pending or failed removals do not remove the album from the visible list.
 - No feature-specific saved-album quota is introduced; any general account or service limits remain governed by existing platform behavior.
 - The requested API contract is authoritative for saving and removing an album: `PUT /albums/:id/save` and `DELETE /albums/:id/save`.
 - The shared URL identifies the album details page; any existing access requirements for viewing album details remain in force. This feature does not introduce new public-access or authentication rules.
