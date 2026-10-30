@@ -15,6 +15,8 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                     | 12                                                |
 | 10  | 2026-10-30 | Viết spec 122 – Music Intent Understanding bằng `/speckit-specify`                                               | 12                                                |
 | 11  | 2026-10-30 | Làm rõ spec 122 bằng `/speckit-clarify` – danh mục ý định, smart defaults và kiến trúc orchestrator              | 12                                                |
+| 12  | 2026-10-30 | Viết spec 123 – Real-Time Music Assistance bằng `/speckit-specify`                                               | 12                                                |
+| 13  | 2026-10-30 | Làm rõ spec 123 bằng `/speckit-clarify` – danh mục hành động, điều phối client và widget phản hồi                | 12                                                |
 
 ---
 
@@ -575,3 +577,112 @@ Chuỗi phản hồi làm rõ tuần tự:
 **Kết quả kiểm chứng:** Đạt yêu cầu làm rõ, đặc tả hoàn chỉnh và sẵn sàng cho pha lập kế hoạch (`/speckit-plan`).
 
 **Ghi chú:** Spec hoàn thiện nằm tại `specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md`.
+
+---
+
+## Mục 12: Viết spec 123 – Real-Time Music Assistance
+
+| Trường                   | Nội dung                                                                                                                                                                                |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)                                             |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                                                      |
+| Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho khả năng hỗ trợ âm nhạc theo thời gian thực trong hội thoại; phân định rõ ranh giới với giao diện hội thoại (121) và phân tích ý định (122), đồng thời kết nối điều phối với Music Player, Queue, Songs, Playlists, Albums và Artists. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/120-ai-conversational-agent/123-real-time-music-assistance
+
+AI Conversational Agent của AuraTune hỗ trợ người dùng thực hiện các yêu cầu liên quan đến âm nhạc ngay trong quá trình hội thoại. Sau khi tiếp nhận tin nhắn và kết quả nhận diện ý định từ spec `122-music-intent-understanding`, hệ thống xử lý yêu cầu và phối hợp với các chức năng âm nhạc tương ứng để cung cấp hỗ trợ cho người dùng. Làm rõ các hành động âm nhạc được hỗ trợ, cách chuyển tiếp yêu cầu đến thành phần xử lý phù hợp, cách phản hồi kết quả cho người dùng và cách xử lý khi yêu cầu không hợp lệ, thiếu thông tin hoặc dịch vụ liên quan không khả dụng.
+
+Không bao gồm: giao diện hội thoại và quản lý tin nhắn (spec `121-conversational-interface`), nhận diện ý định âm nhạc từ ngôn ngữ tự nhiên (spec `122-music-intent-understanding`), xây dựng hoặc huấn luyện mô hình AI, tự quyết định các hành động âm nhạc, thuật toán hoặc kiến trúc xử lý nếu tài liệu nguồn chưa xác định.
+
+Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/management/team-contract.md`, `docs/design/database/README.md`, API contract và các spec liên quan trong repository. Làm rõ dependency với Conversational Interface, Music Intent Understanding, Music Player, Songs, Albums, Artists và Playlists nếu được hỗ trợ. Đảm bảo các hành động được thực hiện trong phạm vi quyền của người dùng hiện tại. Nếu tài liệu chưa xác định danh sách hành động, cách thực thi, cơ chế phản hồi hoặc hành vi khi lỗi, ghi nhận là điểm cần clarification thay vì tự giả định.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Rà soát các tài liệu liên quan: `docs/proposal/proposal.md`, `docs/management/team-contract.md`, `docs/analysis-and-design/api-contract.md`, `docs/design/database/README.md`, `docs/design/architecture/feature-modules.md`, `docs/design/architecture/system-architecture.md`, và các spec tiền đề `121-conversational-interface`, `122-music-intent-understanding`.
+- Cấu hình thư mục và cập nhật file `.specify/feature.json` trỏ tới `specs/120-ai-conversational-agent/123-real-time-music-assistance`.
+- Xây dựng tài liệu đặc tả chuẩn Spec Kit tại `specs/120-ai-conversational-agent/123-real-time-music-assistance/spec.md`:
+  - 5 User Stories ưu tiên (P1: Real-time Playback and Audio Control Assistance, P1: Queue Management and Discovery Stream Assistance, P2: Real-time Library Interaction via Conversation, P2: Graceful Error Handling, Missing Information, and Service Outage Recovery, P1: User Session Authorization and Playback Isolation).
+  - Kịch bản chấp nhận định dạng Given-When-Then, Edge Cases xử lý bài hát không có trong catalog, lỗi stream giữa chừng, xung đột thao tác thủ công, gọi lệnh dồn dập và timeout mạng.
+  - 12 Functional Requirements (FR-001 đến FR-012), Key Entities (Assistance Request, Music Action Command, Assistance Execution Result, Playback Context Snapshot), 5 Success Criteria đo lường được (SC-001 đến SC-005) và Assumptions chi tiết.
+- Thiết lập ranh giới rõ ràng: không render UI chat (121), không phân tích NLP (122), không tự ý quyết định vượt quyền người dùng hiện tại.
+- Nhận diện đúng 3 điểm mấu chốt cần clarification theo quy định Spec Kit và đánh dấu `[NEEDS CLARIFICATION]`:
+  1. Phạm vi các hành động âm nhạc cụ thể được hỗ trợ thời gian thực trong v1 (FR-002).
+  2. Cơ chế chuyển tiếp và phối hợp hành động âm nhạc giữa orchestrator và client music player (FR-003).
+  3. Cơ chế phản hồi kết quả trực quan và phục hồi lỗi trong luồng hội thoại (FR-004).
+- Khởi tạo checklist chất lượng tại `specs/120-ai-conversational-agent/123-real-time-music-assistance/checklists/requirements.md` với 15/16 tiêu chí đạt, sẵn sàng chuyển sang bước clarify.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Tiếp nhận payload chuẩn từ spec 122 | Dùng | Giữ tính liên kết chặt chẽ với Centralized AI Agent Orchestrator đã thống nhất trong spec 122. |
+| Bảo vệ quyền riêng tư và kiểm soát quyền người dùng | Dùng | Đảm bảo tính cô lập phiên nghe nhạc, tuân thủ Nghị định 13/2023/NĐ-CP và API Contract. |
+| Không làm gián đoạn phát nhạc hiện tại khi xảy ra lỗi | Dùng | Đảm bảo trải nghiệm nghe nhạc liên tục (uninterrupted streaming) theo cam kết Proposal. |
+
+### Cách kiểm chứng
+
+- Đối chiếu tài liệu đề xuất (`docs/proposal/proposal.md`), `api-contract.md` (các nhóm `/songs`, `/playlists`, `/artists`, `/users/me/history`), và specs `121`, `122`.
+- Kiểm tra tính đầy đủ của file spec và checklist chất lượng: 15/16 tiêu chí đạt, sẵn sàng cho bước clarify.
+- Không chạy automated tests vì spec đang ở pha đặc tả yêu cầu.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu khởi tạo spec sơ bộ cho Feature 123, chuyển sang pha clarify.
+
+**Ghi chú:** Spec lưu tại `specs/120-ai-conversational-agent/123-real-time-music-assistance/spec.md`; checklist tại `checklists/requirements.md`.
+
+---
+
+## Mục 13: Làm rõ spec 123 bằng `/speckit-clarify`
+
+| Trường                   | Nội dung                                                                                                                                                                                |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)                                             |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                      |
+| Mục đích                 | Giải quyết triệt để 3 điểm cần làm rõ trong spec 123 thông qua quy trình câu hỏi tương tác: danh mục hành động âm nhạc hỗ trợ (FR-002), cơ chế chuyển tiếp điều phối phía Client (FR-003), và cơ chế phản hồi bằng thẻ tương tác kèm xử lý lỗi (FR-004). |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify hỏi bằng tiếng việt
+```
+
+Chuỗi phản hồi làm rõ tuần tự:
+- Câu 1: `c` (Option C – Hỗ trợ âm nhạc toàn diện)
+- Câu 2: `A` (Option A – Điều phối hành động phía Client qua Payload phản hồi)
+- Câu 3: `A` (Option A – Câu thoại của AI host kèm Thẻ bài hát/hành động tương tác và nút Retry)
+
+### Tóm tắt phản hồi của AI
+
+- Kiểm tra điều kiện tiên quyết bằng `check-prerequisites.sh` xác định nhánh `feat/123-real-time-music-assistance` và file `spec.md` mục tiêu.
+- Thực hiện tuần tự 3 câu hỏi làm rõ bằng tiếng Việt theo định dạng chuẩn của Spec Kit:
+  - **Câu 1 (FR-002)**: Chốt lựa chọn Option C – Hỗ trợ âm nhạc toàn diện: (1) Điều khiển phát nhạc cốt lõi (`PLAY_TRACK`, `PAUSE`, `RESUME`, `SKIP_NEXT`, `SKIP_PREVIOUS`), (2) Quản lý hàng đợi và luồng khám phá (`ADD_TO_QUEUE`, `PLAY_NEXT`, nạp playlist gợi ý/tìm kiếm vào queue), và (3) Tương tác thư viện cá nhân (`LIKE_SONG`, `SAVE_TO_PLAYLIST`, `FOLLOW_ARTIST`) trong phạm vi quyền hạn tài khoản đã đăng nhập.
+  - **Câu 2 (FR-003)**: Chốt lựa chọn Option A – Cơ chế điều phối hành động phía Client qua Payload phản hồi (Client-side Action Dispatch via Response Payload): Backend Orchestrator trả về gói tin JSON chứa mảng chỉ thị `client_actions` chuẩn hóa; Web Client tiếp nhận và trực tiếp kích hoạt phát audio/cập nhật queue trên Persistent Bottom Player (`040`/`050`), đồng thời gọi API backend đối với các thao tác thư viện cá nhân.
+  - **Câu 3 (FR-004)**: Chốt lựa chọn Option A – Phản hồi tự nhiên bằng câu thoại của AI host kết hợp thẻ bài hát tương tác (Interactive Song/Action Card widget) và nút Retry khi lỗi; cam kết không bao giờ ngắt ngang bài hát đang phát nếu gặp lỗi tra cứu hoặc dịch vụ phụ trợ.
+- Cập nhật tức thời vào file `spec.md`: bổ sung mục `## Clarifications` với session ngày 2026-10-30, cập nhật chi tiết các yêu cầu chức năng FR-002, FR-003, FR-004, và chuyển trạng thái spec sang `Draft — Ready for Planning`.
+- Tái đánh giá checklist chất lượng tại `checklists/requirements.md`: 16/16 tiêu chí đạt (100%), hoàn tất việc loại bỏ toàn bộ các marker `[NEEDS CLARIFICATION]`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| --- | --- | --- |
+| Danh mục hành động toàn diện | Dùng (Option C) | Giúp AI Agent thực hiện trọn vẹn vai trò AI DJ/Host, khai thác tối đa 5 nhóm ý định đã thống nhất ở spec 122. |
+| Điều phối hành động phía Client | Dùng (Option A) | Tận dụng trực tiếp Persistent Bottom Player hiện có trên Web Client, giữ backend stateless, tránh phụ thuộc phức tạp vào WebSocket/SSE cho v1. |
+| Thẻ bài hát tương tác & không ngắt audio khi lỗi | Dùng (Option A) | Mang lại trải nghiệm trực quan sống động trong hội thoại và bảo đảm luồng nghe nhạc liên tục không bị gián đoạn. |
+
+### Cách kiểm chứng
+
+- Kiểm tra tính nhất quán giữa nội dung mục `## Clarifications` và các yêu cầu chức năng FR-002, FR-003, FR-004 trong `spec.md`.
+- Xác nhận không còn marker `[NEEDS CLARIFICATION]` nào trong `spec.md`.
+- Kiểm tra lại checklist chất lượng: 16/16 mục đạt chuẩn (`checklists/requirements.md`).
+- Không chạy automated tests vì spec đang ở pha hoàn thiện yêu cầu.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu làm rõ, đặc tả hoàn chỉnh và sẵn sàng cho pha lập kế hoạch (`/speckit-plan`).
+
+**Ghi chú:** Spec hoàn thiện nằm tại `specs/120-ai-conversational-agent/123-real-time-music-assistance/spec.md`.
