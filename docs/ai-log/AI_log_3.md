@@ -346,3 +346,126 @@ CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việ
 **Kết quả kiểm chứng:** Đạt. Checklist đạt 16/16 mục.
 
 **Ghi chú:** Do giới hạn 5 câu hỏi của phiên clarify, một số điểm nhỏ (như định nghĩa chi tiết duplicate, tiêu chí unsafe AI response, bộ trường hiển thị) đã được deferred và sẽ được xử lý ở giai đoạn Architecture/Design.
+
+# Nhật ký sử dụng AI – Album Details (081)
+
+| # | Ngày | Nội dung | Nhóm |
+|---|---|---|---|
+| 1 | 2026-10-30 | Viết spec 081 – Album Details bằng `/speckit-specify` | 080 |
+| 2 | 2026-10-30 | Làm rõ spec 081 bằng `/speckit-clarify` – xử lý danh sách bài hát lớn, album nhiều đĩa, ký hiệu thiếu dữ liệu, ảnh bìa mặc định và cơ chế cache | 080 |
+
+---
+
+## Mục 1: Viết spec 081 – Album Details
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details (`specs/080-album-interaction/081-album-details`) |
+| Công cụ AI | Gemini, lệnh `/speckit-specify` |
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng xem chi tiết Album, bao gồm thông tin chung (ảnh bìa, nghệ sĩ, năm, thời lượng), danh sách bài hát với lượt nghe, và các trạng thái loading/lỗi. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+Đặc tả tính năng xem chi tiết Album (081-album-details) cho AuraTune.
+Yêu cầu cụ thể:
+1. Người dùng có thể xem các thông tin chi tiết của một album bao gồm: ảnh bìa (cover art), tên nghệ sĩ, năm phát hành, và tổng thời lượng.
+2. Giao diện cần hiển thị số lượt nghe (play count) tương ứng cho từng bài hát trong album.
+3. Tuân thủ API Contract: GET /albums/:id.
+4. Tiêu chí chấp nhận:
+- Load đầy đủ thông tin metadata của album từ database.
+- Hiển thị đúng định dạng thời gian và lượt nghe.
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tập trung vào kịch bản sử dụng và yêu cầu nghiệp vụ, không ghi chi tiết code.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khởi tạo thành công cấu trúc thư mục và sinh ra 3 file: `spec.md`, `requirements.md` (checklist), và `feature.json`.
+- Tài liệu được viết 100% bằng tiếng Anh, tuân thủ chặt chẽ `CRITICAL REQUIREMENT`.
+- Tích hợp đúng Hợp đồng API (`GET /albums/:id`) để lấy metadata và danh sách bài hát (track list).
+- Đã quy định rõ cách định dạng thời lượng (`m:ss` hoặc `h:mm:ss`) và số lượt nghe.
+- Checklist ban đầu đạt 16/16. Tuy nhiên, AI để mở một số quyết định kỹ thuật chuyên sâu (phân trang, multi-disc, cache) để làm rõ ở bước sau.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp và tuân thủ yêu cầu bắt buộc của dự án. |
+| API Contract (`GET /albums/:id`) | Dùng | Khớp hoàn toàn với API endpoint đã duyệt cho việc lấy chi tiết album. |
+| Kịch bản lỗi (Not-found/Error/Empty states) | Dùng | Định nghĩa rõ ràng trạng thái UI, giúp tăng chất lượng trải nghiệm người dùng (UX). |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. 
+
+**Ghi chú:** Đặc tả ban đầu bám sát hợp đồng API, tạo tiền đề tốt để thực hiện tiếp bước làm rõ (clarify) các chi tiết về UI/UX và logic xử lý dữ liệu.
+
+---
+
+## Mục 2: Làm rõ spec 081 – Album Details
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details |
+| Công cụ AI | Gemini, lệnh `/speckit-clarify` |
+| Mục đích | Giải quyết 5 điểm mơ hồ về cách load danh sách bài hát lớn, hiển thị album có nhiều đĩa, quy ước ký hiệu khi thiếu dữ liệu, hiển thị placeholder ảnh bìa và cơ chế cache khi điều hướng (Back). |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify Làm rõ các điểm sau:
+1. Xử lý danh sách bài hát lớn (Pagination / Lazy Loading)
+- Điểm mơ hồ: Yêu cầu FR-005 chỉ đề cập đến việc hiển thị danh sách bài hát. Nhưng nếu một album có quá nhiều bài (ví dụ: album tổng hợp 100 bài hát), API có trả về toàn bộ trong một lần gọi không?
+- Cần làm rõ: Giao diện sẽ hiển thị tất cả bài hát cùng lúc, hay cần áp dụng kỹ thuật tải lười (lazy loading) / phân trang (pagination)? Nếu tải lười, tổng thời lượng của album (FR-004) được tính dựa trên toàn bộ album (do API trả về sẵn 1 trường totalDuration) hay client phải tự cộng dồn (chỉ cộng được những bài đã tải)?
+2. Cấu trúc Album có nhiều đĩa (Multi-disc Albums)
+- Điểm mơ hồ: Một số album vật lý (và trên các nền tảng nhạc) được chia thành Disc 1, Disc 2.
+- Cần làm rõ: API có trả về thông tin disc_number không? Nếu có, giao diện có cần nhóm các bài hát theo từng đĩa (chia section) không, hay cứ hiển thị một danh sách phẳng duy nhất theo thứ tự mảng trả về?
+3. Hiển thị cụ thể cho trạng thái "Không khả dụng" (Unavailable UI)
+- Điểm mơ hồ: FR-009 yêu cầu phải phân biệt rõ giá trị bằng 0 và giá trị "không khả dụng", nhưng lại không quy định cụ thể giao diện sẽ trông như thế nào.
+- Cần làm rõ: Nếu số lượt nghe hoặc thời lượng không có sẵn, UI sẽ hiển thị dấu gạch ngang (-), chữ N/A, hay bỏ trống khu vực đó? Việc chốt trước ký hiệu này sẽ giúp UI/UX nhất quán hơn.
+4. Ảnh bìa mặc định (Fallback / Placeholder Image)
+- Điểm mơ hồ:*Câu chuyện người dùng 3 đề cập đến việc "ảnh bìa bị thiếu thì các thông tin khác vẫn hiển thị không làm hỏng trang".
+- Cần làm rõ: Giao diện có cần một ảnh "placeholder" (ảnh mặc định của hệ thống / icon nốt nhạc) để giữ nguyên bố cục layout không? Kích thước ảnh bìa mặc định là bao nhiêu để không làm vỡ các khoảng cách (padding/margin) của tên album và nghệ sĩ?
+5. Cơ chế lưu trữ tạm (Caching) ở phía Client
+- Điểm mơ hồ: Câu chuyện 1 nhắc đến việc "không hiển thị thông tin cũ" nếu điều hướng nhanh giữa các album (Race conditions).
+- Cần làm rõ: Hệ thống có cho phép lưu cache dữ liệu album đã tải (ví dụ lưu trong bộ nhớ Redux/Context vài phút) để người dùng ấn nút "Back" sẽ thấy ngay lập tức mà không phải gọi lại API không?
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tập trung vào kịch bản sử dụng và yêu cầu nghiệp vụ, không ghi chi tiết code.
+```
+
+### Tóm tắt phản hồi của AI
+
+- AI đã mở chuỗi 5 câu hỏi để chốt từng vấn đề kỹ thuật và tự động cập nhật vào `spec.md` (duy trì 100% tiếng Anh).
+- **Track list & Duration:** Chốt phương án nhận toàn bộ track list theo hợp đồng API hiện tại; giao diện có thể hiển thị dần, nhưng tổng thời lượng tính từ *tất cả* các track có dữ liệu.
+- **Multi-disc Albums:** Giữ nguyên một danh sách phẳng (flat list) theo thứ tự API trả về, không yêu cầu chia nhóm theo đĩa.
+- **UI "Không khả dụng":** Sử dụng ký hiệu dấu gạch ngang dài (em dash "—") cho các dữ liệu thời lượng hoặc lượt nghe bị thiếu; phân biệt rõ với giá trị "0" hợp lệ.
+- **Placeholder Cover:** Sử dụng ảnh mặc định giữ nguyên tỷ lệ khung hình và khung responsive (không ấn định pixel cố định) để không làm vỡ layout.
+- **Caching (Nút Back):** Hiển thị ngay dữ liệu đã tải từ trước, đồng thời chạy ngầm làm mới dữ liệu (refresh) để cập nhật.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Load toàn bộ Track list & Tổng Duration (Option B) | Dùng | Không phá vỡ hợp đồng API hiện tại, phản ánh đúng tổng thời lượng album mà không bắt client cộng dồn thủ công từng trang. |
+| Flat list cho Multi-disc (Option A) | Dùng | Đơn giản hóa cấu trúc UI vì hợp đồng API chưa hỗ trợ metadata cho số thứ tự đĩa. |
+| Ký hiệu Em dash "—" (Option A) | Dùng | Gọn gàng, dễ quét bằng mắt, khác biệt hoàn toàn với số 0. |
+| Placeholder Responsive (Option A) | Dùng | Đảm bảo tính ổn định của Layout trên đa thiết bị thay vì chốt cứng một kích thước (ví dụ 300x300px). |
+| Cache & Refresh ngầm (Option B) | Dùng | Cân bằng hoàn hảo giữa hiệu năng điều hướng (nhanh) và tính mới của dữ liệu. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Checklist đạt 16/16 và không còn marker `[NEEDS CLARIFICATION]`. Spec sẵn sàng cho bước `$speckit-plan`.
