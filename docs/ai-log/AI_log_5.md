@@ -79,11 +79,9 @@ bạn có thể coi những mẫu của thành viên khác trong github để l�
 ### Prompt đã dùng
 
 ```text
-đọc xem tôi thiếu gì sau đó hoàn thành rồi up lên github cho tôi
-(kèm file spec-audit-report.md)
+Dựa vào file spec-audit-report.md đính kèm, hãy phân tích và liệt kê giúp tôi những mục còn thiếu hoặc chưa khớp với spec hiện tại. Hãy đề xuất nội dung bổ sung hoặc bản nháp cho từng phần thiếu đó để tôi review và chỉnh sửa trước khi tự push lên GitHub.
 
-cái PR mới á là tui add png cho mấy cái ông làm rồi vô spec r nha làm thêm ảnh add vô đó thôi
-cuối cho AI implement. Nhóm trưởng tôi nhắn thiếu ảnh UI và nói tôi làm như này
+Trong PR mới nhất, nhóm trưởng đã thêm sẵn một số file PNG vào spec cho các phần tôi làm và nhắn tôi bổ sung nốt các ảnh UI còn thiếu. Mục tiêu là hoàn thiện bộ spec trực quan này để làm ngữ cảnh (context) chuẩn, giúp AI hỗ trợ generate phần khung UI code nhanh hơn ở bước sau. Hãy kiểm tra giúp tôi xem những màn hình nào trong spec chưa có ảnh minh họa để tôi thiết kế và gắn vào cho đủ.
 ```
 
 ### Tóm tắt phản hồi của AI
