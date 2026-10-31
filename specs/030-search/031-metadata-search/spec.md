@@ -118,3 +118,78 @@ As a Public or Listener user, I want clear feedback when no result matches or th
 - The feature is scoped to metadata text search. AI lyrics search and semantic vector search remain separate search features identified in the proposal.
 - The feature is designed for AuraTune's responsive web application environment.
 
+
+
+## UI Screenshots
+
+### 1. Metadata Search Entry
+
+Corresponding User Story: User Story 1 – Find music and related metadata.
+
+This screenshot shows the initial Search page (`/search`) in its empty state, displaying the header "Tìm kiếm", descriptive helper text, and the default "Duyệt theo thể loại" grid for music exploration before a search query is submitted.
+
+![Metadata Search Entry](ui/01-metadata-search-entry.png)
+
+### 2. Metadata Search Results Across Content Types
+
+Corresponding User Story: User Story 1 – Find music and related metadata (Acceptance Scenario 1 & 2).
+
+This screenshot shows search results for keyword "em" on tab "Tất cả" (`/search?q=em`), returning matching songs ("Có em", "Thích em hơi nhiều"), albums ("Có em"), and playlists with clearly distinguishable artwork and metadata labels.
+
+![Metadata Search Results Across Content Types](ui/02-metadata-search-results-all.png)
+
+### 3. Category Filter: Songs
+
+Corresponding User Story: User Story 1 – Find music and related metadata (Acceptance Scenario 3); User Story 2 – Refine and order results (Acceptance Scenario 1).
+
+This screenshot shows the results narrowed to the "Bài hát" category (`/search?q=em&type=tracks`). The interface renders a tabular song list displaying rank indices, song titles, artist links, album titles, play counts, and durations.
+
+![Category Filter: Songs](ui/03-metadata-search-category-tracks.png)
+
+### 4. Category Filter: Artists
+
+Corresponding User Story: User Story 1 – Find music and related metadata (Acceptance Scenario 3); User Story 2 – Refine and order results (Acceptance Scenario 1).
+
+This screenshot shows search results filtered to the "Nghệ sĩ" category (`/search?q=vu&type=artists`). It renders circular artist profile cards with avatars, artist names, and role identification.
+
+![Category Filter: Artists](ui/04-metadata-search-category-artists.png)
+
+### 5. Category Filter: Albums
+
+Corresponding User Story: User Story 1 – Find music and related metadata (Acceptance Scenario 3); User Story 2 – Refine and order results (Acceptance Scenario 1).
+
+This screenshot shows search results filtered to the "Album" category (`/search?q=lofi&type=albums`). Matching albums are presented in a responsive grid featuring album cover art, album title, release year, and artist credit.
+
+![Category Filter: Albums](ui/05-metadata-search-category-albums.png)
+
+### 6. Category Filter: Playlists
+
+Corresponding User Story: User Story 1 – Find music and related metadata (Acceptance Scenario 3); User Story 2 – Refine and order results (Acceptance Scenario 1).
+
+This screenshot shows search results filtered to the "Playlist" category (`/search?q=chill&type=playlists`). Results are displayed with cover art, playlist title, description, and instant playback button.
+
+![Category Filter: Playlists](ui/06-metadata-search-category-playlists.png)
+
+### 7. Search Result Sorting Controls
+
+Corresponding User Story: User Story 2 – Refine and order results (Acceptance Scenario 2 & 3).
+
+This screenshot shows the sorting dropdown in action when viewing song results, with "Lượt nghe nhiều nhất" (`sort=plays`) selected, ordering the matching songs by their play counts.
+
+![Search Result Sorting Controls](ui/07-metadata-search-sorting-plays.png)
+
+### 8. Explicit No-Results State
+
+Corresponding User Story: User Story 3 – Understand empty and unavailable results (Acceptance Scenario 1).
+
+This screenshot shows the user-facing feedback when no indexed content matches the query (`/search?q=xyz123nonexistent`). The interface displays a clear SearchX icon with the message "Không tìm thấy kết quả cho “xyz123nonexistent”" and guidance to refine the search.
+
+![Explicit No-Results State](ui/08-metadata-search-empty-state.png)
+
+### 9. Search Result Playback Interaction
+
+Corresponding User Story: User Story 1 – Find music and related metadata; User Story 2 – Refine and order results.
+
+This screenshot shows playback launched directly from a search result row. The active track row is highlighted in violet, and the persistent BottomPlayer updates with the current track artwork, title, artist, audio controls, and duration.
+
+![Search Result Playback Interaction](ui/09-metadata-search-track-playback.png)
