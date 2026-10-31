@@ -12,7 +12,7 @@ AuraTune has a complete UI prototype that runs on mock data. This plan turns it 
 
 **Language/Version**: JavaScript (ES modules), JSX
 
-**Primary Dependencies**: React 18, Vite 5, Tailwind CSS 3, `lucide-react` (subject to OQ-1)
+**Primary Dependencies**: React 18, Vite 5, Tailwind CSS 3, `lucide-react` (working decision OQ-1)
 
 **Storage**: Backend API; browser memory for the access token; HttpOnly cookie for the refresh token; `localStorage` for demo mode only
 
@@ -28,6 +28,20 @@ AuraTune has a complete UI prototype that runs on mock data. This plan turns it 
 
 **Scale/Scope**: 15 routes across 12 functional groups, five team members, three remaining Sprints
 
+## Current Implementation Baseline
+
+The frontend is a working client-side prototype. It covers all 12 functional groups at the UI level, but no group is connected to a backend.
+
+| Area | Current implementation |
+| ---- | ---------------------- |
+| Stack | React 18, Vite 5, Tailwind CSS 3, `lucide-react`, pnpm |
+| Routing | Custom History API router in `utils/navigation.jsx` and `routes/AppRouter.jsx` |
+| State | `AppStore` context for domain and dialog state; `PlayerContext` for playback |
+| Data | `utils/mockData.js`, `utils/aiMockData.js`, and `localStorage` key `auratune-demo-state-v1` |
+| Playback | Simulated by a one-second timer in `hooks/useMockPlayer.js`; no audio element is used |
+| Tests and linting | None configured |
+| Production build | Passes; JavaScript bundle is 373 KB (106 KB gzip) as one chunk |
+
 ## Constitution Check
 
 `.specify/memory/constitution.md` is still the unfilled Spec Kit template, so it provides no gates. Until the team ratifies it, this plan is checked against the Team Contract and `specs/README.md`.
@@ -38,7 +52,7 @@ AuraTune has a complete UI prototype that runs on mock data. This plan turns it 
 | Group ownership respected | Pass: feature work stays with the Team Contract owners |
 | Documentation in English and Markdown, diagrams in Mermaid | Pass |
 | No secrets committed | Pass: this PR contains documentation only |
-| Shared API and data changes coordinated | Open: see OQ-2, OQ-4, OQ-6, OQ-7, and OQ-8 in the specification |
+| Shared API and data changes coordinated | Pass with follow-up: owners confirm the working decisions OQ-2, OQ-4, OQ-7, and OQ-8 |
 
 ## Project Structure
 
@@ -128,13 +142,13 @@ gantt
 
 | ID | Task | Owner | Covers |
 | -- | ---- | ----- | ------ |
-| T-001 | Resolve OQ-1 and OQ-3 at the Sunday meeting | Nhựt (A), Team | OQ-1, OQ-3 |
+| T-001 | Confirm working decisions OQ-1 and OQ-3 at the Sunday meeting | Nhựt (A), Team | OQ-1, OQ-3 |
 | T-002 | Update `src/frontend/STRUCTURE.md`, which still describes the earlier three-page version | Frontend Lead | Documentation |
 | T-003 | Add ESLint and `lint` and `test` scripts with Vitest | Frontend Lead | NFR-008 |
 | T-004 | Add unit tests for `utils/playback.js` and `utils/searchEngine.js` | Frontend Lead | NFR-008 |
 | T-005 | Add a CI workflow running lint, tests, and build on pull requests | Frontend Lead | NFR-008 |
 
-**Exit criteria**: CI passes on `main`, and OQ-1 and OQ-3 are decided.
+**Exit criteria**: CI passes on `main`, and OQ-1 and OQ-3 are confirmed.
 
 ### Phase 1: Service Layer (Sprint 3)
 
@@ -156,7 +170,7 @@ gantt
 
 | ID | Task | Owner | Covers |
 | -- | ---- | ----- | ------ |
-| T-011 | Resolve OQ-2 and connect sign-up and sign-in | Khoa (B) | FR-015, FR-016 |
+| T-011 | Align spec 011 with OQ-2 and connect sign-up and sign-in | Khoa (B) | FR-015, FR-016 |
 | T-012 | Implement token refresh, retry, and session expiry | Khoa (B), Frontend Lead | FR-017, FR-018, FR-019 |
 | T-013 | Add Google and Facebook sign-in entry points | Khoa (B) | FR-020 |
 | T-014 | Add service-layer tests for the Error Handling table in the specification | Khoa (B), Frontend Lead | SC-003 |
@@ -169,7 +183,7 @@ gantt
 
 | ID | Task | Owner | Covers |
 | -- | ---- | ----- | ------ |
-| T-015 | Write specifications for groups 040 and 050, then resolve OQ-6 | Huy (E) | Spec Kit workflow |
+| T-015 | Plan playback integration from the specifications of groups 040 and 050 | Huy (E) | Spec Kit workflow |
 | T-016 | Implement `useAudioPlayer` with the same interface as `useMockPlayer` | Huy (E) | FR-026, FR-028 |
 | T-017 | Handle buffering, stream errors, and autoplay restrictions | Huy (E) | Edge Cases |
 | T-018 | Send listening sessions to the history API | Huy (E), Khoa (B) | FR-030 |
@@ -215,15 +229,15 @@ gantt
 | Risk | Impact | Mitigation |
 | ---- | ------ | ---------- |
 | Backend endpoints arrive later than the frontend needs them | Blocks integration | Mock adapters keep the UI demoable; the contract is the shared interface |
-| API Contract and specifications disagree (OQ-2, OQ-4) | Rework | Resolve each conflict before integrating that group |
+| API Contract and specifications disagree (OQ-2, OQ-4) | Rework | Owners update the affected documents before integrating that group |
 | `AppStore` split causes regressions | Broken screens | Complete quality gates first; move one domain per PR |
 | Mobile browsers restrict autoplay or background audio | Playback failures | Require a user action to start audio and test on real devices |
 | Long-running PRs conflict across groups | Delays | Keep PRs small and merge shared foundation work first |
-| Specifications are missing for groups 020, 040, 050, 060, 070, and 120 | Scope drift | Owners write specifications before integration |
+| Specifications for groups 060 and 070 are not standardized | Scope drift | Owners standardize them before integration |
 
 ## Immediate Next Steps
 
-1. Review this plan and answer OQ-1 and OQ-3 at the Sunday meeting.
+1. Review this plan and confirm the working decisions OQ-1 and OQ-3 at the Sunday meeting.
 2. Create Jira tasks T-001 to T-005 and assign one reviewer to each.
 3. Start Phase 0 after this PR is approved.
 
