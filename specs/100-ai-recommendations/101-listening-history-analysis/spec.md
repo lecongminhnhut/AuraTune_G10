@@ -113,3 +113,46 @@ As a listener, I want analysis requests to be scoped to my authenticated account
 - `user_listening_stats` is a documented data concept, not proof that aggregate generation or its use by this feature has been approved.
 - Project documentation is maintained in English Markdown; this specification is therefore written in English despite the Vietnamese feature request.
 - `102-personalized-recommendations` and `103-mood-and-context-recommendations` are separate scope boundaries; this feature produces understanding/analysis only, not song suggestions.
+
+## UI Screenshots
+
+### 1. Listening Analysis Overview
+
+**Related workflow:** Review listening insights (User Story 1 & FR-001, FR-002, FR-013).
+
+![Listening analysis overview](./ui/01-listening-analysis-overview.png)
+- **Path**: `./ui/01-listening-analysis-overview.png`
+- **Description**: Listening analysis dashboard on the "Thống kê" tab of `/history` for the authenticated account, showing page header, view mode switcher ("Lịch sử" / "Thống kê"), time range filters (7 ngày, 30 ngày, Toàn bộ), summary metric cards, and top genres ranking.
+
+### 2. Total Listening Duration
+
+**Related workflow:** Review total listening duration (User Story 1 & FR-011, FR-013).
+
+![Total listening duration](./ui/02-total-listening-duration.png)
+- **Path**: `./ui/02-total-listening-duration.png`
+- **Description**: Aggregate listening metrics displaying "Tổng thời gian nghe" calculated from eligible listening history entries, alongside total play counts and unique track counts.
+
+### 3. Top Genres
+
+**Related workflow:** Review top genres (User Story 1 & FR-011, FR-014).
+
+![Top genres](./ui/03-top-genres.png)
+- **Path**: `./ui/03-top-genres.png`
+- **Description**: "Top thể loại" section ranking genres by accumulated listening duration, presenting genre rank, genre name, formatted duration, and proportional gradient progress bars.
+
+### 4. Insufficient Listening History
+
+**Related workflow:** Understand insufficient or unavailable data (User Story 2 & FR-007, FR-012).
+
+![Insufficient listening history](./ui/04-insufficient-history.png)
+- **Path**: `./ui/04-insufficient-history.png`
+- **Description**: Empty state displayed when an account has fewer than one eligible history entry, communicating "Chưa có đủ dữ liệu để phân tích" without generating fabricated insights.
+
+### 5. Analysis Unavailable / Login Required
+
+**Related workflow:** Access control and unavailable analysis (User Story 3 & FR-005, FR-006).
+
+![Analysis unavailable](./ui/05-analysis-unavailable.png)
+- **Path**: `./ui/05-analysis-unavailable.png`
+- **Description**: State presented when an unauthenticated guest attempts to access listening analysis, requiring login to protect private listening data.
+
