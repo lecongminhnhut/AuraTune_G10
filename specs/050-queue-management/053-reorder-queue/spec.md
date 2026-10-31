@@ -1,54 +1,105 @@
-# Feature Specification: 053 - Reorder Queue (Sắp xếp lại hàng chờ)
+# Feature Specification: Reorder Queue
 
-> [!NOTE]
-> **Contextual Note**: This specification was reconstructed and formalized based on AuraTune project requirements (Proposal, Vision Document, System Architecture, API Contract) and the existing frontend implementation in `src/frontend/src/components/player/QueuePanel.jsx` and `useMockPlayer.js`.
+**Feature Branch**: `020-home-player-queue-spec`
 
----
+**Created**: 2026-10-31
 
-## 1. Overview & Objective
+**Status**: Draft — Ready for Planning
 
-The **Reorder Queue** feature empowers listeners to customize their upcoming listening order dynamically without interrupting ongoing playback.
-The queue drawer provides two complementary mechanisms for reordering:
-1. **Directional Arrow Controls**: Precise, single-step `ArrowUp` and `ArrowDown` buttons on every upcoming item with accessibility labels and automated boundary disabling (top item cannot move up, bottom item cannot move down).
-2. **Drag-and-Drop Handle**: A `GripVertical` handle allowing smooth dragging with active visual feedback (`ring-1 ring-violet-300/50` on hover target, reduced opacity on dragged element).
+**Input**: User description: "Feature 053 lets listeners change the order of upcoming tracks by dragging or by step controls, without interrupting playback."
 
----
+## Clarifications
 
-## 2. User Stories & Acceptance Criteria
+### Session 2026-10-31
 
-### User Story 1: Reorder Songs Using Arrow Controls
-- **As a** listener,
-- **I want to** click up or down buttons on a queued song,
-- **So that** I can adjust its priority step-by-step with precision.
+- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Which methods are supported? → A: Drag and drop as stated in the proposal, plus up and down controls for keyboard and touch use.
+- Q: Can the current track be moved? → A: No. Reordering applies only to upcoming tracks.
+- Q: What happens if a track is dropped in its own position? → A: Nothing changes.
 
-**Acceptance Criteria:**
-- Each item has an `ArrowUp` button (`aria-label="Đưa <Tên bài hát> lên"`) and `ArrowDown` button (`aria-label="Đưa <Tên bài hát> xuống"`).
-- Clicking `ArrowDown` on item at index `i` swaps positions with item at index `i + 1`.
-- Clicking `ArrowUp` on item at index `i` swaps positions with item at index `i - 1`.
-- The top upcoming item has `ArrowUp` disabled (`disabled:opacity-30`).
-- The bottom upcoming item has `ArrowDown` disabled.
+## User Scenarios & Testing *(mandatory)*
 
-### User Story 2: Drag and Drop Reordering
-- **As a** listener,
-- **I want to** drag a song by its grip handle and drop it into a new position,
-- **So that** I can intuitively reorder my queue in a single gesture.
+### User Story 1 - Drag to Reorder (Priority: P1)
 
-**Acceptance Criteria:**
-- Each item displays a `GripVertical` icon with `title="Kéo để sắp xếp"`.
-- Dragging an item sets its styling to `opacity-40`.
-- Hovering over a drop destination renders an active ring boundary (`ring-1 ring-violet-300/50`).
-- Dropping invokes `player.moveInQueue(fromIndex, toIndex)`, updating the queue state seamlessly while current playback continues without stutter.
+As a listener, I want to drag tracks so that I can change the order in one gesture.
+
+**Why this priority**: Drag and drop is named in the proposal.
+
+**Independent Test**: Drag the first upcoming track to third and confirm the order.
+
+**Acceptance Scenarios**:
+
+1. **Given** upcoming tracks, **When** I drag one, **Then** the dragged item and the drop target are visibly marked.
+2. **Given** I drop a track, **When** the drop ends, **Then** it takes the new position and the others shift.
+3. **Given** a track is playing, **When** I reorder, **Then** playback is not interrupted.
 
 ---
 
-## 3. Frontend Component Mapping
+### User Story 2 - Reorder With Step Controls (Priority: P1)
 
-- **Queue Panel Component**: [`QueuePanel.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/player/QueuePanel.jsx)
-- **Queue Reordering Logic**: [`useMockPlayer.js`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/hooks/useMockPlayer.js) (`moveInQueue(from, to)`)
+As a listener using a keyboard or touch screen, I want up and down controls so that I can reorder without dragging.
+
+**Why this priority**: The Vision Document requires mouse, keyboard, and touch support.
+
+**Independent Test**: Move a track with up and down controls using only a keyboard.
+
+**Acceptance Scenarios**:
+
+1. **Given** an upcoming track, **When** I select down, **Then** it swaps with the track below.
+2. **Given** an upcoming track, **When** I select up, **Then** it swaps with the track above.
+3. **Given** the first track, **When** I view its controls, **Then** up is disabled.
+4. **Given** the last track, **When** I view its controls, **Then** down is disabled.
 
 ---
 
-## 4. UI Screenshots
+### Edge Cases
+
+- **Drop in the same position**: Nothing changes.
+- **Drag cancelled**: The order stays the same.
+- **Only one upcoming track**: Both step controls are disabled.
+- **Current track ends during a drag**: The list updates, and the drag does not corrupt the order.
+- **Touch screens**: Step controls remain available when dragging is not supported.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: The system MUST allow reordering upcoming tracks by drag and drop.
+- **FR-002**: The system MUST provide up and down controls for each upcoming track.
+- **FR-003**: The system MUST mark the dragged item and the drop target during a drag.
+- **FR-004**: The system MUST disable up on the first item and down on the last item.
+- **FR-005**: The system MUST NOT allow moving the current track.
+- **FR-006**: The system MUST NOT change the order when a track is dropped in its own position.
+- **FR-007**: The system MUST use the new order for all later playback.
+- **FR-008**: The system MUST NOT interrupt playback during reordering.
+- **FR-009**: The system MUST give each step control an accessible name that includes the track.
+
+### Key Entities *(include if feature involves data)*
+
+- **Queue Position**: A track's place in the upcoming list.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: Playback follows the new order in 100% of test runs.
+- **SC-002**: Zero playback interruptions during reordering.
+- **SC-003**: All reordering can be done with keyboard alone.
+- **SC-004**: A track can be moved one step in 1 interaction.
+
+## Assumptions
+
+- Authentication and user roles are provided by group `010-authentication`.
+- API alignment: Reordering is client-side and needs no API.
+- Project documentation is maintained in English Markdown, in accordance with `docs/management/team-contract.md`.
+
+### Known Gaps in the Current Prototype
+
+These gaps do not change the requirements. They record where the current UI differs from this specification.
+
+- With shuffle on, the prototype ignores the reordered sequence when choosing the next track, as defined in feature 043.
+
+## UI Screenshots
 
 | # | Screenshot Filename | Workflow Step / State | UI Elements & Components |
 |---|---------------------|------------------------|---------------------------|

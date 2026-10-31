@@ -1,62 +1,122 @@
-# Feature Specification: 051 - View Queue (Xem danh sách chờ)
+# Feature Specification: View Queue
 
-> [!NOTE]
-> **Contextual Note**: This specification was reconstructed and formalized based on AuraTune project requirements (Proposal, Vision Document, System Architecture, API Contract) and the existing frontend implementation in `src/frontend/src/components/player/QueuePanel.jsx` and `BottomPlayer.jsx`.
+**Feature Branch**: `020-home-player-queue-spec`
 
----
+**Created**: 2026-10-31
 
-## 1. Overview & Objective
+**Status**: Draft — Ready for Planning
 
-The **View Queue** feature enables listeners to inspect the playback sequence without disrupting their listening experience. When opened, the Queue drawer presents two distinct zones:
-1. **Now Playing ("Đang phát")**: A prominent card displaying the currently active song, including cover artwork, track title, and artist name.
-2. **Upcoming ("Tiếp theo · N")**: An ordered list of songs scheduled to play next in sequence.
+**Input**: User description: "Feature 051 lets listeners see the current track and the tracks that will play next, without interrupting playback. Editing the queue belongs to features 052 to 054."
 
-Users can open and close the queue panel smoothly from the persistent bottom player, view the upcoming count, and see an empty state indicator when no subsequent songs are queued.
+## Clarifications
 
----
+### Session 2026-10-31
 
-## 2. User Stories & Acceptance Criteria
+- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: What does the queue panel show? → A: A now-playing area and an ordered list of upcoming tracks with their count.
+- Q: Where does a queue come from? → A: Starting a collection such as a playlist, album, chart, or result list sets that collection as the queue.
+- Q: Can a listener jump to an upcoming track? → A: Yes. Selecting a track's play action plays it immediately.
+- Q: Can all upcoming tracks be cleared at once? → A: Yes, and the current track keeps playing.
 
-### User Story 1: Open Queue Panel from Bottom Player
-- **As a** listener,
-- **I want to** access the queue panel by clicking the queue icon on the bottom player,
-- **So that** I can easily inspect what music will be playing next.
+## User Scenarios & Testing *(mandatory)*
 
-**Acceptance Criteria:**
-- The bottom player features a dedicated queue button with `aria-label="Danh sách chờ"` and `ListMusic` icon.
-- Clicking the button slides open a modal drawer docked to the right edge with a backdrop blur overlay.
-- Clicking the close button (`X`) or backdrop dismisses the drawer without interrupting playback.
+### User Story 1 - Open the Queue (Priority: P1)
 
-### User Story 2: Inspect Currently Playing and Upcoming Songs
-- **As a** listener,
-- **I want to** see which song is currently active and the complete sequence of upcoming tracks,
-- **So that** I know the queue progression and context.
+As a listener, I want to open the queue from the player so that I can see what is coming next.
 
-**Acceptance Criteria:**
-- "Đang phát" section displays the active track with cover art, title, and artist in a highlighted violet container.
-- "Tiếp theo · N" header displays the total count of upcoming tracks.
-- Each upcoming track item renders cover art, title, artist, drag handle, and quick controls.
+**Why this priority**: Viewing the queue is the base for every other queue action.
 
-### User Story 3: View Empty Queue State
-- **As a** listener,
-- **I want to** see clear visual feedback when no tracks are queued,
-- **So that** I understand how to add new songs to the queue.
+**Independent Test**: Open and close the panel during playback and confirm playback continues.
 
-**Acceptance Criteria:**
-- If the upcoming queue has no tracks, a dashed card states: `"Chưa có bài nào trong hàng chờ. Chọn “Thêm vào danh sách chờ” ở menu “…” của một bài hát."`
-- The "Xóa tất cả" (Clear All) button is hidden when the queue is already empty.
+**Acceptance Scenarios**:
+
+1. **Given** the player is visible, **When** I select the queue control, **Then** the queue panel opens.
+2. **Given** the panel is open, **When** I use close, the backdrop, or Escape, **Then** it closes and playback continues.
 
 ---
 
-## 3. Frontend Component Mapping
+### User Story 2 - Inspect Current and Upcoming Tracks (Priority: P1)
 
-- **Drawer Component**: [`QueuePanel.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/player/QueuePanel.jsx)
-- **Bottom Entry Trigger**: [`BottomPlayer.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/player/BottomPlayer.jsx)
-- **State Management**: [`useMockPlayer.js`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/hooks/useMockPlayer.js) (`upcoming`, `clearUpcoming`, `playFromQueue`)
+As a listener, I want to see the current and upcoming tracks so that I know the order.
+
+**Why this priority**: A visible queue is required by the Vision Document.
+
+**Independent Test**: Start a playlist and compare the panel with its order.
+
+**Acceptance Scenarios**:
+
+1. **Given** a track is playing, **When** I open the panel, **Then** it shows that track's cover art, title, and artist.
+2. **Given** tracks are queued, **When** I open the panel, **Then** I see the upcoming count and the ordered list.
+3. **Given** an upcoming track, **When** I select its play action, **Then** it plays immediately.
 
 ---
 
-## 4. UI Screenshots
+### User Story 3 - Empty Queue and Clear All (Priority: P2)
+
+As a listener, I want a clear empty state and a way to clear the queue so that I can start over.
+
+**Why this priority**: Clearing is a convenience after the main view works.
+
+**Independent Test**: Clear the queue and confirm the empty state appears.
+
+**Acceptance Scenarios**:
+
+1. **Given** tracks are queued, **When** I select clear all, **Then** the list empties and the current track continues.
+2. **Given** nothing is queued, **When** I open the panel, **Then** I see guidance on adding tracks and no clear action.
+
+---
+
+### Edge Cases
+
+- **Track changes while open**: The panel updates immediately.
+- **Last track playing**: The upcoming list is empty.
+- **Long titles**: Text is truncated without breaking the layout.
+- **Many tracks**: The list scrolls inside the panel.
+- **Page reload**: The queue resets to the default state.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: The system MUST allow opening the queue panel from the player.
+- **FR-002**: The system MUST show the current track with cover art, title, and artist.
+- **FR-003**: The system MUST show upcoming tracks in playback order with their count.
+- **FR-004**: The system MUST set a collection as the queue when a listener starts it.
+- **FR-005**: The system MUST allow playing an upcoming track immediately.
+- **FR-006**: The system MUST allow clearing all upcoming tracks without stopping the current track.
+- **FR-007**: The system MUST show guidance when no tracks are upcoming and hide the clear action.
+- **FR-008**: The system MUST allow closing the panel by a control, the backdrop, and the Escape key.
+- **FR-009**: The system MUST NOT interrupt playback when the panel opens or closes.
+- **FR-010**: The system MUST update the panel immediately when the current track changes.
+- **FR-011**: The system MUST keep the queue for the current session on the client.
+
+### Key Entities *(include if feature involves data)*
+
+- **Queue**: The ordered tracks for the current session.
+- **Upcoming Tracks**: Queue tracks positioned after the current track.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: The panel opens in 1 interaction from the player.
+- **SC-002**: The displayed order matches playback order in 100% of test runs.
+- **SC-003**: Zero playback interruptions when opening or closing the panel.
+- **SC-004**: The upcoming count matches the list in all test runs.
+
+## Assumptions
+
+- Authentication and user roles are provided by group `010-authentication`.
+- API alignment: No queue endpoints exist in the API Contract, as noted in `docs/design/architecture/feature-modules.md`.
+- Project documentation is maintained in English Markdown, in accordance with `docs/management/team-contract.md`.
+
+### Known Gaps in the Current Prototype
+
+These gaps do not change the requirements. They record where the current UI differs from this specification.
+
+- The queue panel opens as a modal, so the page behind it cannot be used while it is open.
+
+## UI Screenshots
 
 | # | Screenshot Filename | Workflow Step / State | UI Elements & Components |
 |---|---------------------|------------------------|---------------------------|
