@@ -105,3 +105,126 @@ As a user with a specific role (User, Artist, or Admin), I want the system to re
 - **Stable Database**: The PostgreSQL database schema for `users` is ready and accessible.
 - **Frontend Integration**: The frontend will handle the display of error messages returned by the auth service.
 - **Password Recovery**: Out of scope for this feature (handled separately).
+
+
+## UI Screenshots
+
+### 1. Registration Page - Initial State
+
+Corresponding User Story: User Story 1 – New User Registration.
+
+This screenshot shows the initial registration form interface with all input fields empty, including display name, email, password, and privacy policy consent checkbox.
+
+![Registration Page - Initial State](ui/01-registration-page.png)
+
+### 2. Registration Form - Valid Input
+
+Corresponding User Story: User Story 1 – New User Registration.
+
+This screenshot shows the registration form populated with valid sample credentials, fulfilling password complexity rules (length, letter, number indicators all active).
+
+![Registration Form - Valid Input](ui/02-registration-form-filled.png)
+
+### 3. Password Visibility Toggle
+
+Corresponding User Story: User Story 1 – New User Registration.
+
+This screenshot demonstrates the password visibility toggle functionality, allowing users to unmask and verify their entered password.
+
+![Password Visibility Toggle](ui/03-registration-password-visibility.png)
+
+### 4. Registration Form Validation Errors
+
+Corresponding User Story: User Story 1 – New User Registration (Edge Cases).
+
+This screenshot shows the client-side validation errors triggered when invalid email format, weak password, or empty display name are submitted.
+
+![Registration Form Validation Errors](ui/04-registration-validation-errors.png)
+
+### 5. Duplicate Email Registration Error
+
+Corresponding User Story: User Story 1 – New User Registration (Acceptance Scenario 2).
+
+This screenshot shows the error state when attempting to register with an email address that is already registered in the system ("Email đã được sử dụng.").
+
+![Duplicate Email Registration Error](ui/05-registration-duplicate-email-error.png)
+
+### 6. Successful Registration & Home Redirect
+
+Corresponding User Story: User Story 1 – New User Registration (Acceptance Scenario 1).
+
+This screenshot shows successful registration feedback (toast notification) and immediate redirection to the authenticated home page without requiring email verification.
+
+![Successful Registration & Home Redirect](ui/06-registration-success-redirect.png)
+
+### 7. Login Page - Initial State
+
+Corresponding User Story: User Story 2 – User Login.
+
+This screenshot shows the local authentication login page in its default state, displaying email and password fields, remember me checkbox, and quick demo credentials.
+
+![Login Page - Initial State](ui/07-login-page.png)
+
+### 8. Login Form - Valid Input
+
+Corresponding User Story: User Story 2 – User Login.
+
+This screenshot shows the login form filled with valid credentials ready for submission.
+
+![Login Form - Valid Input](ui/08-login-form-filled.png)
+
+### 9. Login Error - Invalid Credentials
+
+Corresponding User Story: User Story 2 – User Login (Acceptance Scenario 2).
+
+This screenshot shows the error alert displayed upon entering incorrect credentials, indicating remaining attempts before temporary lockout.
+
+![Login Error - Invalid Credentials](ui/09-login-invalid-credentials.png)
+
+### 10. Login Error - Account Temporarily Locked
+
+Corresponding User Story: User Story 2 – User Login (Acceptance Scenario 3 & Edge Cases).
+
+This screenshot shows the account lockout security alert triggered after 5 consecutive failed login attempts, preventing further brute-force attempts.
+
+![Login Error - Account Temporarily Locked](ui/10-login-account-locked.png)
+
+### 11. Successful Login & Home Navigation
+
+Corresponding User Story: User Story 2 – User Login (Acceptance Scenario 1).
+
+This screenshot shows the authenticated home view following successful login, featuring the user profile avatar in the navigation bar and confirmation toast.
+
+![Successful Login & Home Navigation](ui/11-login-success-home.png)
+
+### 12. Role-Based Navigation - User Role
+
+Corresponding User Story: User Story 3 – Role-Based Access.
+
+This screenshot shows the user account dropdown menu for a standard 'user' role account ("Người nghe"), presenting library, liked songs, following, and history navigation.
+
+![Role-Based Navigation - User Role](ui/12-role-user-menu.png)
+
+### 13. Role-Based Navigation - Artist Role
+
+Corresponding User Story: User Story 3 – Role-Based Access (Acceptance Scenario 1).
+
+This screenshot shows role recognition for an 'artist' account ("Nghệ sĩ"), displaying the dedicated "Artist Studio" access points in the user menu and sidebar.
+
+![Role-Based Navigation - Artist Role](ui/13-role-artist-navigation.png)
+
+### 14. Artist Studio Dashboard
+
+Corresponding User Story: User Story 3 – Role-Based Access.
+
+This screenshot shows the Artist Studio dashboard accessed by an authenticated artist account, enabling music catalog and release management.
+
+![Artist Studio Dashboard](ui/14-role-artist-studio-dashboard.png)
+
+### 15. Role-Based Navigation - Admin Dashboard
+
+Corresponding User Story: User Story 3 – Role-Based Access.
+
+This screenshot shows the AuraTune admin dashboard accessible to users with the 'admin' role, displaying platform statistics and moderation controls.
+
+![Role-Based Navigation - Admin Dashboard](ui/15-role-admin-dashboard.png)

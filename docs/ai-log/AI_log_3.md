@@ -1,15 +1,99 @@
-# Nhật ký sử dụng AI – Metadata Search (031)
-
-_Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự thực hiện._
+# Nhật ký sử dụng AI
 
 | # | Ngày | Nội dung | Nhóm |
 |---|---|---|---|
-| 1 | 2026-10-28 | Viết spec 031 – Metadata Search bằng `/speckit-specify` | 030 |
-| 2 | 2026-10-28 | Làm rõ spec 031 bằng `$speckit-clarify` – phân trang, giới hạn từ khóa, cơ chế matching và xử lý xung đột filter | 030 |
+| 1   | 2026-10-24 | Rà soát chéo, phát hiện mâu thuẫn và đề xuất chuẩn hóa cho tài liệu `AuraTune_Vision_Document.md` | doc   |
+| 2 | 2026-10-28 | Viết spec 031 – Metadata Search bằng `/speckit-specify` | 030 |
+| 3 | 2026-10-28 | Làm rõ spec 031 bằng `$speckit-clarify` – phân trang, giới hạn từ khóa, cơ chế matching và xử lý xung đột filter | 030 |
+| 4 | 2026-10-29 | Viết spec 032 – AI Lyrics Search bằng `/speckit-specify` | 030 |
+| 5 | 2026-10-29 | Làm rõ spec 032 bằng `/speckit-clarify` – giới hạn đầu vào, xử lý timeout, UI/UX fallback và xung đột luồng | 030 |
+| 6   | 2026-10-29 | Viết spec 033 – Semantic Vector Music Search bằng `$speckit-specify`   | 030   |
+| 7   | 2026-10-29 | Làm rõ spec 033 bằng `$speckit-clarify` – ranking, audio fields, privacy, thresholds và metrics | 030   |
+| 8 | 2026-10-30 | Viết spec 081 – Album Details bằng `/speckit-specify` | 080 |
+| 9 | 2026-10-30 | Làm rõ spec 081 bằng `/speckit-clarify` – xử lý danh sách bài hát lớn, album nhiều đĩa, ký hiệu thiếu dữ liệu, ảnh bìa mặc định và cơ chế cache | 080 |
+| 10 | 2026-10-30 | Viết spec 082 – Album Tracklist Playback bằng `/speckit-specify` | 080 |
+| 11 | 2026-10-30 | Làm rõ spec 082 bằng `$speckit-clarify` – hành vi queue, chế độ shuffle, track không khả dụng, chống trùng lặp và phân trang | 080 |
+| 12 | 2026-10-30 | Viết spec 083 – Save and Share Album bằng `/speckit-specify` | 080 | 
+| 13 | 2026-10-30 | Làm rõ spec 083 bằng `/speckit-clarify` – UI/UX loading, lỗi, nút share và quota | 080 | 
+| 14 | 2026-10-30 | Làm rõ spec 083 (bổ sung) bằng `/speckit-clarify` – Hành vi bỏ lưu trong thư viện | 080 |
 
 ---
 
-## Mục 1: Viết spec 031 – Metadata Search
+## Mục 1: Rà soát chéo và chuẩn hóa tài liệu `AuraTune_Vision_Document.md`
+
+| Trường | Nội dung |
+| ------ | -------- |
+| Ngày                     | 2026-10-24 |
+| Người thực hiện          | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | Toàn bộ dự án – Tài liệu định hướng tổng quan (`AuraTune_Vision_Document.md`) |
+| Công cụ AI               | Gemini 4 Argon |
+| Mục đích               | Rà soát tài liệu, đối chiếu chéo nội dung do nhiều thành viên viết để phát hiện mâu thuẫn logic/số liệu/thuật ngữ và viết bản nháp chuẩn hóa. |
+
+### Prompt đã dùng
+
+```text
+VAI TRÒ & MỤC TIÊU
+Hãy đóng vai một Chuyên gia Kiểm soát Chất lượng Tài liệu và Biên tập viên kỹ thuật cao cấp. Tôi có một tài liệu được chắp bút bởi nhiều thành viên khác nhau trong nhóm. Nhiệm vụ của bạn là đọc kỹ, đối chiếu chéo toàn bộ nội dung để phát hiện các điểm mâu thuẫn, thiếu nhất quán và đề xuất phương án chuẩn hóa để tài liệu trở thành một thể thống nhất.
+NGỮ CẢNH TÀI LIỆU
+Tên/Loại tài liệu:AuraTune_Vision_Document.md
+Mục đích của tài liệu:Nộp đồ án môn học, tài liệu định hướng tổng quan
+YÊU CẦU RÀ SOÁT CHI TIẾT (4 KHÍA CẠNH)
+Hãy quét toàn bộ tài liệu và kiểm tra 4 nhóm vấn đề sau:
+1. Mâu thuẫn về mặt Logic & Nghiệp vụ/Kỹ thuật: Các quy trình, luồng hoạt động, công nghệ sử dụng, phân quyền hoặc yêu cầu chức năng ở phần này bị xung đột hoặc phủ định phần khác.
+2. Mâu thuẫn về Số liệu, Thời gian & Phạm vi: Các con số thống kê, mốc thời gian, phân công nhiệm vụ hoặc giới hạn hệ thống không khớp nhau giữa các bảng biểu và phần chữ viết.
+3. Bất nhất về Thuật ngữ & Định danh: Cùng một khái niệm, đối tượng, biến số hoặc thành phần hệ thống nhưng mỗi người viết lại gọi bằng một tên khác nhau.
+ĐỊNH DẠNG ĐẦU RA MONG MUỐN
+Hãy trình bày kết quả rà soát theo cấu trúc 3 phần sau:
+Phần 1: Bảng tổng hợp các điểm mâu thuẫn ( Sắp xếp từ Nghiêm trọng nhất đến Nhẹ nhất)
+Trình bày dưới dạng bảng gồm các cột: 
+Mã lỗi & Mức độ: (Cao / Trung bình / Thấp)
+Loại mâu thuẫn: (Logic / Số liệu / Thuật ngữ / Văn phong)
+Vị trí đối chiếu: (Trích dẫn rõ Mục X nói gì vs. Mục Y nói gì)
+Mô tả chi tiết xung đột: (Tại sao hai điểm này lại mâu thuẫn nhau?)
+Phần 2: Đề xuất hướng giải quyết cụ thể
+Với từng mã lỗi ở Phần 1, hãy đưa ra: 
+Phương án xử lý: (Nên giữ phần nào, bỏ phần nào, hoặc gộp lại ra sao). Đoạn văn bản viết lại (Draft): Viết sẵn đoạn text chuẩn hóa để tôi có thể copy-paste đè vào tài liệu gốc.
+Phần 3: Bảng quy chuẩn thuật ngữ
+Lập một bảng danh sách các từ khóa/thuật ngữ đang bị dùng lộn xộn trong bài và chốt 1 từ chuẩn duy nhất để cả nhóm dùng lệnh Find & Replace.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Phân tích và đối chiếu chéo toàn bộ 6 chương của `AuraTune_Vision_Document.md`, phát hiện 9 điểm mâu thuẫn và thiếu nhất quán (`ERR-01` đến `ERR-08`) phân theo mức độ từ Cao đến Thấp.
+- Chỉ ra các xung đột về nghiệp vụ, số liệu và phạm vi:
+  - `ERR-01`: Mâu thuẫn về phạm vi tuân thủ pháp lý và bảo vệ dữ liệu cá nhân (Nghị định 13/2023/NĐ-CP) giữa Mục 3.4 (N-11), Mục 4.2 (AD-09) và Mục 6.2.
+  - `ERR-02`: Lỗi cú pháp Mermaid (`<br\>`, escape ngoặc vuông `\[Notice shown\]`) và lỗi lặp từ trong Mục 4.1 và 5.3.
+  - `ERR-03`: Bất nhất số lượng nhóm người dùng ở Mục 3.2 (ghi 2 nhóm nhưng liệt kê 3 nhóm: Listeners, Artists, Administrators).
+  - `ERR-04`: Chưa đồng bộ quyền tải lên và quản lý Album của Artist và Administrator giữa Mục 3.2, 3.4 (N-09) và Mục 5.2 (G08, G09, G11).
+  - `ERR-05`: Lệch phạm vi dữ liệu thống kê thể loại nghe nhiều nhất (`top genres`) giữa Mục 3.4 (N-07) và Mục 5.2 (G07).
+  - `ERR-06` & `ERR-08`: Thiếu tài liệu tham chiếu (*Project Plan*, *Team Contract*) trong bảng ở Mục 1.4 dù có trích dẫn ở Mục 3, 4, 5; tóm tắt thiếu cấu trúc Chương 1 ở Mục 1.3.
+  - `ERR-07` & `ERR-09`: Bất đồng bộ tên gọi và mã định danh 12 nhóm tính năng (`G01`–`G12`) giữa bảng Mục 3.4 và Mục 5.1; khác biệt nhỏ về thể thức đánh số tiêu đề và chính tả Anh-Anh / Anh-Mỹ.
+- Cung cấp các đoạn văn bản viết lại cho từng mục lỗi và lập bảng quy chuẩn thuật ngữ để chuẩn hóa tên vai trò, đối tượng và tính năng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| ---- | ---------- | ------|
+| `ERR-01`: Đồng bộ phạm vi bảo vệ dữ liệu (N-11, AD-09, Mục 6.2) | Dùng | Đảm bảo tính nhất quán về mặt pháp lý (Nghị định 13/2023/NĐ-CP) và cam kết ẩn danh dữ liệu gửi sang AI trong phạm vi học thuật. |
+| `ERR-03`: Sửa số lượng nhóm người dùng tại Mục 3.2 | Dùng | Khớp số đếm ("three primary user groups") với 3 vai trò thực tế được liệt kê xuyên suốt Mục 3, 4 và 5. |
+| `ERR-04`: Làm rõ quyền quản lý Album ở N-09, G09 và G11 | Dùng | Đảm bảo logic nghiệp vụ chặt chẽ giữa mô tả vai trò Artist/Administrator ở Mục 3.2 và chi tiết tính năng ở Mục 5.2. |
+| `ERR-05`: Bổ sung thống kê `genres` vào mô tả G07 (Mục 5.2) | Dùng | Đồng bộ đầu ra thống kê của G07 với nhu cầu N-07 (Mục 3.4) và nguồn dữ liệu đầu vào của G10 (AI Recommendations). |
+| `ERR-06` & `ERR-08`: Cập nhật Mục 1.3 và bảng References ở Mục 1.4 | Dùng | Khai báo đầy đủ *Project Plan (SPMP)* và *Team Contract* đã được viện dẫn trong bài; mô tả đủ các mục con của Chương 1. |
+| `ERR-07`: Chuẩn hóa cột *Related feature* (Mục 3.4) theo mã G01–G12 | Dùng  | Giúp truy vết trực tiếp và chính xác từ từng Nhu cầu (N-01..N-12) sang đúng Mã tính năng (G01..G12) ở Mục 5.1 và Project Plan. |
+| `ERR-02`: Sửa cú pháp sơ đồ Mermaid và lỗi lặp từ (Mục 4.1, 5.3) | Bỏ  | Cú pháp bị nhận định sai, sơ đồ bằng mermaid trong tài liệu đã được viết đúng |
+| `ERR-09`: Chuẩn hóa dấu chấm tiêu đề và chính tả Anh-Anh / Anh-Mỹ  | Bỏ | Lỗi thể thức mức độ thấp, không ảnh hưởng đến tính đúng đắn về nghiệp vụ và phạm vi kỹ thuật của tài liệu. |
+
+### Cách kiểm chứng
+
+- Đối chiếu với tài liệu chính thức và yêu cầu dự án (`Project Proposal - PA1`, `Existing Application Survey - PA1`, `Project Plan - PA2`, `Team Contract`).
+- Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (kiểm tra chéo sự khớp nối giữa các bảng N-01..N-12, AD-01..AD-10 và G01..G12).
+- Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt sau khi chỉnh sửa.
+
+**Ghi chú:** Không chạy kiểm thử tự động vì đây là công việc rà soát và biên tập tài liệu đặc tả tầm nhìn (`AuraTune_Vision_Document.md`). Các mục `ERR-01`, `ERR-03`, `ERR-04`, `ERR-05`, `ERR-06`, `ERR-07`, `ERR-08` đã được cập nhật và kiểm tra chéo hoàn tất trong tài liệu gốc.
+
+## Mục 2: Viết spec 031 – Metadata Search
 
 | Trường | Nội dung |
 |---|---|
@@ -62,7 +146,7 @@ CRITICAL REQUIREMENT: Toàn bộ tài liệu đặc tả được sinh ra BẮT 
 
 ---
 
-## Mục 2: Làm rõ spec 031 – Metadata Search
+## Mục 3: Làm rõ spec 031 – Metadata Search
 
 | Trường | Nội dung |
 |---|---|
@@ -114,3 +198,593 @@ Spec có nhắc đến tham số limit nhưng chưa đề cập đến cách l�
 - Xác nhận không có sai lệch (regression) so với tài liệu thiết kế ban đầu.
 
 **Kết quả kiểm chứng:** Đạt.
+
+## Mục 4: Viết spec 032 – AI Lyrics Search
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-29 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search (`specs/030-search/032-ai-lyrics-search`) |
+| Công cụ AI | Codex, lệnh `/speckit-specify` |
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng tìm kiếm bằng lời bài hát AI, xử lý kịch bản fallback khi AI Service gặp lỗi 503 hoặc timeout. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify Đặc tả tính năng tìm kiếm bằng lời bài hát AI (032-ai-lyrics-search) cho AuraTune.
+Yêu cầu cụ thể:
+1. Người dùng có thể tìm bài hát thông qua các đoạn lời bài hát (lyrics fragment) mà họ nhớ.
+​2. Hệ thống gọi qua AI Service (POST /ai/search/lyrics) để phân tích ngữ nghĩa và match với dữ liệu lời bài hát.
+3. Xử lý kịch bản fallback: Nếu AI Service quá tải hoặc timeout (lỗi 503), hệ thống tự động chuyển về tìm kiếm văn bản cơ bản (keyword search) và hiển thị thông báo cho người dùng.
+4. Tiêu chí chấp nhận:
+- Tìm chính xác bài hát dù người dùng chỉ nhập một đoạn lời không hoàn chỉnh.
+- Xử lý lỗi 503 mượt mà theo đúng API contract.
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ proposal.md và speckit-workflow-guide.md.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khởi tạo cấu trúc tính năng với `spec.md`, `requirements.md` (checklist 16/16 passing), và `feature.json`.
+- Tài liệu được sinh ra 100% bằng tiếng Anh, đáp ứng đúng yêu cầu `CRITICAL REQUIREMENT`.
+- Tích hợp chuẩn xác logic gọi API `POST /ai/search/lyrics`, tìm kiếm ngữ nghĩa, và luồng fallback keyword search khi HTTP 503/timeout xảy ra.
+- Xác định rõ các acceptance scenarios, states trống/lỗi, và yêu cầu bảo vệ quyền riêng tư người dùng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp, đồng bộ dự án và tuân thủ `speckit-workflow-guide.md`. |
+| API Contract (`POST /ai/search/lyrics`) | Dùng | Khớp với thiết kế API đã duyệt cho truy vấn ngữ nghĩa AI. |
+| Fallback Logic (503/Timeout) | Dùng | Giữ cho hành trình trải nghiệm của người dùng không bị gián đoạn khi AI quá tải. |
+
+### Cách kiểm chứng
+
+- Đối chiếu tài liệu sinh ra (`spec.md`, `requirements.md`) với yêu cầu ban đầu.
+- Xác nhận trạng thái checklist đạt đầy đủ, không còn tag `[NEEDS CLARIFICATION]`.
+- **Kết quả kiểm chứng:** Đạt, sẵn sàng chuyển sang bước clarify.
+
+---
+
+## Mục 5: Làm rõ spec 032 – AI Lyrics Search
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-29 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search |
+| Công cụ AI | Codex, lệnh `/speckit-clarify` |
+| Mục đích | Giải quyết các điểm mơ hồ về giới hạn đầu vào, ngưỡng thời gian timeout, UI/UX thông báo dự phòng, và các kịch bản ngoại lệ (429, Race condition). |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify 
+Làm rõ các vấn đề sau:
+1. Các giới hạn và ngưỡng định lượng (Thresholds & Limits)
+
+- Thời gian Timeout chưa xác định: Các yêu cầu (FR-008) và Tiêu chí (SC-003) nhắc đến việc "hết thời gian phản hồi (timeout)" nhưng không quy định rõ timeout là bao nhiêu giây (ví dụ: 3s, 5s hay 10s).
+- Độ dài truy vấn tối thiểu/tối đa:
+- Ở phần Edge Cases có nhắc đến "Đoạn lời quá ngắn..." nhưng không định nghĩa rõ bao nhiêu ký tự/từ là quá ngắn để chặn tìm kiếm.
+- Tương tự, "dài hơn giới hạn đầu vào được hỗ trợ" cũng không nêu rõ giới hạn này là bao nhiêu ký tự (ví dụ: tối đa 200 ký tự hay 500 ký tự).
+2. Giao diện và Trải nghiệm Người dùng (UI/UX)
+- Vị trí và tính chất của "Thông báo dự phòng": Yêu cầu (FR-010, FR-011) quy định phải có "thông báo rõ ràng" khi dùng tìm kiếm từ khóa thay cho AI. Tuy nhiên, spec chưa làm rõ thông báo này hiển thị dưới dạng nào (Toast message, Banner, Text inline trên kết quả), thời gian hiển thị bao lâu, và người dùng có thể bấm tắt (dismiss) được không.
+- Xử lý phân trang/Số lượng kết quả: Spec không đề cập đến việc nếu có quá nhiều kết quả khớp thì sẽ hiển thị tối đa bao nhiêu bài hát trên một trang, và có hỗ trợ cuộn vô hạn (infinite scroll) hay phân trang (pagination) hay không.
+- Phản hồi lỗi đầu vào (FR-013): Khi người dùng nhập khoảng trắng hoặc không hợp lệ, "phản hồi đầu vào rõ ràng" là thông báo lỗi tại chỗ (inline validation) chặn nút Search, hay là gửi đi rồi mới trả về lỗi popup?
+3. Logic và Thuật toán Tìm kiếm
+
+- Định nghĩa sự "khác biệt thông thường": User Story 1 đề cập hệ thống xử lý được "sự khác biệt thông thường về khoảng trắng, viết hoa hoặc dấu câu". Vậy hệ thống có hỗ trợ lỗi sai chính tả (typos), từ viết tắt, hay tiếng lóng không?
+- Phạm vi của "Tìm kiếm từ khóa cơ bản" (Fallback): Khi chuyển sang tìm kiếm từ khóa dự phòng, hệ thống chỉ tìm đúng (exact match) cụm từ đó trong trường `lyrics`, hay có tìm trong cả `title` (tiêu đề) và `artist` (nghệ sĩ) không?
+- Tiêu chí xếp hạng "phù hợp nhất" (Relevance): Kịch bản nghiệm thu 3 của User Story 1 yêu cầu kết quả sắp xếp để "người dùng nhận diện bài hát phù hợp nhất trước tiên". Tuy nhiên, tiêu chí nào để đánh giá độ phù hợp (điểm semantic score, số lượt nghe của bài hát, hay độ dài đoạn khớp)?
+4. Xử lý các Edge Cases đặc thù
+- Rate Limiting (Giới hạn tỷ lệ gửi): Nếu người dùng spam nút tìm kiếm liên tục, hệ thống xử lý chặn luồng (debounce/throttle) ở phía Client hay đợi server trả về lỗi 429 (Too Many Requests)? Spec có nhắc đến 503 nhưng chưa thấy đề cập đến 429.
+- Race Condition (Xung đột trạng thái): Ở Edge Cases có ghi "Người dùng gửi truy vấn mới trong khi tìm kiếm trước đó đang tải". Hệ thống sẽ hủy (abort) yêu cầu trước đó, hay vẫn để chạy ngầm và bỏ qua kết quả trả về chậm?
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ proposal.md và speckit-workflow-guide.md
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đã hỏi và tích hợp thành công 5/5 quyết định vào tài liệu `spec.md` (giữ nguyên tiếng Anh).
+- **Chốt các giới hạn định lượng:** Đặt timeout AI là 5 giây; giới hạn truy vấn tối thiểu 3 từ và tối đa 200 ký tự.
+- **Chốt quy tắc hiển thị (UI/UX):** Thông báo fallback dùng dismissible inline banner ở trên cùng tập kết quả; phân trang 20 bài hát/trang.
+- **Chốt thuật toán Fallback:** Chỉ tìm kiếm từ khóa trong trường lyrics đã được chuẩn hóa (normalized lyrics), ưu tiên exact phrase.
+- **Chốt Edge Cases:** Lỗi HTTP 429 hiển thị thông báo lỗi retryable (không kích hoạt fallback); xử lý race condition bằng cách lấy truy vấn mới nhất làm authoritative (bỏ qua response cũ).
+- Cập nhật checklist đạt chuẩn 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Timeout 5s & Giới hạn Input | Dùng | Đủ thời gian cho AI xử lý mà không làm người dùng chờ lâu; ngăn chặn payload lớn làm sập server. |
+| Fallback Banner (Dismissible) | Dùng | Cung cấp thông tin minh bạch về việc hạ cấp tìm kiếm nhưng không gây gián đoạn luồng hiển thị kết quả. |
+| Cơ chế lỗi 429 và Race Condition | Dùng | Phân định rõ ràng lỗi spam/rate limit với lỗi sập hệ thống (503), giải quyết triệt để lỗi hiển thị chéo kết quả cũ-mới. |
+| Ngôn ngữ đặc tả (Tiếng Anh) | Dùng | Đảm bảo tính nhất quán của hệ thống tài liệu dự án theo CRITICAL REQUIREMENT. |
+
+### Cách kiểm chứng
+
+- Kiểm tra file `spec.md`, các giới hạn như `5 seconds timeout`, `3 words min`, `200 chars max` đã được bổ sung rõ ràng vào phần yêu cầu chức năng.
+- Xác nhận logic UI cho Fallback Notice và 429 Rate Limit đã có mặt trong tài liệu.
+- **Kết quả kiểm chứng:** Đạt. Sẵn sàng cho bước kế tiếp (`$speckit-plan`).
+
+## Mục 6: Viết spec 033 – Semantic Vector Music Search
+
+| Trường | Nội dung        |
+| ------ | --------------- |
+| Ngày   | 2026-10-29      |
+| Người thực hiện        | Nguyễn Khánh Đăng  |
+| Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search (`specs/030-search/033-semantic-vector-search`) |
+| Công cụ AI               | Gemini, `$speckit-specify`      |
+| Mục đích                 | Tạo đặc tả nghiệp vụ (bằng tiếng Anh) cho tính năng tìm kiếm nhạc ngữ nghĩa; đảm bảo quy tắc an toàn dữ liệu cá nhân (tên, email) và xử lý dự phòng (fallback) khi AI service lỗi.       |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+
+Đặc tả tính năng tìm kiếm ngữ nghĩa bằng Vector (033-semantic-vector-search) cho AuraTune.
+Yêu cầu cụ thể:
+1. Cho phép người dùng tìm kiếm nhạc dựa trên mô tả cảm xúc, ngữ cảnh hoặc tâm trạng (ví dụ: "nhạc buồn cho đêm mưa").
+​2. Tính năng sử dụng LLM và Vector Database để phân tích embedding từ metadata, lyrics và audio features, sau đó đối chiếu không gian vector để trả về kết quả.
+3. Đảm bảo dữ liệu cá nhân (tên, email) không bao giờ được gửi sang third-party AI services để bảo mật.
+4. Xử lý kịch bản fallback về keyword search nếu AI Service không khả dụng.
+
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ ranh giới hệ thống, không tự quyết định framework/DB chi tiết nếu chưa có trong kiến trúc.
+Đã hoàn tất đặc tả feature 033-semantic-vector-search.
+- Spec: [spec.md](C:/Users/Admin/OneDrive/Máy tính/AuraTune_G10/specs/030-search/033-semantic-vector-search/spec.md)
+- Checklist: [requirements.md](C:/Users/Admin/OneDrive/Máy tính/AuraTune_G10/specs/030-search/033-semantic-vector-search/checklists/requirements.md)
+- Đã cập nhật .specify/feature.json trỏ đến feature này.
+- Checklist đạt toàn bộ tiêu chí; không còn marker cần làm rõ.
+- Sẵn sàng cho bước $speckit-plan.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Tạo thành công tài liệu đặc tả `spec.md` và `requirements.md` đáp ứng tiêu chí CRITICAL REQUIREMENT (100% tiếng Anh).
+- Cấu trúc đầy đủ: User Stories, Functional Requirements, Edge Cases, Key Entities và Success Criteria.
+- Phân tích và liệt kê chi tiết các điểm cần làm rõ (NEEDS CLARIFICATION) chia làm 4 nhóm: Logic thuật toán, Xử lý ngôn ngữ và quyền riêng tư, Giới hạn hệ thống (UX), và Đánh giá kết quả.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| ---- | ---------- | ----- |
+| Spec 100% tiếng Anh | Dùng | Đáp ứng đúng ràng buộc đặc tả kỹ thuật của dự án dù prompt nhập bằng tiếng Việt. |
+| Fallback keyword search | Dùng | Đảm bảo tính sẵn sàng của luồng cốt lõi (tìm kiếm) khi third-party AI gặp sự cố. |
+| Các điểm cần làm rõ (Clarification markers) | Dùng (sẽ làm rõ tiếp) | Tài liệu ban đầu cần bổ sung tham số định lượng cụ thể để Engineering và Design có thể làm việc. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt, chuyển tiếp sang bước làm rõ.
+
+**Ghi chú:** Spec nằm tại `specs/030-search/033-semantic-vector-search/spec.md`; checklist nằm trong thư mục `checklists/`.
+
+---
+
+## Mục 7: Làm rõ spec 033 – `$speckit-clarify`
+
+| Trường | Nội dung |
+| ------ | -------- |
+| Ngày   | 2026-10-29  |
+| Người thực hiện   | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search |
+| Công cụ AI | Gemini, `$speckit-clarify` |
+| Mục đích | Trả lời 5 câu hỏi trọng tâm để chốt tham số kỹ thuật, quy tắc quyền riêng tư và công thức xếp hạng, qua đó loại bỏ toàn bộ `[NEEDS CLARIFICATION]` marker. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify 
+Làm rõ các điểm sau:
+1. Về Quy tắc xử lý và Thuật toán (Logic & Algorithms)
+[...] (Nội dung chi tiết 4 nhóm vấn đề)
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tuân thủ ranh giới hệ thống, không tự quyết định framework/DB chi tiết nếu chưa có trong kiến trúc.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Hỏi tuần tự 5 câu hỏi theo hình thức trắc nghiệm có phương án đề xuất (Option A).
+- Chốt thuật toán ranking: sử dụng weighted ensemble (metadata 30%, lyrics 40%, audio 30%).
+- Chốt danh sách audio fields: đầy đủ 13 trường (tempo, key, mode, energy, valence, danceability, acousticness, instrumentalness, speechiness, loudness, liveness, time signature, duration).
+- Chốt cơ chế bảo mật PII: Phát hiện cục bộ tên/email, giữ lại tên nghệ sĩ có trong danh mục, nếu không xác định được an toàn thì dùng keyword fallback.
+- Chốt giới hạn đầu vào UX: tối đa 150 ký tự, timeout 1500ms cho semantic search.
+- Chốt thang đo Relevance: Thang 1-5, điểm 4-5 được tính là đạt.
+- Cập nhật trực tiếp `spec.md` và xóa toàn bộ các marker cần làm rõ, nâng điểm checklist lên 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần  | Quyết định | Lý do |
+| ----- | ---------- | ----- |
+| Trọng số xếp hạng 30/40/30 (Option A) | Dùng       | Cân bằng được tín hiệu từ cả ý nghĩa ca từ lẫn cảm giác âm nhạc, xử lý tốt khi dữ liệu bài hát bị khuyết. |
+| Full 13 Audio fields (Option A) | Dùng       | Độ bao phủ rộng, định nghĩa chính xác "musical feel" mà không bị phụ thuộc vào 1 vector DB cụ thể. |
+| PII Detection & Artist retention (Option A) | Dùng       | Bảo vệ nghiêm ngặt quyền riêng tư nhưng không làm hỏng trải nghiệm tìm kiếm hợp lệ (ví dụ tìm tên ca sĩ). |
+| Giới hạn 150 chars & 1.5s timeout (Option A) | Dùng | Ngăn chặn lạm dụng độ dài truy vấn và giúp hệ thống nhảy sang keyword fallback đủ nhanh để không làm phiền người dùng. |
+| Thang đánh giá 1-5 (Option A) | Dùng | Phù hợp với tính chủ quan của âm nhạc, linh hoạt hơn việc đánh giá nhị phân. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Checklist đạt 16/16 mục.
+
+**Ghi chú:** Do giới hạn 5 câu hỏi của phiên clarify, một số điểm nhỏ (như định nghĩa chi tiết duplicate, tiêu chí unsafe AI response, bộ trường hiển thị) đã được deferred và sẽ được xử lý ở giai đoạn Architecture/Design.
+
+## Mục 8: Viết spec 081 – Album Details
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details (`specs/080-album-interaction/081-album-details`) |
+| Công cụ AI | Gemini, lệnh `/speckit-specify` |
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng xem chi tiết Album, bao gồm thông tin chung (ảnh bìa, nghệ sĩ, năm, thời lượng), danh sách bài hát với lượt nghe, và các trạng thái loading/lỗi. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+Đặc tả tính năng xem chi tiết Album (081-album-details) cho AuraTune.
+Yêu cầu cụ thể:
+1. Người dùng có thể xem các thông tin chi tiết của một album bao gồm: ảnh bìa (cover art), tên nghệ sĩ, năm phát hành, và tổng thời lượng.
+2. Giao diện cần hiển thị số lượt nghe (play count) tương ứng cho từng bài hát trong album.
+3. Tuân thủ API Contract: GET /albums/:id.
+4. Tiêu chí chấp nhận:
+- Load đầy đủ thông tin metadata của album từ database.
+- Hiển thị đúng định dạng thời gian và lượt nghe.
+CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tập trung vào kịch bản sử dụng và yêu cầu nghiệp vụ, không ghi chi tiết code.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khởi tạo thành công cấu trúc thư mục và sinh ra 3 file: `spec.md`, `requirements.md` (checklist), và `feature.json`.
+- Tài liệu được viết 100% bằng tiếng Anh, tuân thủ chặt chẽ `CRITICAL REQUIREMENT`.
+- Tích hợp đúng Hợp đồng API (`GET /albums/:id`) để lấy metadata và danh sách bài hát (track list).
+- Đã quy định rõ cách định dạng thời lượng (`m:ss` hoặc `h:mm:ss`) và số lượt nghe.
+- Checklist ban đầu đạt 16/16. Tuy nhiên, AI để mở một số quyết định kỹ thuật chuyên sâu (phân trang, multi-disc, cache) để làm rõ ở bước sau.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp và tuân thủ yêu cầu bắt buộc của dự án. |
+| API Contract (`GET /albums/:id`) | Dùng | Khớp hoàn toàn với API endpoint đã duyệt cho việc lấy chi tiết album. |
+| Kịch bản lỗi (Not-found/Error/Empty states) | Dùng | Định nghĩa rõ ràng trạng thái UI, giúp tăng chất lượng trải nghiệm người dùng (UX). |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. 
+
+**Ghi chú:** Đặc tả ban đầu bám sát hợp đồng API, tạo tiền đề tốt để thực hiện tiếp bước làm rõ (clarify) các chi tiết về UI/UX và logic xử lý dữ liệu.
+
+---
+
+## Mục 9: Làm rõ spec 081 – Album Details
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details |
+| Công cụ AI | Gemini, lệnh `/speckit-clarify` |
+| Mục đích | Giải quyết 5 điểm mơ hồ về cách load danh sách bài hát lớn, hiển thị album có nhiều đĩa, quy ước ký hiệu khi thiếu dữ liệu, hiển thị placeholder ảnh bìa và cơ chế cache khi điều hướng (Back). |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify Làm rõ các điểm sau:
+1. Xử lý danh sách bài hát lớn (Pagination / Lazy Loading)
+- Điểm mơ hồ: Yêu cầu FR-005 chỉ đề cập đến việc hiển thị danh sách bài hát. Nhưng nếu một album có quá nhiều bài (ví dụ: album tổng hợp 100 bài hát), API có trả về toàn bộ trong một lần gọi không?
+- Cần làm rõ: Giao diện sẽ hiển thị tất cả bài hát cùng lúc, hay cần áp dụng kỹ thuật tải lười (lazy loading) / phân trang (pagination)? Nếu tải lười, tổng thời lượng của album (FR-004) được tính dựa trên toàn bộ album (do API trả về sẵn 1 trường totalDuration) hay client phải tự cộng dồn (chỉ cộng được những bài đã tải)?
+2. Cấu trúc Album có nhiều đĩa (Multi-disc Albums)
+- Điểm mơ hồ: Một số album vật lý (và trên các nền tảng nhạc) được chia thành Disc 1, Disc 2.
+- Cần làm rõ: API có trả về thông tin disc_number không? Nếu có, giao diện có cần nhóm các bài hát theo từng đĩa (chia section) không, hay cứ hiển thị một danh sách phẳng duy nhất theo thứ tự mảng trả về?
+3. Hiển thị cụ thể cho trạng thái "Không khả dụng" (Unavailable UI)
+- Điểm mơ hồ: FR-009 yêu cầu phải phân biệt rõ giá trị bằng 0 và giá trị "không khả dụng", nhưng lại không quy định cụ thể giao diện sẽ trông như thế nào.
+- Cần làm rõ: Nếu số lượt nghe hoặc thời lượng không có sẵn, UI sẽ hiển thị dấu gạch ngang (-), chữ N/A, hay bỏ trống khu vực đó? Việc chốt trước ký hiệu này sẽ giúp UI/UX nhất quán hơn.
+4. Ảnh bìa mặc định (Fallback / Placeholder Image)
+- Điểm mơ hồ:*Câu chuyện người dùng 3 đề cập đến việc "ảnh bìa bị thiếu thì các thông tin khác vẫn hiển thị không làm hỏng trang".
+- Cần làm rõ: Giao diện có cần một ảnh "placeholder" (ảnh mặc định của hệ thống / icon nốt nhạc) để giữ nguyên bố cục layout không? Kích thước ảnh bìa mặc định là bao nhiêu để không làm vỡ các khoảng cách (padding/margin) của tên album và nghệ sĩ?
+5. Cơ chế lưu trữ tạm (Caching) ở phía Client
+- Điểm mơ hồ: Câu chuyện 1 nhắc đến việc "không hiển thị thông tin cũ" nếu điều hướng nhanh giữa các album (Race conditions).
+- Cần làm rõ: Hệ thống có cho phép lưu cache dữ liệu album đã tải (ví dụ lưu trong bộ nhớ Redux/Context vài phút) để người dùng ấn nút "Back" sẽ thấy ngay lập tức mà không phải gọi lại API không?
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Tập trung vào kịch bản sử dụng và yêu cầu nghiệp vụ, không ghi chi tiết code.
+```
+
+### Tóm tắt phản hồi của AI
+
+- AI đã mở chuỗi 5 câu hỏi để chốt từng vấn đề kỹ thuật và tự động cập nhật vào `spec.md` (duy trì 100% tiếng Anh).
+- **Track list & Duration:** Chốt phương án nhận toàn bộ track list theo hợp đồng API hiện tại; giao diện có thể hiển thị dần, nhưng tổng thời lượng tính từ *tất cả* các track có dữ liệu.
+- **Multi-disc Albums:** Giữ nguyên một danh sách phẳng (flat list) theo thứ tự API trả về, không yêu cầu chia nhóm theo đĩa.
+- **UI "Không khả dụng":** Sử dụng ký hiệu dấu gạch ngang dài (em dash "—") cho các dữ liệu thời lượng hoặc lượt nghe bị thiếu; phân biệt rõ với giá trị "0" hợp lệ.
+- **Placeholder Cover:** Sử dụng ảnh mặc định giữ nguyên tỷ lệ khung hình và khung responsive (không ấn định pixel cố định) để không làm vỡ layout.
+- **Caching (Nút Back):** Hiển thị ngay dữ liệu đã tải từ trước, đồng thời chạy ngầm làm mới dữ liệu (refresh) để cập nhật.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Load toàn bộ Track list & Tổng Duration (Option B) | Dùng | Không phá vỡ hợp đồng API hiện tại, phản ánh đúng tổng thời lượng album mà không bắt client cộng dồn thủ công từng trang. |
+| Flat list cho Multi-disc (Option A) | Dùng | Đơn giản hóa cấu trúc UI vì hợp đồng API chưa hỗ trợ metadata cho số thứ tự đĩa. |
+| Ký hiệu Em dash "—" (Option A) | Dùng | Gọn gàng, dễ quét bằng mắt, khác biệt hoàn toàn với số 0. |
+| Placeholder Responsive (Option A) | Dùng | Đảm bảo tính ổn định của Layout trên đa thiết bị thay vì chốt cứng một kích thước (ví dụ 300x300px). |
+| Cache & Refresh ngầm (Option B) | Dùng | Cân bằng hoàn hảo giữa hiệu năng điều hướng (nhanh) và tính mới của dữ liệu. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Checklist đạt 16/16 và không còn marker `[NEEDS CLARIFICATION]`. Spec sẵn sàng cho bước `$speckit-plan`.
+
+## Mục 10: Viết spec 082 – Album Tracklist 
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist (`specs/080-album-interaction/082-album-tracklist`) |
+| Công cụ AI | Gemini, lệnh `/speckit-specify` |
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng tương tác với danh sách bài hát trong Album, thiết lập hành vi hiển thị và tích hợp mượt mà với Music Player / Queue Management. |
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+Đặc tả tính năng tương tác với danh sách bài hát trong Album (082-album-tracklist) cho AuraTune.
+Yêu cầu cụ thể:
+1. Hiển thị toàn bộ danh sách bài hát (tracklist) thuộc album.
+2. Người dùng có thể chọn phát toàn bộ album (play all) hoặc phát một bài hát cụ thể trong danh sách.
+3. Hành động phát nhạc cần tích hợp mượt mà với Music Player và Queue Management (đẩy tracklist vào Queue).
+4. Tiêu chí chấp nhận:
+- Thứ tự bài hát hiển thị đúng với dụng ý của nghệ sĩ.
+- Bấm play album sẽ nạp đúng danh sách vào hàng đợi phát nhạc.
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh, tuan thủ chặc chẽ các quy tắc đã được nhóm định ra trong proposal.md
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khởi tạo thành công tài liệu đặc tả `spec.md` và `requirements.md` (đạt 16/16).
+- Tài liệu được viết 100% bằng tiếng Anh, tuân thủ chặt chẽ `CRITICAL REQUIREMENT`.
+- Xác định rõ User Stories, Acceptance Scenarios, Functional Requirements cho các thao tác Play Album, Play Selected Track, và giữ nguyên player khi điều hướng (navigation).
+- Chỉ ra các điểm còn mơ hồ (Hành vi ghi đè hàng đợi, Xung đột Shuffle, Partial Availability, Duplicate Prevention, và Performance cho album dài) để chuẩn bị cho bước làm rõ.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp và tuân thủ yêu cầu bắt buộc của dự án. |
+| Tích hợp Music Player / Queue | Dùng | Phù hợp với kiến trúc dùng chung, không tạo thêm player riêng biệt gây xung đột. |
+| Các điểm cần làm rõ (Clarification markers) | Dùng | Làm tiền đề tốt để đưa ra các quyết định kỹ thuật và UI/UX chính xác ở bước sau. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Sẵn sàng cho bước `$speckit-clarify`.
+
+---
+
+## Mục 11: Làm rõ spec 082 – Album Tracklist
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-30 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist |
+| Công cụ AI | Gemini, lệnh `$speckit-clarify` |
+| Mục đích | Giải quyết các điểm mơ hồ về cơ chế chèn hàng đợi, xung đột chế độ trộn bài, xử lý track không khả dụng, chống nhân bản queue và xử lý hiển thị album dài. |
+
+### Prompt đã dùng
+
+```text
+speckit-clarify Làm rõ những điểm sau:
+- Hành vi ghi đè hay chèn vào Hàng đợi (Queue Handling)...
+- Xung đột với Chế độ Trộn bài (Shuffle Mode)...
+- Xử lý các bài hát khả dụng một phần (Partial Availability)...
+- Định nghĩa rõ việc "Chống trùng lặp" (Duplicate Prevention)...
+- Giao diện và Trạng thái lỗi (UI/UX Feedback)...
+- Giới hạn tải cho Album lớn (Performance/Pagination)...
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Mở một "Clarification Session" với 5 câu hỏi trọng tâm đi kèm các đề xuất lựa chọn (Option A, B, C).
+- Nhận phản hồi "yes" / chọn option và tự động cập nhật 5 quyết định nghiệp vụ vào `spec.md` (giữ nguyên tiếng Anh):
+  1. **Queue Handling:** Chèn các track của album ngay sau track hiện tại, giữ lại queue cũ phía sau (Insert Next).
+  2. **Shuffle Mode:** Tự động tắt Shuffle khi Play Album để đảm bảo thứ tự nghệ sĩ.
+  3. **Partial Availability:** Hiển thị track không khả dụng dưới dạng disabled kèm lý do, tự động bỏ qua khi phát.
+  4. **Duplicate Prevention:** Khởi động lại (restart) phần album từ track đầu và làm mới các track thuộc album trong queue, không ảnh hưởng đến các track khác.
+  5. **Large Albums:** Tải toàn bộ danh sách để Play Album chạy đúng, nhưng hiển thị dần các hàng trên UI (Lazy render).
+- Hoàn thiện toàn bộ đặc tả, checklist đạt 16/16, không còn placeholder cần làm rõ.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chèn album vào queue (Insert next) | Dùng | Không làm mất phiên nghe đang xếp sẵn của người dùng mà vẫn phát album ngay lập tức. |
+| Tắt chế độ Shuffle | Dùng | Tôn trọng trải nghiệm nghe album nguyên bản theo chủ ý nghệ sĩ. |
+| Hiển thị track disabled kèm lý do | Dùng | Cung cấp UI/UX minh bạch, người dùng hiểu tại sao track bị bỏ qua mà luồng phát không gián đoạn. |
+| Khởi động lại album & làm mới queue | Dùng | Giải quyết triệt để lỗi trùng lặp track (duplicate) mà vẫn cho phép người dùng chủ động nghe lại từ đầu. |
+| Tải toàn bộ & hiển thị dần | Dùng | Đáp ứng yêu cầu Play toàn bộ album không bị thiếu track do phân trang, đồng thời tối ưu hiệu năng render. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Checklist hoàn thiện 16/16, sẵn sàng chuyển sang bước tiếp theo (`$speckit-plan`). Lỗi hiển thị thông báo chung của hệ thống sẽ được chốt chi tiết ở bước thiết kế.
+
+## Mục 12: Viết spec 083 – Save and Share Album
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-10-30 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album (`specs/080-album-interaction/083-save-and-share-album`) | 
+| Công cụ AI | Gemini, lệnh `/speckit-specify` | 
+| Mục đích | Tạo tài liệu đặc tả nghiệp vụ (spec) ban đầu cho tính năng lưu và chia sẻ album, tuân thủ đúng 2 API contract được cung cấp và định nghĩa luồng thao tác cơ bản. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-specify
+Đặc tả tính năng lưu trữ và chia sẻ Album (083-save-and-share-album) cho AuraTune.
+Yêu cầu cụ thể:
+1. Người dùng đã đăng nhập có thể lưu (save/like) album vào thư viện cá nhân (Liked Albums / Saved Albums).
+2. Bất kỳ người dùng nào cũng có thể chia sẻ (share) album thông qua URL hoặc các nút chia sẻ mạng xã hội.
+3. Tuân thủ API Contract: PUT /albums/:id/save và DELETE /albums/:id/save.
+4. Tiêu chí chấp nhận:
+- Trạng thái "Đã lưu" được đồng bộ chính xác với tài khoản user.
+- Link chia sẻ khi truy cập phải dẫn đúng vào trang 081-album-details.
+- CRITICAL REQUIREMENT: Mặc dù prompt này được viết bằng tiếng Việt, toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Không tự đưa ra các quyết định kỹ thuật chưa được duyệt.
+```
+
+### Tóm tắt phản hồi của AI
+
+* Khởi tạo thành công 3 file: `spec.md`, `requirements.md` (checklist ban đầu 16/16), và `.specify/feature.json`.
+* Tài liệu được viết 100% bằng tiếng Anh theo đúng `CRITICAL REQUIREMENT`.
+* Tích hợp chính xác API Contract (`PUT /albums/:id/save` và `DELETE /albums/:id/save`).
+* Bao gồm đầy đủ các kịch bản: lưu/gỡ lưu gắn với đúng tài khoản, yêu cầu đăng nhập khi lưu, chia sẻ bằng URL và điều hướng URL tới đúng trang chi tiết album mà không làm thay đổi các quy tắc truy cập công khai hiện có.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Ngôn ngữ tài liệu (Tiếng Anh) | Dùng | Đảm bảo tính chuyên nghiệp và tuân thủ yêu cầu bắt buộc của dự án. | 
+| API Contract cho Lưu/Xóa | Dùng | Khớp hoàn toàn với tài liệu API đã được cung cấp. | 
+| Quy tắc truy cập chia sẻ | Dùng | Giữ nguyên quyền xem chi tiết album hiện có, không tự ý tạo thêm rules truy cập public dư thừa. | 
+
+### Cách kiểm chứng
+
+* \[x\] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+* \[x\] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+* \[x\] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+* \[x\] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt.
+
+**Ghi chú:** Đặc tả ban đầu bám rất sát yêu cầu. Chuyển sang bước làm rõ để xử lý các chi tiết về UI/UX và giới hạn hệ thống.
+
+## Mục 13: Làm rõ spec 083 – Save and Share Album
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-10-30 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | Gemini, lệnh `/speckit-clarify` | 
+| Mục đích | Giải quyết các điểm mơ hồ về xử lý UI/UX trạng thái chờ (loading), thông báo lỗi, hình ảnh trực quan của nút lưu, danh sách mạng xã hội chia sẻ, và giới hạn lưu trữ của hệ thống. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify Làm rõ các vấn đề sau:
+1. Giao diện và Trải nghiệm Người dùng (UI/UX)
+- Xử lý trạng thái chờ (Loading State): Yêu cầu FR-005 chỉ định không được hiển thị thay đổi chưa được xác nhận là thành công...
+- Chi tiết về "Phản hồi rõ ràng" (Clear Feedback): Ở các luồng thất bại...
+- Trạng thái hình ảnh của nút Lưu/Chia sẻ...
+2. Tính năng Chia sẻ (Social Sharing)
+- Các nền tảng được hỗ trợ...
+3. Giới hạn Hệ thống và Luồng Nghiệp vụ (Business & System Limits)
+- Giới hạn số lượng (Quota)...
+- Hành vi "Bỏ lưu" (Unsave) ở Thư viện cá nhân...
+CRITICAL REQUIREMENT: Toàn bộ tài liệu đặc tả được sinh ra BẮT BUỘC phải viết hoàn toàn bằng tiếng Anh. Không tự đưa ra các quyết định kỹ thuật chưa được duyệt.
+```
+
+### Tóm tắt phản hồi của AI
+
+* Đưa ra một "Clarification Session" với 5 câu hỏi trắc nghiệm tập trung vào các điểm mù của đặc tả.
+* **Loading State:** Chọn Option A – Tạm khóa nút Lưu/Bỏ lưu trong lúc yêu cầu đang xử lý, hiển thị tiến trình và giữ nguyên trạng thái đã xác nhận cho tới khi có phản hồi.
+* **Error Feedback:** Chọn Option A – Hiển thị thông báo inline ngắn, riêng biệt cho từng hành động, kèm gợi ý thử lại khi phù hợp.
+* **Visual State:** Chọn Option A – Nút "Chưa lưu" hiển thị tim viền (Outlined heart) + text “Save”; Nút "Đã lưu" hiển thị tim đặc (Filled heart) + text “Saved”.
+* **Social Sharing:** Chọn Option A – Hỗ trợ Copy Link, Facebook, Instagram, X và Zalo.
+* **System Quota:** Chọn Option A – Không đặt quota giới hạn riêng cho tính năng này; áp dụng giới hạn chung hiện có của nền tảng.
+* **Cập nhật Checklist:** Sau khi cập nhật các quyết định trên (hoàn toàn bằng tiếng Anh) vào `spec.md`, checklist đạt 15/16. Mục "Requirements are testable and unambiguous" được bỏ đánh dấu do có một câu hỏi bị hoãn (deferred) vì giới hạn 5 câu hỏi của phiên (câu hỏi về hành vi bỏ lưu ngay trong màn hình Saved Albums).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Khóa nút khi loading (Option A) | Dùng | Ngăn chặn spam click từ người dùng và giữ tính trung thực của trạng thái (tránh Optimistic UI sai lệch). | 
+| Thông báo lỗi Inline (Option A) | Dùng | Ít làm gián đoạn luồng duyệt web của người dùng nhất, đồng thời giữ context rõ ràng. | 
+| UI icon Tim viền/Tim đặc (Option A) | Dùng | Pattern chuẩn của ngành âm nhạc (Spotify/Apple Music), dễ hiểu, kết hợp cùng text để tăng tính rõ ràng. | 
+| Danh sách 5 mạng xã hội (Option A) | Dùng | Bao phủ đúng các nền tảng phổ biến tại Việt Nam và nền tảng chuẩn mực, có fallback an toàn là "Copy Link". | 
+| Không đặt quota (Option A) | Dùng | Giữ cho hệ thống đơn giản, không tự chế thêm business logic chưa được duyệt từ Product. | 
+
+### Cách kiểm chứng
+
+* \[x\] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+* \[x\] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+* \[x\] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+* \[x\] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Tích hợp thành công 5 lựa chọn vào `spec.md`.
+
+**Ghi chú:** Vấn đề chưa được chốt về *hành vi khi "Bỏ lưu" ở ngay trong màn hình Saved Albums (biến mất ngay lập tức hay cần reload)* đã được ghi chú vào mục Notes của file `requirements.md`. Phần cốt lõi của tính năng 083 đã rõ ràng, sẵn sàng chuyển sang bước `$speckit-plan`. Có thể cần trao đổi thêm với team Design/Product về hành vi của màn hình Saved Albums trước khi tạo task.
+
+---
+
+## Mục 14: Làm rõ spec 083 (bổ sung) – Hành vi Bỏ lưu trong Saved Albums
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-10-30 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | Gemini, lệnh `/speckit-clarify` | 
+| Mục đích | Xử lý nốt câu hỏi bị hoãn từ phiên trước, làm rõ hành vi UX khi người dùng gỡ một album ngay bên trong giao diện danh sách Saved Albums. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify Làm rõ vấn đề về *hành vi khi "Bỏ lưu" ở ngay trong màn hình Saved Albums (biến mất ngay lập tức hay cần reload)
+Question: When a listener removes an album while viewing Saved Albums, when should that album disappear from the visible list?
+Why it matters: This determines whether the list stays consistent with the confirmed account state without showing an unconfirmed removal.
+Recommended: Option A — Keep the album visible while the request is pending, then remove it from the current list as soon as removal is confirmed. This avoids optimistic UI while keeping the open library in sync without requiring a reload.
+OptionDescriptionARemove it from the current list immediately after the removal is confirmed.BKeep it visible until the listener navigates away or reloads the page.CAsk the listener to refresh the list after a successful removal.ShortProvide a different brief behavior.
+
+You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.
+Đã chốt: trong Saved Albums, album vẫn hiển thị khi yêu cầu bỏ lưu đang chờ; sau khi thành công, album biến mất khỏi danh sách đang mở mà không cần tải lại. Nếu thao tác thất bại, album vẫn hiển thị và có thông báo lỗi inline.
+```
+
+### Tóm tắt phản hồi của AI
+
+* Xác nhận lựa chọn **Option A**: Trong lúc chờ API xử lý, album vẫn hiển thị. Ngay sau khi có xác nhận bỏ lưu thành công từ server, album sẽ tự động biến mất khỏi danh sách giao diện đang hiển thị mà không cần người dùng tải lại trang. Trường hợp lỗi, album vẫn giữ nguyên trên danh sách kèm thông báo lỗi inline.
+* Đã cập nhật quyết định này (bằng tiếng Anh) vào các mục: Clarifications, Acceptance Scenarios, FR-002, Success Criteria và Assumptions trong file `spec.md`.
+* Checklist `requirements.md` đã được xóa toàn bộ marker cần làm rõ, đánh dấu đạt mục cuối cùng, nâng tổng điểm lên 16/16.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Xóa ngay sau khi xác nhận (Option A) | Dùng | Tránh việc sử dụng Optimistic UI (hiển thị xóa trước khi server xác nhận) gây sai lệch dữ liệu, nhưng vẫn đảm bảo tính phản hồi ngay lập tức cho người dùng sau khi thao tác thành công. | 
+
+### Cách kiểm chứng
+
+* \[x\] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+* \[x\] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+* \[x\] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+* \[x\] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Toàn bộ các khía cạnh hành vi, luồng UX, ranh giới dữ liệu và tiêu chí nghiệm thu đều đã được xử lý xong.
+
+**Ghi chú:** Đạt. Tính năng đã sẵn sàng để chuyển tiếp qua giai đoạn lập kế hoạch nhiệm vụ (`$speckit-plan`).
