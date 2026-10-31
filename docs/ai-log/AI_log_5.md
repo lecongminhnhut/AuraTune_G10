@@ -68,6 +68,14 @@ bạn có thể coi những mẫu của thành viên khác trong github để l�
 | Công cụ AI | Claude Code |
 | Mục đích | Hỗ trợ soạn nháp spec và checklist theo báo cáo audit, cập nhật spec 131 và chụp ảnh UI bổ sung |
 
+### Tóm tắt yêu cầu
+
+Đây là phần diễn đạt lại của người thực hiện, phần prompt gốc nằm ở mục tiếp theo.
+
+- Đối chiếu báo cáo audit `spec-audit-report.md` với repo để xác định các mục còn thiếu của nhóm 020, 040, 050 và 130.
+- Hỗ trợ soạn nháp spec và checklist theo mẫu Spec Kit, bám theo Proposal, Vision Document, API Contract và mã nguồn hiện có.
+- Bổ sung ảnh UI còn thiếu vào spec theo yêu cầu của nhóm trưởng.
+
 ### Prompt đã dùng
 
 ```text
