@@ -137,3 +137,11 @@ These gaps do not change the requirements. They record where the current UI diff
 - **Path**: `ui/05-queue-after-removing-song.png`
 - **State**: Instant UI update upon clicking the remove button.
 - **Description**: Shows the QueuePanel refreshed with the item removed, the count decremented to 0, and the empty state placeholder rendered.
+
+### Additional States
+
+#### Already in Queue Notice
+
+Adding a track that is already upcoming leaves the queue unchanged and shows a notice.
+
+![Already in Queue Notice](ui/06-already-in-queue-notice.png)

@@ -285,3 +285,29 @@ This baseline was checked at group level against the code. It is not a requireme
 | 100 AI Recommendations | Nhựt (A) | 101, 102, 103 merged | Available | Rule-based mock data only |
 | 110 Admin Functions | Hoàng (D) | 111, 112, 113 merged | Available | Requirement-level check pending |
 | 120 AI Conversational Agent | Nhựt (A) | 121, 122, 123 merged | Available | Rule-based mock data only; no API defined |
+
+## UI Screenshots
+
+#### Sign-In Required State
+
+A guest opens a route that needs an account and sees the sign-in prompt. The sign-in link keeps the original path.
+
+![Sign-In Required State](ui/01-login-required-state.png)
+
+#### Not Found State
+
+An unknown path shows the not-found state inside the application shell.
+
+![Not Found State](ui/02-not-found-state.png)
+
+#### Not Authorized State
+
+A signed-in listener opens the administration route and sees the not-authorized state.
+
+![Not Authorized State](ui/03-not-authorized-state.png)
+
+#### Mobile Navigation
+
+The mobile navigation shown at 375 px wide.
+
+![Mobile Navigation](ui/04-mobile-navigation.png)

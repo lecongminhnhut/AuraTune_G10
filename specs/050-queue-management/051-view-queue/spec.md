@@ -146,3 +146,11 @@ These gaps do not change the requirements. They record where the current UI diff
 - **Path**: `ui/04-queue-empty-state.png`
 - **State**: Upcoming queue cleared.
 - **Description**: Displays the empty state dashed container informing the user that the queue is empty and guiding them to add songs using the track options menu `...`.
+
+### Additional States
+
+#### Clear All Action
+
+The clear all action in the queue panel, shown when upcoming tracks exist.
+
+![Clear All Action](ui/05-queue-clear-all-action.png)

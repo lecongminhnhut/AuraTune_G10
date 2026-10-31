@@ -131,3 +131,11 @@ These gaps do not change the requirements. They record where the current UI diff
 - **Path**: `ui/04-play-next-playback-transition.png`
 - **State**: Next track action triggered.
 - **Description**: Displays the QueuePanel after clicking next track: "Chuyện rằng" is now the active song displayed in the "Đang phát" card, confirming smooth playback execution.
+
+### Additional States
+
+#### Already Playing Notice
+
+Selecting Play Next on the current track leaves the queue unchanged and shows a notice.
+
+![Already Playing Notice](ui/05-already-playing-notice.png)

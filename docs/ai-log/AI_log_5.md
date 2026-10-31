@@ -80,6 +80,7 @@ bạn có thể coi những mẫu của thành viên khác trong github để l�
 - Viết lại 15 spec theo mẫu Spec Kit, dựa trên Proposal, Vision Document, API Contract và mã nguồn frontend, giữ nguyên ảnh UI.
 - Ghi nhận khác biệt giữa spec và prototype trong mục Known Gaps của từng spec.
 - Đưa ra quyết định tạm cho OQ-1 đến OQ-8 trong spec 131, mỗi mục có người phụ trách xác nhận.
+- Chụp thêm 12 ảnh UI từ bản chạy cục bộ và bổ sung vào spec 021, 024, 045, 046, 051, 052, 054 và 131.
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 

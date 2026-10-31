@@ -152,3 +152,11 @@ This screenshot captures the lower section of the Home Dashboard layout, showing
 This screenshot documents user interaction and navigation between Home Dashboard and platform sections. It shows sidebar menu interaction ("Khám phá", "Bảng xếp hạng", "Thư viện") and section action controls ("Xem tất cả", "Khám phá thêm") enabling rapid navigation across the application.
 
 ![Home Navigation and Section Exploration](ui/06-home-navigation-explore-and-back.png)
+
+### Additional States
+
+#### Home on a Phone
+
+Home at 375 px wide, with sections reflowed and no horizontal page scrolling.
+
+![Home on a Phone](ui/07-home-mobile-layout.png)

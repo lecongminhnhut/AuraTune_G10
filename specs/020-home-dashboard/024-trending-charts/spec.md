@@ -129,3 +129,11 @@ This screenshot illustrates the active playback state when a trending song is se
 This screenshot captures the full Charts Page view (`/charts`) reached by clicking the "Bảng xếp hạng" action in the section header. The dedicated charts page presents the complete Top bài hát AuraTune rankings, genre filtering tabs ("Tất cả", "Pop", "Ballad", "Indie", "R&B", "Hip-hop"), and a "Phát bảng xếp hạng" batch playback button.
 
 ![Navigation to Full Charts Page](ui/04-trending-charts-full-page-navigation.png)
+
+### Additional States
+
+#### Charts Filtered by Genre
+
+The Charts page with a genre selected, ranking only tracks in that genre.
+
+![Charts Filtered by Genre](ui/05-charts-genre-filter.png)

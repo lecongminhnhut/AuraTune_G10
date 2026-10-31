@@ -154,3 +154,17 @@ This screenshot illustrates the comment composition workflow for an authenticate
 This screenshot demonstrates immediate real-time rendering upon submitting the comment. The new comment appears at the top of the thread with the author display name, "Vừa xong" timestamp, and a contextual delete button (`Trash2`).
 
 ![Successful Comment Submission](ui/05-song-comment-submitted-success.png)
+
+### Additional States
+
+#### Empty Comments State
+
+A track with no comments shows an empty state and the comment input for signed-in listeners.
+
+![Empty Comments State](ui/06-song-comments-empty-state.png)
+
+#### Delete Own Comment
+
+The author of a comment sees the delete action on that comment.
+
+![Delete Own Comment](ui/07-song-comment-delete-action.png)

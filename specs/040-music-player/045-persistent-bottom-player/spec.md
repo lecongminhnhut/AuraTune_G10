@@ -147,3 +147,11 @@ This screenshot illustrates the player expansion interaction (`onExpand`). Click
 This screenshot shows the collapse interaction. Selecting the chevron-down button or pressing `Esc` smoothly dismisses the full-screen modal, restoring the docked BottomPlayer while maintaining active playback.
 
 ![Player Collapse Back to Docked Bottom Bar](ui/05-player-collapse-to-bottom.png)
+
+### Additional States
+
+#### Mini Player on a Phone
+
+The compact mini player above the mobile navigation at 375 px wide.
+
+![Mini Player on a Phone](ui/06-bottom-player-mobile.png)
