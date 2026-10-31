@@ -1,55 +1,107 @@
-# Feature Specification: 052 - Add and Remove Queue Items (Thêm và xóa bài hát khỏi hàng chờ)
+# Feature Specification: Add and Remove Queue Items
 
-> [!NOTE]
-> **Contextual Note**: This specification was reconstructed and formalized based on AuraTune project requirements (Proposal, Vision Document, System Architecture, API Contract) and the existing frontend implementation in `src/frontend/src/components/song/TrackMenu.jsx`, `QueuePanel.jsx`, and `App.jsx`.
+**Feature Branch**: `020-home-player-queue-spec`
 
----
+**Created**: 2026-10-31
 
-## 1. Overview & Objective
+**Status**: Draft — Ready for Planning
 
-The **Add and Remove Queue Items** feature provides listeners with full dynamic control over what gets added to and removed from their active listening session.
-- **Add to Queue**: Available through any song row's options menu (`...`), letting users queue songs from playlists, search results, or charts without interrupting current playback.
-- **Remove from Queue**: Available directly within the Queue drawer on each upcoming item via an individual removal button (`X`), instantly removing the track from the upcoming queue and updating the queue counter.
-- **Feedback**: Instant toast notifications confirm each action (e.g., `"Đã thêm “...” vào danh sách chờ."`).
+**Input**: User description: "Feature 052 lets listeners add tracks to the end of the queue and remove upcoming tracks during a listening session."
 
----
+## Clarifications
 
-## 2. User Stories & Acceptance Criteria
+### Session 2026-10-31
 
-### User Story 1: Add a Track to Queue via Options Menu
-- **As a** listener,
-- **I want to** select "Thêm vào danh sách chờ" from a track's context menu,
-- **So that** the song is appended to the end of my active upcoming queue.
+- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Can a track be in the upcoming list twice? → A: No. Adding a track already upcoming changes nothing, and the listener is told.
+- Q: Can the current track be removed? → A: No. Only upcoming tracks can be removed.
+- Q: Can several tracks be added at once? → A: Yes. Tracks already upcoming and unavailable tracks are skipped, and the listener sees how many were added.
+- Q: Can an already played track be added again? → A: Yes. It moves to the end of the queue.
 
-**Acceptance Criteria:**
-- Clicking the track menu `...` opens the options dropdown containing "Thêm vào danh sách chờ" (`ListEnd` icon).
-- Selecting "Thêm vào danh sách chờ" appends the track to the queue if not already present.
-- A toast notification confirms: `"Đã thêm “<Tên bài hát>” vào danh sách chờ."` (or warns if already queued).
-- The song appears at the tail of the upcoming queue list in `QueuePanel`.
+## User Scenarios & Testing *(mandatory)*
 
-### User Story 2: Remove a Track from Queue
-- **As a** listener,
-- **I want to** remove an individual song from the upcoming queue,
-- **So that** I can filter out songs I do not wish to hear during this session.
+### User Story 1 - Add a Track to the Queue (Priority: P1)
 
-**Acceptance Criteria:**
-- Each upcoming item in the `QueuePanel` has a dedicated remove button (`aria-label="Xóa <Tên bài hát> khỏi danh sách chờ"`).
-- Clicking the remove button instantly removes the song from the queue array in player state.
-- The upcoming count in the header decrements accordingly.
-- If the last upcoming song is removed, the panel gracefully displays the empty queue state.
+As a listener, I want to add a track to my queue so that it plays later without interrupting the current track.
+
+**Why this priority**: Adding tracks is the main way listeners shape a session.
+
+**Independent Test**: Add a track from a list and confirm it appears last in the queue.
+
+**Acceptance Scenarios**:
+
+1. **Given** a track in any list, **When** I select add to queue, **Then** it appears at the end and I see a confirmation.
+2. **Given** the track is already upcoming, **When** I add it, **Then** the queue does not change and I am told.
+3. **Given** a track is playing, **When** I add another, **Then** playback is not interrupted.
 
 ---
 
-## 3. Frontend Component Mapping
+### User Story 2 - Remove a Track (Priority: P1)
 
-- **Options Menu Component**: [`TrackMenu.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/song/TrackMenu.jsx)
-- **Queue Panel**: [`QueuePanel.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/player/QueuePanel.jsx)
-- **Application Context & Toast**: [`App.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/App.jsx) (`addToQueue`, `store.toast`)
-- **Player State**: [`useMockPlayer.js`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/hooks/useMockPlayer.js) (`addToQueue`, `removeFromQueue`)
+As a listener, I want to remove an upcoming track so that I do not hear it in this session.
+
+**Why this priority**: Removal gives listeners control of the session.
+
+**Independent Test**: Remove a track and confirm the list and count update.
+
+**Acceptance Scenarios**:
+
+1. **Given** an upcoming track, **When** I select remove, **Then** it leaves the list and the count decreases.
+2. **Given** the last upcoming track, **When** I remove it, **Then** the empty state appears.
 
 ---
 
-## 4. UI Screenshots
+### Edge Cases
+
+- **Unavailable track**: It cannot be added, and the listener is told.
+- **Adding the current track**: The queue does not change, and the listener is told.
+- **Batch with existing tracks**: Only new tracks are added.
+- **Batch with nothing new**: The listener is told nothing was added.
+- **Removing during a transition**: The next track follows the updated list.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: The system MUST allow adding a track to the end of the queue from track menus and the full player.
+- **FR-002**: The system MUST confirm each add action.
+- **FR-003**: The system MUST NOT create duplicate upcoming tracks.
+- **FR-004**: The system MUST inform the listener when a track is already upcoming or playing.
+- **FR-005**: The system MUST move an already played track to the end when it is added again.
+- **FR-006**: The system MUST refuse to add unavailable tracks and inform the listener.
+- **FR-007**: The system MUST allow adding several tracks at once and report the number added.
+- **FR-008**: The system MUST allow removing any upcoming track.
+- **FR-009**: The system MUST NOT allow removing the current track.
+- **FR-010**: The system MUST update the list and count immediately after each change.
+- **FR-011**: The system MUST NOT interrupt playback when the queue changes.
+
+### Key Entities *(include if feature involves data)*
+
+- **Queue Item**: A track reference in the queue.
+- **Queue Feedback**: The confirmation or notice shown after an action.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: An added track appears at the end of the queue in 100% of test runs.
+- **SC-002**: Zero duplicate upcoming tracks in all test runs.
+- **SC-003**: 100% of queue changes leave playback uninterrupted.
+- **SC-004**: Adding a track takes 2 interactions from a track list.
+
+## Assumptions
+
+- Authentication and user roles are provided by group `010-authentication`.
+- API alignment: Queue edits are client-side and need no API.
+- Project documentation is maintained in English Markdown, in accordance with `docs/management/team-contract.md`.
+
+### Known Gaps in the Current Prototype
+
+These gaps do not change the requirements. They record where the current UI differs from this specification.
+
+- Adding a single unavailable track is not blocked in the prototype; only batch adds filter them.
+
+## UI Screenshots
 
 | # | Screenshot Filename | Workflow Step / State | UI Elements & Components |
 |---|---------------------|------------------------|---------------------------|
@@ -85,3 +137,11 @@ The **Add and Remove Queue Items** feature provides listeners with full dynamic 
 - **Path**: `ui/05-queue-after-removing-song.png`
 - **State**: Instant UI update upon clicking the remove button.
 - **Description**: Shows the QueuePanel refreshed with the item removed, the count decremented to 0, and the empty state placeholder rendered.
+
+### Additional States
+
+#### Already in Queue Notice
+
+Adding a track that is already upcoming leaves the queue unchanged and shows a notice.
+
+![Already in Queue Notice](ui/06-already-in-queue-notice.png)

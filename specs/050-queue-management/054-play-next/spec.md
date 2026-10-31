@@ -1,53 +1,107 @@
-# Feature Specification: 054 - Play Next (Phát tiếp theo)
+# Feature Specification: Play Next
 
-> [!NOTE]
-> **Contextual Note**: This specification was reconstructed and formalized based on AuraTune project requirements (Proposal, Vision Document, System Architecture, API Contract) and the existing frontend implementation in `src/frontend/src/components/song/TrackMenu.jsx`, `QueuePanel.jsx`, `App.jsx`, and `useMockPlayer.js`.
+**Feature Branch**: `020-home-player-queue-spec`
 
----
+**Created**: 2026-10-31
 
-## 1. Overview & Objective
+**Status**: Draft — Ready for Planning
 
-The **Play Next** feature gives listeners immediate priority control over their playback flow. When browsing songs in charts, search results, albums, or playlists, selecting "Phát tiếp theo" inserts the target song immediately after the currently playing track (at position #1 of the upcoming queue).
-- **High-Priority Placement**: The chosen track bypasses the rest of the queue to become the very next song played.
-- **Immediate Feedback**: A toast notification informs the user: `“<Tên bài hát>” sẽ phát tiếp theo.`
-- **Playback Transition**: Upon completing the current track or skipping forward, playback seamlessly advances to the prioritized song.
+**Input**: User description: "Feature 054 lets listeners choose a track to play immediately after the current one, without clearing the rest of the queue."
 
----
+## Clarifications
 
-## 2. User Stories & Acceptance Criteria
+### Session 2026-10-31
 
-### User Story 1: Prioritize a Track with Play Next
-- **As a** listener,
-- **I want to** select "Phát tiếp theo" on any song I encounter,
-- **So that** it plays as soon as the current song finishes without erasing my existing queue.
+- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Where does the track go? → A: Directly after the current track. If it is already queued, it moves there and is not duplicated.
+- Q: What if Play Next is used several times? → A: The most recent choice plays first, and earlier choices follow it.
+- Q: What if the track is already playing? → A: The queue does not change, and the listener is told.
+- Q: Does Play Next apply while shuffle is on? → A: Yes. An explicit Play Next choice takes priority over the next random selection.
 
-**Acceptance Criteria:**
-- The track options dropdown `...` contains "Phát tiếp theo" with the `ListStart` icon.
-- Choosing "Phát tiếp theo" moves or inserts the track into the upcoming queue at index 0 (immediately after the currently playing song).
-- A toast notification confirms: `“<Tên bài hát>” sẽ phát tiếp theo.` (or informs if the song is already currently playing).
+## User Scenarios & Testing *(mandatory)*
 
-### User Story 2: Inspect Prioritized Position and Playback Transition
-- **As a** listener,
-- **I want to** verify that the prioritized track sits at position #1 in the queue and plays next,
-- **So that** I have full confidence in the playback order.
+### User Story 1 - Prioritize a Track (Priority: P1)
 
-**Acceptance Criteria:**
-- Opening `QueuePanel` displays the prioritized song at the very top of the upcoming list (#1 under "Đang phát").
-- Advancing playback (via `nextTrack` or natural completion) immediately switches playback to the prioritized song.
-- The "Đang phát" card in the queue drawer updates to reflect the new active song.
+As a listener, I want to choose a track to play next so that I hear it soon without losing my queue.
+
+**Why this priority**: The Vision Document names choosing a track to play next.
+
+**Independent Test**: Select Play Next and confirm the track sits first in the upcoming list.
+
+**Acceptance Scenarios**:
+
+1. **Given** a track in any list, **When** I select Play Next, **Then** it becomes the first upcoming track and I see a confirmation.
+2. **Given** the track is already queued, **When** I select Play Next, **Then** it moves to first and appears only once.
+3. **Given** existing upcoming tracks, **When** I select Play Next, **Then** they stay in order after it.
 
 ---
 
-## 3. Frontend Component Mapping
+### User Story 2 - Hear the Chosen Track Next (Priority: P1)
 
-- **Track Context Menu**: [`TrackMenu.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/song/TrackMenu.jsx)
-- **Application Routing & Notification**: [`App.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/App.jsx) (`playNext`)
-- **Queue State & Navigation**: [`useMockPlayer.js`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/hooks/useMockPlayer.js) (`playNext(track)`, `nextTrack()`)
-- **Queue Presentation**: [`QueuePanel.jsx`](file:///F:/CSC_HCMUS/Chuyên%20ngành/NM%20SE/AuraTune/src/frontend/src/components/player/QueuePanel.jsx)
+As a listener, I want the chosen track to play next so that I can rely on the queue.
+
+**Why this priority**: The action has value only if playback follows it.
+
+**Independent Test**: Skip or finish the current track and confirm the chosen track starts.
+
+**Acceptance Scenarios**:
+
+1. **Given** a Play Next track, **When** the current track ends, **Then** the chosen track starts.
+2. **Given** a Play Next track, **When** I press next, **Then** the chosen track starts.
+3. **Given** shuffle is on, **When** the player advances, **Then** the chosen track still starts first.
 
 ---
 
-## 4. UI Screenshots
+### Edge Cases
+
+- **Track already playing**: The queue does not change, and the listener is told.
+- **Unavailable track**: The action is refused with a message.
+- **Empty upcoming list**: The track becomes the only upcoming track.
+- **Repeated use**: The latest choice comes first.
+- **Repeat one on**: The current track repeats until next is pressed.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: The system MUST provide a Play Next action in track menus.
+- **FR-002**: The system MUST place the chosen track directly after the current track.
+- **FR-003**: The system MUST move an already queued track and MUST NOT duplicate it.
+- **FR-004**: The system MUST keep the order of other upcoming tracks.
+- **FR-005**: The system MUST place the most recent choice first when Play Next is used repeatedly.
+- **FR-006**: The system MUST confirm the action.
+- **FR-007**: The system MUST inform the listener when the track is already playing and leave the queue unchanged.
+- **FR-008**: The system MUST refuse unavailable tracks and inform the listener.
+- **FR-009**: The system MUST play the chosen track next, including when shuffle is on.
+- **FR-010**: The system MUST NOT interrupt the current track when Play Next is selected.
+
+### Key Entities *(include if feature involves data)*
+
+- **Priority Track**: A track chosen by Play Next to follow the current track.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: The chosen track plays next in 100% of test runs, including with shuffle on.
+- **SC-002**: Zero duplicate queue entries after Play Next.
+- **SC-003**: The action takes 2 interactions from a track list.
+- **SC-004**: Other upcoming tracks keep their order in 100% of test runs.
+
+## Assumptions
+
+- Authentication and user roles are provided by group `010-authentication`.
+- API alignment: Play Next is client-side and needs no API.
+- Project documentation is maintained in English Markdown, in accordance with `docs/management/team-contract.md`.
+
+### Known Gaps in the Current Prototype
+
+These gaps do not change the requirements. They record where the current UI differs from this specification.
+
+- With shuffle on, the prototype picks a random track and can skip the Play Next choice.
+- Play Next does not refuse unavailable tracks in the prototype.
+
+## UI Screenshots
 
 | # | Screenshot Filename | Workflow Step / State | UI Elements & Components |
 |---|---------------------|------------------------|---------------------------|
@@ -77,3 +131,11 @@ The **Play Next** feature gives listeners immediate priority control over their 
 - **Path**: `ui/04-play-next-playback-transition.png`
 - **State**: Next track action triggered.
 - **Description**: Displays the QueuePanel after clicking next track: "Chuyện rằng" is now the active song displayed in the "Đang phát" card, confirming smooth playback execution.
+
+### Additional States
+
+#### Already Playing Notice
+
+Selecting Play Next on the current track leaves the queue unchanged and shows a notice.
+
+![Already Playing Notice](ui/05-already-playing-notice.png)

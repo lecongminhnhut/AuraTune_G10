@@ -5,6 +5,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | # | Ngày | Nội dung | Nhóm |
 |---|---|---|---|
 | 1 | 2026-10-30 | Viết spec và plan 131 – Frontend Foundation, soạn mô tả Pull Request | 130 |
+| 2 | 2026-10-31 | Dùng AI hỗ trợ soạn nháp spec và checklist nhóm 020, 040, 050, cập nhật spec 131 và chụp ảnh UI | 020, 040, 050, 130 |
 
 ---
 
@@ -54,3 +55,59 @@ bạn có thể coi những mẫu của thành viên khác trong github để l�
 **Kết quả kiểm chứng:** Đạt sau khi chỉnh sửa.
 
 **Ghi chú:** Bản build frontend trên `main` chạy thành công. Trạng thái trong spec được đối chiếu với mã nguồn ở mức nhóm tính năng, chưa soát từng yêu cầu của từng spec.
+
+---
+
+## Mục 2: Hỗ trợ soạn nháp spec nhóm 020, 040, 050 và cập nhật spec 131
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-10-31 |
+| Người thực hiện | Huy |
+| Nhóm tính năng liên quan | 020 – Home Dashboard, 040 – Music Player, 050 – Queue Management, 130 – Frontend |
+| Công cụ AI | Claude Code |
+| Mục đích | Hỗ trợ soạn nháp spec và checklist theo báo cáo audit, cập nhật spec 131 và chụp ảnh UI bổ sung |
+
+### Tóm tắt yêu cầu
+
+Đây là phần diễn đạt lại của người thực hiện, phần prompt gốc nằm ở mục tiếp theo.
+
+- Đối chiếu báo cáo audit `spec-audit-report.md` với repo để xác định các mục còn thiếu của nhóm 020, 040, 050 và 130.
+- Hỗ trợ soạn nháp spec và checklist theo mẫu Spec Kit, bám theo Proposal, Vision Document, API Contract và mã nguồn hiện có.
+- Bổ sung ảnh UI còn thiếu vào spec theo yêu cầu của nhóm trưởng.
+
+### Prompt đã dùng
+
+```text
+Dựa vào file spec-audit-report.md đính kèm, hãy phân tích và liệt kê giúp tôi những mục còn thiếu hoặc chưa khớp với spec hiện tại. Hãy đề xuất nội dung bổ sung hoặc bản nháp cho từng phần thiếu đó để tôi review và chỉnh sửa trước khi tự push lên GitHub.
+
+Trong PR mới nhất, nhóm trưởng đã thêm sẵn một số file PNG vào spec cho các phần tôi làm và nhắn tôi bổ sung nốt các ảnh UI còn thiếu. Mục tiêu là hoàn thiện bộ spec trực quan này để làm ngữ cảnh (context) chuẩn, giúp AI hỗ trợ generate phần khung UI code nhanh hơn ở bước sau. Hãy kiểm tra giúp tôi xem những màn hình nào trong spec chưa có ảnh minh họa để tôi thiết kế và gắn vào cho đủ.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đối chiếu báo cáo audit với repo và xác định các mục thuộc phần của người thực hiện.
+- Soạn bản nháp 15 spec và checklist theo mẫu Spec Kit, dựa trên Proposal, Vision Document, API Contract và mã nguồn frontend.
+- Đề xuất câu trả lời cho phần Clarifications và quyết định tạm cho OQ-1 đến OQ-8 trong spec 131.
+- Ghi nhận khác biệt giữa spec và prototype trong mục Known Gaps.
+- Chụp 12 ảnh UI từ bản chạy cục bộ cho spec 021, 024, 045, 046, 051, 052, 054 và 131.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+| ----- | ---------- | ----- |
+| Bản nháp 15 spec và checklist | Dùng | Người thực hiện đọc lại và thấy phù hợp với phạm vi dự án |
+| Câu trả lời trong Clarifications | Dùng | Người thực hiện đã đọc lại và xác nhận |
+| Quyết định tạm cho OQ-1 đến OQ-8 | Dùng | Chờ người phụ trách từng mục xác nhận |
+| 12 ảnh UI bổ sung | Dùng | Bổ sung theo yêu cầu của nhóm trưởng |
+
+### Cách kiểm chứng
+
+- [ ] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt.
+
+**Ghi chú:** Đây là tài liệu nên không chạy kiểm thử. Người thực hiện đọc lại phần Clarifications trước khi mở Pull Request.

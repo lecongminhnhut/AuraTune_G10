@@ -12,16 +12,20 @@
 
 ### Session 2026-10-30
 
-These questions are not yet answered. They need team decisions before the affected work starts.
+- Q: Is this document allowed to add product scope? → A: No. It records shared behavior and references the feature specifications.
 
-- Q (OQ-1): Does the team confirm React, Vite, and Tailwind CSS? `system-architecture.md` lists frontend technology as unconfirmed, and the Project Plan lists React or Next.js as candidates. → A: Pending, owner Nhựt (A). Impact: Determines routing and rendering work.
-- Q (OQ-2): Which token model applies? Spec 011 FR-009 issues a single access token, while spec 013 FR-001 issues an access and refresh pair. This document follows spec 013. → A: Pending, owner Khoa (B). Impact: Determines the session flow.
-- Q (OQ-3): What is the product UI language? The UI is in Vietnamese, while spec messages are written in English. → A: Pending, owner Team. Impact: Affects all UI text and tests.
-- Q (OQ-4): Should the API Contract add `offset` to `GET /search`? Spec 031 FR-007 requires it, but the contract lists only `q`, `type`, and `limit`. → A: Pending, owner Đăng (C). Impact: Blocks Load More.
-- Q (OQ-5): What are the routes and scope for account profile and public user profile screens? Endpoints exist, but no screen is specified. → A: Pending, owner Khoa (B). Impact: Route map is incomplete.
-- Q (OQ-6): Is the queue stored by the client or the server? `feature-modules.md` notes that no queue endpoints exist. → A: Pending, owner Huy (E). Impact: Determines whether the queue survives reloads and devices.
-- Q (OQ-7): Which API does the AI Conversational Agent use? No endpoint or specification exists. → A: Pending, owner Nhựt (A). Impact: Blocks group 120 integration.
-- Q (OQ-8): Where is the authoritative API Contract? Design documents reference `docs/design/api/api-contract.md`, but the file is at `docs/analysis-and-design/api-contract.md`. → A: Pending, owner Nhựt (A). Impact: Avoids conflicting copies.
+### Session 2026-10-31
+
+Each answer below is a working decision that lets frontend work proceed. The named owner can replace it through a pull request.
+
+- Q (OQ-1): Which frontend stack applies, given that `system-architecture.md` lists it as unconfirmed? → A: Keep the stack already merged in `src/frontend`. Deliverable D-23 records the final choice. Owner: Nhựt (A).
+- Q (OQ-2): Which token model applies, given that spec 011 FR-009 issues a single token and spec 013 FR-001 issues a pair? → A: Follow spec 013, because it is the dedicated session specification. Spec 011 needs a matching update. Owner: Khoa (B).
+- Q (OQ-3): What is the product UI language? → A: Vietnamese, matching the current UI. Messages quoted in English in feature specifications describe intent, not final text. Owner: Team.
+- Q (OQ-4): Should `GET /search` include `offset`? → A: Yes. Spec 031 FR-007 governs, and the API Contract needs a matching update. Owner: Đăng (C).
+- Q (OQ-5): What are the routes for account profile and public user profile screens? → A: Out of scope here until group 010 specifies them. The Route Map lists them as not defined. Owner: Khoa (B).
+- Q (OQ-6): Is the queue stored by the client or the server? → A: The client, for the current session, as specified in features 051 to 054. Owner: Huy (E).
+- Q (OQ-7): Which API does the AI Conversational Agent use? → A: Behavior is defined in specs 121 to 123. The client calls only a public Backend API endpoint, and group 120 adds that endpoint to the API Contract before integration. Owner: Nhựt (A).
+- Q (OQ-8): Where is the authoritative API Contract? → A: `docs/analysis-and-design/api-contract.md`, the only copy in the repository. Design documents that reference another path need updating. Owner: Nhựt (A).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -56,7 +60,7 @@ As a Public visitor, Listener, Artist, or Admin, I want to see the navigation an
 
 As a user, I want to know whether content is loading, empty, or failed so that I can decide what to do next.
 
-**Why this priority**: Every data-backed screen needs these states once the API replaces mock data.
+**Why this priority**: Every data-backed screen needs these states once it uses live data.
 
 **Independent Test**: Simulate a slow response, an empty response, and a failed response for one list page, then verify each state and the retry action.
 
@@ -95,7 +99,7 @@ As a user on a phone, tablet, or desktop, I want the interface to adapt to my sc
 
 ### Edge Cases
 
-- **Storage blocked**: The application keeps running when `localStorage` is unavailable.
+- **Storage blocked**: The application keeps running when browser storage is unavailable.
 - **Corrupted demo state**: Unreadable saved state falls back to the seed state.
 - **Unsafe return path**: The `next` parameter on the sign-in route accepts internal paths only.
 - **Unavailable track**: Hidden or removed tracks cannot be started and show a clear message.
@@ -122,9 +126,9 @@ As a user on a phone, tablet, or desktop, I want the interface to adapt to my sc
 
 ### Data Access
 
-- **FR-009**: Pages and components MUST access data through a service layer, not directly through mock modules or HTTP calls. *(Source: `system-architecture.md`. Status: Planned.)*
-- **FR-010**: The service layer MUST call `/api/v1`, using a base URL supplied by environment configuration. *(Source: API Contract. Status: Planned.)*
-- **FR-011**: The service layer MUST unwrap the `success`, `message`, `data`, `error` envelope and expose errors as a single typed shape. *(Source: API Contract 1.1. Status: Planned.)*
+- **FR-009**: All screens MUST access data through one shared data access boundary. *(Source: `system-architecture.md`. Status: Planned.)*
+- **FR-010**: The client MUST reach the Backend API through a configurable address. *(Source: API Contract. Status: Planned.)*
+- **FR-011**: The client MUST interpret the standard API response format and present all failures in one consistent form. *(Source: API Contract 1.1. Status: Planned.)*
 - **FR-012**: The client MUST handle each error code in API Contract 1.4 with a defined user-facing behavior (Error Handling). *(Source: API Contract 1.4. Status: Planned.)*
 - **FR-013**: Requests for a superseded query or route MUST be cancelled or ignored. *(Source: Spec 031 FR-017. Status: Planned.)*
 - **FR-014**: The client MUST NOT call `/ai/*` endpoints directly. *(Source: `api-conventions.md` 11. Status: Done.)*
@@ -132,8 +136,8 @@ As a user on a phone, tablet, or desktop, I want the interface to adapt to my sc
 ### Authentication and Session
 
 - **FR-015**: Sign-up and sign-in MUST use the API and map field errors to their form inputs. *(Source: Specs 011, API Contract. Status: Partial.)*
-- **FR-016**: Authenticated requests MUST send `Authorization: Bearer <access_token>`. *(Source: API Contract. Status: Planned.)*
-- **FR-017**: The access token MUST be kept out of persistent browser storage; the refresh token MUST remain in the HttpOnly cookie. *(Source: Spec 013 FR-009. Status: Planned.)*
+- **FR-016**: Authenticated requests MUST carry the access credential defined by the API Contract. *(Source: API Contract. Status: Planned.)*
+- **FR-017**: Session credentials MUST NOT be readable from persistent browser storage. *(Source: Spec 013 FR-009. Status: Planned.)*
 - **FR-018**: On `TOKEN_EXPIRED`, the client MUST refresh once, share that refresh across concurrent requests, and retry the original request. *(Source: Spec 013, API Contract 1.4. Status: Planned.)*
 - **FR-019**: A failed refresh or `USER_BANNED` response MUST clear the session and return the user to the sign-in flow. *(Source: Spec 013, API Contract 1.4. Status: Planned.)*
 - **FR-020**: The client MUST offer Google and Facebook sign-in. *(Source: Spec 012. Status: Planned.)*
@@ -142,13 +146,13 @@ As a user on a phone, tablet, or desktop, I want the interface to adapt to my sc
 
 - **FR-021**: Every data-backed view MUST define loading, empty, error, and success states. *(Source: `system-architecture.md`. Status: Partial.)*
 - **FR-022**: Retryable failures MUST offer a retry action that preserves user input. *(Source: Spec 031 FR-016. Status: Planned.)*
-- **FR-023**: An unexpected rendering error MUST be contained by an error boundary and MUST NOT blank the application shell or stop playback. *(Source: Derived from FR-001. Status: Planned.)*
+- **FR-023**: An unexpected display error MUST stay contained to the affected area and MUST NOT blank the application shell or stop playback. *(Source: Derived from FR-001. Status: Planned.)*
 - **FR-024**: Actions MUST confirm their outcome through a shared notification pattern. *(Source: Current UI convention. Status: Done.)*
 - **FR-025**: AI features MUST remain optional: when AI is unavailable, non-AI browsing, search, and playback keep working. *(Source: `system-architecture.md` 5. Status: Done.)*
 
 ### Playback and Queue
 
-- **FR-026**: The player MUST play audio from `GET /songs/:id/stream` using the browser audio element and support seeking through `Range` requests. *(Source: API Contract 1.5, Vision AD-02. Status: Planned.)*
+- **FR-026**: The player MUST play real audio from the Backend API and support seeking. *(Source: API Contract 1.5, Vision AD-02. Status: Planned.)*
 - **FR-027**: Playback state MUST have a single source of truth shared by the bottom player, full-screen player, and queue panel. *(Source: Groups 040, 050. Status: Done.)*
 - **FR-028**: Play, pause, seek, next, previous, shuffle, repeat, volume, and mute MUST be available. *(Source: Group 040. Status: Done.)*
 - **FR-029**: Users MUST be able to add, remove, reorder, and clear queue items and choose Play Next. *(Source: Group 050. Status: Done.)*
@@ -167,7 +171,7 @@ As a user on a phone, tablet, or desktop, I want the interface to adapt to my sc
 - **NFR-004**: Responsive layout: No horizontal page scrolling from 375 px to 1920 px. *(Source: Vision NFR. Status: Not verified.)*
 - **NFR-005**: Input methods: Core flows work with mouse, keyboard, and touch. *(Source: Vision NFR. Status: Partial.)*
 - **NFR-006**: Secrets: No secrets or real credentials in the client bundle or repository. *(Source: Team Contract. Status: Done.)*
-- **NFR-007**: Demo removal: Production builds contain no demo accounts or `demoHash`. *(Source: Derived from NFR-006. Status: Planned.)*
+- **NFR-007**: Demo removal: Production builds contain no demo accounts or demo authentication. *(Source: Derived from NFR-006. Status: Planned.)*
 - **NFR-008**: Quality gates: Lint, unit tests, and build run before merge. *(Source: `speckit-workflow-guide.md`. Status: Planned.)*
 
 ### Key Entities *(include if feature involves data)*
@@ -184,12 +188,12 @@ These are client view models. Backend entities remain defined in `docs/design/da
 
 ### Measurable Outcomes
 
-- **SC-001**: All 15 implemented routes in Route Map render through the shell with no console errors.
-- **SC-002**: A listener can search, play a track from the API, and seek it on all browsers in NFR-003.
-- **SC-003**: All error codes in Error Handling are covered by automated tests of the service layer.
-- **SC-004**: No page or component imports a mock data module directly.
-- **SC-005**: A production build contains no demo credentials.
-- **SC-006**: The home dashboard meets NFR-001 in a recorded measurement.
+- **SC-001**: All 15 implemented routes in Route Map open inside the application shell with no visible errors.
+- **SC-002**: A listener can search, play a track, and seek it on all browsers in NFR-003.
+- **SC-003**: Every failure listed in Error Handling produces its defined behavior in testing.
+- **SC-004**: Every screen shows live data in the release build.
+- **SC-005**: A release build contains no demo credentials.
+- **SC-006**: The home dashboard meets its load target in a recorded measurement.
 
 ## Assumptions
 
@@ -218,26 +222,12 @@ This specification defines the requirements shared by every AuraTune web screen:
 | `docs/design/architecture/role-navigation.md` | Roles and navigation rules |
 | `docs/design/architecture/system-architecture.md` | Frontend responsibilities |
 | `specs/*/*/spec.md` | Feature requirements |
-| `src/frontend` at commit `6f73506` | Current implementation |
+| `src/frontend` on `main` at 2026-10-31 | Current implementation |
 
 - The API Contract is the reference for endpoints and responses until changed by team agreement.
 - The Backend API supports credentials and CORS for the frontend origin, so the refresh cookie can be used.
 - Audio is served as `audio/mpeg` with `Range` support, as stated in the API Contract.
 - Feature owners remain responsible for feature-specific UI, as stated in the Team Contract.
-
-### Current Implementation Baseline
-
-The frontend is a working client-side prototype. It covers all 12 functional groups at the UI level, but no group is connected to a backend.
-
-| Area | Current implementation |
-| ---- | ---------------------- |
-| Stack | React 18, Vite 5, Tailwind CSS 3, `lucide-react`, pnpm |
-| Routing | Custom History API router in `utils/navigation.jsx` and `routes/AppRouter.jsx` |
-| State | `AppStore` context for domain and dialog state; `PlayerContext` for playback |
-| Data | `utils/mockData.js`, `utils/aiMockData.js`, and `localStorage` key `auratune-demo-state-v1` |
-| Playback | Simulated by a one-second timer in `hooks/useMockPlayer.js`; no audio element is used |
-| Tests and linting | None configured |
-| Production build | Passes; JavaScript bundle is 373 KB (106 KB gzip) as one chunk |
 
 ### Route Map
 
@@ -280,19 +270,44 @@ The AI host, queue panel, and full-screen player are overlays available on every
 
 ### Feature Coverage Baseline
 
-This baseline was checked at group level against the code. It is not a requirement-by-requirement audit of each `spec.md`, and groups without a merged specification are compared with the Team Contract scope. Unmerged specifications are read from their open branches.
-
+This baseline was checked at group level against the code. It is not a requirement-by-requirement audit of each `spec.md`, and groups are compared with their specification or, where it is not standardized, the Team Contract scope. 
 | Group | Owner | Specification | Prototype UI | Known gaps |
 | ----- | ----- | ------------- | ------------ | ---------- |
 | 010 Authentication | Khoa (B) | 011, 012, 013 merged | Partial | No OAuth entry points; session is simulated |
-| 020 Home Dashboard | Huy (E) | Not written | Available | Charts have no `day`/`week`/`month` period control |
+| 020 Home Dashboard | Huy (E) | 021 to 025 merged after this update | Available | Charts have no `day`/`week`/`month` period control |
 | 030 Search | Đăng (C) | 031, 032, 033 merged | Partial | No 2-character minimum, 100-character limit, Load More, or retry state from spec 031 |
-| 040 Music Player | Huy (E) | Not written | Partial | Simulated audio; comments have no `timestamp_seconds` |
-| 050 Queue Management | Huy (E) | Not written | Available | Queue is lost on reload; no API defined |
-| 060 Playlist Management | Khoa (B) | Not written | Available | Local data only |
-| 070 Listening History | Khoa (B) | Not written | Available | Local data only |
-| 080 Album Interaction | Đăng (C) | 081, 082, 083 on branches | Available | Requirement-level check pending merge |
-| 090 Artist Profile and Studio | Hoàng (D) | 091, 092 merged; 093 on branch | Available | Requirement-level check pending for 093 |
-| 100 AI Recommendations | Nhựt (A) | 101 merged; 102, 103 on branches | Available | Rule-based mock data only |
-| 110 Admin Functions | Hoàng (D) | 111, 112, 113 on branches | Available | Requirement-level check pending merge |
-| 120 AI Conversational Agent | Nhựt (A) | Not written | Available | Rule-based mock data only; no API defined |
+| 040 Music Player | Huy (E) | 041 to 046 merged after this update | Partial | Simulated audio |
+| 050 Queue Management | Huy (E) | 051 to 054 merged after this update | Available | Queue is session-only by decision; Play Next is ignored while shuffle is on |
+| 060 Playlist Management | Khoa (B) | 061 to 065 not yet standardized | Available | Local data only |
+| 070 Listening History | Khoa (B) | 071 to 073 not yet standardized | Available | Local data only |
+| 080 Album Interaction | Đăng (C) | 081, 082, 083 merged | Available | Requirement-level check pending |
+| 090 Artist Profile and Studio | Hoàng (D) | 091, 092, 093 merged | Available | Requirement-level check pending for 093 |
+| 100 AI Recommendations | Nhựt (A) | 101, 102, 103 merged | Available | Rule-based mock data only |
+| 110 Admin Functions | Hoàng (D) | 111, 112, 113 merged | Available | Requirement-level check pending |
+| 120 AI Conversational Agent | Nhựt (A) | 121, 122, 123 merged | Available | Rule-based mock data only; no API defined |
+
+## UI Screenshots
+
+#### Sign-In Required State
+
+A guest opens a route that needs an account and sees the sign-in prompt. The sign-in link keeps the original path.
+
+![Sign-In Required State](ui/01-login-required-state.png)
+
+#### Not Found State
+
+An unknown path shows the not-found state inside the application shell.
+
+![Not Found State](ui/02-not-found-state.png)
+
+#### Not Authorized State
+
+A signed-in listener opens the administration route and sees the not-authorized state.
+
+![Not Authorized State](ui/03-not-authorized-state.png)
+
+#### Mobile Navigation
+
+The mobile navigation shown at 375 px wide.
+
+![Mobile Navigation](ui/04-mobile-navigation.png)

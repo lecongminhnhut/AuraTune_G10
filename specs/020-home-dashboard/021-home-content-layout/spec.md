@@ -1,30 +1,119 @@
 # Feature Specification: Home Content Layout
 
-**Feature ID**: `021-home-content-layout`  
-**Functional Group**: `020 – Home Dashboard`  
-**Status**: Specification Missing / Pending (Frontend UI Documented)
+**Feature Branch**: `020-home-player-queue-spec`
 
-> [!NOTE]
-> The formal feature specification (`spec.md`, `plan.md`, `tasks.md`) for Feature 021 was not previously authored or committed in the repository.
-> In accordance with project constraints, no artificial business requirements or synthetic acceptance criteria have been invented.
-> The UI screenshots and workflows documented below reflect the actual frontend implementation discovered at `src/frontend/src/pages/Home/HomePage.jsx` and its associated components, cross-referenced with `docs/proposal/proposal.md` and `docs/design/architecture/feature-modules.md`.
+**Created**: 2026-10-31
+
+**Status**: Draft — Ready for Planning
+
+**Input**: User description: "Feature 021 defines how the AuraTune Home page organizes its content for guests and signed-in listeners. Home aggregates recommended content, recent plays, popular tracks, new albums, featured artists, suggested playlists, and genres in one scrollable page, and gives quick paths into playback and exploration. Each section's data rules stay in features 022 to 025 and in the owning groups."
+
+## Clarifications
+
+### Session 2026-10-31
+
+- Q: Who can open the Home page? → A: Guests and signed-in listeners. Personal sections appear only for signed-in listeners, and guests see public content.
+- Q: What happens when one section cannot load? → A: Only that section shows a fallback or error state. The other sections stay usable.
+- Q: How much content does each preview section show? → A: Up to 5 items per preview section, with a link to the full destination. Genres show all available genres.
+- Q: What is the order of the sections? → A: Hero and quick access, recommended content, new albums, popular tracks, featured artists, curated playlists, then genres.
+
+## User Scenarios & Testing *(mandatory)*
+
+### User Story 1 - See Organized Content on Arrival (Priority: P1)
+
+As a listener or guest, I want Home to show organized music sections so that I can find something to play without searching.
+
+**Why this priority**: Home is the first screen and the main discovery surface described in the proposal.
+
+**Independent Test**: Open Home as a guest and confirm every public section appears in the defined order.
+
+**Acceptance Scenarios**:
+
+1. **Given** I open Home, **When** content finishes loading, **Then** I see the hero, quick access area, and content sections in the defined order.
+2. **Given** I scroll Home, **When** sections come into view, **Then** each section has a clear title and consistent item layout.
 
 ---
 
-## Documented Project Context
+### User Story 2 - Personalized Greeting for Signed-In Listeners (Priority: P2)
 
-- **Proposal Reference**: `docs/proposal/proposal.md` (§ 6.2 Home Dashboard):
-  "The home dashboard serves as a personalized music discovery hub, automatically aggregating AI-recommended playlists, trending charts, and recently played tracks into a single, organized interface."
-- **Architecture Reference**: `docs/design/architecture/feature-modules.md` (§ 1 & § 3):
-  "020 Home Dashboard: tổ chức nội dung trang chủ, có thể tổng hợp dữ liệu từ các module nội dung... Search, Recommendations, Album, Artist | Tổng hợp và điều hướng nội dung."
-- **Navigation Reference**: `docs/design/architecture/role-navigation.md`:
-  Home Dashboard provides entry navigation for both unauthenticated visitors (public exploration) and authenticated users (personalized greeting and access points).
-- **Frontend Implementation**:
-  - Route: `/` (managed by `AppRouter.jsx`)
-  - Page Component: `src/frontend/src/pages/Home/HomePage.jsx`
-  - Shared Shell: `Sidebar.jsx`, `TopBar.jsx`, `BottomPlayer.jsx`, `FullScreenPlayer.jsx`
+As a signed-in listener, I want Home to recognize me so that the page feels personal and shows my shortcuts.
+
+**Why this priority**: Personalization adds value after the public layout works.
+
+**Independent Test**: Sign in, open Home, and confirm the greeting and personal shortcuts replace the guest versions.
+
+**Acceptance Scenarios**:
+
+1. **Given** I am signed in, **When** I open Home, **Then** the greeting uses my display name.
+2. **Given** I am a guest, **When** I select a personal shortcut, **Then** I am sent to sign-in and returned to that destination afterwards.
 
 ---
+
+### User Story 3 - Move From Home to Deeper Pages (Priority: P2)
+
+As a listener, I want section actions that lead to full pages so that I can continue exploring.
+
+**Why this priority**: Home is a preview, so each section needs a path to its full content.
+
+**Independent Test**: Select each section action and confirm it opens the matching destination.
+
+**Acceptance Scenarios**:
+
+1. **Given** a section has a view-all action, **When** I select it, **Then** the matching destination opens.
+2. **Given** music is playing, **When** I leave Home, **Then** playback continues without restarting.
+
+---
+
+### Edge Cases
+
+- **Slow connection**: Each section shows a loading state instead of an empty area.
+- **One section fails**: The failed section shows its own fallback and does not block the page.
+- **All sections fail**: The page shows an error state with a retry action.
+- **Empty catalog section**: A section with no content is hidden or shows an empty state, never a blank block.
+- **Narrow screens**: Sections reflow so the page has no horizontal scrolling.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+- **FR-001**: The system MUST allow guests and signed-in listeners to open the Home page.
+- **FR-002**: The system MUST present sections in this order: hero and quick access, recommended content, new albums, popular tracks, featured artists, curated playlists, and genres.
+- **FR-003**: The system MUST show a personalized greeting to signed-in listeners and a general greeting to guests.
+- **FR-004**: The system MUST show at most 5 items in each preview section, except genres, which show all available genres.
+- **FR-005**: The system MUST give each preview section with more content an action that opens its full destination.
+- **FR-006**: The system MUST load and handle failure for each section independently.
+- **FR-007**: The system MUST show a loading state for each section until its content is available.
+- **FR-008**: The system MUST provide a retry action when the page cannot load any section.
+- **FR-009**: The system MUST send guests who select a personal shortcut to sign-in and return them to that destination afterwards.
+- **FR-010**: The system MUST adapt the layout to phone, tablet, and desktop widths without horizontal page scrolling.
+- **FR-011**: The system MUST keep current playback running while the listener uses or leaves Home.
+- **FR-012**: The system MUST NOT implement recommendation generation, chart calculation, or history recording within this feature.
+
+### Key Entities *(include if feature involves data)*
+
+- **Home Section**: A titled block of content with an order, an item limit, a state (loading, ready, empty, failed), and an optional full-page destination.
+- **Quick Access Item**: A shortcut shown near the top of Home that opens or plays content.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: The Home page is usable within 2 seconds under standard network conditions.
+- **SC-002**: 100% of preview sections with more content lead to their full destination in 1 interaction.
+- **SC-003**: When any single section fails, all other sections remain usable in 100% of test runs.
+- **SC-004**: Home has no horizontal page scrolling from 375 px to 1920 px wide.
+
+## Assumptions
+
+- Authentication and user roles are provided by group `010-authentication`.
+- API alignment: `GET /home` (Public) returns the sections in one request. `GET /genres` and `GET /artists/featured` supply genres and featured artists.
+- Project documentation is maintained in English Markdown, in accordance with `docs/management/team-contract.md`.
+
+### Known Gaps in the Current Prototype
+
+These gaps do not change the requirements. They record where the current UI differs from this specification.
+
+- The prototype has no per-section loading, failure, or retry state because it reads local data.
 
 ## UI Screenshots
 
@@ -63,3 +152,11 @@ This screenshot captures the lower section of the Home Dashboard layout, showing
 This screenshot documents user interaction and navigation between Home Dashboard and platform sections. It shows sidebar menu interaction ("Khám phá", "Bảng xếp hạng", "Thư viện") and section action controls ("Xem tất cả", "Khám phá thêm") enabling rapid navigation across the application.
 
 ![Home Navigation and Section Exploration](ui/06-home-navigation-explore-and-back.png)
+
+### Additional States
+
+#### Home on a Phone
+
+Home at 375 px wide, with sections reflowed and no horizontal page scrolling.
+
+![Home on a Phone](ui/07-home-mobile-layout.png)
