@@ -93,7 +93,7 @@ bạn có thể coi những mẫu của thành viên khác trong github để l�
 - [ ] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
 - [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
 - [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
-- [ ] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt sau khi chỉnh sửa.
 
