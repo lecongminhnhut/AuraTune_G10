@@ -141,3 +141,40 @@ As a listener, I want to start playback from a specific track in the album so th
 - Repeating Play Album is an explicit restart request; it rebuilds the album's upcoming queue segment and preserves other queued tracks after that segment.
 - The complete album track list is available to the album playback experience; track rows may be displayed progressively, but playback does not wait for each row to be displayed.
 - The feature follows AuraTune's responsive web application environment; native mobile applications and offline playback are outside the project's established scope.
+
+
+---
+
+## UI Screenshots
+
+### 1. Album Tracklist
+
+**Related workflow:** Workflow A - Browse an album tracklist.
+
+![Album Tracklist](./ui/01-album-tracklist.png)
+
+Shows the complete tracklist for "Lofi bên cửa sổ" displayed in artist-intended order with index numbering (01, 02), cover art, track titles, artist, album name, individual play counts, durations, like buttons, download buttons, and options menus.
+
+### 2. Play Album Action
+
+**Related workflow:** Workflow B - Play an entire album.
+
+![Play Album](./ui/02-play-album.png)
+
+Shows the Play Album action activated (`button[aria-label="Phát album"]`), starting playback from the first playable track ("Midnight Coffee") and syncing with the persistent bottom player.
+
+### 3. Play Selected Track
+
+**Related workflow:** Workflow C - Play a selected track.
+
+![Selected Track Playing](./ui/03-selected-track-playing.png)
+
+Shows playback initiated directly from track #2 ("Rainy Window"), making it the currently active track highlighted in violet in the table while updating the persistent player controls.
+
+### 4. Album Playback Queue
+
+**Related workflow:** Workflow D - Verify album queue integration.
+
+![Album Queue](./ui/04-album-queue.png)
+
+Shows the Queue Management drawer open during album playback, demonstrating that the current album track is active in "Đang phát" and the remaining album tracks are queued in artist-intended order in "Tiếp theo".
