@@ -151,3 +151,54 @@ As a listener, I want my personal information to remain private while using sema
 - Search history, personalization, and automatic playlist generation are out of scope for this feature unless separately specified.
 - Performance targets apply to normal operating conditions and exclude periods when the catalog or required search dependencies are unavailable.
 - Human evaluation may count more than one musical interpretation as relevant when each interpretation reasonably satisfies the query's explicit mood, context, or activity intent.
+
+
+## UI Screenshots
+
+### 1. Semantic Search Entry in Top Navigation
+
+Corresponding User Story: User Story 1 – Describe a Mood and Discover Music (Acceptance Scenario 1).
+
+This screenshot shows the top navigation search input featuring the AI Sparkles indicator, helper placeholder text ("Nhập tên bài hát, nghệ sĩ hoặc miêu tả cảm xúc của bạn..."), and the `Ctrl K` shortcut indicator.
+
+![Semantic Search Entry in Top Navigation](ui/01-semantic-search-entry.png)
+
+### 2. Live Natural-Language Dropdown Suggestions
+
+Corresponding User Story: User Story 1 – Describe a Mood and Discover Music (Acceptance Scenario 1 & 2); User Story 2 – Search Across Music Meaning and Characteristics (Acceptance Scenario 1).
+
+This screenshot shows the live semantic search dropdown triggered by entering a natural-language description ("lofi chill để code"). The dropdown displays the "Giai điệu dành cho cảm xúc của bạn" banner, AI contextual reasoning ("Beat nhẹ, ít lời, cho một khoảng tập trung thật êm."), and suggested tracks and playlists tagged with "AI Gợi ý".
+
+![Live Natural-Language Dropdown Suggestions](ui/02-semantic-search-live-dropdown.png)
+
+### 3. Full Semantic Search Results with AI Understanding Card
+
+Corresponding User Story: User Story 1 – Describe a Mood and Discover Music (Acceptance Scenario 1); User Story 2 – Search Across Music Meaning and Characteristics (Acceptance Scenario 1 & 3).
+
+This screenshot shows the full Search Page results (`/search?q=lofi%20chill%20để%20code`), featuring the prominent "AI hiểu ý bạn" card with contextual explanation, matched songs with direct play actions, and curated mood playlists.
+
+![Full Semantic Search Results with AI Understanding Card](ui/03-semantic-search-results-page.png)
+
+### 4. Semantic Search for Energetic Context
+
+Corresponding User Story: User Story 1 – Describe a Mood and Discover Music (Acceptance Scenario 2).
+
+This screenshot demonstrates adaptive semantic matching for an energetic context query ("vui năng lượng"). The system returns upbeat recommendations accompanied by reasoning: "Giai điệu tươi sáng cho một ngày nhiều năng lượng."
+
+![Semantic Search for Energetic Context](ui/04-semantic-search-mood-energy.png)
+
+### 5. Semantic Search Graceful Degradation / Fallback Mode
+
+Corresponding User Story: User Story 3 – Continue Searching During AI Service Unavailability (Acceptance Scenario 1 & 2).
+
+This screenshot captures the system's behavior when the AI semantic service is offline (`aiAvailable = false`). The live dropdown seamlessly transitions to keyword mode with the title "Kết quả theo từ khóa" and explanation "AI tạm thời không khả dụng, đang tìm theo từ khóa.", ensuring music discovery is not interrupted.
+
+![Semantic Search Graceful Degradation / Fallback Mode](ui/05-semantic-search-fallback-mode.png)
+
+### 6. Semantic Result Playback Interaction
+
+Corresponding User Story: User Story 1 – Describe a Mood and Discover Music (Acceptance Scenario 1).
+
+This screenshot documents direct playback initiated from a semantic recommendation card. The selected track begins playing and updates the BottomPlayer with song metadata, volume, and playback progress controls.
+
+![Semantic Result Playback Interaction](ui/06-semantic-search-result-playback.png)

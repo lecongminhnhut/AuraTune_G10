@@ -133,3 +133,40 @@ As a visitor, I want clear feedback when an album cannot be found or its details
 - Album creation, editing, saving, sharing, playback controls, and the definition of play-count calculation are outside this feature's scope.
 - The feature follows AuraTune's existing responsive web experience and standard loading, error, and navigation conventions.
 - Previously loaded album details may be reused for immediate display when a visitor returns to the album; refreshed data replaces the displayed details when available, and no fixed cache duration is specified.
+
+
+---
+
+## UI Screenshots
+
+### 1. Album Details
+
+**Related workflow:** Workflow A - Open album details.
+
+![Album Details](./ui/01-album-details.png)
+
+Shows the actual album details page for "Lofi bên cửa sổ", displaying the responsive cover art (`ocean` variant), album type badge ("Album"), title, clickable artist name ("AuraTune Studio"), release year (2026), track count (2 bài hát), total duration (6 phút), and action toolbar.
+
+### 2. Album Metadata & Related Releases
+
+**Related workflow:** Workflow B - Review album metadata and track information.
+
+![Album Metadata](./ui/02-album-metadata.png)
+
+Shows the detailed album metadata and copyright release footer (`Phát hành 20/09/2026 · © 2026 AuraTune Studio`), alongside the "Thêm từ AuraTune Studio" section showing other albums by the same artist.
+
+### 3. Album Track Play Counts
+
+**Related workflow:** Workflow B - Review track-level play counts.
+
+![Album Track Play Counts](./ui/03-album-track-play-counts.png)
+
+Shows the individual track rows on the album page with their corresponding play counts (`204.000 lượt nghe` for "Midnight Coffee" and `178.000 lượt nghe` for "Rainy Window"), along with track durations, like, and download actions.
+
+### 4. Album Not-Found State
+
+**Related workflow:** Workflow D - Not-found and error states.
+
+![Album Error State](./ui/05-album-error-state.png)
+
+Shows the clear not-found state rendered when requesting a nonexistent album (`/album/album-khong-ton-tai`), presenting the message *"Không tìm thấy album"* and a navigation button to return home safely without displaying corrupted or stale album details.

@@ -174,3 +174,41 @@ As a visitor, I want a clear and resilient profile experience when some artist d
 - Hiding, disabling, enabling, or otherwise changing whether an artist profile is permitted to be public.
 - Administrative artist or content management.
 - Defining or changing song playback, album details, or playlist details.
+
+## UI Screenshots
+
+### 1. Artist Profile Overview
+![Artist Profile Overview](./ui/01-artist-profile-overview.png)
+- **Path**: `./ui/01-artist-profile-overview.png`
+- **Description**: Public artist profile overview showing circular artist avatar, "Nghệ sĩ" badge, artist name ("Hoàng Dũng"), aggregate counts ("5 bài hát nổi bật · 1 album"), and primary action buttons (Phát tất cả, Theo dõi, Chia sẻ).
+- **User Story**: User Story 1 (Learn About an Artist) & FR-001, FR-002, FR-003.
+
+### 2. Artist Biography
+![Artist Biography](./ui/02-artist-biography.png)
+- **Path**: `./ui/02-artist-biography.png`
+- **Description**: Dedicated "Giới thiệu" biography section displaying the artist's background story and artistic description.
+- **User Story**: User Story 1 (Learn About an Artist) & FR-003, FR-005.
+
+### 3. Featured Songs
+![Featured Songs](./ui/03-featured-songs.png)
+- **Path**: `./ui/03-featured-songs.png`
+- **Description**: "Phổ biến" section showing up to 5 top-streamed songs ordered by play count descending, displaying song title, duration, verified play count, and play/action controls on hover.
+- **User Story**: User Story 2 (Discover an Artist's Released Content) & FR-010, FR-010A, FR-010B.
+
+### 4. Artist Albums
+![Artist Albums](./ui/04-artist-albums.png)
+- **Path**: `./ui/04-artist-albums.png`
+- **Description**: "Album" section presenting released albums in a responsive card grid, showing album cover art, title ("25"), and release year.
+- **User Story**: User Story 2 (Discover an Artist's Released Content) & FR-012, FR-013.
+
+### 5. Related Playlists
+![Related Playlists](./ui/05-related-playlists.png)
+- **Path**: `./ui/05-related-playlists.png`
+- **Description**: "Có mặt trong playlist" section showcasing official curated playlists containing tracks by the artist.
+- **User Story**: User Story 3 (Discover Related Playlists) & FR-014, FR-014A.
+
+### 6. Artist Not Found Error State
+![Artist Not Found Error State](./ui/06-artist-profile-error.png)
+- **Path**: `./ui/06-artist-profile-error.png`
+- **Description**: Fallback state presented when an artist does not exist or has a private profile, displaying a clean "Không tìm thấy nghệ sĩ" notification without leaking internal data.
+- **User Story**: User Story 1 (Learn About an Artist) & User Story 4 (Continue When Some Data Cannot Load), FR-018, FR-018A.

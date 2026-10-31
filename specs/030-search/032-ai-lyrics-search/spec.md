@@ -146,3 +146,54 @@ As a Listener or Public user, I want the system to continue with a basic keyword
 - Exact request and response fields beyond the explicitly approved `POST /ai/search/lyrics` route are governed by the API contract and are not invented in this specification.
 - The feature is scoped to finding songs from lyric fragments; searching by mood, audio characteristics, or general conversational descriptions remains outside this feature.
 - The feature is designed for AuraTune's responsive web application environment.
+
+
+## UI Screenshots
+
+### 1. Lyrics Search Tab Selection
+
+Corresponding User Story: User Story 1 – Find a song from a lyric fragment.
+
+This screenshot shows the dedicated "Theo lời bài hát" category tab active on the Search Page (`/search?q=mưa&type=lyrics`), scoping search results specifically to lyric matches across the song catalog.
+
+![Lyrics Search Tab Selection](ui/01-lyrics-search-tab-entry.png)
+
+### 2. Matching Lyric Results Presentation
+
+Corresponding User Story: User Story 1 – Find a song from a lyric fragment (Acceptance Scenario 1 & 2); User Story 2 – Understand search results and empty matches (Acceptance Scenario 1).
+
+This screenshot shows search results matching a remembered lyric fragment ("tiếng mưa"). The interface presents the "Khớp lời bài hát" section with a distinctive quote icon, the highlighted matching lyric line ("Thành phố ngủ, chỉ còn tiếng mưa"), and song details ("Midnight Coffee · AuraTune Studio").
+
+![Matching Lyric Results Presentation](ui/02-lyrics-search-results.png)
+
+### 3. Multiple Matching Lyrics Across Catalog
+
+Corresponding User Story: User Story 1 – Find a song from a lyric fragment (Acceptance Scenario 3).
+
+This screenshot demonstrates multiple song results returned for a lyric query ("cửa"). It displays matching lines from both "Midnight Coffee" ("Ly cà phê nguội bên khung cửa") and "Rainy Window" ("Mưa rơi nhẹ trên ô cửa kính"), allowing listeners to distinguish between relevant tracks.
+
+![Multiple Matching Lyrics Across Catalog](ui/03-lyrics-search-multiple-matches.png)
+
+### 4. Lyrics Search No Results State
+
+Corresponding User Story: User Story 2 – Understand search results and empty matches (Acceptance Scenario 2).
+
+This screenshot shows the explicit empty state when no synchronized lyrics match the query (`/search?q=khongcotrongloibaihat&type=lyrics`). The screen displays a Quote icon with the title "Không tìm thấy câu hát nào khớp" and guidance noting that only songs with synchronized lyrics are searchable.
+
+![Lyrics Search No Results State](ui/04-lyrics-search-no-results.png)
+
+### 5. AI Search Unavailable Fallback Banner
+
+Corresponding User Story: User Story 3 – Continue searching when AI search is unavailable (Acceptance Scenario 1, 2, & 3).
+
+This screenshot illustrates the graceful degradation state when the AI recommendation/search service is unavailable (`aiAvailable = false`). An amber inline banner informs the user: "Tìm kiếm AI theo ý nghĩa tạm thời không khả dụng. Kết quả bên dưới chỉ dựa trên từ khóa trong tên bài hát, nghệ sĩ, album và playlist."
+
+![AI Search Unavailable Fallback Banner](ui/05-lyrics-search-fallback-banner.png)
+
+### 6. Playback Integration from Lyric Match
+
+Corresponding User Story: User Story 2 – Understand search results and empty matches (Acceptance Scenario 1).
+
+This screenshot shows direct playback initiated by selecting a matching lyric search result. Playback begins immediately and updates the persistent BottomPlayer with song metadata and controls.
+
+![Playback Integration from Lyric Match](ui/06-lyrics-search-track-playback.png)

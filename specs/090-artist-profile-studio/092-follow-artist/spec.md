@@ -1,4 +1,4 @@
-﻿# Feature Specification: Follow Artist
+# Feature Specification: Follow Artist
 
 **Feature Branch**: `092-follow-artist-spec`
 
@@ -221,4 +221,37 @@ All sources requested in the original Specify prompt, plus feature 091 and sampl
 - Permanent artist/account deletion and related cleanup remain a shared lifecycle concern: the database sources explicitly leave deletion behavior undecided. The Q1 retention/restoration rule applies to an existing profile becoming non-public, not to permanent deletion. FR-016 defines the identical artist-not-found outcome for unfollow of unknown/deleted IDs and omission of deleted artists from the list; no deletion cascade, retention period, or schema change is selected here.
 - Existing authentication, public artist eligibility, permitted public fields, relationship identity, and successful state retrieval are dependencies. Their technical implementation is deferred; no new API, database column, framework, or authentication mechanism is chosen.
 - The core Spec Kit template remains active, with no override/preset/extension template layer. The constitution still contains placeholders rather than ratified principles. No extension hook configuration exists. Specify source review and Clarify are complete. Plan, Tasks, and Implement have not been run.
+
+## UI Screenshots
+
+### 1. Artist Not Following State
+![Artist Not Following State](./ui/01-artist-not-following.png)
+- **Path**: `./ui/01-artist-not-following.png`
+- **Description**: Authenticated user viewing an artist profile who is not yet followed ("Wren Evans"), displaying the "Theo dõi" button with the UserPlus icon and hover styling.
+- **User Story**: User Story 1 (Follow an Artist and Recognize My State) & FR-001, FR-006.
+
+### 2. Following Artist State
+![Following Artist State](./ui/02-artist-following.png)
+- **Path**: `./ui/02-artist-following.png`
+- **Description**: Following state immediately upon clicking "Theo dõi", displaying the highlighted "Đang theo dõi" button with Check icon and toast confirmation ("Đang theo dõi Wren Evans.").
+- **User Story**: User Story 1 (Follow an Artist and Recognize My State) & FR-001, FR-003, FR-004.
+
+### 3. Unfollow Artist Action
+![Unfollow Artist Action](./ui/03-unfollow-artist.png)
+- **Path**: `./ui/03-unfollow-artist.png`
+- **Description**: Unfollowing action triggered by clicking "Đang theo dõi", reverting the button back to "Theo dõi" with toast notification ("Đã bỏ theo dõi Wren Evans.").
+- **User Story**: User Story 2 (Stop Following an Artist) & FR-002, FR-003, FR-004.
+
+### 4. Following Artists List
+![Following Artists List](./ui/04-following-artists-list.png)
+- **Path**: `./ui/04-following-artists-list.png`
+- **Description**: Personal library view at `/following` displaying the grid of followed artists (Hoàng Dũng, AuraTune Studio) ordered by follow time descending, showing artist avatars, names, and "Theo dõi từ..." date labels.
+- **User Story**: User Story 3 (View My Followed Artists) & FR-005, FR-007, FR-008.
+
+### 5. Empty Following List
+![Empty Following List](./ui/05-following-list-empty.png)
+- **Path**: `./ui/05-following-list-empty.png`
+- **Description**: Empty state view for users with no followed artists, displaying the Users icon, "Bạn chưa theo dõi nghệ sĩ nào" message, and a call-to-action button linking to artist exploration.
+- **User Story**: User Story 3 (View My Followed Artists) & FR-007, FR-015.
+
 

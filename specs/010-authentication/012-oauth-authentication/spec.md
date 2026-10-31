@@ -129,3 +129,38 @@ As a user, I want to be able to disconnect my Google or Facebook account from my
 - **Database Support**: Assumes the existing database schema can be extended with a new `oauth_links` table or additional columns in `users`.
 - **JWT Implementation**: Assumes the existing JWT generation logic for Local Auth is reusable for OAuth.
 - **Token Storage**: Assumes third-party access tokens and refresh tokens will not be persisted in the database beyond the immediate authentication session.
+
+
+## UI Screenshots
+
+### 1. OAuth Login Options (Login Page)
+
+Corresponding User Story: User Story 1 – Fast Registration via Google/Facebook.
+
+This screenshot shows the Google and Facebook OAuth authentication buttons displayed on the AuraTune login page, offering fast third-party sign-in alongside local email credentials.
+
+![OAuth Login Options](ui/01-oauth-login-options.png)
+
+### 2. OAuth Registration Options (Registration Page)
+
+Corresponding User Story: User Story 1 – Fast Registration via Google/Facebook.
+
+This screenshot shows the Google and Facebook OAuth buttons placed at the top of the registration page, allowing new listeners to sign up directly via social providers without filling the manual registration form.
+
+![OAuth Registration Options](ui/02-oauth-registration-options.png)
+
+### 3. Google OAuth Provider Selection
+
+Corresponding User Story: User Story 1 – Fast Registration via Google/Facebook (Acceptance Scenario 1).
+
+This screenshot demonstrates user interaction when selecting the Google login button. In the current frontend implementation, this displays a notice explaining that backend OAuth integration is required.
+
+![Google OAuth Provider Selection](ui/03-oauth-google-selection-notice.png)
+
+### 4. Facebook OAuth Provider Selection
+
+Corresponding User Story: User Story 1 – Fast Registration via Google/Facebook (Acceptance Scenario 3).
+
+This screenshot demonstrates user interaction when selecting the Facebook login button, showing the current application status notice indicating demo mode pending backend OAuth endpoints.
+
+![Facebook OAuth Provider Selection](ui/04-oauth-facebook-selection-notice.png)

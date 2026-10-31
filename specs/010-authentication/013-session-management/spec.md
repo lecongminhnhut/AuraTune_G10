@@ -139,3 +139,54 @@ As a user, I want to see where I am logged in and have the ability to terminate 
 - **Cookie Support**: Assumes target browsers support HttpOnly and Secure cookie flags.
 - **Database Availability**: Assumes the PostgreSQL database is reliable for session storage.
 - **Time Sync**: Assumes server times are synchronized to ensure correct token expiration checks.
+
+
+## UI Screenshots
+
+### 1. Persistent Login Option (Remember Me)
+
+Corresponding User Story: User Story 1 – Secure and Persistent Login (Acceptance Scenario 2).
+
+This screenshot shows the "Ghi nhớ đăng nhập" (Remember Me) checkbox option available on the login form, allowing users to persist their session across browser restarts.
+
+![Persistent Login Option (Remember Me)](ui/01-remember-me-option.png)
+
+### 2. Active Authenticated Session State
+
+Corresponding User Story: User Story 1 – Secure and Persistent Login.
+
+This screenshot shows the active session interface, where an authenticated user retains immediate access to personalized music collections, customized sidebar library, and top bar user identity.
+
+![Active Authenticated Session State](ui/02-active-authenticated-session.png)
+
+### 3. User Account Session Menu
+
+Corresponding User Story: User Story 2 – Manual Logout & User Story 3 – Multi-Device Management.
+
+This screenshot shows the active session menu opened from the user avatar, displaying the currently signed-in account details, role badge, navigation links, and the manual "Đăng xuất" (Logout) command.
+
+![User Account Session Menu](ui/03-user-account-session-menu.png)
+
+### 4. Active Session Route Guard
+
+Corresponding User Story: User Story 1 – Secure and Persistent Login.
+
+This screenshot shows the session protection guard displayed when an already authenticated user navigates to the login or registration routes, confirming their active session and offering options to continue or log out.
+
+![Active Session Route Guard](ui/04-already-authenticated-session-guard.png)
+
+### 5. Successful Logout Feedback
+
+Corresponding User Story: User Story 2 – Manual Logout (Acceptance Scenario 1).
+
+This screenshot demonstrates the user experience following a successful manual logout: session state is invalidated, the session guard clears, and the user is notified with a confirmation toast.
+
+![Successful Logout Feedback](ui/05-logout-action-feedback.png)
+
+### 6. Unauthorized Access Guard (Login Required)
+
+Corresponding User Story: User Story 2 – Manual Logout (Acceptance Scenario 2) & Edge Cases.
+
+This screenshot shows the application guard screen when an unauthenticated visitor attempts to access protected features, prompting them to log in or create an account.
+
+![Unauthorized Access Guard (Login Required)](ui/06-unauthorized-access-login-required.png)
