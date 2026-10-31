@@ -46,7 +46,7 @@ export default function Sidebar() {
   return (
     <aside className="hidden w-[248px] shrink-0 flex-col gap-2 md:flex">
       <div className="rounded-lg bg-[#111113] px-5 py-5">
-        <Link to="/" className="inline-flex rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+        <Link to="/" className="flex justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
           <Logo />
         </Link>
         <p className="mt-3 text-center text-[10px] tracking-[0.18em] text-sky-200/60">ÂM NHẠC HIỂU BẠN</p>

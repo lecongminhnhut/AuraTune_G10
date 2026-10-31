@@ -1,14 +1,14 @@
-import brandLogo from '../../assets/auratune-logo.jpg'
-import brandMark from '../../assets/auratune-mark.jpg'
+import brandLogo from '../../assets/auratune-logo.png'
+import brandMark from '../../assets/auratune-mark.png'
 
+// Logo nền trong suốt, hiển thị trực tiếp trên nền tối của giao diện.
 export default function Logo({ compact = false }) {
   return (
-    <div className={compact ? 'h-10 w-10 overflow-hidden rounded-xl border border-sky-300/15 bg-black' : 'relative h-[132px] w-[196px] overflow-hidden rounded-xl border border-sky-300/10 bg-black shadow-[0_8px_32px_rgba(14,165,233,0.08)]'}>
-      <img
-        src={compact ? brandMark : brandLogo}
-        alt="AuraTune"
-        className={compact ? 'h-full w-full scale-[1.4] object-cover' : 'absolute left-1/2 top-1/2 w-[190px] max-w-none -translate-x-1/2 -translate-y-1/2'}
-      />
-    </div>
+    <img
+      src={compact ? brandMark : brandLogo}
+      alt="AuraTune"
+      draggable={false}
+      className={compact ? 'h-9 w-auto select-none' : 'h-[136px] w-auto select-none drop-shadow-[0_6px_24px_rgba(56,189,248,0.18)]'}
+    />
   )
 }
