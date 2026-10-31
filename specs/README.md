@@ -62,10 +62,12 @@ specs/
 │   ├── 111-user-management/
 │   ├── 112-content-moderation/
 │   └── 113-platform-statistics/
-└── 120-ai-conversational-agent/
-    ├── 121-conversational-interface/
-    ├── 122-music-intent-understanding/
-    └── 123-real-time-music-assistance/
+├── 120-ai-conversational-agent/
+│   ├── 121-conversational-interface/
+│   ├── 122-music-intent-understanding/
+│   └── 123-real-time-music-assistance/
+└── 130-frontend/
+    └── 131-frontend-foundation/
 ```
 
 ## 3. Functional Groups and Ownership
@@ -86,6 +88,9 @@ The following ownership follows the team contract.
 | `100` | AI Recommendations                       | Nhựt (A)  |
 | `110` | Admin Functions                          | Hoàng (D) |
 | `120` | AI Conversational Agent (Real-time Host) | Nhựt (A)  |
+| `130` | Frontend Foundation (cross-cutting)      | Frontend Lead |
+
+Group `130` holds shared frontend requirements and does not change the feature ownership above.
 
 Each assigned member is responsible for their feature's specification, UI/UX, logic, testing, documentation, and demonstration, as described in the team contract. Shared architecture and integration decisions must still be coordinated with the team.
 
