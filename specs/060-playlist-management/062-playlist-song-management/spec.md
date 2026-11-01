@@ -57,7 +57,7 @@ As a listener, I want to remove songs or change their order within my playlist s
 
 ### Edge Cases
 
-- **Duplicate Add**: What happens if a user adds the same song to the same playlist twice? (System should allow it but treat them as separate entries with unique sort orders).
+- **Duplicate Add**: What happens if a user adds the same song to the same playlist twice? (System prevents duplicates: in addition dialogs the action button displays "Đã thêm" (disabled), and attempting to add via menu displays a notification that the track already exists).
 - **Concurrent Reordering**: If a user reorders a playlist on two devices simultaneously, the last state received by the server wins.
 - **Collaborative Playlists**: How do permissions work for adding/removing? (Owners and shared users with edit permissions can manage songs; specific permissions are defined in feature 065).
 - **Network Failure**: If an add/remove/reorder action fails, the UI must revert to the previous state and show an error toast.
@@ -73,6 +73,7 @@ As a listener, I want to remove songs or change their order within my playlist s
 - **FR-005**: System MUST allow the playlist owner to remove any song from their playlist via the `TrackMenu`.
 - **FR-006**: System MUST update the playlist's `total_song_count` and `total_duration` metadata in the `playlists` table whenever songs are added or removed.
 - **FR-007**: System MUST prevent users from adding songs to playlists they do not own or have collaborative access to.
+- **FR-008**: System MUST prevent duplicate songs from being added to the same playlist, displaying disabled status ("Đã thêm") or toast notification feedback.
 
 ### Key Entities *(include if feature involves data)*
 

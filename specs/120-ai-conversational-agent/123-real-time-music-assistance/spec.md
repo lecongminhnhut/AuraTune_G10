@@ -16,6 +16,11 @@
 - Q: Hệ thống nên sử dụng cơ chế chuyển tiếp và phối hợp nào để gửi chỉ thị hành động âm nhạc từ AI Conversational Agent đến Music Player (trên Web Client) và các dịch vụ backend? (FR-003) → A: Điều phối hành động phía Client qua Payload phản hồi (Option A). Backend AI Orchestrator xử lý logic, thẩm định thực thể và trả về gói tin JSON chứa mảng chỉ thị `client_actions` chuẩn hóa kèm phản hồi hội thoại; Web Client tiếp nhận và trực tiếp phát lệnh điều khiển phát nhạc/hàng đợi tới Persistent Bottom Player (`040`/`050`), đồng thời thực hiện gọi các API backend tương ứng cho các thao tác thư viện cá nhân (`060`/`090`).
 - Q: Kết quả thực hiện hỗ trợ âm nhạc (bao gồm cả trạng thái thành công và xử lý ngoại lệ khi lỗi) nên được phản hồi và hiển thị như thế nào trong luồng hội thoại với người dùng? (FR-004) → A: Câu thoại của AI host kèm Thẻ bài hát/hành động tương tác (Option A). Phản hồi người dùng bằng câu thoại đàm thoại tự nhiên của AI host kết hợp widget thẻ xem trước trực quan (gồm ảnh bìa, tên bài hát, nghệ sĩ, nút phát/dừng phụ) trong luồng chat; khi xảy ra lỗi (không tìm thấy bài hát, thiếu thông tin, dịch vụ AI 503), hiển thị thông báo lỗi nhẹ nhàng kèm nút Retry và đề xuất gợi ý thay thế mà không bao giờ ngắt bài hát hiện đang phát.
 
+### Session 2026-11-01
+
+- Q: What confirmation rules apply to music assistance actions executed by the agent? (FR-013) → A: Destructive-only confirmation. The system requires interactive user confirmation (`[y/N]`) solely for irreversible actions such as clearing the entire playback queue (`clear_queue`). All regular playback, queue addition, volume adjustment, and like actions execute immediately without blocking.
+- Q: How does the client executor manage compound action sequences? (FR-014) → A: Sequential tool dispatching. Chained clauses from compound commands are dispatched and executed sequentially via `agentTools`, updating step-by-step state indicators (`running`, `ok`, `error`, `confirm`) in real-time.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Real-time Playback and Audio Control Assistance (Priority: P1)
@@ -122,6 +127,8 @@ As an authenticated listener, I want all music assistance actions to operate str
 - **FR-010**: System MUST record listening events to the user's history (`POST /users/me/history`) whenever assisted music playback begins, adhering to listening history conventions (`070-listening-history`).
 - **FR-011**: System MUST strictly isolate all music assistance operations to the authenticated user's session, preventing cross-user player control or library modification.
 - **FR-012**: System MUST NOT perform natural language understanding or render raw chat UI directly, maintaining explicit boundaries with spec `121-conversational-interface` and spec `122-music-intent-understanding`.
+- **FR-013**: System MUST require interactive user confirmation (`[y/N]`) before executing destructive actions such as clearing the playback queue (`clear_queue`), allowing quick confirmation via `y`, `n`, or Enter.
+- **FR-014**: System MUST support sequential client tool dispatching for compound or chained commands, executing each action in order and surfacing real-time execution states (`running`, `ok`, `error`, `confirm`) within the conversational stream.
 
 ### Key Entities *(include if feature involves data)*
 

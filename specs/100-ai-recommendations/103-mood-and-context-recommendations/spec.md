@@ -92,7 +92,7 @@ As an authenticated listener, I want my mood and context requests to remain priv
 ### Functional Requirements
 
 - **FR-001**: The system MUST provide authenticated listeners with music recommendations tailored to their current mood or contextual activity.
-- **FR-002**: The system MUST support mood and context input via curated preset tags and chips representing core moods (e.g., Chill, Energetic, Focus, Melancholy) and activity contexts (e.g., Workout, Study, Commute, Sleep).
+- **FR-002**: The system MUST support mood and context input via curated preset tags and chips categorized into 4 core moods (Chill, Energetic, Melancholy, Focus) and 4 activity contexts (Study/Work, Workout, Late Night, Travel/Commute).
 - **FR-003**: The system MUST support mood and context recommendations containing individual Songs and theme-curated Mood Playlists, with appropriate metadata for playback and navigation.
 - **FR-004**: When no matching music can be found for the selected mood/context or when the AI recommendation service is unavailable/times out, the system MUST display a friendly empty or service-unavailable state accompanied by quick suggestion chips for alternative active moods, without blocking or crashing the application.
 - **FR-005**: The system MUST associate every recommendation request and response strictly with the authenticated listener's account identity.

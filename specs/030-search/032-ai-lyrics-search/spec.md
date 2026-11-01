@@ -15,7 +15,12 @@
 - Q: How should the feature display more than the initial set of matching songs? → A: Pagination with 20 songs per page.
 - Q: When AI search is unavailable, which content should keyword fallback search and how should it rank matching songs? → A: Search normalized lyrics only; rank exact phrase matches above matches containing more of the query words.
 
-The AI lyrics-search request MUST be treated as unavailable after 5 seconds without a completed response, and the keyword-search fallback MUST then begin automatically.
+### Session 2026-11-01
+
+- Q: What unified timeout threshold should trigger automatic keyword fallback for AI search? → A: 3 seconds across all AI search features.
+- Q: How should additional matching lyric songs be loaded? → A: "Load More" action with 20 songs per batch, unifying with metadata search.
+
+The AI lyrics-search request MUST be treated as unavailable after 3 seconds without a completed response, and the keyword-search fallback MUST then begin automatically.
 
 ## User Scenarios & Testing
 
@@ -96,12 +101,12 @@ As a Listener or Public user, I want the system to continue with a basic keyword
 - **FR-005**: The system MUST show an explicit no-results state when neither the AI search nor an applicable fallback search finds a relevant song.
 - **FR-006**: The system MUST recognize HTTP 503 from the AI lyrics-search contract as an unavailable-service condition.
 - **FR-007**: When the AI lyrics-search request returns HTTP 503, the system MUST automatically perform a basic keyword search using the submitted lyric fragment.
-- **FR-008**: When the AI lyrics-search request does not complete within 5 seconds, the system MUST treat it as the defined unavailable-service condition and automatically perform the same keyword-search fallback.
+- **FR-008**: When the AI lyrics-search request does not complete within 3 seconds, the system MUST treat it as the defined unavailable-service condition and automatically perform the same keyword-search fallback.
 - **FR-009**: When fallback keyword search returns results, the system MUST display those results without requiring the user to submit the query again.
 - **FR-010**: When fallback is used, the system MUST show a clear user-facing notice that AI search was temporarily unavailable and that basic keyword search was used instead.
 - **FR-011**: The fallback notice MUST be a dismissible inline banner displayed above the fallback results; it MUST remain visible until the user dismisses it or submits a new search, and it MUST NOT block the user's ability to inspect results.
 - **FR-012**: The system MUST prevent stale results from a previous query from being presented as the result of the current query.
-- **FR-013**: The system MUST display no more than 20 songs per result page and MUST provide pagination when additional matching songs exist.
+- **FR-013**: The system MUST display an initial batch of up to 20 matching songs and provide a "Load More" action to fetch subsequent 20-song batches.
 - **FR-014**: The system MUST require at least 3 words and no more than 200 characters after trimming whitespace; it MUST show clear input feedback and MUST NOT send an empty, whitespace-only, too-short, or too-long lyric fragment.
 - **FR-015**: The system MUST preserve the existing responsive web application experience for lyric search, result display, empty states, and fallback notices.
 - **FR-016**: The system MUST follow the approved API contract for the AI request, response, HTTP 503 behavior, and any error information shown to the user.

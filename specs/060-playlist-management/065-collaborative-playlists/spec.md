@@ -16,11 +16,11 @@ As a playlist owner, I want to toggle my playlist to 'Collaborative' and invite 
 
 **Why this priority**: This is the core functionality that enables collaboration. Without the ability to enable collaboration and invite others, the feature does not exist.
 
-**Independent Test**: Can be fully tested by creating a private playlist, toggling the 'Collaborative' switch, and generating a shareable link.
+**Independent Test**: Can be fully tested by creating a private playlist, toggling the 'Collaborative' switch, and inviting a registered user via email.
 
 **Acceptance Scenarios**:
 
-1. **Given** a playlist owned by the user, **When** the user toggles the 'Collaborative' status to ON, **Then** the playlist state is updated in the database and a shareable invitation link becomes available.
+1. **Given** a playlist owned by the user, **When** the user toggles the 'Collaborative' status to ON and enters a registered user's email, **Then** the playlist state is updated and the collaborator receives editing access.
 2. **Given** a collaborative playlist, **When** the owner toggles the 'Collaborative' status to OFF, **Then** all existing collaborators (except the owner) lose their editing permissions, but the tracks they added remain in the playlist.
 
 ---
@@ -80,8 +80,8 @@ As a member of a collaborative playlist, I want to see which user added each son
 ### Functional Requirements
 
 - **FR-065-01**: Playlist owners MUST be able to toggle the `is_collaborative` status of any playlist they own.
-- **FR-065-02**: System MUST generate a unique, shareable invitation link for collaborative playlists.
-- **FR-065-03**: Users MUST be able to join a collaborative playlist by clicking a valid invitation link while signed in. Joining is open to anyone with the link (no owner approval required).
+- **FR-065-02**: System MUST allow playlist owners to invite registered AuraTune users by entering their email address via the Collaborators dialog (`CollaboratorsDialog`).
+- **FR-065-03**: Invited users MUST immediately receive collaborator access upon invitation and see the collaborative playlist reflected in their library.
 - **FR-065-04**: Authorized collaborators MUST be able to add tracks, remove any tracks (including those added by others), and reorder tracks within the shared playlist.
 - **FR-065-05**: The system MUST record the `user_id` of the member who added each track to a collaborative playlist.
 - **FR-065-06**: Only the playlist owner MUST be allowed to edit playlist metadata (Title, Description, Cover Art) or delete the playlist entirely.
@@ -95,7 +95,7 @@ As a member of a collaborative playlist, I want to see which user added each son
 ### Session 2026-10-31
 
 - Q: Who has the authority to remove tracks added by other users in a collaborative playlist? → A: B (All collaborators)
-- Q: Can any user with the invitation link join the collaborative playlist, or does the owner need to approve each request? → A: A (Open: anyone with the link can join)
+- Q: How are collaborators invited to a collaborative playlist? → A: Targeted email invitation: The owner invites registered AuraTune users by entering their email address in the Collaborators dialog.
 - Q: What is the default visibility of a collaborative playlist to users who are NOT collaborators? → A: A (Public: anyone can find/view)
 
 ### Key Entities *(include if feature involves data)*

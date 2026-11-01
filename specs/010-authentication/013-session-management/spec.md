@@ -38,6 +38,9 @@ Ràng buộc:
 - Q: Should a session be bound to the IP address or User-Agent to prevent stolen tokens from being used on other devices? → A: Weak binding (validate User-Agent consistency and monitor for significant IP address changes).
 - Q: Should there be a short grace period for Refresh Token rotation to handle network interruptions? → A: 60-second grace period (allows the previous token to be used once more if rotation fails to finalize).
 
+### Session 2026-11-01
+- Q: How is the multi-device logout action exposed to the user in the UI? → A: Dedicated "Logout from all devices" button in account settings/menu without a full session management dashboard.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Secure and Persistent Login (Priority: P1)
@@ -103,7 +106,7 @@ As a user, I want to see where I am logged in and have the ability to terminate 
 - **FR-005**: System MUST provide a `/auth/refresh` endpoint that accepts a valid Refresh Token.
 - **FR-006**: System MUST provide a `/auth/logout` endpoint that revokes the specific Refresh Token used in the request.
 - **FR-007**: System MUST store Refresh Tokens in a PostgreSQL table (e.g., `user_sessions`) linked to the `user_id`.
-- **FR-008**: System MUST support revoking all sessions for a specific user.
+- **FR-008**: System MUST support revoking all sessions for a specific user, exposed via a "Logout from all devices" option in account settings.
 - **FR-009**: System MUST use HttpOnly, Secure, and SameSite=Strict cookies for storing the Refresh Token in the browser.
 - **FR-010**: System MUST enforce HTTPS/TLS 1.3 for all token transmissions.
 - **FR-011**: System MUST implement a sliding window inactivity timeout (e.g., 7 days) that extends upon each successful token refresh.

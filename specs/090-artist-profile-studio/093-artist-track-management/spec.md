@@ -13,6 +13,7 @@
 - Q: What happens when an artist hides a track? → A: The track status transitions to "hidden" (`Đang ẩn`). The track is excluded from public search and listener catalogs, but existing play counts and statistics remain preserved in the Studio.
 - Q: How is track duration formatted? → A: Track duration must follow the `minutes:seconds` format (regex `^\d{1,2}:[0-5]\d$`, e.g., `3:45`).
 - Q: Can an artist delete an existing track? → A: Yes, deleting a track requires confirmation via a modal dialog. Once confirmed, the track is removed from AuraTune Studio and public distribution.
+- Q: How are uploaded audio files handled and stored? → A: Binary audio files are uploaded to cloud media/blob storage (e.g., Cloudinary or S3), generating a persistent playable streaming URL stored in the track record.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -118,6 +119,7 @@ As a security boundary, AuraTune Studio must only allow access to accounts posse
 - **FR-007**: AuraTune MUST allow artists to toggle track visibility between active ("Công khai") and hidden ("Đang ẩn").
 - **FR-008**: AuraTune MUST require modal confirmation before permanently deleting a track.
 - **FR-009**: The system MUST provide toast notifications upon upload, update, status toggle, and deletion.
+- **FR-010**: AuraTune MUST persist uploaded audio files to backend cloud media/blob storage (e.g., Cloudinary or S3) and associate the permanent audio URL with the track record for public streaming.
 
 ### Measurable Outcomes
 
@@ -127,7 +129,7 @@ As a security boundary, AuraTune Studio must only allow access to accounts posse
 
 ## Assumptions
 
-- Audio files in the demo environment are validated client-side and simulated in browser state without backend media streaming storage.
+- Audio files are uploaded to cloud media/blob storage (e.g., Cloudinary or S3), providing a permanent playable streaming URL.
 - Artist credentials and profiles are configured via standard authentication seed data (`artist@auratune.vn` / `Aura1234`).
 - Track genres conform to the platform's standardized genre taxonomy (`mockData.js`).
 

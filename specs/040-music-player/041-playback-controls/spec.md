@@ -17,6 +17,11 @@
 - Q: What happens when a stream fails? → A: Playback stops, a message is shown, and the listener can retry or skip to another track.
 - Q: Can unavailable tracks be played? → A: No. The system refuses to start them and shows a message.
 
+### Session 2026-11-01
+
+- Q: When is a play recorded into listening history and counted as a valid play? → A: When the track has been played continuously for at least 30 seconds (or 50% of duration for shorter tracks).
+- Q: Does the player provide quick library actions (Like, Add to Playlist)? → A: Yes, integrated directly on the full player controls tray.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Control Playback (Priority: P1)
@@ -91,6 +96,8 @@ As a listener, I want the next track to start automatically so that my music con
 - **FR-011**: The system MUST show the current track's cover art, title, artist, and duration.
 - **FR-012**: The system MUST allow Public and signed-in users to play available tracks.
 - **FR-013**: The system MUST NOT implement shuffle, repeat, or queue editing rules within this feature.
+- **FR-014**: The system MUST emit a play event to the listening history service (Group 070) when a track has been played continuously for at least 30 seconds or 50% of its total duration.
+- **FR-015**: The system MUST provide quick actions to like/unlike the track (syncing with Liked Songs) and add the track to a playlist directly from the full player interface.
 
 ### Key Entities *(include if feature involves data)*
 

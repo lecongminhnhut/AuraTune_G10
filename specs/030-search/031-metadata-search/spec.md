@@ -15,6 +15,11 @@
 - Q: Should metadata search ignore differences in letter case, diacritics, and punctuation when matching keywords? → A: Ignore case, diacritics, and punctuation differences.
 - Q: When a user selects a filter that does not apply to the current result type, how should the interface respond? → A: Hide filters that do not apply to the current result type.
 
+### Session 2026-11-01
+
+- Q: Does the search interface provide a search history mechanism for recently entered queries? → A: Yes, store up to 10 recent queries locally in the browser (LocalStorage) and display them in a dropdown when focused, with individual and clear-all actions.
+- Q: How are search modes organized on the Search page? → A: Dedicated tab navigation on `/search` separating Metadata ("Từ khóa / Tất cả"), AI Lyrics ("Lời bài hát"), and Semantic ("Tâm trạng / AI").
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Find music and related metadata (Priority: P1)
@@ -91,6 +96,7 @@ As a Public or Listener user, I want clear feedback when no result matches or th
 - **FR-016**: The system MUST allow the user to retry after a connection or service failure.
 - **FR-017**: The system MUST ensure that results shown after a completed search correspond to the current keyword and active constraints.
 - **FR-018**: The system MUST keep all user-facing text for this feature consistent with AuraTune's responsive web application experience.
+- **FR-019**: The system MUST store up to 10 recent search queries locally in browser storage (LocalStorage) and display them in a dropdown when the search input is focused, allowing users to select a past query or clear history.
 
 ### Key Entities
 

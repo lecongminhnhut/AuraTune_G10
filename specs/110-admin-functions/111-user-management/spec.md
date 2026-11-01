@@ -20,6 +20,11 @@
 - Q: What are the expected search, filter, sort, and pagination behaviors if they are not already defined? → A: The default behavior for the admin user list is: `q` matches a case-insensitive substring in `email` or `display_name` after trimming leading/trailing whitespace; `role` matches the exact allowed values `user`, `artist`, or `admin`; `is_banned` matches `true` or `false`; all filters are combined with AND semantics; results are sorted by `created_at` descending, then `user_id` ascending; page size is 20 records per page; a filter change resets pagination to the first page; empty matches return an explicit empty result. If no sort or pagination values are provided, the default order above applies.
 - Q: What is the expected behavior when a user is already banned or already unbanned? → A: Duplicate state-change requests are idempotent: an already-banned user remains banned and the response reports no-op/duplicate state; an already-unbanned user remains unbanned and the response reports no-op/duplicate state. No contradictory state is created.
 
+### Session 2026-11-01
+
+- Q: Can an administrator change user roles between listener, artist, and administrator? → A: Yes. An authenticated admin may change another user's role between `user`, `artist`, and `admin`. However, an admin is strictly prohibited from changing their own role (`disabled={isSelf}`).
+- Q: How does the admin interface handle ban/unban speed and reasons? → A: The admin interface supports fast direct actions via button clicks with an immediate toast notification (`Đã khóa [Tên]` / `Đã mở khóa [Tên]`). When executed directly without a prompt modal, the system records a default violation reason ("Vi phạm tiêu chuẩn cộng đồng") in the ban audit record.
+
 ## Source review summary
 
 The current reviewed source set confirms the feature scope and the required admin-only boundary, but does not fully define all of the operational decisions above.
@@ -159,10 +164,12 @@ As an admin, I want clear and safe responses when the list is empty, the user ca
 - **FR-015**: The system MUST not expose password, password hash, tokens, session IDs, secrets, or similar sensitive fields in list results, error responses, or status messages.
 - **FR-016**: The system MUST handle duplicate or repeated ban or unban requests consistently, either as a no-op or an idempotent success/failure result, without creating contradictory state.
 - **FR-017**: The system MUST clearly distinguish between a valid empty result, a validation failure, an authorization failure, a not-found result, and an operation failure; a failed operation MUST never be reported as successful.
-- **FR-018**: The system MUST keep the feature focused on account management. It MUST NOT add account deletion, password reset, impersonation, export, or admin-role grant/revoke behavior, and MUST NOT include content moderation or platform statistics in this feature.
+- **FR-018**: The system MUST keep the feature focused on account management. It MUST NOT add account deletion, password reset, impersonation, or export, and MUST NOT include content moderation or platform statistics in this feature.
 - **FR-019**: The system MUST keep user-to-artist linking and artist administrative actions outside this feature scope and must not merge them into account management.
 - **FR-020**: A user ban is a separate administrative state from temporary login failure locking; the system MUST treat ban enforcement and password-lock enforcement as distinct behaviors unless a separate product decision explicitly merges them.
 - **FR-021**: The admin list MUST support the documented default query semantics: `q` is a trimmed case-insensitive substring match on `email` or `display_name`, `role` is an exact match, `is_banned` is a boolean filter, all filters apply by AND, results sort by `created_at` descending then `user_id` ascending, and each page contains at most 20 records.
+- **FR-022**: The system MUST allow an authenticated admin to change the role of another user account between `user`, `artist`, and `admin`, but MUST strictly prohibit an admin from changing their own role.
+- **FR-023**: The system MUST support direct one-click ban and unban actions with immediate visual toast feedback, persisting a system default reason ("Vi phạm tiêu chuẩn cộng đồng") when a custom reason is not provided.
 
 ### Key Entities
 

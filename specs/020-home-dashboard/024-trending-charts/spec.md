@@ -17,6 +17,11 @@
 - Q: Which chart periods are supported? → A: Day, week, and month, as defined by the API Contract. Week is the default, matching the Home section wording.
 - Q: Can charts be filtered? → A: Yes, the Charts page can be filtered by genre.
 
+### Session 2026-11-01
+
+- Q: Does Group 020 formally own both the Home preview and the full Charts page (/charts)? → A: Yes, Group 020 owns both the preview widget and the dedicated /charts page.
+- Q: What happens when a user clicks the heart/like button on a trending song row? → A: For signed-in listeners, it toggles favorite status in Liked Songs; for guests, it prompts a login modal.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - See What Is Popular on Home (Priority: P1)
@@ -76,6 +81,7 @@ As a listener, I want a full Charts page so that I can explore more ranked track
 - **FR-011**: The system MUST allow playing the full displayed chart in 1 interaction.
 - **FR-012**: The system MUST provide an action from Home to the Charts page.
 - **FR-013**: The system MUST show an empty state when a filter has no tracks and an error state with retry when loading fails.
+- **FR-014**: The system MUST allow signed-in listeners to toggle the like status of a song directly from trending chart song rows (syncing with Liked Songs), and prompt unauthenticated visitors to log in when clicked.
 
 ### Key Entities *(include if feature involves data)*
 

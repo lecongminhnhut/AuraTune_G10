@@ -12,7 +12,8 @@
 
 ### Session 2026-10-30
 
-- Q: How should conversation lifecycle and message history be managed for authenticated listeners across sessions? (FR-008) → A: Single persistent conversation thread per user account (Option A). The user maintains one continuous thread with the AI host stored on the backend and automatically reloaded across browser sessions.
+- Q: How should conversation lifecycle and message history be managed for authenticated listeners across sessions? (FR-008) → A: Session/In-memory conversation lifecycle with command history (Updated Session 2026-11-01). The interface maintains active messages in client component memory, supports the `/clear` command to reset the view to initial banner state, and retains up to 30 recent prompts navigable via the Up/Down arrow keys.
+- Q: How does the conversational interface behave when the AI service is toggled off or unavailable? (FR-009, FR-011) → A: The interface opens with status `● tạm ngưng` (suspended), renders an amber alert explaining the temporary pause, and disables the prompt input textarea without stopping or interrupting background music playback.
 - Q: What message formatting and content capabilities should the conversational interface support for user and AI messages in v1? (FR-007) → A: Markdown formatted text (Option A). AI responses render standard Markdown formatting (bold, italics, lists, links), while user inputs remain plain text.
 - Q: What failure recovery behavior should occur when message transmission fails or the AI service is unreachable? (FR-009) → A: Inline failure status with "Retry" action (Option A). Failed messages remain visible in the chat stream with an error badge and retry button; an inline system notice is displayed if the AI host is unreachable without disrupting background music playback.
 
@@ -101,8 +102,8 @@ As an authenticated listener, I want my conversation content to remain strictly 
 - **FR-005**: System MUST disable duplicate message submission while an existing message is in transit or being processed.
 - **FR-006**: System MUST reject empty messages or whitespace-only messages and prevent dispatch.
 - **FR-007**: System MUST support standard Markdown rendering in AI responses (including bold, italics, bullet lists, and links) while capturing, sanitizing, and displaying user messages as plain text.
-- **FR-008**: System MUST maintain a single persistent conversation thread per authenticated user account, automatically loading historical messages in chronological order when the user accesses the conversational interface.
-- **FR-009**: System MUST mark messages that fail transmission with an inline failure badge and a one-click retry action, and display an inline system notification when the AI conversational service is unreachable without interrupting other platform features or music playback.
+- **FR-008**: System MUST maintain the active conversational session in client memory, support clearing the view to the initial state via the `/clear` command, and preserve up to 30 recent prompts navigable via Up/Down arrow keys.
+- **FR-009**: When the AI service is disabled or unreachable (`aiAvailable = false`), the system MUST display a suspended status (`● tạm ngưng`), present an inline explanatory alert, and disable text input while ensuring background music streaming continues uninterrupted.
 - **FR-010**: System MUST isolate all conversation data strictly by the authenticated user's account ID, preventing any cross-user data leakage.
 - **FR-011**: System MUST ensure that AI service unavailability or chat error states do not block, crash, or interrupt background music playback or platform navigation.
 - **FR-012**: System MUST automatically scroll the message view to the latest incoming message upon receipt of user input or AI response.

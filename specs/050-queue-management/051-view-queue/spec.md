@@ -18,6 +18,13 @@
 - Q: Can a listener jump to an upcoming track? → A: Yes. Selecting a track's play action plays it immediately.
 - Q: Can all upcoming tracks be cleared at once? → A: Yes, and the current track keeps playing.
 
+### Session 2026-11-01
+
+- Q: Does the queue survive a browser page reload (F5)? → A: Yes, persisted in local browser storage (LocalStorage) and restored with the player in a paused state.
+- Q: Can the listener save the current queue as a permanent playlist? → A: Yes, a "Save as Playlist" action is provided for signed-in listeners (connecting to Group 060).
+- Q: What is the maximum queue capacity? → A: Maximum 50 tracks.
+- Q: What visual format does the queue panel use? → A: Right-aligned slide-out drawer (Side Drawer) with backdrop overlay.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Open the Queue (Priority: P1)
@@ -88,7 +95,9 @@ As a listener, I want a clear empty state and a way to clear the queue so that I
 - **FR-008**: The system MUST allow closing the panel by a control, the backdrop, and the Escape key.
 - **FR-009**: The system MUST NOT interrupt playback when the panel opens or closes.
 - **FR-010**: The system MUST update the panel immediately when the current track changes.
-- **FR-011**: The system MUST keep the queue for the current session on the client.
+- **FR-011**: The system MUST persist the queue in local browser storage (LocalStorage), restoring current and upcoming tracks in a paused state after a page reload.
+- **FR-012**: The system MUST provide a "Save as Playlist" action in the queue panel, allowing signed-in listeners to save all current and upcoming tracks into a new playlist (Group 060), prompting guests to log in.
+- **FR-013**: The system MUST enforce a maximum queue capacity of 50 tracks, notifying the listener when the limit is reached.
 
 ### Key Entities *(include if feature involves data)*
 

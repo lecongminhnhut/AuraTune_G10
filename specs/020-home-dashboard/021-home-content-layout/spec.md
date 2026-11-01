@@ -17,6 +17,11 @@
 - Q: How much content does each preview section show? → A: Up to 5 items per preview section, with a link to the full destination. Genres show all available genres.
 - Q: What is the order of the sections? → A: Hero and quick access, recommended content, new albums, popular tracks, featured artists, curated playlists, then genres.
 
+### Session 2026-11-01
+
+- Q: Are unauthenticated visitors (guests) permitted to stream public music directly from the Home page? → A: Yes, full public streaming is allowed; login is prompted only when attempting personal actions (like, save, personal shortcuts).
+- Q: How is the "Featured Artists" section populated? → A: Automatically generated based on artists with the highest total play counts on the platform.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - See Organized Content on Arrival (Priority: P1)
@@ -76,7 +81,7 @@ As a listener, I want section actions that lead to full pages so that I can cont
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST allow guests and signed-in listeners to open the Home page.
+- **FR-001**: The system MUST allow guests and signed-in listeners to open the Home page and stream public music tracks, albums, and playlists without requiring an account.
 - **FR-002**: The system MUST present sections in this order: hero and quick access, recommended content, new albums, popular tracks, featured artists, curated playlists, and genres.
 - **FR-003**: The system MUST show a personalized greeting to signed-in listeners and a general greeting to guests.
 - **FR-004**: The system MUST show at most 5 items in each preview section, except genres, which show all available genres.
@@ -88,6 +93,7 @@ As a listener, I want section actions that lead to full pages so that I can cont
 - **FR-010**: The system MUST adapt the layout to phone, tablet, and desktop widths without horizontal page scrolling.
 - **FR-011**: The system MUST keep current playback running while the listener uses or leaves Home.
 - **FR-012**: The system MUST NOT implement recommendation generation, chart calculation, or history recording within this feature.
+- **FR-013**: The system MUST automatically populate the "Featured Artists" section with artists having the highest platform-wide play counts.
 
 ### Key Entities *(include if feature involves data)*
 
