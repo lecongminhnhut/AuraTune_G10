@@ -18,6 +18,11 @@
 - Q: Can several tracks be added at once? → A: Yes. Tracks already upcoming and unavailable tracks are skipped, and the listener sees how many were added.
 - Q: Can an already played track be added again? → A: Yes. It moves to the end of the queue.
 
+### Session 2026-11-01
+
+- Q: How does de-duplication apply when adding tracks? → A: De-duplication applies to individual manual additions (Add to Queue / Play Next); starting an existing collection preserves the collection's original track order.
+- Q: What is the maximum number of tracks that can be added to the queue? → A: Up to 50 tracks total.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Add a Track to the Queue (Priority: P1)
@@ -74,6 +79,7 @@ As a listener, I want to remove an upcoming track so that I do not hear it in th
 - **FR-009**: The system MUST NOT allow removing the current track.
 - **FR-010**: The system MUST update the list and count immediately after each change.
 - **FR-011**: The system MUST NOT interrupt playback when the queue changes.
+- **FR-012**: The system MUST enforce a maximum capacity of 50 tracks in the queue and inform the listener when attempting to add tracks beyond this limit.
 
 ### Key Entities *(include if feature involves data)*
 

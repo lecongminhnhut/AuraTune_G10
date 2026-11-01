@@ -96,7 +96,7 @@ Shows the system toast notification *"Đã sao chép liên kết vào bộ nhớ
 
 - Q: While a save or remove request is still pending, how should the album action behave? → A: Temporarily disable the action and show a small progress indicator, while keeping the last confirmed saved state visible until the request succeeds.
 - Q: When saving, removing, or sharing fails, how should AuraTune present the error to the visitor? → A: Show a short, action-specific inline message near the control, with a retry hint where appropriate.
-- Q: How should the album control visually distinguish an unsaved album from a saved one? → A: Use an outlined heart with “Save” when unsaved and a filled heart with “Saved” when saved.
+- Q: How should the album control visually distinguish an unsaved album from a saved one? → A: Use a Bookmark icon with "Lưu album" when unsaved, and a BookmarkCheck icon with "Đã lưu" and violet accent styling when saved.
 - Q: Which sharing destinations should AuraTune include alongside the album URL? → A: Provide Copy Link, Facebook, Instagram, X, and Zalo.
 - Q: Should AuraTune set a feature-specific maximum number of albums a listener can save? → A: Do not add a feature-specific quota; existing platform limits still apply.
 - Q: When a listener removes an album while viewing Saved Albums, when should that album disappear from the visible list? → A: Keep it visible while the request is pending, then remove it from the current list as soon as removal is confirmed; if removal fails, keep it visible.
@@ -113,9 +113,9 @@ As a signed-in listener, I want to save or like an album so that I can find it a
 
 **Acceptance Scenarios**:
 
-1. **Given** a signed-in listener views an unsaved album, **When** they select Save and the action succeeds, **Then** the album is saved to that listener's personal album library and the interface shows a filled heart with the “Saved” label.
-2. **Given** a signed-in listener views an album already saved to their account, **When** the album details load, **Then** the interface shows a filled heart with the “Saved” label for that listener.
-3. **Given** a signed-in listener views an album saved to their account, **When** they select Remove from Saved Albums, **Then** the album is removed from their personal album library and the interface shows an outlined heart with the “Save” label.
+1. **Given** a signed-in listener views an unsaved album, **When** they select Save and the action succeeds, **Then** the album is saved to that listener's personal album library and the interface shows a BookmarkCheck icon with the "Đã lưu" label.
+2. **Given** a signed-in listener views an album already saved to their account, **When** the album details load, **Then** the interface shows a BookmarkCheck icon with the "Đã lưu" label for that listener.
+3. **Given** a signed-in listener views an album saved to their account, **When** they select Remove from Saved Albums, **Then** the album is removed from their personal album library and the interface shows a Bookmark icon with the "Lưu album" label.
 4. **Given** two different listeners view the same album, **When** one listener saves or removes it, **Then** only that listener's saved state changes.
 5. **Given** a visitor who is not signed in views an album, **When** they attempt to save it, **Then** the save action requires sign-in and no personal library state is changed.
 6. **Given** a save or remove action cannot be completed, **When** the action fails, **Then** the interface does not present an unconfirmed state as saved and shows a short, action-specific inline message near the control, with a retry hint where appropriate.
@@ -159,7 +159,7 @@ As a visitor, I want to share an album through its link or a social sharing cont
 - **FR-001**: The system MUST allow a signed-in listener to save an album to that listener's personal saved album library.
 - **FR-002**: The system MUST allow a signed-in listener to remove an album from that listener's personal saved album library; in an open Saved Albums view, the album MUST remain visible while removal is pending, disappear from the current list after removal is confirmed, and remain visible if removal fails.
 - **FR-003**: The system MUST associate each saved album state with the account that performed the save; one listener's save or removal MUST NOT change another listener's library.
-- **FR-004**: The system MUST show the saved or unsaved state that corresponds to the currently signed-in listener's account when album details are viewed; an unsaved album MUST use an outlined heart and the “Save” label, and a saved album MUST use a filled heart and the “Saved” label.
+- **FR-004**: The system MUST show the saved or unsaved state that corresponds to the currently signed-in listener's account when album details are viewed; an unsaved album MUST use a Bookmark icon with the "Lưu album" label, and a saved album MUST use a BookmarkCheck icon with the "Đã lưu" label.
 - **FR-005**: The system MUST keep the saved state consistent with the result of the save or remove action and MUST NOT show an unconfirmed change as successful; while an action is pending, it MUST temporarily disable that action and show a progress indicator while retaining the last confirmed saved state.
 - **FR-006**: Saving an album MUST use the specified `PUT /albums/:id/save` contract, and removing a saved album MUST use the specified `DELETE /albums/:id/save` contract.
 - **FR-007**: The system MUST require sign-in before changing a personal saved album library and MUST provide an appropriate sign-in prompt when a signed-out visitor attempts to save or remove an album.

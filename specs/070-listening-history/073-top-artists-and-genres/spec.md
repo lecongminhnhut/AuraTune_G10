@@ -20,7 +20,7 @@
 
 ### User Story 1 - View Recent Top Artists (Priority: P1)
 
-As a listener, I want to see which artists I've been listening to the most over the last 4 weeks so that I can track my current musical phase.
+As a listener, I want to see which artists I've been listening to the most over the selected time period so that I can track my current musical phase.
 
 **Why this priority**: Core value proposition of the feature. Recent trends are usually what users care about most for "current" taste.
 
@@ -28,7 +28,7 @@ As a listener, I want to see which artists I've been listening to the most over 
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has play events for multiple artists in the last 4 weeks, **When** they view the "Last 4 Weeks" tab on the History page, **Then** they see a ranked list of the top 10 artists by play frequency.
+1. **Given** a user has play events for multiple artists in the selected time range, **When** they view the Top Artists ranking on the History page, **Then** they see a ranked list of the top 10 artists by listening duration and play frequency.
 2. **Given** a play event lasted less than 30 seconds, **When** statistics are calculated, **Then** that play event is excluded from the artist frequency count.
 
 ---
@@ -50,7 +50,7 @@ As a listener, I want to see a visual breakdown of my preferred genres so that I
 
 ### User Story 3 - Compare Habits Over Different Time Horizons (Priority: P2)
 
-As a listener, I want to switch between different time ranges (4 weeks, 6 months, All Time) so that I can compare my short-term trends with my long-term habits.
+As a listener, I want to switch between different time ranges (7 ngày, 30 ngày, Toàn bộ) so that I can compare my short-term trends with my long-term habits.
 
 **Why this priority**: Required for a comprehensive "taste profile" over time.
 
@@ -58,7 +58,7 @@ As a listener, I want to switch between different time ranges (4 weeks, 6 months
 
 **Acceptance Scenarios**:
 
-1. **Given** the stats view is open, **When** the user selects "Last 6 Months", **Then** the rankings and charts refresh to show data from the last 180 days.
+1. **Given** the stats view is open, **When** the user selects "30 ngày", **Then** the rankings and charts refresh to show data from the last 30 days.
 2. **Given** the stats view is open, **When** the user selects "All Time", **Then** the stats reflect the full 365-day retention window.
 
 ---
@@ -86,15 +86,16 @@ As a new user with no listening history, I want to see a helpful message instead
 
 ### Functional Requirements
 
-- **FR-001**: System MUST rank the top 10 artists based on frequency of play events (plays >= 30 seconds).
+- **FR-001**: System MUST rank the top 10 artists based primarily on total listening duration (seconds), and secondarily on play count (plays >= 30 seconds).
 - **FR-002**: System MUST aggregate and rank top genres based on the count of plays of songs associated with those genres. Songs with multiple genre tags MUST contribute to the count of each tag.
-- **FR-003**: System MUST provide three configurable time ranges: Last 4 Weeks, Last 6 Months, and All Time (365 days).
+- **FR-003**: System MUST provide three configurable time ranges: "7 ngày" (7 days), "30 ngày" (30 days), and "Toàn bộ" (All Time, 365 days).
 - **FR-004**: System MUST exclude "soft-deleted" or hidden listening history items from all calculations. Changes to hidden items MUST be reflected in statistics immediately upon re-aggregation.
 - **FR-005**: Statistics calculations MUST be performed on the backend to ensure performance.
 - **FR-006**: The frontend MUST integrate these stats into the existing `HistoryPage.jsx`.
 - **FR-007**: System MUST provide a "Not enough data yet" empty state.
 - **FR-008**: System MUST support responsive layouts for both mobile and desktop views.
 - **FR-009**: The Genre Analysis chart MUST display the top 5-10 genres and group all remaining genres into an "Other" category for visual clarity.
+- **FR-010**: System MUST rank the top 10 most played songs within the selected time range and allow instant playback upon selection.
 
 ### Key Entities *(include if feature involves data)*
 

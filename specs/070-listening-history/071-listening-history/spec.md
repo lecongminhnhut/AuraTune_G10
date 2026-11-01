@@ -14,7 +14,7 @@
 
 - Q: How should the History page handle the empty state when a user has no listening history yet? → A: Show a dedicated empty state illustration with a "Start Listening" button leading to the Home page.
 - Q: What is the data retention policy for listening history? → A: Retain only the last 365 days of history.
-- Q: When a user removes an item or clears their history, should it be a hard delete (permanently removed from the database) or a soft delete (only hidden from the user)? → A: Perform a soft delete (mark as hidden) so recommendation engine can still use it.
+- Q: When a user clears their listening history, how does it affect their profile and recommendations? → A: Full purge: When confirmed via "Clear All History", records are cleared from personal history/stats and permanently excluded from the AI recommendation profile.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -50,15 +50,15 @@ As a listener, I want to see a list of my recently played songs so that I can ea
 
 ### User Story 3 - History Management and Privacy (Priority: P2)
 
-As a listener, I want to remove specific songs from my history or clear it entirely so that I can maintain my privacy or clean up my profile.
+As a listener, I want to clear my listening history so that I can maintain my privacy and reset my personal taste profile.
 
 **Why this priority**: Essential for user control and privacy, following the "Privacy & Management" requirement.
 
-**Independent Test**: Can be tested by deleting an item from the History page and verifying it no longer appears in the list or the database.
+**Independent Test**: Can be tested by confirming "Xóa lịch sử" (Clear All History) from the History page and verifying history records and stats are reset.
 
 **Acceptance Scenarios**:
 
-1. **Given** a list of history items, **When** the user selects "Remove from history" on a specific item, **Then** that specific play record is deleted and the UI updates immediately.
+1. **Given** a user has history records, **When** they click "Xóa lịch sử", **Then** the system displays a confirmation dialog warning that history, statistics, and personalized recommendations will be reset.
 2. **Given** a user has history records, **When** they select "Clear All History", **Then** all their `listening_history` records are removed after a confirmation dialog.
 
 ---
@@ -79,9 +79,9 @@ As a listener, I want to remove specific songs from my history or clear it entir
 - **FR-004**: System MUST provide a dedicated History page at `src/frontend/src/pages/History/HistoryPage.jsx`.
 - **FR-005**: The History page MUST display tracks in reverse chronological order (newest first).
 - **FR-006**: Each history entry MUST display: Track Title, Artist Name, Album Name (optional but recommended), Track Duration, and Play Timestamp.
-- **FR-007**: Users MUST be able to perform a "soft delete" of individual history entries from the UI (mark as hidden from user view).
-- **FR-008**: Users MUST be able to "soft clear" their entire listening history in one action (mark all as hidden).
-- **FR-013**: Soft-deleted history records MUST still be accessible to the recommendation engine and analytics service unless explicitly prohibited by global privacy settings.
+- **FR-007**: Users MUST be able to click any track entry in the history list to immediately replay the song.
+- **FR-008**: Users MUST be able to clear their entire listening history in one action ("Clear All History") after confirming via a confirmation modal dialog.
+- **FR-013**: Cleared history records MUST be completely excluded from AI recommendation inputs and personal statistics.
 - **FR-009**: History data MUST be paginated (e.g., 20-50 items per page) to ensure fast retrieval and UI responsiveness.
 - **FR-011**: If the user has no history, the History page MUST display a dedicated empty state illustration with a "Start Listening" button leading to the Home page.
 - **FR-012**: System MUST retain listening history for the last 365 days. Records older than 365 days MUST be automatically purged.

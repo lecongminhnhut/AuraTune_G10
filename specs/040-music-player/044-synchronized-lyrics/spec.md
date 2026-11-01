@@ -17,6 +17,10 @@
 - Q: What if a track has lyrics without timestamps? → A: The plain lyrics are shown with no line highlight, because the API Contract provides both forms.
 - Q: What if a track has no lyrics? → A: A clear notice is shown, and playback is not affected.
 
+### Session 2026-11-01
+
+- Q: Does clicking on a synchronized lyric line jump (seek) playback to that timestamp? → A: Yes, Click-to-Seek is supported for lines with timing data.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Follow Lyrics While Listening (Priority: P1)
@@ -73,6 +77,7 @@ As a listener, I want a clear state when timed lyrics do not exist so that I do 
 - **FR-009**: The system MUST update the panel when the current track changes.
 - **FR-010**: The system MUST allow switching between the lyrics and comments panels in the full player.
 - **FR-011**: The system MUST NOT implement lyric-based search within this feature.
+- **FR-012**: The system MUST allow listeners to click or tap on any synchronized lyric line to immediately seek playback to that line's start timestamp and continue playback.
 
 ### Key Entities *(include if feature involves data)*
 

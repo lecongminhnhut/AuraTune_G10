@@ -52,7 +52,7 @@ As a listener, I want to start an album from its first track and have the album'
 2. **Given** album playback has started, **When** the listener reviews the player and queue, **Then** the current track followed by the queued tracks represents the complete playable album sequence in the same order as the album track list.
 3. **Given** a listener starts album playback and navigates away from the album page, **When** playback continues, **Then** the persistent mini-player remains available and playback is not interrupted by navigation.
 4. **Given** the album sequence is in the queue, **When** the listener uses existing queue controls, **Then** the queue remains viewable and editable according to the shared Queue Management behavior.
-5. **Given** other tracks are already in the upcoming queue, **When** the listener selects Play Album, **Then** the first album track starts and the remaining album tracks are inserted before the existing upcoming tracks, which remain queued afterward.
+5. **Given** other tracks are already in the upcoming queue, **When** the listener selects Play Album, **Then** the queue is replaced by the album tracks and playback starts from track #1 (or when selecting "Thêm tất cả vào danh sách chờ", album tracks are appended to the end of the existing queue).
 6. **Given** Shuffle is enabled, **When** the listener selects Play Album, **Then** Shuffle is turned off and the album begins in its artist-intended order; the listener can enable Shuffle again afterward.
 7. **Given** an album contains unavailable tracks and at least one playable track, **When** the listener selects Play Album, **Then** unavailable tracks remain visible as disabled with a clear reason, are omitted from the playback sequence, and do not prevent later playable tracks from playing.
 8. **Given** an album contains no playable tracks, **When** the listener views or attempts to play it, **Then** the interface indicates that no tracks are available and does not start playback.
@@ -95,7 +95,7 @@ As a listener, I want to start playback from a specific track in the album so th
 - **FR-001**: The system MUST display the complete track list associated with an album.
 - **FR-002**: The system MUST display album tracks in the artist-intended order represented by the approved album data.
 - **FR-003**: The system MUST provide a Play Album action when the album has playable tracks.
-- **FR-004**: When Play Album is selected, the system MUST start playback from the first playable track and insert every remaining playable album track immediately after the current track in the upcoming queue, in artist-intended order, before any tracks that were already upcoming.
+- **FR-004**: When Play Album is selected, the system MUST replace the playback queue with the album's playable tracks and start playback from the first playable track in artist-intended order.
 - **FR-005**: The system MUST provide a play action for each playable track in the track list and MUST visibly disable each unavailable track with a clear reason.
 - **FR-006**: When a listener starts playback from a selected playable track, the system MUST make that track current and insert all playable tracks that follow it immediately after the current track in the upcoming queue, preserving their album order and placing them before any tracks that were already upcoming.
 - **FR-007**: The system MUST integrate album playback with the existing Music Player and Queue Management behavior and MUST NOT introduce a separate player or incompatible queue behavior.
@@ -107,6 +107,7 @@ As a listener, I want to start playback from a specific track in the album so th
 - **FR-015**: For a very long album, the system MUST keep every track accessible in artist-intended order and MAY display track rows progressively; Play Album MUST use the complete ordered track list and MUST NOT depend on which rows have already been rendered.
 - **FR-012**: When Play Album is selected again for an album that is already playing or queued, the system MUST restart playback from its first playable track and rebuild that album's segment in the upcoming queue without duplicates, while preserving queued tracks that are not part of the album.
 - **FR-013**: When Play Album is selected while Shuffle is enabled, the system MUST turn Shuffle off so the album plays in artist-intended order; the listener MUST remain able to enable Shuffle afterward.
+- **FR-016**: The system MUST provide an "Add all to queue" ("Thêm tất cả vào danh sách chờ") action that appends all playable tracks from the album to the end of the current playback queue without interrupting current playback.
 
 ### Key Entities
 

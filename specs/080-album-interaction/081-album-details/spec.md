@@ -30,7 +30,7 @@ As a music listener, I want to open an album and see its key details so that I c
 
 **Acceptance Scenarios**:
 
-1. **Given** a visitor opens an existing album, **When** the album details finish loading, **Then** the page displays the album cover art, album title, artist name, release year, and total duration using the available album metadata.
+1. **Given** a visitor opens an existing album, **When** the album details finish loading, **Then** the page displays the album cover art, release type badge ("Đĩa đơn" for 1 track, "Album" for 2+ tracks), album title, artist name, release year, and total duration using the available album metadata.
 2. **Given** the album has an associated track list, **When** the details are displayed, **Then** the total duration represents the combined duration of the album's tracks.
 3. **Given** album details are still loading, **When** the visitor views the page, **Then** the interface communicates the loading state and does not present stale details from a previously opened album as current.
 4. **Given** an album has a large track list, **When** its details are displayed, **Then** the interface may render tracks progressively while the total duration still reflects every track with an available duration in the complete response.
@@ -85,7 +85,7 @@ As a visitor, I want clear feedback when an album cannot be found or its details
 
 - **FR-001**: The system MUST allow a visitor to open the details page for an album identified by its album ID.
 - **FR-002**: The system MUST retrieve album details through the approved public API contract `GET /albums/:id`, which returns album details and the associated track list.
-- **FR-003**: The system MUST load and display the available album metadata from the approved catalog data source, including cover art, album title, artist name, and release year.
+- **FR-003**: The system MUST load and display the available album metadata from the approved catalog data source, including cover art, album title, artist name, and release year. The system MUST display the release type badge as "Đĩa đơn" (Single) when the release contains 1 track and "Album" when it contains 2 or more tracks.
 - **FR-004**: The system MUST display the album's total duration as the sum of the durations of all tracks with available duration data in the complete album response, regardless of how many track rows have been rendered so far.
 - **FR-005**: The system MUST display the associated track list in the order provided for the album.
 - **FR-005a**: The system MUST display all tracks in one flat list in the order provided by the album response and MUST NOT require disc-number data or group tracks into disc sections.
@@ -100,6 +100,7 @@ As a visitor, I want clear feedback when an album cannot be found or its details
 - **FR-013**: The system MUST follow the public-access designation for `GET /albums/:id` and MUST NOT require a signed-in account solely to view album details.
 - **FR-014**: For this feature, the album details response MUST provide the complete track list; the interface MAY render track rows progressively, but MUST NOT calculate total duration from only the rows currently visible or rendered.
 - **FR-015**: When a visitor returns to a previously viewed album and previously loaded details are available, the system MUST display those details immediately and refresh them; this specification does not prescribe a fixed cache duration.
+- **FR-016**: The system MUST display a "More from [Artist]" ("Thêm từ [Nghệ sĩ]") section at the bottom of the album page showing other available albums by the same artist.
 
 ### Key Entities
 

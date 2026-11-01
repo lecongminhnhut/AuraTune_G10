@@ -17,6 +17,12 @@
 - Q: Does the authentication system require a Refresh Token mechanism, or is a single Access Token sufficient for now? → A: Access token only.
 - Q: Does the `display_name` need to be unique across all users? → A: Not unique.
 
+### Session 2026-11-01
+- Q: Is password recovery (reset via email) within the scope of this feature? → A: In scope (Password reset via email).
+- Q: What is the account lock duration after 5 failed login attempts? → A: 15 minutes temporary lockout.
+- Q: Is accepting Terms of Service and Privacy Policy required for registration? → A: Mandatory checkbox required before registration.
+- Q: What token model governs local authentication? → A: Dual-token model (Access Token 15-60 min + Refresh Token 7-30 days via Feature 013).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - New User Registration (Priority: P1)
@@ -29,8 +35,9 @@ As a new listener, I want to create an account using my email and password so th
 
 **Acceptance Scenarios**:
 
-1. **Given** the registration page is open, **When** I enter a valid unique email, a strong password, and a display name, **Then** my account is created and I am redirected to the login or home page.
+1. **Given** the registration page is open, **When** I enter a valid unique email, a strong password, a display name, and accept the Terms of Service and Privacy Policy, **Then** my account is created and I am redirected to the login or home page.
 2. **Given** an email address that is already registered, **When** I attempt to sign up, **Then** the system displays an error message "Email already in use".
+3. **Given** the registration page is open, **When** I submit the form without accepting the Terms of Service and Privacy Policy, **Then** the system prevents submission and prompts me to accept the policy.
 
 ---
 
@@ -64,12 +71,28 @@ As a user with a specific role (User, Artist, or Admin), I want the system to re
 
 ---
 
+### User Story 4 - Password Recovery (Priority: P2)
+
+As a registered user who forgot my password, I want to request a password reset via my registered email so that I can securely regain access to my AuraTune account.
+
+**Why this priority**: Essential for account access continuity when credentials are lost.
+
+**Independent Test**: Can be tested by submitting a registered email address, receiving a reset code/token, and verifying that setting a new password updates the `password_hash` and allows login with the new credentials.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user on the Forgot Password page, **When** they enter a valid registered email, **Then** the system sends a password reset link/code to that email and displays a confirmation message.
+2. **Given** a valid reset code/token, **When** the user provides a new password meeting complexity requirements, **Then** the password is updated, previous sessions are invalidated, and the user is redirected to log in.
+3. **Given** an unregistered email address submitted on the Forgot Password page, **When** submitted, **Then** the system returns a generic confirmation message without disclosing whether the email exists.
+
+---
+
 ### Edge Cases
 
 - **Email Validation**: How does the system handle invalid email formats (e.g., missing @ or domain)? (Should reject with "Invalid email format").
 - **Password Strength**: What happens when a user provides a very weak password (e.g., "123")? (Should reject with "Password does not meet complexity requirements").
 - **Database Connection**: How does the system handle a failure to reach the PostgreSQL database during auth? (Should return a generic "Service temporarily unavailable" error).
-- **Account Locking**: System MUST temporarily lock accounts after 5 consecutive failed login attempts to mitigate brute-force risks.
+- **Account Locking**: System MUST temporarily lock accounts for 15 minutes after 5 consecutive failed login attempts to mitigate brute-force risks.
 
 ## Requirements *(mandatory)*
 
@@ -78,12 +101,14 @@ As a user with a specific role (User, Artist, or Admin), I want the system to re
 - **FR-001**: System MUST allow users to register with a unique email address, password, and a non-unique display name.
 - **FR-002**: System MUST validate that the email address follows a standard format.
 - **FR-003**: System MUST enforce password complexity (e.g., minimum 8 characters, combination of letters and numbers).
-- **FR-004**: System MUST allow users to log in using their email and password, with account locking after 5 failed attempts.
+- **FR-004**: System MUST allow users to log in using their email and password, with temporary account locking for 15 minutes after 5 consecutive failed attempts.
 - **FR-005**: System MUST assign the role of 'user' by default to new registrations.
 - **FR-006**: System MUST securely hash passwords before storing them in the PostgreSQL database.
 - **FR-007**: System MUST support roles: 'user', 'artist', and 'admin'.
 - **FR-008**: System MUST allow users to log in immediately after successful registration without email verification.
-- **FR-009**: System MUST issue a single JWT access token upon successful authentication.
+- **FR-009**: System MUST issue a short-lived JWT access token paired with a long-lived Refresh Token (managed by Feature 013: Session Management) upon successful authentication.
+- **FR-010**: System MUST require users to explicitly accept the Terms of Service and Privacy Policy (compliant with Decree 13/2023/ND-CP) before submitting the registration form.
+- **FR-011**: System MUST provide a password recovery mechanism allowing users to request a password reset via their registered email and set a new password complying with complexity rules.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -96,7 +121,8 @@ As a user with a specific role (User, Artist, or Admin), I want the system to re
 - **SC-001**: 100% of registrations result in a new record in the `users` table with a hashed password.
 - **SC-002**: Login response time for credential validation is under 1 second.
 - **SC-003**: 100% of duplicate email registration attempts are blocked.
-- **SC-004**: Authentication token is issued and valid for 24 hours.
+- **SC-004**: Access token is issued and valid for 15 to 60 minutes, with session maintained by Refresh Token.
+- **SC-005**: Password reset emails/codes are delivered within 60 seconds under normal operation.
 
 ## Assumptions
 
@@ -104,7 +130,7 @@ As a user with a specific role (User, Artist, or Admin), I want the system to re
 - **Bcrypt Hashing**: Bcrypt or a similar industry-standard algorithm will be used for password hashing.
 - **Stable Database**: The PostgreSQL database schema for `users` is ready and accessible.
 - **Frontend Integration**: The frontend will handle the display of error messages returned by the auth service.
-- **Password Recovery**: Out of scope for this feature (handled separately).
+- **Password Recovery**: Handled via email verification code/link integration using standard email delivery services.
 
 
 ## UI Screenshots

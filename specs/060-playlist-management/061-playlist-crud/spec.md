@@ -13,7 +13,8 @@
 ### Session 2026-10-29
 - Q: How should the system handle concurrent edits to the same playlist's metadata by the same user across different devices? → A: Last write wins.
 - Q: Should the playlist CRUD feature include any "soft delete" mechanism or an "Undo" option for accidentally deleted playlists? → A: Immediate permanent deletion (requires user confirmation).
-- Q: Are there any specific character limits or restricted characters for playlist titles and descriptions? → A: Standard limits: Title (100 characters), Description (500 characters).
+- Q: Are there any specific character limits or restricted characters for playlist titles and descriptions? → A: Standard UI/database limits: Title (80 characters), Description (300 characters).
+- Q: When a user clicks "Save playlist" on a public playlist created by others, how does the system behave? → A: Bookmark / Follow reference: The playlist is added to the user's Library for quick access and stays synchronized with the owner's updates (read-only for the follower).
 - Q: Should the playlist detail view display the total number of songs and the total duration of the playlist? → A: Display both total song count and total duration (sum of all tracks).
 - Q: When a user creates a new playlist, should it default to "Public" or "Private"? → A: Private (only the creator can see it until they choose to share).
 
@@ -46,7 +47,7 @@ As a listener, I want to edit my playlist's title, description, and visibility s
 
 1. **Given** I own a playlist named "Old Name", **When** I change the name to "New Name" and save, **Then** the playlist detail page and my library both reflect "New Name".
 2. **Given** I have a private playlist, **When** I change its status to "Public", **Then** other users (or an incognito session) can view the playlist via its direct link.
-3. **Given** I am editing a playlist, **When** I enter a name longer than **100 characters** or a description longer than **500 characters**, **Then** the system prevents saving and displays a validation error.
+3. **Given** I am editing a playlist, **When** I enter a name longer than **80 characters** or a description longer than **300 characters**, **Then** the system prevents saving and displays a validation error.
 
 ---
 
@@ -76,6 +77,7 @@ As a listener, I want to view playlists created by others that are marked as pub
 **Acceptance Scenarios**:
 
 1. **Given** User A has a public playlist, **When** User B (logged in or guest) visits the playlist link, **Then** User B can see the playlist metadata, tracks, **total song count**, and **total duration**.
+2. **Given** User B visits a public playlist owned by User A, **When** User B clicks "Lưu playlist" (Save to Library), **Then** the playlist is bookmarked in User B's library as a referenced collection without granting edit rights.
 
 ---
 
@@ -93,18 +95,19 @@ As a listener, I want to view playlists created by others that are marked as pub
 
 - **FR-001**: System MUST allow authenticated users to create a playlist with a required `name` and optional `description`.
 - **FR-002**: System MUST default new playlists to `Private` status.
-- **FR-003**: System MUST enforce character limits: **Title (max 100)** and **Description (max 500)**.
+- **FR-003**: System MUST enforce character limits: **Title (max 80)** and **Description (max 300)**.
 - **FR-004**: System MUST allow users to retrieve a list of all playlists created by the current authenticated user.
 - **FR-005**: System MUST allow users to view the metadata of any playlist marked as `public`, including **total song count** and **total duration**.
 - **FR-006**: System MUST restrict viewing of `private` playlists to the owner only.
 - **FR-007**: System MUST allow the owner of a playlist to update its `name`, `description`, `cover_url`, and `status` (Public/Private).
 - **FR-008**: System MUST allow the owner of a playlist to delete the playlist permanently after a confirmation step.
 - **FR-009**: System MUST provide a default cover image if no `cover_url` is provided by the user.
+- **FR-010**: System MUST allow authenticated users to save (bookmark/follow) public playlists to their personal library as read-only references.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Playlist**: Represents a user-curated collection of songs.
-    - Attributes: `playlist_id` (Unique ID), `user_id_creator` (FK to User), `name` (String, max 100), `description` (String, max 500), `cover_url` (String/URL), `status` (Enum: Public, Private).
+    - Attributes: `playlist_id` (Unique ID), `user_id_creator` (FK to User), `name` (String, max 80), `description` (String, max 300), `cover_url` (String/URL), `status` (Enum: Public, Private).
 
 ## Success Criteria *(mandatory)*
 

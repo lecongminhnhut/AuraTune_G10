@@ -23,6 +23,11 @@
 - Q: What should happen when one or more metrics fail to load? → A: Confirmed decision: each metric is handled independently. A reliable metric is displayed with its own successful calculation timestamp. A metric that is missing required data, fails validation, or has a source-data conflict is shown as `unavailable` and is never replaced by `0` or a partial total. If a shared source problem affects both metrics, both metrics are unavailable. Old and new data are not merged into one snapshot.
 - Q: What happens if a refresh fails or if the admin session expires? → A: Confirmed decision: a failed refresh must not show stale values as the current result; the page remains usable so the admin can retry. If the session expires or the user loses admin authorization, the system must hide all statistics and never display stale values.
 
+### Session 2026-11-01
+
+- Q: What are the standardized platform metrics displayed on the Admin Overview dashboard? → A: Confirmed decision: The Admin Overview presents 4 standardized KPI cards aligned with `AdminPage.jsx`: (1) "Người dùng" (Total Users, with locked accounts hint), (2) "Nghệ sĩ" (Total public artists, with artist role accounts hint), (3) "Bài hát" (Total tracks, with hidden/removed tracks hint), and (4) "Tổng lượt nghe" (Total cumulative plays, with demo plays hint).
+- Q: Where are platform availability controls (AI service toggle and demo data reset) managed? → A: They are managed in the System area of the Admin dashboard (`tab === 'system'`). Admin can toggle `aiAvailable` to trigger graceful AI fallback across the application, and trigger `resetDemo` to restore clean default browser demo state.
+
 ## Source review summary
 
 The reviewed source set supports an admin overview for platform statistics, but it does not define the complete KPI catalog or counting rules.
@@ -123,7 +128,7 @@ As an admin, I want the platform statistics feature to be a read-only view of ag
 ### Functional Requirements
 
 - **FR-001**: The system MUST provide valid authenticated admins access to the platform-statistics overview defined by the current project scope and the admin endpoint in the API contract.
-- **FR-002**: The system MUST limit the statistics view to exactly two aggregate metrics in the current scope: total user count and total play count. No other KPI is in scope for 113 under the current source set, and no additional metrics are to be added by this specification.
+- **FR-002**: The system MUST provide 4 aggregate platform metrics in the Admin Overview: Total Users (with locked account hint), Total Artists (with artist role hint), Total Tracks (with hidden/removed hint), and Total Plays (with demo plays hint).
 - **FR-003**: The system MUST treat total user count as the number of distinct user accounts currently existing in AuraTune. It includes all roles (`user`, `artist`, and `admin`), includes locked/banned/disabled accounts if the system already records that status, counts each account once by user ID regardless of login method or artist-profile linkage, excludes guests and accounts removed by the current lifecycle, and returns `0` when no accounts exist.
 - **FR-004**: The system MUST treat total play count as the count of valid listening-history records: each distinct recorded listening event counts as one play when it was recorded with a valid user and song reference at the time of the event, the record is not marked invalid by the system, and the source event identity is not duplicated by a known source-level duplicate rule. The feature does not add new session IDs, completion thresholds, or listening heuristics. It reads `listening_history` only and does not add, replace, or synchronize with `songs.total_plays`.
 - **FR-005**: The system MUST distinguish valid zero values from missing or unavailable values. A zero result is valid when the underlying metric is legitimately zero; an unavailable or missing result must be shown as such and not as a fabricated number.
@@ -142,6 +147,7 @@ As an admin, I want the platform statistics feature to be a read-only view of ag
 - **FR-018**: The system MUST handle each metric independently. If a metric is successfully retrieved and trusted, it is displayed with its own timestamp. If a metric is missing required data, has a source conflict, or cannot be trusted, it is displayed as `unavailable` and is never replaced by `0` or a partial total. If a shared data problem affects both metrics, both metrics are unavailable.
 - **FR-019**: The system MUST never display stale values after a failed refresh attempt. A failed refresh leaves the page available for another refresh attempt and does not silently reuse older statistics as the current state.
 - **FR-020**: The system MUST withhold all statistics when the session is expired or the current user no longer has admin authorization. The feature follows the existing authentication and authorization rules and does not show metrics to unauthorized users.
+- **FR-021**: The Admin area MUST provide system availability controls, including a master AI service toggle (`aiAvailable`) to activate platform-wide graceful degradation and a demo data reset action (`resetDemo`) to restore initial application state.
 
 ### Key Entities
 

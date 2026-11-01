@@ -2,21 +2,22 @@
 
 _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự thực hiện._
 
-| #   | Ngày       | Nội dung                                                                                         | Nhóm |
-| --- | ---------- | ------------------------------------------------------------------------------------------------ | ---- |
-| 1   | 2026-10-20 | Viết spec 101 – Listening History Analysis bằng `$speckit-specify`                               | 10   |
-| 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ               | 10   |
-| 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại | 10   |
+| #   | Ngày       | Nội dung                                                                                                         | Nhóm                                              |
+| --- | ---------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 1   | 2026-10-20 | Viết spec 101 – Listening History Analysis bằng `$speckit-specify`                                               | 10                                                |
+| 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ                               | 10                                                |
+| 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại                 | 10                                                |
 | 4   | 2026-10-24 | Hoàn thiện metadata Performed by / Reviewed by / Edited by cho Project Plan theo phân công DL4 và bằng chứng Git | Project Plan / DL4 (không thuộc functional group) |
 | 5   | 2026-10-30 | Viết spec 102 – Personalized Recommendations bằng `/speckit-specify` và tích hợp làm rõ                          | 10                                                |
 | 6   | 2026-10-30 | Viết spec 103 – Mood and Context Recommendations bằng `/speckit-specify`                                         | 10                                                |
 | 7   | 2026-10-30 | Làm rõ spec 103 bằng `/speckit-clarify` – phương thức nhập, nội dung đề xuất và fallback                         | 10                                                |
 | 8   | 2026-10-30 | Viết spec 121 – Conversational Interface bằng `/speckit-specify`                                                 | 12                                                |
-| 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                     | 12                                                |
+| 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                    | 12                                                |
 | 10  | 2026-10-30 | Viết spec 122 – Music Intent Understanding bằng `/speckit-specify`                                               | 12                                                |
 | 11  | 2026-10-30 | Làm rõ spec 122 bằng `/speckit-clarify` – danh mục ý định, smart defaults và kiến trúc orchestrator              | 12                                                |
 | 12  | 2026-10-30 | Viết spec 123 – Real-Time Music Assistance bằng `/speckit-specify`                                               | 12                                                |
 | 13  | 2026-10-30 | Làm rõ spec 123 bằng `/speckit-clarify` – danh mục hành động, điều phối client và widget phản hồi                | 12                                                |
+| 14  | 2026-11-01 | Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3                         | Toàn bộ 12 nhóm chức năng (010 – 120)             |
 
 ---
 
@@ -156,13 +157,13 @@ _Skill `speckit-clarify` được cung cấp kèm invocation; feature context l�
 
 ## Mục 4: Hoàn thiện metadata quyền sở hữu các section của Project Plan
 
-| Trường | Nội dung |
-| --- | --- |
-| Ngày | 2026-10-24 |
-| Người thực hiện | Nhựt |
-| Nhóm tính năng liên quan | Project-wide: Project Plan, các section được ánh xạ theo DL4; không gắn với functional group riêng |
-| Công cụ AI | Codex (GPT-6) |
-| Mục đích | Cập nhật metadata Performed by và Reviewed by theo bảng phân công DL4; xác định Editor từ nội dung section và Git diff/history có sẵn, không suy đoán với heading thiếu căn cứ. |
+| Trường                   | Nội dung                                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-24                                                                                                                                                                      |
+| Người thực hiện          | Nhựt                                                                                                                                                                            |
+| Nhóm tính năng liên quan | Project-wide: Project Plan, các section được ánh xạ theo DL4; không gắn với functional group riêng                                                                              |
+| Công cụ AI               | Codex (GPT-6)                                                                                                                                                                   |
+| Mục đích                 | Cập nhật metadata Performed by và Reviewed by theo bảng phân công DL4; xác định Editor từ nội dung section và Git diff/history có sẵn, không suy đoán với heading thiếu căn cứ. |
 
 ### Prompt đã dùng (tóm lược)
 
@@ -177,12 +178,12 @@ _Skill `speckit-clarify` được cung cấp kèm invocation; feature context l�
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Performer và Reviewer | Dùng mapping DL4 cho 70 heading | Mapping được cung cấp rõ; kiểm tra lại để bảo đảm reviewer khác performer. |
-| Editor | Dùng Git diff/history sẵn có và quy tắc của người dùng | Không suy ra người chỉnh sửa từ số heading; khi thiếu dữ liệu baseline, giữ hoặc dùng trạng thái được quy tắc cho phép. |
-| Heading tổng quan 2–4 | Không tự ánh xạ vào task nội dung | Đây là heading tích hợp, không thuộc mapping section; mục 3 và 4 còn cần xác minh lịch sử Editor thủ công. |
-| Nội dung chuyên môn | Không sửa trong lượt metadata này | Phạm vi yêu cầu chỉ là metadata; các thay đổi nội dung chưa commit từ lượt trước được giữ nguyên. |
+| Phần                  | Quyết định                                             | Lý do                                                                                                                   |
+| --------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Performer và Reviewer | Dùng mapping DL4 cho 70 heading                        | Mapping được cung cấp rõ; kiểm tra lại để bảo đảm reviewer khác performer.                                              |
+| Editor                | Dùng Git diff/history sẵn có và quy tắc của người dùng | Không suy ra người chỉnh sửa từ số heading; khi thiếu dữ liệu baseline, giữ hoặc dùng trạng thái được quy tắc cho phép. |
+| Heading tổng quan 2–4 | Không tự ánh xạ vào task nội dung                      | Đây là heading tích hợp, không thuộc mapping section; mục 3 và 4 còn cần xác minh lịch sử Editor thủ công.              |
+| Nội dung chuyên môn   | Không sửa trong lượt metadata này                      | Phạm vi yêu cầu chỉ là metadata; các thay đổi nội dung chưa commit từ lượt trước được giữ nguyên.                       |
 
 ### Cách kiểm chứng
 
@@ -201,12 +202,12 @@ _Skill `speckit-clarify` được cung cấp kèm invocation; feature context l�
 
 ## Mục 5: Viết spec 102 – Personalized Recommendations
 
-| Trường                   | Nội dung                                                                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Ngày                     | 2026-10-30                                                                                                                                 |
-| Người thực hiện          | Nhựt                                                                                                                                       |
-| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations`)     |
-| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-specify`                                                                            |
+| Trường                   | Nội dung                                                                                                                                  |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                |
+| Người thực hiện          | Nhựt                                                                                                                                      |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations`)      |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-specify`                                                                           |
 | Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ, làm rõ hành vi cold-start, xử lý lỗi service AI và phân định phạm vi với các spec khác. |
 
 ### Prompt đã dùng
@@ -239,13 +240,13 @@ Lượt phản hồi làm rõ tiếp theo:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Đa thực thể đề xuất (Song, Album, Artist, Playlist) | Dùng (Option 1B) | Bám sát luồng khám phá trong Vision Document Workflow 1 và hỗ trợ đa dạng nội dung cho người dùng. |
-| Fallback nội dung phổ biến cho Cold-Start | Dùng (Option 2A) | Đảm bảo người dùng mới luôn có nhạc nghe ngay lập tức, tránh màn hình trống hoặc lỗi hệ thống. |
-| Graceful degradation khi AI service lỗi/timeout | Dùng (Option 3A) | Giữ trải nghiệm Dashboard thông suốt, không làm crash trang khi dịch vụ AI backend gặp sự cố. |
-| Bảo mật và cách ly tài khoản | Dùng | Tuân thủ Nghị định 13/2023/ND-CP theo Proposal; mỗi tài khoản chỉ thấy gợi ý cá nhân của chính mình. |
-| Giới hạn phạm vi (Exclusions) | Dùng | Tách biệt ranh giới rõ ràng với Feature 101 (History Analysis), 103 (Mood/Context), 040 (Player), 070 (History), 120 (AI Agent). |
+| Phần                                                | Quyết định       | Lý do                                                                                                                            |
+| --------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Đa thực thể đề xuất (Song, Album, Artist, Playlist) | Dùng (Option 1B) | Bám sát luồng khám phá trong Vision Document Workflow 1 và hỗ trợ đa dạng nội dung cho người dùng.                               |
+| Fallback nội dung phổ biến cho Cold-Start           | Dùng (Option 2A) | Đảm bảo người dùng mới luôn có nhạc nghe ngay lập tức, tránh màn hình trống hoặc lỗi hệ thống.                                   |
+| Graceful degradation khi AI service lỗi/timeout     | Dùng (Option 3A) | Giữ trải nghiệm Dashboard thông suốt, không làm crash trang khi dịch vụ AI backend gặp sự cố.                                    |
+| Bảo mật và cách ly tài khoản                        | Dùng             | Tuân thủ Nghị định 13/2023/ND-CP theo Proposal; mỗi tài khoản chỉ thấy gợi ý cá nhân của chính mình.                             |
+| Giới hạn phạm vi (Exclusions)                       | Dùng             | Tách biệt ranh giới rõ ràng với Feature 101 (History Analysis), 103 (Mood/Context), 040 (Player), 070 (History), 120 (AI Agent). |
 
 ### Cách kiểm chứng
 
@@ -262,13 +263,13 @@ Lượt phản hồi làm rõ tiếp theo:
 
 ## Mục 6: Viết spec 103 – Mood and Context Recommendations
 
-| Trường                   | Nội dung                                                                                                                              |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-10-30                                                                                                                            |
-| Người thực hiện          | Nhựt                                                                                                                                  |
+| Trường                   | Nội dung                                                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                   |
+| Người thực hiện          | Nhựt                                                                                                                                         |
 | Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations`) |
-| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-specify`                                                                       |
-| Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho gợi ý theo tâm trạng/ngữ cảnh, phân định ranh giới với Search (030) và các spec khác. |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-specify`                                                                              |
+| Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho gợi ý theo tâm trạng/ngữ cảnh, phân định ranh giới với Search (030) và các spec khác.   |
 
 ### Prompt đã dùng
 
@@ -295,12 +296,12 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Cấu trúc đặc tả nghiệp vụ | Dùng | Đầy đủ 4 User Stories (P1/P2), tiêu chí nghiệm thu Given-When-Then, edge cases, bảo vệ dữ liệu tài khoản theo Nghị định 13/2023/ND-CP. |
-| Giới hạn phạm vi (Exclusions) | Dùng | Phân định ranh giới chặt chẽ với Group 030 (Semantic Vector Search) và các feature khác thuộc Group 100. |
-| Chi tiết kỹ thuật / mô hình AI | Không tự suy đoán | Tuân thủ nguyên tắc không rò rỉ chi tiết triển khai công nghệ vào spec nghiệp vụ. |
-| 3 điểm chưa xác định trong tài liệu | Ghi nhận clarification | Chờ người dùng làm rõ qua lệnh `$speckit-clarify` thay vì tự đưa ra giả định. |
+| Phần                                | Quyết định             | Lý do                                                                                                                                  |
+| ----------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Cấu trúc đặc tả nghiệp vụ           | Dùng                   | Đầy đủ 4 User Stories (P1/P2), tiêu chí nghiệm thu Given-When-Then, edge cases, bảo vệ dữ liệu tài khoản theo Nghị định 13/2023/ND-CP. |
+| Giới hạn phạm vi (Exclusions)       | Dùng                   | Phân định ranh giới chặt chẽ với Group 030 (Semantic Vector Search) và các feature khác thuộc Group 100.                               |
+| Chi tiết kỹ thuật / mô hình AI      | Không tự suy đoán      | Tuân thủ nguyên tắc không rò rỉ chi tiết triển khai công nghệ vào spec nghiệp vụ.                                                      |
+| 3 điểm chưa xác định trong tài liệu | Ghi nhận clarification | Chờ người dùng làm rõ qua lệnh `$speckit-clarify` thay vì tự đưa ra giả định.                                                          |
 
 ### Cách kiểm chứng
 
@@ -316,13 +317,13 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ## Mục 7: Làm rõ spec 103 bằng `/speckit-clarify`
 
-| Trường                   | Nội dung                                                                                                                              |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-10-30                                                                                                                            |
-| Người thực hiện          | Nhựt                                                                                                                                  |
+| Trường                   | Nội dung                                                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                   |
+| Người thực hiện          | Nhựt                                                                                                                                         |
 | Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations`) |
-| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-clarify`                                                                       |
-| Mục đích                 | Làm rõ tương tác tuần tự 3 điểm nghi vấn trong spec 103: phương thức nhập tâm trạng, loại nội dung đề xuất và chính sách fallback.     |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High), `/speckit-clarify`                                                                              |
+| Mục đích                 | Làm rõ tương tác tuần tự 3 điểm nghi vấn trong spec 103: phương thức nhập tâm trạng, loại nội dung đề xuất và chính sách fallback.           |
 
 ### Prompt đã dùng
 
@@ -331,6 +332,7 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 ```
 
 Chuỗi phản hồi làm rõ tuần tự:
+
 - Câu 1 (Input method): `A`
 - Câu 2 (Content types): `B`
 - Câu 3 (Fallback policy): `B`
@@ -347,11 +349,11 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
+| Phần                                                   | Quyết định      | Lý do                                                                                                                          |
+| ------------------------------------------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | Thẻ chọn tâm trạng/ngữ cảnh có sẵn (Preset Tags/Chips) | Dùng (Option A) | Trải nghiệm người dùng 1 chạm thuận tiện, giảm thiểu lỗi nhập liệu, tránh giẫm chân lên tính năng Search Semantic tự do (033). |
-| Đề xuất Bài hát và Mood Playlists | Dùng (Option B) | Cung cấp cả trải nghiệm nghe bài hát tức thời lẫn phiên nghe dài qua playlist theo chủ đề, đúng tài liệu Vision. |
-| Empty State thân thiện kèm gợi ý tâm trạng | Dùng (Option B) | Đảm bảo tính nhất quán cảm xúc (emotional alignment), minh bạch trạng thái hệ thống thay vì tự ý phát nhạc sai bối cảnh. |
+| Đề xuất Bài hát và Mood Playlists                      | Dùng (Option B) | Cung cấp cả trải nghiệm nghe bài hát tức thời lẫn phiên nghe dài qua playlist theo chủ đề, đúng tài liệu Vision.               |
+| Empty State thân thiện kèm gợi ý tâm trạng             | Dùng (Option B) | Đảm bảo tính nhất quán cảm xúc (emotional alignment), minh bạch trạng thái hệ thống thay vì tự ý phát nhạc sai bối cảnh.       |
 
 ### Cách kiểm chứng
 
@@ -366,14 +368,13 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ---
 
-
 ## Mục 8: Viết spec 121 – Conversational Interface
 
 | Trường                   | Nội dung                                                                                                                                             |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Ngày                     | 2026-10-30                                                                                                                                           |
 | Người thực hiện          | Nhựt                                                                                                                                                 |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface`)              |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface`)               |
 | Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                   |
 | Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho giao diện hội thoại tương tác với AI host; phân định ranh giới với các spec liên quan 122, 123. |
 
@@ -403,12 +404,12 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Cấu trúc kịch bản và yêu cầu cốt lõi | Dùng | Đầy đủ luồng gửi/nhận, trạng thái đang xử lý (typing indicator), hiển thị tin nhắn hai chiều và tự động cuộn. |
-| Phân tách dữ liệu tài khoản (Privacy Isolation) | Dùng | Đảm bảo tính riêng tư tuyệt đối theo Nghị định 13/2023/NĐ-CP; cuộc trò chuyện của mỗi user là độc lập, cấm rò rỉ dữ liệu chéo. |
-| Không làm gián đoạn phát nhạc | Dùng | Giao diện hội thoại và AI host hoạt động độc lập với trình phát nhạc nền (Group 040); khi AI lỗi nhạc vẫn phát bình thường theo Vision Doc. |
-| 3 điểm chưa có trong database/tài liệu nguồn | Ghi nhận clarification | Database hiện hữu chưa có bảng chat/messages; không tự suy diễn cấu trúc dữ liệu hoặc vòng đời hội thoại. |
+| Phần                                            | Quyết định             | Lý do                                                                                                                                       |
+| ----------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cấu trúc kịch bản và yêu cầu cốt lõi            | Dùng                   | Đầy đủ luồng gửi/nhận, trạng thái đang xử lý (typing indicator), hiển thị tin nhắn hai chiều và tự động cuộn.                               |
+| Phân tách dữ liệu tài khoản (Privacy Isolation) | Dùng                   | Đảm bảo tính riêng tư tuyệt đối theo Nghị định 13/2023/NĐ-CP; cuộc trò chuyện của mỗi user là độc lập, cấm rò rỉ dữ liệu chéo.              |
+| Không làm gián đoạn phát nhạc                   | Dùng                   | Giao diện hội thoại và AI host hoạt động độc lập với trình phát nhạc nền (Group 040); khi AI lỗi nhạc vẫn phát bình thường theo Vision Doc. |
+| 3 điểm chưa có trong database/tài liệu nguồn    | Ghi nhận clarification | Database hiện hữu chưa có bảng chat/messages; không tự suy diễn cấu trúc dữ liệu hoặc vòng đời hội thoại.                                   |
 
 ### Cách kiểm chứng
 
@@ -428,7 +429,7 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Ngày                     | 2026-10-30                                                                                                                                           |
 | Người thực hiện          | Nhựt                                                                                                                                                 |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface`)              |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface`)               |
 | Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                   |
 | Mục đích                 | Giải quyết 3 điểm cần làm rõ trong spec 121 thông qua vòng lặp câu hỏi tuần tự: vòng đời hội thoại, định dạng tin nhắn, và hành vi phục hồi khi lỗi. |
 
@@ -439,6 +440,7 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 ```
 
 Chuỗi phản hồi làm rõ tuần tự:
+
 - Câu 1 (Conversation Lifecycle & History): `A`
 - Câu 2 (Message Formatting & Content Structure): `A`
 - Câu 3 (Failure Recovery & Outage Behavior): `A`
@@ -455,11 +457,11 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Luồng hội thoại duy nhất lưu trên backend | Dùng (Option A) | Tạo sự liền mạch cho người dùng khi trò chuyện với AI Host; tránh giao diện cồng kềnh quản lý multi-thread trong phiên bản đầu. |
-| Markdown cho phản hồi AI, plain text cho user | Dùng (Option A) | Giúp định dạng câu trả lời AI sinh động, dễ đọc các danh sách bài hát/album; đầu vào user đơn giản, an toàn. |
-| Báo lỗi inline kèm nút Retry | Dùng (Option A) | Giữ nguyên ngữ cảnh câu hỏi của người dùng để có thể thử lại ngay khi có kết nối, không làm gián đoạn phát nhạc. |
+| Phần                                          | Quyết định      | Lý do                                                                                                                           |
+| --------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Luồng hội thoại duy nhất lưu trên backend     | Dùng (Option A) | Tạo sự liền mạch cho người dùng khi trò chuyện với AI Host; tránh giao diện cồng kềnh quản lý multi-thread trong phiên bản đầu. |
+| Markdown cho phản hồi AI, plain text cho user | Dùng (Option A) | Giúp định dạng câu trả lời AI sinh động, dễ đọc các danh sách bài hát/album; đầu vào user đơn giản, an toàn.                    |
+| Báo lỗi inline kèm nút Retry                  | Dùng (Option A) | Giữ nguyên ngữ cảnh câu hỏi của người dùng để có thể thử lại ngay khi có kết nối, không làm gián đoạn phát nhạc.                |
 
 ### Cách kiểm chứng
 
@@ -476,12 +478,12 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ## Mục 10: Viết spec 122 – Music Intent Understanding
 
-| Trường                   | Nội dung                                                                                                                                                                                |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-10-30                                                                                                                                                                              |
-| Người thực hiện          | Nhựt                                                                                                                                                                                    |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding`)                                             |
-| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                                                      |
+| Trường                   | Nội dung                                                                                                                                                                                                                             |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ngày                     | 2026-10-30                                                                                                                                                                                                                           |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                 |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding`)                                                                                           |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                                                                                                   |
 | Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho khả năng hiểu ý định âm nhạc từ tin nhắn hội thoại; phân định ranh giới rõ ràng với giao diện chat (121), hành động âm nhạc thời gian thực (123) và tìm kiếm/đề xuất (030/100). |
 
 ### Prompt đã dùng
@@ -510,11 +512,11 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Cấu trúc kịch bản người dùng và trích xuất thực thể âm nhạc | Dùng | Phân tách rõ ràng giữa phân loại ý định (intent) và bóc tách thực thể (slots: bài hát, nghệ sĩ, album, thể loại, tâm trạng, hoạt động). |
-| Bảo vệ dữ liệu cá nhân (PII Stripping) | Dùng | Loại bỏ email, số điện thoại, thông tin định danh cá nhân trước khi gửi đến dịch vụ NLP bên ngoài theo Nghị định 13/2023/NĐ-CP. |
-| Ranh giới không thực thi audio và không render chat UI | Dùng | Giữ vững tính đóng gói và độc lập giữa 121 (Giao diện), 122 (Hiểu ý định) và 123 (Thực thi hành động). |
+| Phần                                                        | Quyết định | Lý do                                                                                                                                   |
+| ----------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Cấu trúc kịch bản người dùng và trích xuất thực thể âm nhạc | Dùng       | Phân tách rõ ràng giữa phân loại ý định (intent) và bóc tách thực thể (slots: bài hát, nghệ sĩ, album, thể loại, tâm trạng, hoạt động). |
+| Bảo vệ dữ liệu cá nhân (PII Stripping)                      | Dùng       | Loại bỏ email, số điện thoại, thông tin định danh cá nhân trước khi gửi đến dịch vụ NLP bên ngoài theo Nghị định 13/2023/NĐ-CP.         |
+| Ranh giới không thực thi audio và không render chat UI      | Dùng       | Giữ vững tính đóng gói và độc lập giữa 121 (Giao diện), 122 (Hiểu ý định) và 123 (Thực thi hành động).                                  |
 
 ### Cách kiểm chứng
 
@@ -530,12 +532,12 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ## Mục 11: Làm rõ spec 122 bằng `/speckit-clarify`
 
-| Trường                   | Nội dung                                                                                                                                                                                |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-10-30                                                                                                                                                                              |
-| Người thực hiện          | Nhựt                                                                                                                                                                                    |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding`)                                             |
-| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                      |
+| Trường                   | Nội dung                                                                                                                                                                                                               |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                                                             |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                   |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding`)                                                                             |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                                                     |
 | Mục đích                 | Giải quyết 3 điểm cần làm rõ trong spec 122 thông qua vòng lặp câu hỏi tương tác tuần tự: danh mục ý định hỗ trợ, phương án xử lý yêu cầu mơ hồ/thiếu thông tin/đa ý định, và kiến trúc chuyển tiếp kết quả nhận diện. |
 
 ### Prompt đã dùng
@@ -545,6 +547,7 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 ```
 
 Chuỗi phản hồi làm rõ tuần tự:
+
 - Câu 1 (Supported Music Intent Categories): `B`
 - Câu 2 (Resolution Strategy for Ambiguous, Incomplete, or Multi-Intent Messages): `C`
 - Câu 3 (Intent Result Delivery and Routing Architecture): `A`
@@ -561,10 +564,10 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| 5 nhóm ý định gồm cả quản lý thư viện cá nhân | Dùng (Option B) | Cho phép người dùng ra lệnh tạo playlist, like bài hát hoặc theo dõi nghệ sĩ ngay trong luồng chat tự nhiên. |
-| Giá trị mặc định thông minh (Smart defaults) | Dùng (Option C) | Mang lại trải nghiệm phản hồi tức thì, mượt mà khi người dùng nói ngắn gọn (ví dụ "bật nhạc đi"), không bắt người dùng giải thích dài dòng. |
+| Phần                                                | Quyết định      | Lý do                                                                                                                                                    |
+| --------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5 nhóm ý định gồm cả quản lý thư viện cá nhân       | Dùng (Option B) | Cho phép người dùng ra lệnh tạo playlist, like bài hát hoặc theo dõi nghệ sĩ ngay trong luồng chat tự nhiên.                                             |
+| Giá trị mặc định thông minh (Smart defaults)        | Dùng (Option C) | Mang lại trải nghiệm phản hồi tức thì, mượt mà khi người dùng nói ngắn gọn (ví dụ "bật nhạc đi"), không bắt người dùng giải thích dài dòng.              |
 | Điều phối tập trung qua Centralized AI Orchestrator | Dùng (Option A) | Giữ kiến trúc lỏng (loose coupling), phân tách rõ ràng giữa module phân tích ngữ nghĩa (122) và module thực thi âm nhạc (123) hoặc sinh câu thoại (121). |
 
 ### Cách kiểm chứng
@@ -582,12 +585,12 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ## Mục 12: Viết spec 123 – Real-Time Music Assistance
 
-| Trường                   | Nội dung                                                                                                                                                                                |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-10-30                                                                                                                                                                              |
-| Người thực hiện          | Nhựt                                                                                                                                                                                    |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)                                             |
-| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                                                      |
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                                                                                                                                  |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                        |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)                                                                                                                                                  |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-specify`                                                                                                                                                                                                                                          |
 | Mục đích                 | Đối chiếu tài liệu dự án để tạo đặc tả nghiệp vụ cho khả năng hỗ trợ âm nhạc theo thời gian thực trong hội thoại; phân định rõ ranh giới với giao diện hội thoại (121) và phân tích ý định (122), đồng thời kết nối điều phối với Music Player, Queue, Songs, Playlists, Albums và Artists. |
 
 ### Prompt đã dùng
@@ -619,11 +622,11 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Tiếp nhận payload chuẩn từ spec 122 | Dùng | Giữ tính liên kết chặt chẽ với Centralized AI Agent Orchestrator đã thống nhất trong spec 122. |
-| Bảo vệ quyền riêng tư và kiểm soát quyền người dùng | Dùng | Đảm bảo tính cô lập phiên nghe nhạc, tuân thủ Nghị định 13/2023/NĐ-CP và API Contract. |
-| Không làm gián đoạn phát nhạc hiện tại khi xảy ra lỗi | Dùng | Đảm bảo trải nghiệm nghe nhạc liên tục (uninterrupted streaming) theo cam kết Proposal. |
+| Phần                                                  | Quyết định | Lý do                                                                                          |
+| ----------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| Tiếp nhận payload chuẩn từ spec 122                   | Dùng       | Giữ tính liên kết chặt chẽ với Centralized AI Agent Orchestrator đã thống nhất trong spec 122. |
+| Bảo vệ quyền riêng tư và kiểm soát quyền người dùng   | Dùng       | Đảm bảo tính cô lập phiên nghe nhạc, tuân thủ Nghị định 13/2023/NĐ-CP và API Contract.         |
+| Không làm gián đoạn phát nhạc hiện tại khi xảy ra lỗi | Dùng       | Đảm bảo trải nghiệm nghe nhạc liên tục (uninterrupted streaming) theo cam kết Proposal.        |
 
 ### Cách kiểm chứng
 
@@ -639,12 +642,12 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 
 ## Mục 13: Làm rõ spec 123 bằng `/speckit-clarify`
 
-| Trường                   | Nội dung                                                                                                                                                                                |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-10-30                                                                                                                                                                              |
-| Người thực hiện          | Nhựt                                                                                                                                                                                    |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)                                             |
-| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                      |
+| Trường                   | Nội dung                                                                                                                                                                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-10-30                                                                                                                                                                                                                                               |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                     |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)                                                                                                               |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                                                                                       |
 | Mục đích                 | Giải quyết triệt để 3 điểm cần làm rõ trong spec 123 thông qua quy trình câu hỏi tương tác: danh mục hành động âm nhạc hỗ trợ (FR-002), cơ chế chuyển tiếp điều phối phía Client (FR-003), và cơ chế phản hồi bằng thẻ tương tác kèm xử lý lỗi (FR-004). |
 
 ### Prompt đã dùng
@@ -654,6 +657,7 @@ Dữ liệu và quy tắc: đối chiếu `docs/proposal/proposal.md`, `docs/man
 ```
 
 Chuỗi phản hồi làm rõ tuần tự:
+
 - Câu 1: `c` (Option C – Hỗ trợ âm nhạc toàn diện)
 - Câu 2: `A` (Option A – Điều phối hành động phía Client qua Payload phản hồi)
 - Câu 3: `A` (Option A – Câu thoại của AI host kèm Thẻ bài hát/hành động tương tác và nút Retry)
@@ -670,11 +674,11 @@ Chuỗi phản hồi làm rõ tuần tự:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-| --- | --- | --- |
-| Danh mục hành động toàn diện | Dùng (Option C) | Giúp AI Agent thực hiện trọn vẹn vai trò AI DJ/Host, khai thác tối đa 5 nhóm ý định đã thống nhất ở spec 122. |
-| Điều phối hành động phía Client | Dùng (Option A) | Tận dụng trực tiếp Persistent Bottom Player hiện có trên Web Client, giữ backend stateless, tránh phụ thuộc phức tạp vào WebSocket/SSE cho v1. |
-| Thẻ bài hát tương tác & không ngắt audio khi lỗi | Dùng (Option A) | Mang lại trải nghiệm trực quan sống động trong hội thoại và bảo đảm luồng nghe nhạc liên tục không bị gián đoạn. |
+| Phần                                             | Quyết định      | Lý do                                                                                                                                          |
+| ------------------------------------------------ | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục hành động toàn diện                     | Dùng (Option C) | Giúp AI Agent thực hiện trọn vẹn vai trò AI DJ/Host, khai thác tối đa 5 nhóm ý định đã thống nhất ở spec 122.                                  |
+| Điều phối hành động phía Client                  | Dùng (Option A) | Tận dụng trực tiếp Persistent Bottom Player hiện có trên Web Client, giữ backend stateless, tránh phụ thuộc phức tạp vào WebSocket/SSE cho v1. |
+| Thẻ bài hát tương tác & không ngắt audio khi lỗi | Dùng (Option A) | Mang lại trải nghiệm trực quan sống động trong hội thoại và bảo đảm luồng nghe nhạc liên tục không bị gián đoạn.                               |
 
 ### Cách kiểm chứng
 
@@ -686,3 +690,653 @@ Chuỗi phản hồi làm rõ tuần tự:
 **Kết quả kiểm chứng:** Đạt yêu cầu làm rõ, đặc tả hoàn chỉnh và sẵn sàng cho pha lập kế hoạch (`/speckit-plan`).
 
 **Ghi chú:** Spec hoàn thiện nằm tại `specs/120-ai-conversational-agent/123-real-time-music-assistance/spec.md`.
+
+---
+
+## Mục 14: Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                         |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-01                                                                                                                                                                                                                                                                                                       |
+| Người thực hiện          | Lê Công Minh Nhựt (Leader); cùng các thành viên xem và đóng góp ý kiến khi clarify: (Nguyễn Khánh Đăng, Nguyễn Thanh Huy, Thái Hoàng, Mai Đăng Khoa)                                                                                                                                                             |
+| Nhóm tính năng liên quan | Toàn bộ 12 nhóm chức năng (010: Authentication, 020: Home Dashboard, 030: Search, 040: Music Player, 050: Queue Management, 060: Playlist Management, 070: Listening History, 080: Album Interaction, 090: Artist Profile & Studio, 100: AI Recommendations, 110: Admin Functions, 120: AI Conversational Agent) |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash), `/speckit-clarify`                                                                                                                                                                                                                                                               |
+| Mục đích                 | Rà soát, phân tích, đối chiếu mã nguồn và làm rõ toàn diện yêu cầu, tác nhân (Actors), ranh giới trách nhiệm, quy tắc nghiệp vụ và các luồng dữ liệu liên nhóm của toàn bộ 12 nhóm chức năng AuraTune trước khi thực hiện Use-Case Modeling và Use-Case Specifications cho PA3.                                  |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify # TASK: Clarify All 12 AuraTune Functional Groups Using Existing Repository Sources Only
+
+## 1. Role
+
+Act as a Senior Business Analyst and Software Requirements Engineer for AuraTune.
+
+Your responsibility is to help the project owner clarify the requirements and scope of all 12 functional groups before starting PA3 Use-Case Modeling and Use-Case Specifications.
+
+You must work interactively with the project owner.
+
+**The project owner is the final decision-maker for all requirement ambiguities and proposed changes.**
+
+---
+
+## 2. Strict Working Constraints
+
+These constraints are mandatory.
+
+### 2.1 Do NOT Create New Files or Directories
+
+Do not create:
+- New Markdown files.
+- New clarification documents.
+- New directories.
+- New reports.
+- New Use-Case Model files.
+- New Use-Case Specification files.
+- New templates.
+- New summary documents.
+
+Do not create a separate clarification package.
+
+Use only the existing repository files as sources for analysis.
+
+### 2.2 Existing Spec Files
+
+You may inspect existing Spec Kit files, especially:
+
+- `specs/[group]/[feature]/spec.md`
+
+You may propose updates to existing `spec.md` files only when necessary to correct or clarify requirements.
+
+However:
+
+1. Do not edit any `spec.md` automatically.
+2. First explain the issue to the project owner.
+3. Show the current requirement and the proposed change.
+4. Explain why the change is necessary.
+5. Ask the project owner for confirmation.
+6. Only update the existing `spec.md` after explicit approval.
+
+### 2.3 Do NOT Modify Other Files
+
+Do not modify:
+- `plan.md`
+- `tasks.md`
+- `research.md`
+- `data-model.md`
+- `quickstart.md`
+- API contracts.
+- Checklists.
+- Source code.
+- Database files.
+- Frontend files.
+- Backend files.
+- AI service files.
+- Existing project documentation outside an explicitly approved `spec.md` change.
+
+Do not modify project configuration or Git settings.
+
+### 2.4 Do NOT Guess
+
+Never invent or assume:
+- Features.
+- Functional requirements.
+- Actors.
+- User roles.
+- Business rules.
+- Authentication methods.
+- External providers.
+- System behavior.
+- Data relationships.
+- Functional group ownership.
+- Cross-group dependencies.
+
+If information is unclear, ask the project owner.
+
+Do not silently interpret an ambiguous requirement as a confirmed requirement.
+
+### 2.5 Preserve Existing Work
+
+- Do not delete files.
+- Do not rename files.
+- Do not overwrite existing content.
+- Do not discard uncommitted changes.
+- Do not run destructive commands.
+- Do not reset or clean the Git working tree.
+
+---
+
+## 3. Sources to Inspect
+
+Inspect the existing repository and read the actual contents of the following documents.
+
+### Project Documents
+
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+
+### Management Documents
+
+- `docs/management/team-contract.md`
+- `docs/management/git-workflow.md`
+- `docs/management/speckit-workflow-guide.md`
+
+### Existing Spec Kit Documentation
+
+Inspect all relevant feature specifications under:
+
+- `specs/010-authentication/`
+- `specs/020-home-dashboard/`
+- `specs/030-search/`
+- `specs/040-music-player/`
+- `specs/050-queue-management/`
+- `specs/060-playlist-management/`
+- `specs/070-listening-history/`
+- `specs/080-album-interaction/`
+- `specs/090-artist-profile-studio/`
+- `specs/100-ai-recommendations/`
+- `specs/110-admin-functions/`
+- `specs/120-ai-conversational-agent/`
+
+Read the actual `spec.md` files and relevant feature-level specifications.
+
+You may inspect implementation and database files as supporting evidence, but do not treat implementation as proof of approved requirements.
+
+---
+
+## 4. Functional Groups to Clarify
+
+Analyze these 12 groups in their existing ID order.
+
+| Group ID | Functional Group |
+|---|---|
+| 010 | Authentication |
+| 020 | Home Dashboard |
+| 030 | Search |
+| 040 | Music Player |
+| 050 | Queue Management |
+| 060 | Playlist Management |
+| 070 | Listening History |
+| 080 | Album Interaction |
+| 090 | Artist Profile & Studio |
+| 100 | AI Recommendations |
+| 110 | Admin Functions |
+| 120 | AI Conversational Agent |
+
+Do not change their IDs or names.
+
+---
+
+## 5. Clarification Process
+
+Work on only one functional group at a time.
+
+Do not analyze all 12 groups and make assumptions in one response.
+
+For each group, follow the process below.
+
+### Step 1: Inspect Existing Requirements
+
+Read the group's existing:
+- `spec.md`
+- Related feature specifications.
+- Relevant Vision Document sections.
+- Related existing project documents.
+
+Extract the requirements without changing their original meaning.
+
+### Step 2: Understand the Group
+
+Present your analysis to the project owner using the following structure:
+
+#### A. Group Overview
+- Group ID.
+- Group name.
+- Existing feature IDs.
+- Purpose.
+- Main responsibilities.
+- Group owner from the existing team contract.
+
+#### B. Existing Features
+
+| Feature ID | Feature Name | Existing Description | Source |
+|---|---|---|---|
+
+Use actual feature IDs and names.
+
+#### C. Functional Requirements
+
+| FR ID | Existing Requirement | Expected System Behavior | Source |
+|---|---|---|---|
+
+Preserve the original requirement meaning.
+
+If no official FR ID exists, reference the source section instead of inventing an ID.
+
+#### D. Actors
+
+| Actor | Role | Interaction with the Group | Source |
+|---|---|---|---|
+
+Only include actors supported by the existing sources.
+
+#### E. Main Functional Scenarios
+
+Explain the important system behaviors based on the current requirements.
+
+These are preliminary scenarios for clarification, not final Use-Case Specifications.
+
+#### F. Alternative and Exception Scenarios
+
+Identify documented alternative and exceptional behavior.
+
+Clearly distinguish:
+- Explicitly specified behavior.
+- Partially specified behavior.
+- Missing behavior.
+
+#### G. Business Rules
+
+List only business rules that exist in the sources.
+
+#### H. Group Boundaries
+
+Explain:
+- What belongs to this group.
+- What belongs to other groups.
+- Potential overlapping functionality.
+- Unclear ownership.
+
+#### I. Dependencies
+
+Identify dependencies supported by existing requirements.
+
+Do not assume dependencies based solely on common application architecture.
+
+#### J. Issues and Questions
+
+List all unclear, conflicting or incomplete requirements.
+
+For each issue, provide:
+
+| ID | Current Information | Problem | Why Clarification Is Needed | Question |
+|---|---|---|---|---|
+
+### Step 3: Ask the Project Owner
+
+After presenting the analysis, ask the project owner about unresolved points.
+
+Rules:
+
+- Ask concise, specific questions.
+- Explain why each question matters.
+- When useful, provide possible alternatives.
+- Do not force a choice if the project owner may have another answer.
+- Ask only questions that are necessary to clarify requirements.
+- If multiple independent decisions are required, group related questions logically.
+- Wait for the project owner's answers before finalizing the group.
+
+**Do not move to the next group while the current group still has unresolved critical questions.**
+
+### Step 4: Summarize Confirmed Decisions
+
+After receiving answers, summarize:
+
+- Confirmed scope.
+- Confirmed features.
+- Confirmed actors.
+- Confirmed functional behavior.
+- Confirmed business rules.
+- Confirmed group boundaries.
+- Confirmed dependencies.
+- Remaining open questions.
+
+Clearly distinguish:
+
+- Existing source requirement.
+- Project-owner clarification.
+- Proposed change.
+
+### Step 5: Check Whether the Existing spec.md Needs Updating
+
+Compare the confirmed understanding with the current `spec.md`.
+
+There are three possible outcomes:
+
+**Outcome A – No Update Needed**
+
+The existing specification already represents the confirmed requirements accurately.
+
+Do not modify the file.
+
+**Outcome B – Update Recommended**
+
+The specification is incomplete, ambiguous or inconsistent with the project owner's clarification.
+
+Present:
+
+1. Current content.
+2. Identified problem.
+3. Proposed replacement or addition.
+4. Reason for the change.
+5. Impact on related requirements or features.
+
+Ask for explicit approval before editing.
+
+**Outcome C – More Information Needed**
+
+The available information is insufficient to determine the correct requirement.
+
+Do not edit the file.
+
+Ask the project owner for clarification.
+
+### Step 6: Update Only After Approval
+
+After explicit approval:
+
+- Update only the relevant existing `spec.md`.
+- Preserve unrelated content.
+- Preserve the existing document structure and terminology.
+- Avoid rewriting sections that do not need changes.
+- Do not modify other Spec Kit artifacts.
+- Show a concise summary of the exact changes.
+
+Never update a requirement based only on your own assumptions.
+
+### Step 7: Confirm Group Completion
+
+A group is ready to move forward when:
+
+- Its purpose and scope are understood.
+- Existing features have been reviewed.
+- Functional requirements are understood.
+- Actors are confirmed.
+- Important workflows are clarified.
+- Business rules are understood.
+- Group boundaries are agreed upon.
+- Dependencies are understood.
+- Critical questions have been resolved.
+- Necessary `spec.md` updates have been approved and completed, or no updates are needed.
+
+After this, ask the project owner whether to proceed to the next group.
+
+---
+
+## 6. Specific Clarification Areas
+
+Use the following areas as investigation guides, not as assumptions that all listed capabilities exist.
+
+### 010 – Authentication
+
+Review:
+- Local authentication.
+- OAuth authentication.
+- Session management.
+- Registration and login.
+- Supported authentication providers.
+- Account lifecycle.
+- Authentication state.
+- Session lifecycle.
+- Logout behavior.
+- Token behavior, if documented.
+- Authentication vs authorization.
+
+Do not assume unverified features such as password recovery, email verification, Facebook login or multi-device session management.
+
+### 020 – Home Dashboard
+
+Review:
+- Dashboard purpose.
+- Main sections.
+- Personalized content.
+- Recently played content.
+- Featured content.
+- Recommendations.
+- Data sources.
+- Navigation.
+- Loading and empty states.
+
+### 030 – Search
+
+Review:
+- Searchable content types.
+- Search input.
+- Search results.
+- Suggestions.
+- Filtering.
+- Sorting.
+- Search history.
+- No-result behavior.
+- Search errors.
+
+### 040 – Music Player
+
+Review:
+- Playback behavior.
+- Play and pause.
+- Next and previous.
+- Seek and progress.
+- Volume.
+- Repeat and shuffle.
+- Playback states.
+- Playback errors.
+- Queue integration.
+- Listening history integration.
+
+### 050 – Queue Management
+
+Review:
+- Queue initialization.
+- Adding tracks.
+- Removing tracks.
+- Reordering.
+- Current track.
+- Next-track behavior.
+- Queue persistence.
+- Queue and playlist relationships.
+
+### 060 – Playlist Management
+
+Review:
+- Playlist creation.
+- Playlist editing.
+- Playlist deletion.
+- Track management.
+- Playlist ownership.
+- Visibility.
+- Permissions.
+- Playlist ordering.
+- Queue integration.
+
+### 070 – Listening History
+
+Review:
+- Listening activity recording.
+- Recording conditions.
+- History display.
+- Sorting and filtering.
+- Retention.
+- Deletion.
+- Privacy.
+- Recommendation integration.
+
+### 080 – Album Interaction
+
+Review:
+- Album details.
+- Track listing.
+- Album metadata.
+- Album-related interactions.
+- Navigation.
+- Search integration.
+- Player integration.
+
+### 090 – Artist Profile & Studio
+
+Review:
+- Artist profile.
+- Artist information.
+- Discography.
+- Artist-facing functionality.
+- Studio capabilities.
+- Content management.
+- Publishing.
+- Permissions.
+- Admin boundary.
+
+### 100 – AI Recommendations
+
+Review:
+- Recommendation goals.
+- Input data.
+- Listening history.
+- User preferences.
+- Recommendation generation.
+- Presentation.
+- User feedback.
+- AI service integration.
+- Failure and fallback behavior.
+
+### 110 – Admin Functions
+
+Review:
+- Admin roles.
+- Permissions.
+- User management.
+- Content management.
+- Moderation.
+- System management.
+- Audit records.
+- Artist management boundaries.
+
+### 120 – AI Conversational Agent
+
+Review:
+- Conversational purpose.
+- Supported intents.
+- User input.
+- AI responses.
+- Conversation context.
+- Conversation lifecycle.
+- Music discovery.
+- Recommendation integration.
+- Search integration.
+- Player integration.
+- AI provider.
+- Error and fallback behavior.
+
+---
+
+## 7. Cross-Group Clarification
+
+After the 12 groups have been individually clarified, review the relationships between them.
+
+Pay special attention to:
+
+- Authentication vs Admin Functions.
+- Home Dashboard vs Search.
+- Search vs Album Interaction.
+- Music Player vs Queue Management.
+- Queue Management vs Playlist Management.
+- Music Player vs Listening History.
+- Listening History vs AI Recommendations.
+- Artist Profile & Studio vs Admin Functions.
+- AI Recommendations vs AI Conversational Agent.
+- AI Conversational Agent vs Search and Music Player.
+
+Do not create a separate report or file.
+
+Present the cross-group findings directly in the conversation.
+
+For every overlap:
+1. Explain the overlapping functionality.
+2. Show the relevant source requirements.
+3. Explain the possible ownership boundary.
+4. Identify what needs project-owner confirmation.
+5. Wait for confirmation before proposing any specification changes.
+
+---
+
+## 8. Final Constraints
+
+During this entire task:
+
+- Do not create any new file.
+- Do not create any new directory.
+- Do not create a separate clarification report.
+- Do not create Use-Case Model or Use-Case Specification files.
+- Do not create UC IDs.
+- Do not modify source code.
+- Do not modify `plan.md` or `tasks.md`.
+- Do not modify project configuration.
+- Do not edit `spec.md` without explicit approval.
+- Ask the project owner whenever a requirement is unclear.
+- Work sequentially, one group at a time.
+- Preserve all existing work and uncommitted changes.
+
+---
+
+## 9. How to Start
+
+Start with **Group 010 – Authentication** only.
+
+Inspect its actual repository sources:
+
+- `specs/010-authentication/011-local-authentication/spec.md`
+- `specs/010-authentication/012-oauth-authentication/spec.md`
+- `specs/010-authentication/013-session-management/spec.md`
+- Related Vision Document sections.
+- Relevant project management documents.
+
+Then present the complete Group 010 analysis using the structure in Section 5.
+
+Ask the project owner about unresolved requirements.
+
+Do not start Group 020 until Group 010 has been clarified and the project owner explicitly asks you to continue.
+
+**The goal is not to produce more documentation. The goal is to establish an accurate, agreed understanding of the existing AuraTune requirements before any Use-Case work begins.**. Hỏi bằng tiếng Việt
+```
+
+### Tóm tắt phản hồi của AI
+
+- Tiếp nhận và tuân thủ nghiêm ngặt toàn bộ các nguyên tắc: không tạo file/thư mục mới, không sửa code, không tự ý đoán định yêu cầu nghiệp vụ, chỉ đề xuất cập nhật các file `spec.md` hiện có và chỉ chỉnh sửa khi có phê duyệt rõ ràng (`approve`) từ Project Owner.
+- Thực hiện quy trình rà soát và làm rõ tuần tự từng nhóm chức năng (từ Nhóm 010 đến Nhóm 120), sau đó tiến hành đồng bộ liên nhóm (Cross-Group Clarification):
+  1. **Nhóm 010 – Authentication** (Phụ trách: Mai Đăng Khoa): Làm rõ ghi nhớ đăng nhập Remember Me (30 ngày), cơ chế vô hiệu hóa session khi đổi mật khẩu, đồng bộ đăng xuất đa tab, kiểm soát giới hạn thử sai đăng nhập. Cập nhật `011/spec.md` và `013/spec.md`.
+  2. **Nhóm 020 – Home Dashboard** (Phụ trách: Nguyễn Thanh Huy): Phân tách rõ ràng giữa Home cá nhân hóa (Personalized) cho người dùng đăng nhập và Home công khai (Public) cho khách vãng lai; chuẩn hóa Top 10 Bảng xếp hạng thịnh hành (Trending Charts). Cập nhật `021/spec.md` và `024/spec.md`.
+  3. **Nhóm 030 – Search** (Phụ trách: Nguyễn Khánh Đăng): Chuẩn hóa 3 chế độ tìm kiếm: Metadata, Lời bài hát AI, Ngữ nghĩa Vector; cơ chế phân trang 20 kết quả/trang; bộ lọc kết hợp thể loại/nghệ sĩ; lịch sử tìm kiếm tối đa 20 mục. Cập nhật `031/spec.md`, `032/spec.md`, `033/spec.md`.
+  4. **Nhóm 040 – Music Player** (Phụ trách: Nguyễn Thanh Huy): Xác nhận cơ chế Bottom Player chạy bền vững không ngắt nhạc khi chuyển trang; đồng bộ lời bài hát thời gian thực theo milli-giây; phím tắt điều khiển (Space, phím mũi tên). Cập nhật `041/spec.md`, `044/spec.md`, `045/spec.md`.
+  5. **Nhóm 050 – Queue Management** (Phụ trách: Nguyễn Thanh Huy): Khẳng định mô hình danh sách chờ kết hợp (Current Track + Up Next List); hỗ trợ kéo thả sắp xếp; cơ chế xác nhận an toàn `[y/N]` khi xóa sạch hàng chờ (`clear_queue`). Cập nhật `051/spec.md`, `052/spec.md`.
+  6. **Nhóm 060 – Playlist Management** (Phụ trách: Mai Đăng Khoa): Cơ chế chống thêm bài trùng lặp (`disabled="Đã thêm"`); mời cộng tác viên trực tiếp qua email AuraTune; quyền xóa bài của cộng tác viên; lưu playlist công khai dạng Bookmark chỉ đọc. Cập nhật `061/spec.md`, `062/spec.md`, `065/spec.md`.
+  7. **Nhóm 070 – Listening History** (Phụ trách: Mai Đăng Khoa): Ngưỡng tính lượt nghe hợp lệ là nghe liên tục tối thiểu 30 giây; bộ lọc thời gian thống nhất (7 ngày, 30 ngày, Toàn bộ); tính năng Clear All History tẩy sạch hoàn toàn khỏi mô hình gợi ý AI. Cập nhật `071/spec.md`, `072/spec.md`, `073/spec.md`.
+  8. **Nhóm 080 – Album Interaction** (Phụ trách: Nguyễn Khánh Đăng): Phân loại huy hiệu Đĩa đơn (<= 1 bài) vs Album (>= 2 bài); mục "More from [Artist]"; lưu album dạng Bookmark/Follow; chia sẻ đa nền tảng. Cập nhật `081/spec.md`, `082/spec.md`, `083/spec.md`.
+  9. **Nhóm 090 – Artist Profile & Studio** (Phụ trách: Thái Hoàng): Phân quyền nghiêm ngặt truy cập Artist Studio cho `role: 'artist'`; upload file nhị phân audio lên Cloudinary; ẩn/hiện bài hát bảo toàn 100% số lượt phát tích lũy. Cập nhật `093/spec.md`.
+  10. **Nhóm 100 – AI Recommendations** (Phụ trách: Lê Công Minh Nhựt): Kết hợp 3 nguồn tín hiệu (Lịch sử nghe >= 30s, Likes, Follows); phân loại 4 Moods + 4 Contexts; chuyển sang danh sách thịnh hành khi AI ngoại tuyến hoặc người dùng mới (Cold-start). Cập nhật `102/spec.md`, `103/spec.md`.
+  11. **Nhóm 110 – Admin Functions** (Phụ trách: Thái Hoàng): Bổ sung quản lý/phân quyền Role (`user`, `artist`, `admin` - cấm tự đổi role mình); chuẩn hóa 4 thẻ KPI Dashboard (Người dùng, Nghệ sĩ, Bài hát, Lượt nghe); thao tác kiểm duyệt nhanh kèm Toast; công tắc tính sẵn sàng hệ thống (`aiAvailable`, Reset Demo); gỡ bài vi phạm (skip trong queue, bảo toàn audit). Cập nhật `111/spec.md`, `112/spec.md`, `113/spec.md`.
+  12. **Nhóm 120 – AI Conversational Agent** (Phụ trách: Lê Công Minh Nhựt): Bắt buộc đăng nhập tài khoản; quản lý hội thoại In-memory session hỗ trợ lệnh `/clear` và duyệt 30 câu lệnh `↑/↓`; 8 công cụ client `agentTools`; xác nhận `[y/N]` với `clear_queue`; phân giải câu lệnh ghép tuần tự; trạng thái tạm ngưng an toàn khi AI offline. Cập nhật `121/spec.md`, `122/spec.md`, `123/spec.md`.
+  13. **Cross-Group Clarification**: Thiết lập Ma trận Tác nhân - Quyền hạn (Actor-Role Matrix) cho Guest, User, Artist, Admin qua 12 nhóm; chuẩn hóa 4 luồng dữ liệu xuyên suốt (Playback -> History -> Recommendations -> Queue; Moderation Delisting -> Queue Skipping -> Studio; System AI Toggle -> Graceful Degradation; User History Clear -> Recommendation Reset); thống nhất 5 nguyên tắc đồng bộ liên nhóm.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                           | Quyết định                           | Lý do                                                                                                                                   |
+| -------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục 12 nhóm chức năng và phân công trách nhiệm            | Giữ nguyên theo `team-contract.md`   | Tuân thủ chính xác hợp đồng nhóm: Nhựt (G10, G12), Khoa (G01, G06, G07), Đăng (G03, G08), Hoàng (G09, G11), Huy (G02, G04, G05).        |
+| Ngưỡng ghi nhận lượt nghe hợp lệ $\ge 30$s                     | Dùng và chuẩn hóa trên toàn hệ thống | Nhất quán giữa G040 (Player), G070 (History), G100 (Recommendations) và G110 (Admin Stats), tránh spam playCount.                       |
+| Cơ chế chống thêm bài trùng lặp trong Playlist                 | Thêm vào spec `061`, `062`           | Đảm bảo tính toàn vẹn của danh sách phát cá nhân và trải nghiệm người nghe.                                                             |
+| Phân quyền Role (`user`, `artist`, `admin`) và 4 thẻ KPI Admin | Thêm vào spec `111`, `113`           | Khớp nối 100% với giao diện quản trị thực tế trong `AdminPage.jsx`, cho phép cấp quyền nghệ sĩ và xem tổng quan nền tảng.               |
+| Thao tác kiểm duyệt gỡ bài: Tự động skip trong Queue           | Thêm vào spec `112`                  | Đảm bảo khi Admin gỡ bài vi phạm thì luồng nghe của người dùng khác không bị sập hay ngắt âm thanh đột ngột.                            |
+| Vòng đời hội thoại AI Host In-memory & Lệnh `/clear`, `↑/↓`    | Sửa trong spec `121`                 | Phù hợp với kiến trúc trợ lý ảo CLI/DJ Host tương tác tức thời, tối ưu hiệu năng và tôn trọng quyền riêng tư.                           |
+| Xác nhận tương tác an toàn `[y/N]` cho `clear_queue`           | Thêm vào spec `052`, `123`           | Ngăn chặn hành động xóa sạch toàn bộ hàng chờ do vô tình hoặc do AI phân tích nhầm, bảo vệ danh sách phát.                              |
+| Bóc tách câu lệnh ghép (Compound Commands) tuần tự             | Thêm vào spec `122`, `123`           | Cho phép AI Host nhận diện và thực thi chuỗi hành động kết hợp (ví dụ "phát lofi rồi giảm âm lượng 30%").                               |
+| Xóa cứng bài hát vi phạm (Hard delete / Cascade)               | Bỏ / Không dùng                      | Thay bằng cơ chế xóa mềm (Delist / Soft-hide) hiển thị mờ (`disabled`) trong playlist để bảo toàn lịch sử và dữ liệu kiểm toán.         |
+| Tự ý đoán hoặc sáng tạo tính năng mới ngoài tài liệu           | Bỏ / Nghiêm cấm                      | Tuân thủ tuyệt đối quy tắc của Spec Kit: không đoán mò, mọi điểm chưa rõ đều phải đưa ra câu hỏi tương tác để Project Owner quyết định. |
+
+### Cách kiểm chứng
+
+- **Đối chiếu chéo tài liệu dự án:** Kiểm tra tính nhất quán giữa nội dung các quyết định làm rõ với `docs/proposal/proposal.md`, `docs/management/team-contract.md`, `docs/analysis-and-design/api-contract.md`, `docs/design/database/README.md`.
+- **Đối chiếu mã nguồn triển khai thực tế:** Rà soát trực tiếp các components và services phía frontend (`src/frontend/src/`) để bảo đảm các quyết định nghiệp vụ khớp 100% với giao diện đã code (như `AdminPage.jsx`, `AIHostChat.jsx`, `agentTools.js`, `agentService.js`, `BottomPlayer.jsx`).
+- **Kiểm tra trạng thái Git (`git status --porcelain`):** Xác nhận chỉ có đúng 27 file `spec.md` thuộc 12 nhóm chức năng được chỉnh sửa sau khi được Project Owner duyệt qua các lượt lệnh `approve`. Không có bất kỳ file code, cấu hình, checklist, database hay file Markdown nào khác bị thay đổi hoặc tạo mới trái phép.
+- **Rà soát tính nhất quán liên nhóm (Cross-Group Alignment):** 100% các ranh giới chức năng giữa Admin, Nghệ sĩ và Người nghe được phân định rành mạch; các luồng xử lý ngoại lệ khi bài hát bị gỡ hoặc AI ngoại tuyến đều có kịch bản xử lý an toàn và liên tục.
+
+**Kết quả kiểm chứng:** Đạt 100% trên toàn bộ 12 nhóm chức năng và hoàn tất phiên đồng bộ liên nhóm. Hệ thống tài liệu đặc tả hiện đạt trạng thái sẵn sàng cho giai đoạn phân tích mô hình Use-Case (PA3).

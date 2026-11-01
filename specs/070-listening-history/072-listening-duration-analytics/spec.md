@@ -28,7 +28,7 @@ As a listener, I want to see how much time I've spent listening to music today, 
 
 **Acceptance Scenarios**:
 
-1. **Given** I am on the History page, **When** the page loads, **Then** I see "Today", "Last 7 Days", and "All Time" duration summaries.
+1. **Given** I am on the History page, **When** the page loads, **Then** I see duration and session summaries configurable by time filters: "7 ngày" (Last 7 Days), "30 ngày" (Last 30 Days), and "Toàn bộ" (All Time, up to 365 days).
 2. **Given** I have 365+ days of history, **When** I view "All Time" stats, **Then** the duration only includes the last 365 days.
 
 ---
@@ -88,7 +88,7 @@ As a listener, I want my stats to accurately reflect only the history I haven't 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST calculate cumulative listening duration for "Today", "Last 7 Days", and "All Time" (max 365 days), only including playback sessions that exceed 30 seconds.
+- **FR-001**: System MUST calculate cumulative listening duration for "7 ngày" (7 days), "30 ngày" (30 days), and "Toàn bộ" (All Time, max 365 days), only including playback sessions that meet the >= 30s threshold.
 - **FR-002**: System MUST generate a ranking of top 5 artists based on total duration listened, filtering out sessions shorter than 30 seconds.
 - **FR-003**: System MUST provide daily listening totals for the previous 7 days (sum of 30s+ sessions) for trend visualization.
 - **FR-004**: System MUST exclude hidden or "soft-deleted" history items from all statistical calculations.

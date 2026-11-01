@@ -17,6 +17,10 @@
 - Q: What is shown on phones? → A: A compact mini player with track information and play or pause, above the mobile navigation.
 - Q: Does the player survive a full page reload? → A: No. After a reload, the player returns to its idle state.
 
+### Session 2026-11-01
+
+- Q: How does the player behave after a full browser page reload (F5)? → A: Restores the last active track and queue in a paused state from local storage.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Keep Listening While Browsing (Priority: P1)
@@ -87,7 +91,7 @@ As a phone user, I want a compact player so that it does not block content.
 - **FR-009**: The system MUST keep page content and navigation reachable while the mini player is shown.
 - **FR-010**: The system MUST keep keyboard focus inside the full player while it is open and restore it when closed.
 - **FR-011**: The system MUST provide entry points to the queue from the player.
-- **FR-012**: The system MUST return to the idle player state after a full page reload.
+- **FR-012**: The system MUST persist the current track and queue state in local browser storage, restoring them in a paused state after a full page reload.
 
 ### Key Entities *(include if feature involves data)*
 
