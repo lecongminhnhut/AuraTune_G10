@@ -41,7 +41,7 @@ function planClause(text, context) {
   const track = context.currentTrack
 
   if (/(bai (nay|dang phat) (la )?(bai )?gi|dang phat (bai )?gi|ai hat|ca si nao)/.test(n)) {
-    return { thinking: ['Đọc trạng thái trình phát hiện tại'], text: `Đang phát “${track.title}” của ${track.artist}.` }
+    return { thinking: ['Đọc trạng thái trình phát hiện tại'], text: `Đang phát “${track.title}” của ${track.artist.replace(/\.$/, '')}.` }
   }
   const volume = n.match(/(?:am luong|volume)\D{0,10}(\d{1,3})/)
   if (volume) {
@@ -52,7 +52,7 @@ function planClause(text, context) {
   if (/(tang am luong|to len|lon len)/.test(n)) return { calls: [call('set_volume', { value: Math.min(100, context.volume + 20) }, `set_volume(${Math.min(100, context.volume + 20)})`)], text: 'Đã tăng âm lượng.' }
   if (/^(tam dung|dung|pause|ngung)( nhac| phat)?$/.test(n)) return { calls: [call('playback', { action: 'pause' }, 'playback("pause")')], text: 'Đã tạm dừng.' }
   if (/^(tiep tuc|phat tiep|resume)( phat| nghe)?$/.test(n)) return { calls: [call('playback', { action: 'resume' }, 'playback("resume")')], text: 'Tiếp tục phát nhé.' }
-  if (/^(bai tiep( theo)?|chuyen bai|qua bai|next|skip)$/.test(n)) return { calls: [call('playback', { action: 'next' }, 'playback("next")')], text: 'Đã chuyển sang bài tiếp theo.' }
+  if (/^(bai tiep( theo)?|chuyen bai( tiep( theo)?)?|qua bai( tiep)?|next|skip)$/.test(n)) return { calls: [call('playback', { action: 'next' }, 'playback("next")')], text: 'Đã chuyển sang bài tiếp theo.' }
   if (/^(bai truoc|quay lai bai truoc|previous)$/.test(n)) return { calls: [call('playback', { action: 'previous' }, 'playback("previous")')], text: 'Đã quay lại bài trước.' }
   if (/^(thich|tha tim|like|luu)( bai nay| bai dang phat)?$/.test(n)) return { calls: [call('like_track', { trackId: track.id }, `like_track("${track.id}")`)], text: `Đã thêm “${track.title}” vào Bài hát đã thích.` }
   if (/(xoa|don) (het )?(hang cho|danh sach cho|queue)/.test(n)) {
@@ -67,7 +67,7 @@ function planClause(text, context) {
     return {
       thinking: ['Phân tích tâm trạng trong yêu cầu', `Chọn playlist “${playlist.title}” (${playlist.trackIds.length} bài)`],
       calls: [call('queue_add', { trackIds: playlist.trackIds }, `queue_add(${playlist.trackIds.length} bài)`)],
-      text: `Đã thêm các bài trong “${playlist.title}” vào hàng chờ. ${recommendation.reason}`,
+      text: `Mình chọn các bài trong “${playlist.title}” cho hàng chờ. ${recommendation.reason}`,
     }
   }
   if (/^(phat|mo|nghe|bat|play|cho (toi|minh|tui) nghe|muon nghe)\b/.test(n)) {

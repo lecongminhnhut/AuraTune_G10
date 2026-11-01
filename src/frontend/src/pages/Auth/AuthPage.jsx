@@ -90,7 +90,7 @@ export default function AuthPage({ mode }) {
       <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-fuchsia-500/10 blur-[100px]" />
 
       <section className="relative w-full max-w-[460px] rounded-2xl border border-white/[0.08] bg-[#17171b]/90 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-10">
-        <Link to="/" className="inline-flex"><Logo /></Link>
+        <Link to="/" className="inline-flex"><Logo height="h-[132px]" /></Link>
         <div className="mt-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-300">{isRegister ? 'Bắt đầu hành trình' : 'Chào mừng trở lại'}</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-white">{isRegister ? 'Tạo tài khoản AuraTune' : 'Đăng nhập AuraTune'}</h1>
