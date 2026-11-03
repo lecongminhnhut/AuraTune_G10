@@ -18,6 +18,9 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 12  | 2026-10-30 | Viết spec 123 – Real-Time Music Assistance bằng `/speckit-specify`                                               | 12                                                |
 | 13  | 2026-10-30 | Làm rõ spec 123 bằng `/speckit-clarify` – danh mục hành động, điều phối client và widget phản hồi                | 12                                                |
 | 14  | 2026-11-01 | Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3                         | Toàn bộ 12 nhóm chức năng (010 – 120)             |
+| 15  | 2026-11-03 | Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3        | Toàn bộ 12 nhóm chức năng (010 – 120)             |
+| 16  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 100 – AI Recommendations theo chuẩn PA3 và Spec Kit                    | 10 – AI Recommendations                           |
+| 17  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent theo chuẩn PA3 và UI CLI vừa cập nhật    | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -1340,3 +1343,1822 @@ Do not start Group 020 until Group 010 has been clarified and the project owner 
 - **Rà soát tính nhất quán liên nhóm (Cross-Group Alignment):** 100% các ranh giới chức năng giữa Admin, Nghệ sĩ và Người nghe được phân định rành mạch; các luồng xử lý ngoại lệ khi bài hát bị gỡ hoặc AI ngoại tuyến đều có kịch bản xử lý an toàn và liên tục.
 
 **Kết quả kiểm chứng:** Đạt 100% trên toàn bộ 12 nhóm chức năng và hoàn tất phiên đồng bộ liên nhóm. Hệ thống tài liệu đặc tả hiện đạt trạng thái sẵn sàng cho giai đoạn phân tích mô hình Use-Case (PA3).
+
+---
+
+## Mục 15: Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3
+
+| Trường                   | Nội dung                                                                                                                                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                      |
+| Người thực hiện          | Nhựt                                                                                                                                                                                            |
+| Nhóm tính năng liên quan | Toàn bộ 12 nhóm chức năng (010 – 120), Yêu cầu phần mềm PA3 (Use-Case Model, Guidelines, Directory Structure)                                                                                   |
+| Công cụ AI               | Gemini (Antigravity)                                                                                                                                                                            |
+| Mục đích                 | Xây dựng mô hình Use Case cấp hệ thống, tài liệu hướng dẫn viết đặc tả Use Case chuẩn hóa và khởi tạo cấu trúc thư mục 12 nhóm chức năng cho PA3, đảm bảo truy vết 100% yêu cầu chức năng (FR). |
+
+### Prompt đã dùng
+
+````text
+# TASK: Create AuraTune Use-Case Model, Documentation Guide, and Group Directory Structure
+
+Work directly in the AuraTune repository.
+
+Your task is to:
+1. Create the system-level Use-Case Model.
+2. Create the shared Use-Case Documentation README.
+3. Create the 12 functional group directories.
+
+Do all three in this task.
+
+---
+
+## 1. Inspect Existing Project Sources
+
+Read the following documents before writing:
+
+### Project documentation
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- `docs/management/team-contract.md`
+- `docs/management/git-workflow.md`
+- `docs/management/speckit-workflow-guide.md`
+
+### Spec Kit documentation
+
+Inspect relevant files under all 12 groups:
+
+- `specs/010-authentication/`
+- `specs/020-home-dashboard/`
+- `specs/030-search/`
+- `specs/040-music-player/`
+- `specs/050-queue-management/`
+- `specs/060-playlist-management/`
+- `specs/070-listening-history/`
+- `specs/080-album-interaction/`
+- `specs/090-artist-profile-studio/`
+- `specs/100-ai-recommendations/`
+- `specs/110-admin-functions/`
+- `specs/120-ai-conversational-agent/`
+
+Inspect `spec.md`, `plan.md`, `tasks.md`, and relevant supporting files when available.
+
+Also inspect `specs/README.md` and any existing Use-Case Documentation Guide.
+
+---
+
+## 2. Source Accuracy Rules
+
+All documentation must be based on existing project sources.
+
+- Do not invent actors, use cases, FRs, external systems, or business rules.
+- Preserve existing terminology and requirement IDs.
+- Do not assume a feature exists just because it appears in a group name.
+- Do not assume Google or Facebook authentication is supported unless confirmed by project sources.
+- Distinguish confirmed information, proposed information, unconfirmed information, and unresolved questions.
+- If information is missing, use `TBD` or `Requires clarification`.
+- If sources conflict, document the conflict instead of silently resolving it.
+- Add references to the source files used.
+- Do not claim that a feature is implemented simply because it appears in a specification.
+
+---
+
+## 3. Create the System-Level Use-Case Model
+
+Create:
+
+`docs/requirements/use-case-model.md`
+
+This must be the single system-level Use-Case Model for the entire AuraTune project.
+
+Include these sections:
+
+### 3.1 Document Information
+- Document title
+- Purpose
+- Scope
+- Status
+- Source references
+
+### 3.2 System Overview
+Describe AuraTune using the existing Vision Document and project requirements.
+
+### 3.3 System Boundary
+Explain:
+- What is inside AuraTune.
+- What is outside AuraTune.
+- External actors and systems, if confirmed.
+- Responsibilities and interactions across the boundary.
+
+Do not invent external systems.
+
+### 3.4 Actor Catalog
+For each confirmed actor, document:
+- Actor name
+- Actor type
+- Description
+- Responsibilities
+- Related use cases
+- Source references
+
+Distinguish primary actors, supporting actors, and external systems where appropriate.
+
+### 3.5 Functional Group Overview
+
+Cover all 12 groups:
+
+| ID | Functional Group |
+|---|---|
+| 010 | Authentication |
+| 020 | Home Dashboard |
+| 030 | Search |
+| 040 | Music Player |
+| 050 | Queue Management |
+| 060 | Playlist Management |
+| 070 | Listening History |
+| 080 | Album Interaction |
+| 090 | Artist Profile & Studio |
+| 100 | AI Recommendations |
+| 110 | Admin Functions |
+| 120 | AI Conversational Agent |
+
+For every group, include:
+- Purpose
+- Confirmed capabilities
+- Main actors
+- Related FRs, if available
+- Dependencies on other groups
+- Source references
+- Unresolved questions
+
+### 3.6 System-Level Use-Case Diagram
+Create a Mermaid diagram representing the overall AuraTune system.
+
+The diagram must:
+- Show the system boundary.
+- Show confirmed actors.
+- Show confirmed use cases.
+- Organize use cases by functional group where practical.
+- Show relationships only when supported by sources.
+
+Do not invent `include`, `extend`, or generalization relationships.
+
+If Mermaid cannot represent the desired UML notation, use a clear conceptual Mermaid representation and label it appropriately.
+
+### 3.7 Consolidated Use-Case Catalog
+Include:
+- UC ID
+- Use-case name
+- Primary actor
+- Supporting actors
+- Functional group
+- Related FR IDs
+- Source references
+- Confirmation status
+
+Use existing IDs where available. If IDs are not available, define a provisional convention and label it as provisional.
+
+### 3.8 Use-Case Relationships
+Document supported:
+- `include`
+- `extend`
+- Generalization
+- Cross-group dependencies
+
+Explain each relationship. Mark proposed relationships as unconfirmed.
+
+### 3.9 FR Traceability
+Map existing functional requirements to their functional groups and use cases.
+
+Do not invent missing FR IDs.
+
+### 3.10 Open Questions and Limitations
+List unresolved actors, behaviors, relationships, requirements, and dependencies.
+
+### 3.11 References
+List all source documents used.
+
+---
+
+## 4. Create the Shared Use-Case Documentation README
+
+Create:
+
+`docs/requirements/use-cases/README.md`
+
+This is the single shared guideline for all team members writing Use-Case Specifications.
+
+Include:
+
+### 4.1 Purpose and Scope
+Explain the purpose of this documentation standard and its applicability to all 12 functional groups.
+
+### 4.2 Relationship with Spec Kit
+Explain the distinction and relationship between:
+- Use-Case Model
+- Use-Case Specification
+- Spec Kit `spec.md`
+- Spec Kit `plan.md`
+- Spec Kit `tasks.md`
+
+Explain why these artifacts are not interchangeable.
+
+### 4.3 Use-Case Writing Principles
+Define:
+- One use case represents one meaningful user goal or system interaction.
+- Flows must be clear and testable.
+- Avoid unnecessary implementation details.
+- Use consistent terminology.
+- Avoid duplicate use cases.
+
+### 4.4 Naming and ID Convention
+Define a consistent UC naming and identification convention.
+
+Prefer existing repository conventions. Otherwise, document the proposed convention as provisional.
+
+### 4.5 Actor Guidelines
+Explain:
+- Primary actors
+- Supporting actors
+- External systems
+- Actor responsibilities
+
+### 4.6 Standard Use-Case Specification Template
+
+Define the required structure:
+
+1. Use Case ID
+2. Use Case Name
+3. Functional Group
+4. Primary Actor
+5. Supporting Actors
+6. Description
+7. Preconditions
+8. Trigger
+9. Basic Flow
+10. Alternative Flows
+11. Exception Flows, when applicable
+12. Postconditions
+13. Special Requirements, when applicable
+14. Related Functional Requirements
+15. Related Use Cases
+16. Source References
+17. Prototype / Screenshot References
+
+Explain the expected content of each section.
+
+### 4.7 Basic Flow and Alternative Flow Guidelines
+Explain:
+- Numbered steps.
+- Actor actions and system responses.
+- Alternative flow branching points.
+- Alternative flow termination or return to the basic flow.
+- Validation and failure scenarios.
+- Requirement traceability.
+
+### 4.8 Preconditions and Postconditions
+Explain how to write verifiable conditions.
+
+### 4.9 FR Traceability
+Explain how to link each use case to existing FR IDs.
+
+### 4.10 Mermaid Guidelines
+Define appropriate Mermaid usage for system-level and supporting diagrams.
+
+### 4.11 Prototype and Screenshot Guidelines
+Explain:
+- Basic-flow prototype coverage.
+- Alternative-flow coverage where applicable.
+- Screenshot naming conventions.
+- How to reference screenshots from specifications.
+- Difference between conceptual prototypes and actual implementation screenshots.
+
+### 4.12 Team Responsibilities
+Use `docs/management/team-contract.md` as the source of truth for group ownership.
+
+Do not reassign team members.
+
+### 4.13 Documentation and Review Workflow
+Define:
+1. Review requirements and Spec Kit sources.
+2. Identify use cases and actors.
+3. Draft specifications.
+4. Write basic and alternative flows.
+5. Map FRs.
+6. Prepare prototypes and screenshots.
+7. Request peer review.
+8. Resolve review comments.
+9. Verify consistency with the system-level model.
+10. Update documentation.
+
+Follow the existing Git workflow.
+
+### 4.14 Quality Checklist
+Provide a practical review checklist.
+
+### 4.15 Definition of Done
+Define when a Use-Case Specification is complete and ready for review or submission.
+
+### 4.16 PA3 Compliance
+Explain how this documentation standard supports PA3 requirements.
+
+Do not claim that individual Use-Case Specifications or prototypes have already been completed.
+
+---
+
+## 5. Create the 12 Functional Group Directories
+
+Create exactly the following directories:
+
+```text
+docs/
+└── requirements/
+    ├── use-case-model.md
+    └── use-cases/
+        ├── README.md
+        ├── 010-authentication/
+        ├── 020-home-dashboard/
+        ├── 030-search/
+        ├── 040-music-player/
+        ├── 050-queue-management/
+        ├── 060-playlist-management/
+        ├── 070-listening-history/
+        ├── 080-album-interaction/
+        ├── 090-artist-profile-studio/
+        ├── 100-ai-recommendations/
+        ├── 110-admin-functions/
+        └── 120-ai-conversational-agent/
+````
+
+### Strict Directory Rules
+
+For these 12 group directories:
+
+- Create the directories only.
+- Do not create any files inside them.
+- Do not create per-group `README.md`.
+- Do not create `use-case-inventory.md`.
+- Do not create individual UC specification files.
+- Do not create `prototypes/` subdirectories.
+- Do not create `.gitkeep` or any placeholder files.
+
+The only two Markdown files to create in this task are:
+
+1. `docs/requirements/use-case-model.md`
+2. `docs/requirements/use-cases/README.md`
+
+Preserve existing contents if any of the target directories or files already exist.
+
+---
+
+## 6. PA3 Compliance
+
+Ensure the two shared documents support:
+
+- Use-Case Model deliverable.
+- Use-Case Specification writing standards.
+- Actor identification.
+- Use-case relationships.
+- FR traceability.
+- Prototype and screenshot conventions.
+- Team ownership and review workflow.
+
+Do not claim that all individual Use-Case Specifications, prototypes, or screenshots are complete.
+
+---
+
+## 7. Scope Restrictions
+
+This task is limited to:
+
+- Creating the two shared Markdown documents.
+- Creating the 12 functional group directories.
+
+Do not modify:
+
+- Application source code.
+- Existing Vision Document.
+- Project Plan.
+- Proposal.
+- Team Contract.
+- Existing Spec Kit `spec.md`.
+- Existing Spec Kit `plan.md`.
+- Existing Spec Kit `tasks.md`.
+- Configuration files.
+- Environment files.
+
+Do not delete, rename, or overwrite unrelated files.
+
+Preserve all existing uncommitted changes.
+
+Do not commit or push changes.
+
+---
+
+## 8. Final Verification
+
+After completing the task:
+
+1. Verify that `docs/requirements/use-case-model.md` exists.
+2. Verify that `docs/requirements/use-cases/README.md` exists.
+3. Verify that all 12 functional group directories exist.
+4. Verify that the group directories contain no newly created files.
+5. Verify that no `prototypes/` directories were created.
+6. Verify that the model covers all 12 groups.
+7. Verify that the shared README provides a complete and reusable writing standard.
+8. Verify consistency between the model, group names, actors, and FR references.
+9. Verify internal Markdown links.
+10. Verify that no unrelated files were modified.
+
+Finally, report:
+
+- The two Markdown files created.
+- The 12 directories created.
+- Sources inspected.
+- Any unresolved questions or missing source information.
+- Verification results.
+
+**Completion condition: Two shared documents written successfully and all 12 group directories created, with no files inside the group directories.**
+
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đọc và đối chiếu toàn bộ hệ thống tài liệu nguồn: `docs/proposal/proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `team-contract.md`, `git-workflow.md`, `api-contract.md`, `er-diagram.md`, `specs/` (12 nhóm chức năng), `AuraTune_Use_Case_Documentation_Guide.md` và các template mẫu.
+- Xây dựng hoàn chỉnh tài liệu mô hình Use Case cấp hệ thống `docs/requirements/use-case-model.md` gồm 11 mục chi tiết:
+  - Document Information & System Overview (bối cảnh nhạc phi thương mại mở bản quyền, tuân thủ Nghị định 13/2023/NĐ-CP).
+  - Phân định ranh giới hệ thống bên trong vs các hệ thống bên ngoài (Google OAuth 2.0, Facebook Login, Cloud Media Storage CDN, External AI Service Providers, Spotify Web API offline).
+  - Danh mục 5 tác nhân người dùng (`Guest`, `Listener`, `Playlist Collaborator`, `Artist`, `Administrator`) và sơ đồ kế thừa tác nhân Mermaid (`classDiagram`).
+  - Tổng quan chi tiết 12 nhóm chức năng (010 – 120) gồm mục đích, năng lực đã xác nhận, tác nhân, FR liên quan, dependency và câu hỏi mở.
+  - Sơ đồ Use-Case tổng thể hệ thống dạng Mermaid (`flowchart TB`) phân nhóm theo ranh giới functional groups.
+  - Danh mục 83 Use Cases chuẩn hóa (`UC-[GROUP]-[SEQUENCE]`) bao phủ 100% các FR đã xác nhận từ 12 nhóm.
+  - Phân tích các mối quan hệ `<<include>>`, `<<extend>>`, quan hệ kế thừa tác nhân và phụ thuộc liên nhóm.
+  - Ma trận truy vết yêu cầu chức năng (FR Traceability Matrix) liên kết đầy đủ các mã FR đã kiểm chứng.
+  - Ghi nhận 6 câu hỏi mở kiến trúc (SMTP reset pass, Facebook dev test users, chọn vector DB, HTTP range request CDN, sync playlist cộng tác, voice AI host).
+- Xây dựng tài liệu hướng dẫn chuẩn hóa đặc tả Use Case `docs/requirements/use-cases/README.md` gồm 16 mục chi tiết:
+  - Mục tiêu, phạm vi và phân định bản chất giữa Use-Case Model / Specification với Spec Kit (`spec.md`, `plan.md`, `tasks.md`).
+  - 5 nguyên tắc viết Use Case (hướng mục tiêu người dùng, tương tác Actor – System, không phụ thuộc chi tiết triển khai code/SQL, thuật ngữ chuẩn hóa, không phân mảnh luồng).
+  - Quy ước định danh và đặt tên file: `UC-[GROUP]-[SEQUENCE]-[short-name].md`.
+  - Hướng dẫn tác nhân và template chuẩn 17 mục cho từng file đặc tả Use Case.
+  - Hướng dẫn viết Basic Flow, Alternative Flows (AF), Exception Flows (EF), tiền điều kiện, hậu điều kiện, truy vết FR, Mermaid diagram, prototype/screenshot.
+  - Bảng phân công trách nhiệm 5 thành viên theo đúng `docs/management/team-contract.md`.
+  - Quy trình 10 bước viết và kiểm thử tài liệu Use Case kết hợp Git feature branch / Pull Request review.
+  - Quality Checklist và Definition of Done (DoD) cho việc nghiệm thu tài liệu PA3.
+- Khởi tạo chính xác 12 thư mục chức năng dưới `docs/requirements/use-cases/` (`010-authentication` đến `120-ai-conversational-agent`), tuân thủ nghiêm ngặt quy tắc thư mục rỗng (không tạo bất kỳ file hay folder con nào bên trong).
+- Xử lý hoàn tác và dọn dẹp sạch sẽ các tệp clarification nháp theo yêu cầu của Project Owner trước khi bàn giao.
+```
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                 | Quyết định                          | Lý do                                                                                                                                              |
+| ---------------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục 12 nhóm chức năng và phân công thành viên   | Giữ nguyên theo `team-contract.md`  | Tuân thủ chính xác phân công ban đầu: Nhựt (G10, G12), Khoa (G01, G06, G07), Đăng (G03, G08), Hoàng (G09, G11), Huy (G02, G04, G05).               |
+| Quy ước định danh Use Case `UC-[GROUP]-[SEQUENCE]`   | Chuẩn hóa và áp dụng toàn hệ thống  | Nhất quán với tài liệu hướng dẫn PA3 và cấu trúc nhóm trong `specs/`.                                                                              |
+| Danh mục tác nhân và ranh giới hệ thống              | Khóa chặt theo Proposal và Vision   | Chỉ sử dụng 5 tác nhân người dùng và 4 hệ thống bên ngoài đã kiểm chứng, không tự ý bổ sung các thành phần nội bộ (DB, router) làm actor.          |
+| Ma trận truy vết yêu cầu chức năng (FR Traceability) | Ánh xạ trực tiếp từ 27 spec hiện có | Bảo đảm 100% các FR đã kiểm chứng (từ `011-FR-001` đến `123-FR-005`) đều có ít nhất một Use Case đại diện, sẵn sàng cho khâu viết đặc tả chi tiết. |
+| Tạo file rác / placeholder trong 12 thư mục nhóm     | Bỏ / Nghiêm cấm tuyệt đối           | Tuân thủ chỉ thị nghiêm ngặt: 12 thư mục nhóm phải hoàn toàn rỗng để các feature lead tự khởi tạo tài liệu sau này.                                |
+
+### Cách kiểm chứng
+
+- **Kiểm tra sự tồn tại và định dạng tài liệu:** Xác nhận sự tồn tại của 2 file Markdown duy nhất: `docs/requirements/use-case-model.md` và `docs/requirements/use-cases/README.md`.
+- **Kiểm tra tính toàn vẹn của 12 thư mục:** Chạy `Get-ChildItem -Directory` và `Get-ChildItem -Recurse -File` xác nhận cả 12 thư mục nhóm đều tồn tại và không chứa bất kỳ file hay thư mục con nào.
+- **Kiểm tra độ bao phủ yêu cầu (FR Coverage):** Đối chiếu bảng Traceability Matrix trong `use-case-model.md` với toàn bộ các mã FR trong `specs/` (100% được bao phủ qua 83 Use Cases).
+- **Kiểm tra tính an toàn của repository (`git status`):** Xác nhận không có file mã nguồn, file cấu hình hay tài liệu proposal/management nào bị chỉnh sửa hoặc xóa nhầm.
+
+---
+
+## Mục 16: Xây dựng Use-Case Documentation cho Group 100 – AI Recommendations
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                           |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                 |
+| Nhóm tính năng liên quan | 10 – AI Recommendations (`docs/requirements/use-cases/100-ai-recommendations/`, `specs/100-ai-recommendations/`)                                                                                                                                     |
+| Công cụ AI               | Antigravity (Gemini 3.8 Flash)                                                                                                                                                                                                                       |
+| Mục đích                 | Xây dựng toàn diện bộ tài liệu Use-Case Documentation cho Group 100 gồm README, Use-Case Inventory, 3 file đặc tả Use-Case Specification chi tiết (UC-100-001, UC-100-002, UC-100-003) và thư mục quản lý Prototype theo đúng chuẩn PA3 và Spec Kit. |
+
+### Prompt đã dùng
+
+````text
+# NHIỆM VỤ: XÂY DỰNG USE-CASE DOCUMENTATION CHO GROUP 100 – AI RECOMMENDATIONS
+
+Bạn đang làm việc trực tiếp trong repository AuraTune.
+
+Hãy hoàn thiện bộ tài liệu Use-Case Documentation cho **Group 100 – AI Recommendations** theo hướng dẫn `AuraTune_Use_Case_Documentation_Guide.md` và các yêu cầu Spec Kit hiện có.
+
+Mục tiêu là tạo một bộ tài liệu Use Case đầy đủ, có liên kết với Functional Requirements (FR), Spec Kit và đáp ứng yêu cầu PA3.
+
+**Lưu ý về ngôn ngữ:**
+
+- Prompt và yêu cầu dành cho bạn được viết bằng tiếng Việt.
+- Tất cả file Markdown được tạo trong repository phải viết bằng tiếng Anh.
+- Giữ nguyên thuật ngữ chuyên môn như Use Case, Actor, Basic Flow, Alternative Flow, Preconditions, Postconditions, FR, Spec Kit.
+
+---
+
+# PHẦN 1. PHẠM VI CÔNG VIỆC
+
+Chỉ thực hiện Group 100 – AI Recommendations.
+
+Thông tin group:
+
+- Group ID: 100
+- Group Name: AI Recommendations
+- Group Owner: Lê Công Minh Nhựt
+
+Thư mục làm việc:
+
+`docs/requirements/use-cases/100-ai-recommendations/`
+
+Không triển khai tài liệu cho các group khác.
+
+Không sửa:
+
+- `docs/requirements/use-case-model.md`
+- `docs/requirements/use-cases/README.md`
+- Tài liệu Use Case của các group khác.
+
+---
+
+# PHẦN 2. ĐỌC VÀ PHÂN TÍCH TÀI LIỆU NGUỒN
+
+Trước khi tạo tài liệu, hãy đọc các nguồn sau.
+
+## 2.1. Tài liệu dự án
+
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- `docs/management/team-contract.md`
+- `docs/management/git-workflow.md`
+- `docs/management/speckit-workflow-guide.md`
+- docs/PA/
+
+## 2.2. Spec Kit của Group 100
+
+Đọc toàn bộ nội dung bên trong:
+
+`specs/100-ai-recommendations/`
+
+Nếu có nhiều feature hoặc sub-feature bên trong Group 100, phải đọc tất cả những phần liên quan.
+
+Có thể đọc Spec Kit của group khác nếu cần xác định dependency hoặc ranh giới trách nhiệm.
+
+## 2.3. Phân tích trước khi viết
+
+Trước khi tạo tài liệu, hãy xác định:
+
+1. Group 100 thực sự chịu trách nhiệm về những chức năng nào?
+2. Những Functional Requirements nào thuộc Group 100?
+3. Ai là actor tương tác với các chức năng đó?
+4. Người dùng thực hiện những mục tiêu nào liên quan đến AI Recommendations?
+5. Hệ thống phản hồi như thế nào?
+6. Những Alternative Flow nào được yêu cầu?
+7. Những chức năng nào phụ thuộc vào group khác?
+8. Những yêu cầu nào còn thiếu hoặc chưa rõ?
+
+Không bắt đầu viết Use Case khi chưa phân tích nguồn.
+
+---
+
+# PHẦN 3. QUY TẮC KHÔNG ĐƯỢC VI PHẠM
+
+Tất cả tài liệu phải dựa trên thông tin thực tế của AuraTune.
+
+Không được:
+
+- Tự nghĩ thêm chức năng AI.
+- Tự tạo Actor không có căn cứ.
+- Tự tạo FR ID.
+- Tự nghĩ ra thuật toán recommendation.
+- Tự đặt công thức ranking hoặc scoring.
+- Tự thêm cơ chế personalization nếu chưa được yêu cầu xác nhận.
+- Tự thêm AI chatbot vào Group 100 nếu chức năng đó thuộc Group 120.
+- Tự tạo external AI service hoặc API.
+- Nhầm implementation task với user-facing use case.
+- Khẳng định một chức năng đã implement chỉ vì nó có trong spec.
+
+Phải phân biệt rõ:
+
+| Trạng thái             | Ý nghĩa                            |
+| ---------------------- | ---------------------------------- |
+| Confirmed              | Được xác nhận trong tài liệu nguồn |
+| Proposed               | Đề xuất, cần xác nhận              |
+| Unconfirmed            | Chưa đủ thông tin chứng minh       |
+| Requires clarification | Có thông tin thiếu hoặc mâu thuẫn  |
+
+Nếu thông tin chưa rõ, ghi `TBD`, `Unconfirmed` hoặc `Requires clarification`.
+
+Không tự suy diễn để làm tài liệu có vẻ đầy đủ.
+
+---
+
+# PHẦN 4. CẤU TRÚC THƯ MỤC CẦN TẠO
+
+Tạo cấu trúc sau:
+
+```text
+docs/
+└── requirements/
+    └── use-cases/
+        └── 100-ai-recommendations/
+            ├── README.md
+            ├── use-case-inventory.md
+            ├── UC-100-001-[short-name].md
+            ├── UC-100-002-[short-name].md
+            ├── ...
+            └── prototypes/
+                └── README.md
+```
+
+Quy tắc:
+
+- Chỉ tạo UC Specification cho những Use Case được xác nhận từ tài liệu nguồn.
+- Không tạo file UC rỗng.
+- Không tạo UC chỉ để lấp số thứ tự.
+- Không tạo Use Case trùng lặp.
+- Không tạo file cho chức năng chưa có căn cứ.
+- Không tạo prototype giả.
+- Không tạo ảnh giả để minh họa như thể đã implement.
+
+Tên UC phải theo quy tắc:
+
+`UC-100-[SEQUENCE]-[short-name].md`
+
+Ví dụ tên file:
+
+`UC-100-001-view-personalized-recommendations.md`
+
+Đây chỉ là ví dụ. Hãy xác định tên và ID thực tế sau khi phân tích requirements.
+
+---
+
+# PHẦN 5. TẠO README CHO GROUP 100
+
+Tạo file:
+
+`docs/requirements/use-cases/100-ai-recommendations/README.md`
+
+Đây là tài liệu giới thiệu và mô hình Use Case của riêng Group 100.
+
+Nội dung phải viết bằng tiếng Anh.
+
+README phải có các phần sau:
+
+## 5.1. Group Information
+
+Bao gồm:
+
+- Group ID: 100
+- Group Name: AI Recommendations
+- Group Owner: Lê Công Minh Nhựt
+- Purpose
+- Documentation Status
+
+## 5.2. Scope
+
+Mô tả:
+
+- Mục tiêu của Group 100.
+- Những chức năng thuộc phạm vi group.
+- Những chức năng không thuộc phạm vi group.
+- Các dependency với group khác.
+- Các chức năng đã xác nhận.
+- Các vấn đề chưa rõ.
+
+## 5.3. Related Requirements and Features
+
+Tạo bảng:
+
+| Feature ID | Feature Name | Related FR IDs | Spec Path |
+| ---------- | ------------ | -------------- | --------- |
+
+Chỉ sử dụng Feature ID và FR ID thực tế.
+
+## 5.4. Actors
+
+Tạo bảng:
+
+| Actor | Type | Description | Related Use Cases |
+| ----- | ---- | ----------- | ----------------- |
+
+Chỉ đưa vào những Actor có căn cứ trong yêu cầu.
+
+## 5.5. Use-Case Diagram
+
+Đây là phần quan trọng.
+
+Tạo một sơ đồ Use Case riêng cho Group 100 bằng Mermaid.
+
+Sơ đồ phải thể hiện:
+
+- System Boundary của AI Recommendations.
+- Các Actor tương tác với group.
+- Các Use Case đã được xác nhận.
+- Quan hệ giữa Actor và Use Case.
+- Quan hệ `<<include>>` nếu có.
+- Quan hệ `<<extend>>` nếu có.
+- Generalization nếu thực sự tồn tại.
+
+Không được tự thêm quan hệ chỉ để sơ đồ trông phức tạp.
+
+### Vị trí đặt Mermaid
+
+Mermaid phải được viết trực tiếp bên trong:
+
+`docs/requirements/use-cases/100-ai-recommendations/README.md`
+
+Đặt trong section:
+
+`## 5.5. Use-Case Diagram`
+
+Không tạo file Mermaid riêng.
+
+Không tạo ảnh PNG cho sơ đồ Mermaid.
+
+Không chỉnh sửa sơ đồ tổng thể trong `docs/requirements/use-case-model.md`, vì đó là tài liệu dùng chung của toàn bộ dự án.
+
+### Quy tắc biểu diễn
+
+Ưu tiên sử dụng Mermaid phù hợp với môi trường Markdown của repository.
+
+Nếu renderer không hỗ trợ UML Use Case Diagram trực tiếp, có thể sử dụng Mermaid `flowchart` để biểu diễn.
+
+Nếu sử dụng flowchart:
+
+- Phải thể hiện rõ System Boundary.
+- Phải phân biệt Actor và Use Case.
+- Phải có legend giải thích ký hiệu.
+- Phải ghi chú đây là conceptual Use-Case Diagram, không phải cú pháp UML Use Case chuẩn.
+- Không biểu diễn `include` hoặc `extend` nếu không có căn cứ.
+
+Ví dụ minh họa:
+
+```mermaid
+flowchart LR
+    User[User]
+
+    subgraph AI["AuraTune - AI Recommendations"]
+        UC1(["Use Case 1"])
+        UC2(["Use Case 2"])
+    end
+
+    User --> UC1
+    User --> UC2
+```
+
+Đây chỉ là ví dụ về cách đặt sơ đồ, không phải Use Case chính thức.
+
+Hãy thay thế bằng Actor và Use Case thực tế sau khi phân tích Spec Kit.
+
+## 5.6. Use-Case List
+
+Tạo bảng:
+
+| UC ID | Use-Case Name | Primary Actor | Related FRs | Specification |
+| ----- | ------------- | ------------- | ----------- | ------------- |
+
+Mỗi Use Case trong bảng phải có file specification tương ứng.
+
+## 5.7. Dependencies and Integration
+
+Mô tả các group mà AI Recommendations cần tương tác.
+
+Chỉ ghi nhận dependency được xác nhận từ tài liệu nguồn.
+
+## 5.8. Open Issues
+
+Liệt kê các yêu cầu chưa rõ, thiếu hoặc mâu thuẫn.
+
+## 5.9. References
+
+Liệt kê các tài liệu đã sử dụng.
+
+---
+
+# PHẦN 6. TẠO USE-CASE INVENTORY
+
+Tạo file:
+
+`docs/requirements/use-cases/100-ai-recommendations/use-case-inventory.md`
+
+Đây là danh sách quản lý tất cả Use Case thuộc Group 100.
+
+Sử dụng bảng:
+
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| ----- | ------------- | ------------- | ----------------- | -------------- | --------------- | --------------- | ------ | ------------- |
+
+Quy định:
+
+- Liệt kê tất cả Use Case đã được xác nhận.
+- Không đưa Use Case chưa được xác nhận vào danh sách chính thức.
+- Nếu có đề xuất chưa rõ, tạo mục riêng `Unconfirmed Candidates`.
+- Mỗi UC phải có ID duy nhất.
+- Mỗi UC phải liên kết với FR tương ứng.
+- Mỗi UC phải liên kết với Spec Kit Feature tương ứng.
+- Assigned Writer ghi `TBD` nếu chưa có phân công.
+- Group Owner là Lê Công Minh Nhựt.
+- Không tự gán reviewer hoặc writer cho thành viên khác.
+
+## Status
+
+Sử dụng các trạng thái:
+
+- Not Started
+- Draft
+- In Review
+- Changes Requested
+- Approved
+- Requires Clarification
+
+Chỉ đánh dấu `Approved` khi đã được review thực tế.
+
+---
+
+# PHẦN 7. VIẾT USE-CASE SPECIFICATION CHO TỪNG UC
+
+Với mỗi Use Case đã xác nhận, tạo một file Markdown riêng.
+
+Ví dụ:
+
+`UC-100-001-view-personalized-recommendations.md`
+
+Tất cả file phải tuân thủ template sau:
+
+```markdown
+# UC-100-[NUMBER] – [Use-Case Name]
+
+## 1. Metadata
+
+| Field | Value |
+|---|---|
+| Use Case ID | UC-100-[NUMBER] |
+| Use Case Name | [Name] |
+| Functional Group | 100 – AI Recommendations |
+| Primary Actor | [Actor] |
+| Supporting Actors | [Actors or None] |
+| Related FR IDs | [Verified FR IDs] |
+| Related Feature/Spec | [Feature ID and path] |
+| Status | Draft |
+| Writer | TBD |
+| Reviewer | TBD |
+
+## 2. Description
+
+[Describe the user's goal and system capability.]
+
+## 3. Preconditions
+
+- [Conditions that must be true before the use case starts.]
+
+## 4. Trigger
+
+[Event that starts the use case.]
+
+## 5. Basic Flow
+
+1. **Actor:** [Actor action.]
+2. **System:** [System response.]
+3. **Actor:** [Actor action.]
+4. **System:** [System response.]
+5. [Continue until the goal is completed.]
+
+## 6. Alternative Flows
+
+### AF-01 – [Alternative Flow Name]
+
+- **Starting step:** Step [X] of the Basic Flow.
+- **Condition:** [Condition.]
+
+1. **Actor/System:** [Action.]
+2. **System:** [Response.]
+
+- **Continuation:** [Resume at Step X / Use Case ends.]
+
+## 7. Exception Flows
+
+[Describe relevant system errors and exceptional situations.]
+
+If none are identified, write "None identified".
+
+## 8. Postconditions
+
+### Success
+- [State after successful completion.]
+
+### Failure
+- [State after unsuccessful completion.]
+
+## 9. Special Requirements
+
+- [Relevant security, performance, privacy, usability or other constraints.]
+
+If none are identified, write "None identified".
+
+## 10. Prototype and Screenshots
+
+### Basic Flow
+
+![Basic Flow](prototypes/[actual-image-file])
+
+### Alternative Flow – AF-01
+
+![Alternative Flow](prototypes/[actual-image-file])
+
+## 11. Related Use Cases
+
+- [Related UC IDs, if applicable.]
+
+## 12. Source References
+
+- [Source file and relevant section.]
+
+## 13. Notes and Open Questions
+
+- [Unresolved issues.]
+```
+
+## Quy tắc viết Basic Flow
+
+- Đánh số tuần tự.
+- Phân biệt rõ hành động Actor và phản hồi System.
+- Mỗi bước mô tả một hành động hoặc phản hồi chính.
+- Flow phải thể hiện từ lúc bắt đầu đến khi hoàn thành mục tiêu.
+- Không mô tả code hoặc database query như hành động của Actor.
+- Không bỏ qua phản hồi quan trọng của hệ thống.
+
+## Quy tắc viết Alternative Flow
+
+Mỗi Alternative Flow phải có:
+
+- ID riêng: AF-01, AF-02...
+- Tên flow.
+- Starting step.
+- Condition.
+- Các bước xử lý.
+- Kết quả hoặc điểm quay lại Basic Flow.
+
+Không tự tạo Alternative Flow khi không có căn cứ nghiệp vụ.
+
+## Preconditions và Postconditions
+
+Phải viết dưới dạng điều kiện có thể kiểm tra được.
+
+Không viết những câu quá chung chung như:
+
+- System works properly.
+- User uses the system normally.
+- AI functions correctly.
+
+---
+
+# PHẦN 8. TẠO PROTOTYPE DIRECTORY
+
+Tạo:
+
+`docs/requirements/use-cases/100-ai-recommendations/prototypes/README.md`
+
+Nội dung cần có:
+
+1. Purpose.
+2. Directory organization.
+3. Screenshot naming convention.
+4. Cách liên kết prototype với UC Specification.
+5. Phân biệt prototype/wireframe với actual implementation screenshot.
+6. Cách tổ chức ảnh theo Basic Flow và Alternative Flow.
+
+Ví dụ quy tắc đặt tên:
+
+```text
+UC-100-001-basic-flow.png
+UC-100-001-AF-01-no-recommendations.png
+UC-100-001-AF-02-loading-error.png
+UC-100-002-basic-flow.png
+```
+
+Đây chỉ là ví dụ.
+
+Không tạo ảnh giả.
+
+Nếu trong Spec Kit đã có UI assets phù hợp:
+
+- Kiểm tra nội dung ảnh.
+- Xác định ảnh thuộc UC và flow nào.
+- Tái sử dụng nếu thực sự phù hợp.
+- Ghi rõ nguồn ảnh.
+- Dùng đường dẫn tương đối chính xác.
+
+Nếu chưa có prototype, ghi rõ `Not Available` hoặc `Pending`.
+
+---
+
+# PHẦN 9. KIỂM TRA TRACEABILITY
+
+Sau khi viết xong, kiểm tra mối liên hệ giữa:
+
+`Functional Requirements → Use Cases → Use-Case Specifications → Prototypes`
+
+Yêu cầu:
+
+1. Mọi FR thuộc Group 100 phải được mapping với UC phù hợp hoặc có giải thích.
+2. Mỗi UC phải tham chiếu FR thực tế.
+3. Mỗi UC phải tham chiếu Spec Kit Feature phù hợp.
+4. Mỗi UC trên Mermaid Diagram phải có trong Inventory.
+5. Mỗi UC trong Inventory phải có Specification.
+6. Mỗi Specification phải xuất hiện trong Inventory.
+7. Không có UC trùng lặp không cần thiết.
+8. Không đưa chức năng thuộc group khác vào Group 100.
+9. Đường dẫn Markdown phải hợp lệ.
+
+Tạo bảng traceability nếu cần để reviewer dễ kiểm tra.
+
+---
+
+# PHẦN 10. ĐÁP ỨNG YÊU CẦU PA3
+
+Tài liệu Group 100 phải hỗ trợ các yêu cầu PA3:
+
+- Xác định Actor.
+- Xác định Use Case.
+- Xây dựng Use-Case Model.
+- Thể hiện các quan hệ phù hợp.
+- Bao phủ Functional Requirements.
+- Có một Use-Case Specification cho mỗi UC.
+- Có Basic Flow.
+- Có Alternative Flows.
+- Có prototype/screenshot minh họa các flow tương ứng.
+- Có thể truy vết từ FR đến UC và prototype.
+
+Không được tuyên bố hoàn thành prototype nếu chưa có ảnh thực tế.
+
+Không được đánh dấu Approved khi chưa review.
+
+---
+
+# PHẦN 11. PHẠM VI FILE ĐƯỢC PHÉP THAY ĐỔI
+
+Chỉ được tạo hoặc chỉnh sửa file bên trong:
+
+`docs/requirements/use-cases/100-ai-recommendations/`
+
+Không sửa:
+
+- `docs/requirements/use-case-model.md`
+- `docs/requirements/use-cases/README.md`
+- Tài liệu của group khác.
+- Spec Kit `spec.md`.
+- Spec Kit `plan.md`.
+- Spec Kit `tasks.md`.
+- Vision Document.
+- Project Plan.
+- Proposal.
+- Team Contract.
+- Source code.
+- Configuration files.
+- Environment files.
+
+Nếu file đích đã tồn tại:
+
+- Đọc nội dung trước.
+- Giữ lại nội dung có giá trị.
+- Chỉ chỉnh sửa phần cần thiết.
+- Không ghi đè thay đổi chưa commit của thành viên khác.
+
+Không commit hoặc push.
+
+---
+
+# PHẦN 12. KIỂM TRA CUỐI CÙNG
+
+Sau khi hoàn thành, hãy kiểm tra:
+
+1. README có đầy đủ nội dung.
+2. Mermaid Diagram được đặt đúng trong README của Group 100.
+3. Mermaid thể hiện đúng Actor và Use Case trong Inventory.
+4. Inventory chứa đầy đủ Use Case đã xác nhận.
+5. Mỗi UC có file Specification riêng.
+6. ID và tên file thống nhất.
+7. FR ID tồn tại trong tài liệu nguồn.
+8. Feature mapping chính xác.
+9. Basic Flow đầy đủ.
+10. Alternative Flow có Starting step và Continuation.
+11. Prototype được tham chiếu chính xác hoặc đánh dấu Pending.
+12. Tất cả relative links hoạt động.
+13. Không có yêu cầu tự suy diễn được ghi thành Confirmed.
+14. Không có file ngoài Group 100 bị thay đổi.
+
+## Báo cáo sau khi hoàn thành
+
+Hãy trả về:
+
+- Các nguồn đã kiểm tra.
+- Các FR thuộc Group 100 đã xác định.
+- Danh sách Actor.
+- Tổng số Use Case đã xác nhận.
+- Danh sách UC Specification đã tạo.
+- Danh sách Use Case chưa xác nhận và lý do.
+- Mermaid Diagram được đặt tại đâu.
+- Prototype hiện có và prototype còn thiếu.
+- Kết quả FR Traceability.
+- Cây thư mục cuối cùng.
+- Kết quả kiểm tra.
+
+**ĐIỀU KIỆN HOÀN THÀNH: Group 100 có bộ Use-Case Documentation đầy đủ, đúng yêu cầu nguồn, có Mermaid Diagram trong README, có Inventory, có Specification cho từng Use Case đã xác nhận và có tổ chức prototype rõ ràng.**
+````
+
+### Tóm tắt phản hồi của AI
+
+- Đọc và phân tích toàn diện tài liệu nguồn: `docs/proposal/proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `team-contract.md`, `git-workflow.md`, `AuraTune_Use_Case_Documentation_Guide.md`, `docs/PA/PA3-2026.pdf` và trích xuất đầy đủ 44 mã FR (`101-FR-001..014`, `102-FR-001..015`, `103-FR-001..015`) từ 3 subfeatures trong `specs/100-ai-recommendations/`.
+- Xây dựng hoàn chỉnh tài liệu giới thiệu và mô hình nhóm `docs/requirements/use-cases/100-ai-recommendations/README.md` gồm 9 mục chuẩn: Group Information (Owner: Lê Công Minh Nhựt), Scope chi tiết (In-Scope, Out-of-Scope, Dependencies), bảng Feature & FR mapping, bảng Actor (`Listener`, `External AI Service Provider`, `Guest`), sơ đồ Use-Case Mermaid (`flowchart LR`) đặt đúng tại Section 5.5 kèm ranh giới hệ thống và quan hệ `<<include>>`/`<<extend>>`, danh sách 3 Use Cases, sơ đồ tích hợp luồng dữ liệu ASCII, câu hỏi mở và tài liệu tham khảo.
+- Xây dựng danh mục theo dõi `docs/requirements/use-cases/100-ai-recommendations/use-case-inventory.md` gồm 3 Use Cases chính thức đã xác nhận, trạng thái Draft, mục riêng biệt ghi nhận 2 Unconfirmed/Out-of-Scope Candidates (`CAND-100-A` Free-form mood prompts, `CAND-100-B` Nút Dislike) kèm căn cứ loại trừ, và bảng ma trận truy vết (Traceability Matrix) đạt độ bao phủ 100% FR.
+- Viết chi tiết 3 file đặc tả Use-Case Specification tuân thủ chính xác template 13 mục chuẩn:
+  1. `UC-100-001-view-listening-history-analysis.md`: Xem phân tích lịch sử nghe (tổng thời lượng, top thể loại xếp hạng theo thời lượng nghe tích lũy), AF-01 lịch sử rỗng (< 1 lượt nghe), AF-02 đổi bộ lọc thời gian, AF-03 làm mới dữ liệu động, EF-01 chặn khách vãng lai, EF-02 lỗi truy vấn DB.
+  2. `UC-100-002-receive-personalized-recommendations.md`: Nhận đề xuất âm nhạc cá nhân hóa đa thực thể (Songs, Albums, Artists, Playlists), AF-01 cold-start bài hát thịnh hành cho user mới, AF-02 làm mới danh sách gợi ý, AF-03 chuyển sang cold-start khi xóa lịch sử nghe, EF-01 xử lý AI service timeout/outage với graceful degradation và thông báo tinh tế, EF-02 phân quyền truy cập.
+  3. `UC-100-003-discover-music-by-mood-and-context.md`: Khám phá nhạc theo 4 chip tâm trạng (Chill, Energetic, Melancholy, Focus) và 4 chip ngữ cảnh (Study/Work, Workout, Late Night, Travel/Commute), trả về Songs và Mood Playlists, AF-01 đổi chip lựa chọn, AF-02 xử lý khi không có kết quả phù hợp kèm chip gợi ý thay thế, EF-01 xử lý AI backend timeout.
+- Thiết lập thư mục quản lý Prototype `docs/requirements/use-cases/100-ai-recommendations/prototypes/`:
+  - Tạo `prototypes/README.md` quy định mục đích, tổ chức thư mục, quy ước đặt tên file, hướng dẫn liên kết ảnh trong đặc tả, phân biệt prototype/wireframe với implemented UI, và bảng tổng mục lục mapping.
+  - Sao chép và chuẩn hóa tên 11 ảnh wireframe/mockup thực tế từ Spec Kit UI (`UC-100-001-basic-flow.png`, `UC-100-002-basic-flow-entry.png`, `UC-100-003-mood-selection.png`, v.v.).
+  - Ghi nhận trạng thái `Pending` cho các màn hình đặc thù chưa có thiết kế đồ họa thay vì tạo ảnh giả mạo.
+- Thực hiện tự đánh giá mức độ tuân thủ PA3 (CS300) và 12 tiêu chí checklist nội bộ, xác nhận đạt 100% các tiêu chí về ngôn ngữ (tiếng Anh), cấu trúc, truy vết và độ tin cậy của tài liệu.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                      | Quyết định                          | Lý do                                                                                                                         |
+| ----------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục 3 Use Cases chính thức           | Dùng                                | Phù hợp tuyệt đối với 3 subfeatures trong Spec Kit và Use-Case Model hệ thống, bao phủ trọn vẹn 44 FRs.                       |
+| Ngôn ngữ tài liệu trong Group 100         | Dùng 100% tiếng Anh                 | Tuân thủ nghiêm ngặt chỉ thị của đề bài và quy định nộp bài của môn học (PA3 submission guidelines).                          |
+| Sơ đồ Mermaid tại Mục 5.5 của README      | Dùng                                | Sử dụng cú pháp `flowchart LR` có system boundary, phân định actor/usecase/external system, có legend đầy đủ theo yêu cầu.    |
+| Tái sử dụng UI assets từ Spec Kit         | Dùng (11 ảnh)                       | Tận dụng wireframe sẵn có từ `specs/100-ai-recommendations/*/ui/`, đổi tên theo chuẩn `UC-100-[SEQ]-[flow].png`.              |
+| Prompt nhập tâm trạng tự do & Nút Dislike | Bỏ / Ghi vào Unconfirmed Candidates | Đã bị loại trừ trong quá trình clarify của Spec Kit; AuraTune chỉ hỗ trợ curated chips cố định và tín hiệu hành vi ngầm định. |
+| Tạo ảnh prototype giả cho các flow thiếu  | Bỏ tuyệt đối                        | Tuân thủ nguyên tắc liêm chính học thuật; ghi chú rõ `Pending` cho các flow chưa có thiết kế đồ họa.                          |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Chạy `Get-ChildItem -Recurse "docs/requirements/use-cases/100-ai-recommendations"` xác nhận sự tồn tại của 6 file markdown (`README.md`, `use-case-inventory.md`, 3 file `UC-*.md`, `prototypes/README.md`) và 11 ảnh PNG.
+- **Kiểm tra độ bao phủ yêu cầu (FR Coverage):** Đối chiếu chéo 44 mã FR (`101-FR-001..014`, `102-FR-001..015`, `103-FR-001..015`) trong bảng Traceability Matrix tại `use-case-inventory.md` và từng file đặc tả (đạt độ bao phủ 100%).
+- **Kiểm tra cấu trúc đặc tả:** Xác nhận cả 3 file đặc tả đều tuân thủ đầy đủ 13 mục chuẩn (Metadata, Description, Preconditions, Trigger, Basic Flow, Alternative Flows, Exception Flows, Postconditions, Special Requirements, Prototypes, Related Use Cases, Source References, Notes/Open Questions).
+- **Kiểm tra liên kết tương đối (Relative Links):** Kiểm tra toàn bộ đường dẫn ảnh và liên kết chéo giữa README, Inventory, UC specs và Prototypes đều mở chính xác.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận chỉ có các file bên trong `docs/requirements/use-cases/100-ai-recommendations/` và `docs/ai-log/AI_log_1.md` được tạo/sửa đổi. Không có file mã nguồn hay tài liệu ngoài phạm vi bị tác động.
+
+**Kết quả kiểm chứng:** Hoàn thành xuất sắc 100% các tiêu chí PA3 cho Group 100 – AI Recommendations. Bộ tài liệu sẵn sàng cho khâu Peer Review trong nhóm.
+
+**Ghi chú:** Toàn bộ tài liệu Group 100 lưu tại `docs/requirements/use-cases/100-ai-recommendations/`.
+
+---
+
+## Mục 17: Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                 |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                       |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent (`docs/requirements/use-cases/120-ai-conversational-agent/`, `specs/120-ai-conversational-agent/`)                                                                                                                                                                            |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro)                                                                                                                                                                                                                                                                           |
+| Mục đích                 | Xây dựng toàn diện bộ tài liệu Use-Case Documentation cho Group 120 gồm README.md (kèm sơ đồ Mermaid), use-case-inventory.md, 4 file đặc tả Use-Case Specification chi tiết (UC-120-001, UC-120-002, UC-120-003, UC-120-004) và thư mục quản lý Prototype theo đúng chuẩn PA3 và UI CLI frontend mới nhất. |
+
+### Prompt đã dùng
+
+```text
+TASK: Create Use-Case Documentation for Group 120 – AI Conversational Agent
+
+Bạn cần phân tích và xây dựng đầy đủ Use-Case Documentation cho Group 120 – AI Conversational Agent trong dự án AuraTune.
+
+Đây là công việc tạo tài liệu Use Case ở cấp requirements/documentation. Không phải công việc triển khai tính năng mới hoặc chỉnh sửa source code.
+
+1. Mục tiêu
+
+Tạo bộ tài liệu Use Case hoàn chỉnh cho Group 120, phản ánh chính xác:
+
+Functional Requirements hiện có của AI Conversational Agent.
+
+Các chức năng và hành vi mà hệ thống thực sự hỗ trợ.
+
+UI mới nhất của Group 120 đang được triển khai trong frontend.
+
+Các tương tác giữa người dùng và hệ thống.
+
+Basic Flow, Alternative Flow và Exception Flow của từng Use Case.
+
+Mối liên hệ giữa Use Case, Functional Requirements và Spec Kit Group 120.
+
+Lưu ý quan trọng: UI Group 120 đã có thay đổi so với tài liệu/spec cũ. Vì vậy, phải kiểm tra UI hiện tại trong source code trước khi viết Use Case. Không được sử dụng UI cũ làm căn cứ nếu nó không còn phản ánh implementation hiện tại.
+
+2. Phân tích tài liệu và source code trước khi viết
+
+Trước khi tạo hoặc chỉnh sửa bất kỳ file nào, hãy đọc và đối chiếu các nguồn sau:
+
+2.1. Project-level documents
+
+docs/proposal/Auratune_Vision_Document.md
+
+docs/proposal/project_plan.md
+
+docs/proposal/proposal.md
+
+docs/management/team-contract.md
+
+docs/management/git-workflow.md
+
+Các tài liệu liên quan trong docs/requirements/
+
+Các tài liệu PA trong docs/PA/ nếu có liên quan đến Group 120.
+
+2.2. Spec Kit Group 120
+
+Đọc toàn bộ nội dung hiện có trong:
+
+specs/120-ai-conversational-agent/
+
+Bao gồm các file nếu tồn tại:
+
+spec.md
+
+plan.md
+
+tasks.md
+
+research.md
+
+data-model.md
+
+contracts/
+
+checklists/
+
+Các UI assets, screenshots hoặc prototype liên quan.
+
+Dùng các tài liệu này để hiểu phạm vi chức năng, yêu cầu và thiết kế đã được xác định.
+
+2.3. Frontend implementation
+
+Kiểm tra frontend hiện tại để xác định chính xác UI mới nhất của Group 120.
+
+Tìm và đọc:
+
+Các route/page liên quan đến AI Conversational Agent.
+
+Components được sử dụng trong trang.
+
+Các component con và component dùng chung có ảnh hưởng đến UI.
+
+CSS, styling, layout và responsive behavior.
+
+Các event handlers và user interactions.
+
+Các trạng thái loading, empty, error và success nếu có.
+
+Các API calls hoặc service calls được frontend sử dụng.
+
+Các assets liên quan đến giao diện.
+
+Không được chỉ đọc tên file rồi suy đoán chức năng. Hãy đọc implementation thực tế.
+
+2.4. Thứ tự ưu tiên nguồn thông tin
+
+Khi các tài liệu không thống nhất, áp dụng nguyên tắc:
+
+Functional Requirements và project requirements đã được xác nhận.
+
+Frontend implementation hiện tại để xác định UI và hành vi tương tác thực tế.
+
+Spec Kit Group 120 hiện tại.
+
+Các tài liệu hoặc prototype cũ.
+
+Không tự ý biến một UI change thành Functional Requirement mới nếu chưa có căn cứ.
+
+Nếu phát hiện sự khác biệt giữa requirement và implementation, ghi nhận rõ trong báo cáo thay vì tự ý hợp thức hóa sự khác biệt đó.
+
+3. Xác định Use Case
+
+Sau khi phân tích nguồn, hãy lập Use-Case Inventory cho Group 120.
+
+Với mỗi Use Case, phải xác định:
+
+Use Case ID.
+
+Use Case Name.
+
+Primary Actor.
+
+Secondary Actors nếu có căn cứ.
+
+Mục tiêu của Actor.
+
+Functional Requirements liên quan.
+
+UI screen hoặc UI component liên quan.
+
+Mức độ hỗ trợ của implementation hiện tại.
+
+Quy tắc xác định Use Case
+
+Chỉ tạo Use Case dựa trên chức năng có căn cứ trong requirements hoặc implementation.
+
+Không tạo Use Case chỉ vì có một button, icon hoặc UI component.
+
+Những thao tác nhỏ thuộc cùng một mục tiêu người dùng nên được mô tả trong cùng Use Case nếu hợp lý.
+
+Tách Use Case khi có mục tiêu người dùng độc lập hoặc luồng tương tác thực sự khác biệt.
+
+Không tự tạo Actor, API, AI capability, business rule hoặc external service khi không có bằng chứng.
+
+Không giả định hệ thống có conversation history, context memory, streaming response, regenerate response, feedback, voice input hoặc các tính năng AI khác nếu chưa xác minh.
+
+Nếu một chức năng xuất hiện trên UI nhưng chưa có implementation hoặc requirement xác nhận, phải ghi rõ trạng thái chưa xác nhận.
+
+Use Case ID theo format:
+
+UC-120-[SEQUENCE]-[short-name].md
+
+Sequence sử dụng số thứ tự tăng dần, không trùng lặp.
+
+4. Cấu trúc thư mục và file cần tạo
+
+Tạo tài liệu trong:
+
+docs/requirements/use-cases/120-ai-conversational-agent/
+
+Cấu trúc mong muốn:
+
+120-ai-conversational-agent/
+├── README.md
+├── use-case-inventory.md
+├── UC-120-001-[short-name].md
+├── UC-120-002-[short-name].md
+├── ...
+└── prototypes/
+    └── README.md
+
+Số lượng Use Case phụ thuộc vào kết quả phân tích thực tế. Không cố định số lượng và không tạo Use Case giả để lấp đầy danh sách.
+
+Nếu repository đã có cấu trúc hoặc file phù hợp, hãy ưu tiên cập nhật và tái sử dụng thay vì tạo bản sao.
+
+Không tạo thêm các file ngoài phạm vi Group 120.
+
+5. Nội dung README.md
+
+File:
+
+docs/requirements/use-cases/120-ai-conversational-agent/README.md
+
+Phải có các nội dung:
+
+5.1. Group Overview
+
+Group ID: 120.
+
+Group Name: AI Conversational Agent.
+
+Purpose.
+
+Scope.
+
+Primary Actor và các Actor khác nếu có.
+
+Group Owner: Lê Công Minh Nhựt.
+
+Related Spec Kit: specs/120-ai-conversational-agent/.
+
+5.2. Functional Scope
+
+Tóm tắt các chức năng được xác nhận thuộc Group 120.
+
+Phân biệt rõ:
+
+Functionality được yêu cầu.
+
+Functionality đã được implementation.
+
+Functionality chưa được xác nhận hoặc chưa được triển khai.
+
+5.3. Use-Case Inventory Summary
+
+Tạo bảng tổng hợp:
+
+Use Case ID
+
+Use Case Name
+
+Primary Actor
+
+Related FRs
+
+Implementation Status
+
+Các ID và nội dung phải khớp với file Use Case thực tế.
+
+5.4. Use-Case Relationships
+
+Mô tả các quan hệ giữa Use Case nếu thực sự có:
+
+include
+
+extend
+
+Generalization
+
+Không tạo quan hệ chỉ để làm sơ đồ phức tạp hơn.
+
+5.5. Use-Case Diagram
+
+Tạo Mermaid diagram thể hiện các Use Case của Group 120.
+
+Yêu cầu:
+
+Thể hiện Actor và Use Case.
+
+Thể hiện quan hệ giữa Actor và Use Case.
+
+Thể hiện include hoặc extend nếu có căn cứ.
+
+Tên và ID phải khớp với Use-Case Inventory.
+
+Không đưa chức năng chưa xác nhận vào diagram như một chức năng chính thức.
+
+Sơ đồ phải dễ đọc và không quá rối.
+
+Nếu dùng Mermaid flowchart để biểu diễn Use Case, phải ghi rõ đây là conceptual Use-Case Diagram, không phải UML Use Case Diagram native.
+
+5.6. UI Overview
+
+Mô tả UI mới nhất của Group 120 dựa trên frontend implementation.
+
+Bao gồm nếu có:
+
+Page layout.
+
+Main sections.
+
+Sidebar hoặc navigation.
+
+Conversation area.
+
+Message display.
+
+Input area.
+
+Buttons và actions.
+
+Loading và error states.
+
+Responsive behavior.
+
+Chỉ mô tả các thành phần thực sự tồn tại.
+
+Có thể sử dụng screenshot/prototype đã có trong repository. Không tự tạo screenshot giả hoặc mô tả một UI chưa được triển khai như thể nó đã tồn tại.
+
+5.7. Traceability
+
+Mô tả cách liên kết:
+
+Functional Requirements → Use Cases → UI → Spec Kit
+
+6. Nội dung use-case-inventory.md
+
+Tạo danh sách đầy đủ các Use Case đã xác định.
+
+Mỗi Use Case cần có:
+
+ID.
+
+Name.
+
+Brief Description.
+
+Primary Actor.
+
+Related Functional Requirements.
+
+Related UI.
+
+Related Spec Kit section hoặc task nếu xác định được.
+
+Implementation Status.
+
+Có thể chia Use Case theo nhóm chức năng để dễ đọc.
+
+Không sao chép nguyên văn toàn bộ Use Case Specification vào Inventory.
+
+7. Nội dung từng Use Case Specification
+
+Mỗi Use Case phải có file riêng và tuân theo cấu trúc sau:
+
+7.1. Metadata
+
+Use Case ID.
+
+Use Case Name.
+
+Group.
+
+Primary Actor.
+
+Secondary Actors.
+
+Related Functional Requirements.
+
+Related Spec Kit.
+
+Author/Owner.
+
+7.2. Description
+
+Mô tả mục tiêu của Actor và giá trị mà Use Case mang lại.
+
+7.3. Preconditions
+
+Các điều kiện phải thỏa mãn trước khi Use Case bắt đầu.
+
+Không giả định user phải đăng nhập nếu requirements và implementation không xác nhận điều đó.
+
+7.4. Trigger
+
+Mô tả sự kiện khiến Actor bắt đầu Use Case.
+
+7.5. Basic Flow
+
+Viết luồng thành công theo từng bước rõ ràng.
+
+Sử dụng format:
+
+Step
+
+Actor/System
+
+Action
+
+1
+
+Actor
+
+...
+
+2
+
+System
+
+...
+
+3
+
+Actor
+
+...
+
+4
+
+System
+
+...
+
+Yêu cầu:
+
+Mỗi bước phải mô tả một hành động cụ thể.
+
+Phân biệt rõ hành động của Actor và phản hồi của System.
+
+Luồng phải phù hợp với UI thực tế.
+
+Không mô tả API hoặc xử lý backend không có căn cứ.
+
+Kết thúc bằng kết quả có thể quan sát hoặc xác nhận được.
+
+7.6. Alternative Flows
+
+Mô tả các luồng thay thế có thể xảy ra.
+
+Mỗi Alternative Flow phải có:
+
+Flow ID, ví dụ A1, A2.
+
+Starting Step.
+
+Condition.
+
+Các bước Actor/System.
+
+Điểm quay lại Basic Flow hoặc kết thúc Use Case.
+
+Không bỏ qua các tình huống hợp lý được xác nhận bởi UI hoặc requirements.
+
+7.7. Exception Flows
+
+Mô tả lỗi hoặc tình huống bất thường có căn cứ, ví dụ:
+
+Input không hợp lệ.
+
+Không thể gửi yêu cầu.
+
+Service không phản hồi.
+
+Lỗi hiển thị dữ liệu.
+
+Người dùng rời khỏi hoặc hủy thao tác.
+
+Chỉ đưa vào những trường hợp có căn cứ từ requirements hoặc implementation. Không tự tạo chi tiết kỹ thuật.
+
+7.8. Postconditions
+
+Phân biệt:
+
+Success Postconditions.
+
+Failure Postconditions.
+
+7.9. Special Requirements
+
+Ghi các yêu cầu UI, usability, performance, accessibility hoặc responsive behavior nếu có căn cứ.
+
+7.10. UI References
+
+Liên kết tới UI screen, component hoặc screenshot tương ứng.
+
+7.11. Traceability
+
+Liệt kê chính xác các Functional Requirements liên quan và Spec Kit references.
+
+8. Prototype và Screenshot Documentation
+
+Trong:
+
+docs/requirements/use-cases/120-ai-conversational-agent/prototypes/README.md
+
+Hãy tạo danh sách prototype/screenshot cần thiết cho từng Use Case.
+
+Mỗi Use Case cần xác định:
+
+Screenshot cho Basic Flow.
+
+Screenshot cho từng Alternative Flow có thay đổi UI đáng kể.
+
+Screenshot cho Exception Flow nếu có UI error state đáng chú ý.
+
+Ưu tiên tái sử dụng screenshot hoặc UI assets đã có trong repository.
+
+Nếu chưa có screenshot:
+
+Ghi rõ screenshot cần chụp.
+
+Mô tả UI state cần thể hiện.
+
+Liên kết với Use Case và bước tương ứng.
+
+Không tạo ảnh giả và không ghi nhận screenshot chưa tồn tại như đã hoàn thành.
+
+9. Traceability và Validation
+
+Sau khi tạo tài liệu, hãy kiểm tra:
+
+Mỗi Use Case có ít nhất một nguồn requirement hoặc căn cứ hợp lệ.
+
+Mỗi FR thuộc Group 120 được xác định có được cover bởi Use Case nào hay chưa.
+
+Không có FR bị bỏ sót mà không được ghi nhận.
+
+Không có Use Case ID trùng lặp.
+
+Tên Use Case trong README, Inventory, Diagram và Specification thống nhất.
+
+Basic Flow phù hợp với UI hiện tại.
+
+Alternative Flow và Exception Flow không mâu thuẫn với Basic Flow.
+
+UI references trỏ đúng tới source hoặc assets hiện có.
+
+Related Spec Kit references chính xác.
+
+Mermaid syntax hợp lệ và có thể render.
+
+Nếu có FR chưa được cover, ghi rõ trong README hoặc Inventory. Không tự tạo Use Case không có căn cứ chỉ để đạt 100% coverage.
+
+10. Quy tắc về nội dung và format
+
+Toàn bộ tài liệu trong repository phải viết bằng English.
+
+Dùng Markdown.
+
+Dùng Mermaid cho diagram.
+
+Dùng bảng cho Inventory và Basic Flow khi phù hợp.
+
+Sử dụng terminology nhất quán với Vision Document và Spec Kit.
+
+Viết rõ ràng, có cấu trúc, đủ chi tiết để developer, tester và reviewer hiểu được hành vi hệ thống.
+
+Không viết quá chung chung như "The system processes the request".
+
+Không tự suy diễn behavior từ tên component.
+
+Không copy nguyên nội dung Spec Kit vào Use Case Documentation.
+
+Use Case Documentation phải tập trung vào tương tác Actor–System, còn Spec Kit tập trung vào đặc tả và triển khai kỹ thuật.
+
+11. Scope giới hạn
+
+Được phép tạo hoặc chỉnh sửa:
+
+docs/requirements/use-cases/120-ai-conversational-agent/
+
+Không được phép:
+
+Chỉnh sửa Group 100 hoặc các Group khác.
+
+Chỉnh sửa docs/requirements/use-case-model.md.
+
+Chỉnh sửa docs/requirements/use-cases/README.md.
+
+Chỉnh sửa Vision Document, Project Plan hoặc Proposal.
+
+Chỉnh sửa bất kỳ file nào trong specs/120-ai-conversational-agent/.
+
+Chỉnh sửa frontend/backend source code.
+
+Thêm Functional Requirements mới.
+
+Thay đổi API, database schema hoặc business logic.
+
+Xóa hoặc ghi đè tài liệu hiện có ngoài phạm vi.
+
+Nếu phát hiện vấn đề cần chỉnh sửa ở các khu vực ngoài phạm vi, hãy ghi nhận trong báo cáo cuối cùng thay vì tự ý sửa.
+
+12. Git và bảo toàn thay đổi
+
+Kiểm tra git status trước khi làm việc.
+
+Bảo toàn toàn bộ thay đổi chưa commit hiện có.
+
+Không xóa file hoặc ghi đè nội dung không liên quan.
+
+Chỉ thay đổi file thuộc phạm vi được phép.
+
+Không commit.
+
+Không push.
+
+Không tạo branch mới.
+
+13. Final Report
+
+Sau khi hoàn thành, báo cáo bằng Vietnamese với các mục:
+
+Files Created – Các file đã tạo.
+
+Files Updated – Các file đã cập nhật.
+
+Use-Case Inventory – Danh sách ID và tên Use Case.
+
+UI Analysis – Những điểm UI mới đã được phản ánh trong Use Case.
+
+FR Coverage – Các FR đã cover và FR chưa cover.
+
+Prototype Status – Screenshot/prototype đã có và còn thiếu.
+
+Issues and Ambiguities – Những điểm chưa xác định hoặc mâu thuẫn.
+
+Validation Results – Kết quả kiểm tra consistency và Mermaid.
+
+Scope Confirmation – Xác nhận không sửa file ngoài Group 120.
+
+Yêu cầu cuối cùng: Hãy ưu tiên độ chính xác và khả năng traceability. Use Case phải phản ánh đúng yêu cầu và UI Group 120 hiện tại của AuraTune, không được tự tưởng tượng thêm tính năng để làm tài liệu trông đầy đủ hơn. Kiểm chứng với docs/PA/PA3
+```
+
+### Tóm tắt phản hồi của AI
+
+- Phân tích trực tiếp mã nguồn triển khai frontend thực tế: đọc component `src/frontend/src/components/chat/AIHostChat.jsx`, công cụ điều phối client-side `src/frontend/src/services/agentTools.js` và dịch vụ kết nối streaming SSE `src/frontend/src/services/agentService.js`. Phát hiện giao diện người dùng mới là một Floating Terminal/CLI tương tác (`#0c0d12`, prompt `❯`, spinner động `⠋ Đang suy nghĩ…`, collapsible reasoning `✻ Đã suy nghĩ trong N giây >`, chấm trạng thái thực thi công cụ `ok`/`error`/`running`/`confirm`, xác nhận xóa hàng đợi `? confirm [y/N]`, và các lệnh tích hợp `/clear`, `/help`, `↑/↓`, `esc`).
+- Đọc và phân tích toàn diện tài liệu nguồn: `docs/proposal/proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `team-contract.md`, `git-workflow.md`, `AuraTune_Use_Case_Documentation_Guide.md`, `docs/PA/PA3-2026.pdf` và trích xuất đầy đủ 38 mã Functional Requirements (`121-FR-001..012`, `122-FR-001..012`, `123-FR-001..014`) từ 3 subfeatures trong `specs/120-ai-conversational-agent/`.
+- Xây dựng hoàn chỉnh tài liệu giới thiệu và mô hình nhóm `docs/requirements/use-cases/120-ai-conversational-agent/README.md` gồm các phần chuẩn: Group Overview (Owner: Lê Công Minh Nhựt), Detailed Scope (In-Scope, Out-of-Scope), Feature Breakdown, Actor Catalog (`Listener`, `External AI Service Provider`, `Guest`), Sơ đồ quan hệ Use Case bằng Mermaid (`graph TD`) có phân định ranh giới hệ thống và quan hệ `<<include>>`/`<<extend>>`, kiến trúc giao diện CLI Terminal với các UX patterns nổi bật, ma trận phụ thuộc liên nhóm (Group 010, 030, 040, 070, 100), và bảng tóm tắt Use Case.
+- Xây dựng danh mục kiểm kê `docs/requirements/use-cases/120-ai-conversational-agent/use-case-inventory.md`:
+  - 4 Use Cases chính thức đã xác nhận (`UC-120-001`, `UC-120-002`, `UC-120-003`, `UC-120-004`), trạng thái Draft.
+  - 2 Unconfirmed Candidates (`UC-120-CAND-01` Voice Input, `UC-120-CAND-02` Server-Side Persistent History Sync) kèm lý do phân loại minh bạch.
+  - Ma trận truy vết hai chiều (Traceability Matrix) bao phủ 100% (38/38 FRs).
+- Viết chi tiết 4 file đặc tả Use-Case Specification tuân thủ chính xác template 11 mục chuẩn của hệ thống:
+  1. `UC-120-001-converse-with-ai-music-host.md`: Hội thoại với AI Music Host qua terminal nổi, Basic Flow 9 bước, AF-01 chọn chip gợi ý, AF-02 duyệt lịch sử lệnh bằng phím mũi tên, AF-03 hủy luồng bằng phím `Esc`, AF-04 xem phím tắt bằng `/help`, EF-01 dịch vụ AI tạm ngưng, EF-02 chặn khách vãng lai.
+  2. `UC-120-002-interpret-music-intent-via-chat.md`: Diễn giải ý định âm nhạc tự nhiên (phát nhạc theo tâm trạng, tìm kiếm bài hát, khám phá playlist, truy vấn nhạc đang phát, từ chối yêu cầu ngoài phạm vi âm nhạc), Basic Flow 8 bước, AF-01 dùng chip gợi ý nhanh, AF-02 tinh chỉnh ý định đa lượt (multi-turn context refinement), AF-03 đổi ý định khi phủ định, AF-04 fallback giải thích hội thoại, EF-01 ý định mơ hồ, EF-02 ngôn ngữ không hỗ trợ, EF-03 lỗi trích xuất tham số.
+  3. `UC-120-003-execute-music-actions-via-conversational-agent.md`: Thực thi hành động nghe nhạc qua công cụ client-side (`search_tracks`, `play_track_now`, `enqueue_tracks`, `clear_queue`, `get_playback_state`, `set_volume`, `get_queue_items`), Basic Flow 10 bước, AF-01 thao tác và điều khiển hàng đợi phát, AF-02 quy trình xác nhận hành động nguy hiểm `? confirm [y/N]` khi gọi `clear_queue` (phím bấm hoặc nút bấm giao diện), AF-03 chuỗi thực thi nhiều công cụ liên tiếp, AF-04 tra cứu trạng thái bài hát đang phát, EF-01 công cụ thực thi thất bại (`dot error`), EF-02 mục tiêu phát nhạc không khả dụng, EF-03 hủy luồng thực thi khi đang chạy, EF-04 AI host mất kết nối.
+  4. `UC-120-004-clear-conversation-history.md`: Xóa lịch sử hội thoại trên màn hình terminal qua lệnh `/clear`, Basic Flow 8 bước (chặn cục bộ, thêm `/clear` vào 30 lệnh gần nhất, xóa `entries`, dựng lại welcome banner `kind: banner`, giữ nguyên nhạc đang phát và không gửi request mạng), AF-01 gọi lại lệnh `/clear` từ phím mũi tên lên, AF-02 xử lý khi gõ lệnh trong lúc agent đang chạy (dừng trước rồi clear), EF-01 hết hạn phiên người dùng.
+- Thiết lập thư mục quản lý Prototype `docs/requirements/use-cases/120-ai-conversational-agent/prototypes/`:
+  - Tạo `prototypes/README.md` quy định mục đích, quy ước đặt tên file, hướng dẫn liên kết ảnh, phân biệt wireframe cũ với actual CLI terminal implementation, và bảng catalog ánh xạ 16 ảnh screenshot cho 4 Use Cases và các Flows.
+  - Sao chép và chuẩn hóa tên 16 ảnh screenshot thực tế từ Spec Kit UI sang thư mục prototypes theo định dạng `UC-120-[SEQ]-[flow].png`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                 | Quyết định                          | Lý do                                                                                                                             |
+| ---------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục 4 Use Cases chính thức                      | Dùng                                | Phản ánh chính xác mục tiêu người dùng và bao phủ trọn vẹn 38 FRs qua 3 subfeatures (121, 122, 123).                              |
+| Ngôn ngữ tài liệu trong Group 120                    | Dùng 100% tiếng Anh                 | Tuân thủ nghiêm ngặt chỉ thị của đề bài và quy định nộp bài của môn học (PA3 submission guidelines).                              |
+| Giao diện người dùng CLI Terminal (`AIHostChat.jsx`) | Dùng làm căn cứ chính cho UI        | Phản ánh chính xác mã nguồn frontend thực tế của nhóm thay vì wireframe drawer cũ.                                                |
+| Sơ đồ Mermaid tại README                             | Dùng                                | Sử dụng cú pháp `graph TD` có system boundary, phân định actor/usecase/external system, quan hệ include/extend rõ ràng.           |
+| Tái sử dụng UI assets từ Spec Kit UI                 | Dùng (16 ảnh)                       | Tận dụng ảnh chụp màn hình UI thực tế từ `specs/120-ai-conversational-agent/*/ui/`, đổi tên theo chuẩn `UC-120-[SEQ]-[flow].png`. |
+| Tính năng nhập giọng nói (Voice Input) & Cloud DB    | Bỏ / Ghi vào Unconfirmed Candidates | Không có trong mã nguồn frontend/backend cũng như không có trong Spec Kit hiện tại; phiên hội thoại quản lý in-memory client.     |
+| Chỉnh sửa file ngoài phạm vi (code, spec, model)     | Bỏ tuyệt đối                        | Tuân thủ nghiêm ngặt quy tắc cách ly và chỉ thị không sửa file ngoài Group 120.                                                   |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Chạy lệnh kiểm tra thư mục xác nhận đầy đủ 7 file markdown (`README.md`, `use-case-inventory.md`, 4 file `UC-120-*.md`, `prototypes/README.md`) và 16 file ảnh PNG.
+- **Kiểm tra độ bao phủ yêu cầu (FR Coverage):** Đối chiếu chéo 38 mã FR (`121-FR-001..012`, `122-FR-001..012`, `123-FR-001..014`) đạt độ bao phủ 100% trong ma trận truy vết `use-case-inventory.md` và từng file đặc tả.
+- **Kiểm tra cấu trúc đặc tả:** Xác nhận cả 4 file đặc tả đều tuân thủ đầy đủ 11 mục chuẩn của hệ thống và phản ánh chính xác từng bước tương tác theo mã nguồn `AIHostChat.jsx`.
+- **Kiểm tra cú pháp Mermaid:** Sơ đồ Use Case Mermaid trong `README.md` được viết đúng cú pháp `graph TD`, không chứa ký tự đặc biệt gây lỗi parser.
+- **Kiểm tra liên kết tương đối (Relative Links):** Kiểm tra toàn bộ đường dẫn ảnh và liên kết chéo giữa README, Inventory, UC specs và Prototypes đều mở chính xác.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận chỉ có các file bên trong `docs/requirements/use-cases/120-ai-conversational-agent/` và `docs/ai-log/AI_log_1.md` được tạo/cập nhật; không có bất kỳ file ngoài phạm vi nào bị thay đổi.
