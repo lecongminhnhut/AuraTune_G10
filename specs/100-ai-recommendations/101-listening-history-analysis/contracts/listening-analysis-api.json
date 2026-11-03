@@ -1,0 +1,309 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Listening History Analysis API",
+    "description": "API contract for Feature 101: Listening History Analysis (Group 100 - AI Recommendations)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base"
+    }
+  ],
+  "paths": {
+    "/users/me/stats/listening-analysis": {
+      "get": {
+        "summary": "Retrieve personal listening history analysis",
+        "description": "Computes and returns the total listening duration and ranked top genres derived strictly from the authenticated user's eligible listening history.",
+        "operationId": "getListeningAnalysis",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "range",
+            "in": "query",
+            "required": false,
+            "description": "Time range filter for analysis. Defaults to 'all'.",
+            "schema": {
+              "type": "string",
+              "enum": ["7", "30", "all"],
+              "default": "all"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analysis computed successfully, or empty state returned if history is insufficient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListeningAnalysisApiResponse"
+                },
+                "examples": {
+                  "withData": {
+                    "summary": "Account with eligible listening history",
+                    "value": {
+                      "success": true,
+                      "message": "Listening analysis retrieved successfully",
+                      "data": {
+                        "userId": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+                        "range": "all",
+                        "hasSufficientData": true,
+                        "totalDurationSeconds": 48250,
+                        "formattedTotalDuration": "13 giờ 24 phút",
+                        "totalPlays": 142,
+                        "uniqueTracksCount": 68,
+                        "topGenres": [
+                          {
+                            "rank": 1,
+                            "genreId": "lo-fi",
+                            "genreName": "Lo-Fi",
+                            "accumulatedSeconds": 24500,
+                            "formattedDuration": "6 giờ 48 phút",
+                            "percentage": 50.8
+                          },
+                          {
+                            "rank": 2,
+                            "genreId": "indie",
+                            "genreName": "Indie Pop",
+                            "accumulatedSeconds": 15200,
+                            "formattedDuration": "4 giờ 13 phút",
+                            "percentage": 31.5
+                          },
+                          {
+                            "rank": 3,
+                            "genreId": "r-and-b",
+                            "genreName": "R&B",
+                            "accumulatedSeconds": 8550,
+                            "formattedDuration": "2 giờ 22 phút",
+                            "percentage": 17.7
+                          }
+                        ],
+                        "calculatedAt": "2026-11-03T10:30:00Z"
+                      },
+                      "error": null
+                    }
+                  },
+                  "insufficientData": {
+                    "summary": "Account with 0 eligible playback records",
+                    "value": {
+                      "success": true,
+                      "message": "Insufficient listening history for analysis",
+                      "data": {
+                        "userId": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+                        "range": "all",
+                        "hasSufficientData": false,
+                        "totalDurationSeconds": 0,
+                        "formattedTotalDuration": "0 phút",
+                        "totalPlays": 0,
+                        "uniqueTracksCount": 0,
+                        "topGenres": [],
+                        "calculatedAt": "2026-11-03T10:30:00Z"
+                      },
+                      "error": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid, or expired authentication token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Yêu cầu đăng nhập để truy cập thông tin phân tích",
+                  "data": null,
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal database query error or timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Thông tin phân tích tạm thời không khả dụng, vui lòng thử lại sau",
+                  "data": null,
+                  "error": {
+                    "code": "DATABASE_ERROR",
+                    "details": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ListeningAnalysisApiResponse": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Listening analysis retrieved successfully"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ListeningAnalysisData"
+          },
+          "error": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "ListeningAnalysisData": {
+        "type": "object",
+        "required": [
+          "userId",
+          "range",
+          "hasSufficientData",
+          "totalDurationSeconds",
+          "formattedTotalDuration",
+          "totalPlays",
+          "uniqueTracksCount",
+          "topGenres",
+          "calculatedAt"
+        ],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "range": {
+            "type": "string",
+            "enum": ["7", "30", "all"]
+          },
+          "hasSufficientData": {
+            "type": "boolean"
+          },
+          "totalDurationSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "formattedTotalDuration": {
+            "type": "string"
+          },
+          "totalPlays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "uniqueTracksCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "topGenres": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GenreRankingItem"
+            }
+          },
+          "calculatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GenreRankingItem": {
+        "type": "object",
+        "required": [
+          "rank",
+          "genreId",
+          "genreName",
+          "accumulatedSeconds",
+          "formattedDuration",
+          "percentage"
+        ],
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "genreId": {
+            "type": "string"
+          },
+          "genreName": {
+            "type": "string"
+          },
+          "accumulatedSeconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "formattedDuration": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0.0,
+            "maximum": 100.0
+          }
+        }
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          },
+          "error": {
+            "type": "object",
+            "required": ["code"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "UNAUTHORIZED"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
