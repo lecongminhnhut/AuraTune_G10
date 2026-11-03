@@ -20,6 +20,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 14  | 2026-11-01 | Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3                         | Toàn bộ 12 nhóm chức năng (010 – 120)             |
 | 15  | 2026-11-03 | Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3        | Toàn bộ 12 nhóm chức năng (010 – 120)             |
 | 16  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 100 – AI Recommendations theo chuẩn PA3 và Spec Kit                    | 10 – AI Recommendations                           |
+| 17  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent theo chuẩn PA3 và UI CLI vừa cập nhật    | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -2503,3 +2504,661 @@ Hãy trả về:
 **Kết quả kiểm chứng:** Hoàn thành xuất sắc 100% các tiêu chí PA3 cho Group 100 – AI Recommendations. Bộ tài liệu sẵn sàng cho khâu Peer Review trong nhóm.
 
 **Ghi chú:** Toàn bộ tài liệu Group 100 lưu tại `docs/requirements/use-cases/100-ai-recommendations/`.
+
+---
+
+## Mục 17: Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                 |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                       |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent (`docs/requirements/use-cases/120-ai-conversational-agent/`, `specs/120-ai-conversational-agent/`)                                                                                                                                                                            |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro)                                                                                                                                                                                                                                                                           |
+| Mục đích                 | Xây dựng toàn diện bộ tài liệu Use-Case Documentation cho Group 120 gồm README.md (kèm sơ đồ Mermaid), use-case-inventory.md, 4 file đặc tả Use-Case Specification chi tiết (UC-120-001, UC-120-002, UC-120-003, UC-120-004) và thư mục quản lý Prototype theo đúng chuẩn PA3 và UI CLI frontend mới nhất. |
+
+### Prompt đã dùng
+
+```text
+TASK: Create Use-Case Documentation for Group 120 – AI Conversational Agent
+
+Bạn cần phân tích và xây dựng đầy đủ Use-Case Documentation cho Group 120 – AI Conversational Agent trong dự án AuraTune.
+
+Đây là công việc tạo tài liệu Use Case ở cấp requirements/documentation. Không phải công việc triển khai tính năng mới hoặc chỉnh sửa source code.
+
+1. Mục tiêu
+
+Tạo bộ tài liệu Use Case hoàn chỉnh cho Group 120, phản ánh chính xác:
+
+Functional Requirements hiện có của AI Conversational Agent.
+
+Các chức năng và hành vi mà hệ thống thực sự hỗ trợ.
+
+UI mới nhất của Group 120 đang được triển khai trong frontend.
+
+Các tương tác giữa người dùng và hệ thống.
+
+Basic Flow, Alternative Flow và Exception Flow của từng Use Case.
+
+Mối liên hệ giữa Use Case, Functional Requirements và Spec Kit Group 120.
+
+Lưu ý quan trọng: UI Group 120 đã có thay đổi so với tài liệu/spec cũ. Vì vậy, phải kiểm tra UI hiện tại trong source code trước khi viết Use Case. Không được sử dụng UI cũ làm căn cứ nếu nó không còn phản ánh implementation hiện tại.
+
+2. Phân tích tài liệu và source code trước khi viết
+
+Trước khi tạo hoặc chỉnh sửa bất kỳ file nào, hãy đọc và đối chiếu các nguồn sau:
+
+2.1. Project-level documents
+
+docs/proposal/Auratune_Vision_Document.md
+
+docs/proposal/project_plan.md
+
+docs/proposal/proposal.md
+
+docs/management/team-contract.md
+
+docs/management/git-workflow.md
+
+Các tài liệu liên quan trong docs/requirements/
+
+Các tài liệu PA trong docs/PA/ nếu có liên quan đến Group 120.
+
+2.2. Spec Kit Group 120
+
+Đọc toàn bộ nội dung hiện có trong:
+
+specs/120-ai-conversational-agent/
+
+Bao gồm các file nếu tồn tại:
+
+spec.md
+
+plan.md
+
+tasks.md
+
+research.md
+
+data-model.md
+
+contracts/
+
+checklists/
+
+Các UI assets, screenshots hoặc prototype liên quan.
+
+Dùng các tài liệu này để hiểu phạm vi chức năng, yêu cầu và thiết kế đã được xác định.
+
+2.3. Frontend implementation
+
+Kiểm tra frontend hiện tại để xác định chính xác UI mới nhất của Group 120.
+
+Tìm và đọc:
+
+Các route/page liên quan đến AI Conversational Agent.
+
+Components được sử dụng trong trang.
+
+Các component con và component dùng chung có ảnh hưởng đến UI.
+
+CSS, styling, layout và responsive behavior.
+
+Các event handlers và user interactions.
+
+Các trạng thái loading, empty, error và success nếu có.
+
+Các API calls hoặc service calls được frontend sử dụng.
+
+Các assets liên quan đến giao diện.
+
+Không được chỉ đọc tên file rồi suy đoán chức năng. Hãy đọc implementation thực tế.
+
+2.4. Thứ tự ưu tiên nguồn thông tin
+
+Khi các tài liệu không thống nhất, áp dụng nguyên tắc:
+
+Functional Requirements và project requirements đã được xác nhận.
+
+Frontend implementation hiện tại để xác định UI và hành vi tương tác thực tế.
+
+Spec Kit Group 120 hiện tại.
+
+Các tài liệu hoặc prototype cũ.
+
+Không tự ý biến một UI change thành Functional Requirement mới nếu chưa có căn cứ.
+
+Nếu phát hiện sự khác biệt giữa requirement và implementation, ghi nhận rõ trong báo cáo thay vì tự ý hợp thức hóa sự khác biệt đó.
+
+3. Xác định Use Case
+
+Sau khi phân tích nguồn, hãy lập Use-Case Inventory cho Group 120.
+
+Với mỗi Use Case, phải xác định:
+
+Use Case ID.
+
+Use Case Name.
+
+Primary Actor.
+
+Secondary Actors nếu có căn cứ.
+
+Mục tiêu của Actor.
+
+Functional Requirements liên quan.
+
+UI screen hoặc UI component liên quan.
+
+Mức độ hỗ trợ của implementation hiện tại.
+
+Quy tắc xác định Use Case
+
+Chỉ tạo Use Case dựa trên chức năng có căn cứ trong requirements hoặc implementation.
+
+Không tạo Use Case chỉ vì có một button, icon hoặc UI component.
+
+Những thao tác nhỏ thuộc cùng một mục tiêu người dùng nên được mô tả trong cùng Use Case nếu hợp lý.
+
+Tách Use Case khi có mục tiêu người dùng độc lập hoặc luồng tương tác thực sự khác biệt.
+
+Không tự tạo Actor, API, AI capability, business rule hoặc external service khi không có bằng chứng.
+
+Không giả định hệ thống có conversation history, context memory, streaming response, regenerate response, feedback, voice input hoặc các tính năng AI khác nếu chưa xác minh.
+
+Nếu một chức năng xuất hiện trên UI nhưng chưa có implementation hoặc requirement xác nhận, phải ghi rõ trạng thái chưa xác nhận.
+
+Use Case ID theo format:
+
+UC-120-[SEQUENCE]-[short-name].md
+
+Sequence sử dụng số thứ tự tăng dần, không trùng lặp.
+
+4. Cấu trúc thư mục và file cần tạo
+
+Tạo tài liệu trong:
+
+docs/requirements/use-cases/120-ai-conversational-agent/
+
+Cấu trúc mong muốn:
+
+120-ai-conversational-agent/
+├── README.md
+├── use-case-inventory.md
+├── UC-120-001-[short-name].md
+├── UC-120-002-[short-name].md
+├── ...
+└── prototypes/
+    └── README.md
+
+Số lượng Use Case phụ thuộc vào kết quả phân tích thực tế. Không cố định số lượng và không tạo Use Case giả để lấp đầy danh sách.
+
+Nếu repository đã có cấu trúc hoặc file phù hợp, hãy ưu tiên cập nhật và tái sử dụng thay vì tạo bản sao.
+
+Không tạo thêm các file ngoài phạm vi Group 120.
+
+5. Nội dung README.md
+
+File:
+
+docs/requirements/use-cases/120-ai-conversational-agent/README.md
+
+Phải có các nội dung:
+
+5.1. Group Overview
+
+Group ID: 120.
+
+Group Name: AI Conversational Agent.
+
+Purpose.
+
+Scope.
+
+Primary Actor và các Actor khác nếu có.
+
+Group Owner: Lê Công Minh Nhựt.
+
+Related Spec Kit: specs/120-ai-conversational-agent/.
+
+5.2. Functional Scope
+
+Tóm tắt các chức năng được xác nhận thuộc Group 120.
+
+Phân biệt rõ:
+
+Functionality được yêu cầu.
+
+Functionality đã được implementation.
+
+Functionality chưa được xác nhận hoặc chưa được triển khai.
+
+5.3. Use-Case Inventory Summary
+
+Tạo bảng tổng hợp:
+
+Use Case ID
+
+Use Case Name
+
+Primary Actor
+
+Related FRs
+
+Implementation Status
+
+Các ID và nội dung phải khớp với file Use Case thực tế.
+
+5.4. Use-Case Relationships
+
+Mô tả các quan hệ giữa Use Case nếu thực sự có:
+
+include
+
+extend
+
+Generalization
+
+Không tạo quan hệ chỉ để làm sơ đồ phức tạp hơn.
+
+5.5. Use-Case Diagram
+
+Tạo Mermaid diagram thể hiện các Use Case của Group 120.
+
+Yêu cầu:
+
+Thể hiện Actor và Use Case.
+
+Thể hiện quan hệ giữa Actor và Use Case.
+
+Thể hiện include hoặc extend nếu có căn cứ.
+
+Tên và ID phải khớp với Use-Case Inventory.
+
+Không đưa chức năng chưa xác nhận vào diagram như một chức năng chính thức.
+
+Sơ đồ phải dễ đọc và không quá rối.
+
+Nếu dùng Mermaid flowchart để biểu diễn Use Case, phải ghi rõ đây là conceptual Use-Case Diagram, không phải UML Use Case Diagram native.
+
+5.6. UI Overview
+
+Mô tả UI mới nhất của Group 120 dựa trên frontend implementation.
+
+Bao gồm nếu có:
+
+Page layout.
+
+Main sections.
+
+Sidebar hoặc navigation.
+
+Conversation area.
+
+Message display.
+
+Input area.
+
+Buttons và actions.
+
+Loading và error states.
+
+Responsive behavior.
+
+Chỉ mô tả các thành phần thực sự tồn tại.
+
+Có thể sử dụng screenshot/prototype đã có trong repository. Không tự tạo screenshot giả hoặc mô tả một UI chưa được triển khai như thể nó đã tồn tại.
+
+5.7. Traceability
+
+Mô tả cách liên kết:
+
+Functional Requirements → Use Cases → UI → Spec Kit
+
+6. Nội dung use-case-inventory.md
+
+Tạo danh sách đầy đủ các Use Case đã xác định.
+
+Mỗi Use Case cần có:
+
+ID.
+
+Name.
+
+Brief Description.
+
+Primary Actor.
+
+Related Functional Requirements.
+
+Related UI.
+
+Related Spec Kit section hoặc task nếu xác định được.
+
+Implementation Status.
+
+Có thể chia Use Case theo nhóm chức năng để dễ đọc.
+
+Không sao chép nguyên văn toàn bộ Use Case Specification vào Inventory.
+
+7. Nội dung từng Use Case Specification
+
+Mỗi Use Case phải có file riêng và tuân theo cấu trúc sau:
+
+7.1. Metadata
+
+Use Case ID.
+
+Use Case Name.
+
+Group.
+
+Primary Actor.
+
+Secondary Actors.
+
+Related Functional Requirements.
+
+Related Spec Kit.
+
+Author/Owner.
+
+7.2. Description
+
+Mô tả mục tiêu của Actor và giá trị mà Use Case mang lại.
+
+7.3. Preconditions
+
+Các điều kiện phải thỏa mãn trước khi Use Case bắt đầu.
+
+Không giả định user phải đăng nhập nếu requirements và implementation không xác nhận điều đó.
+
+7.4. Trigger
+
+Mô tả sự kiện khiến Actor bắt đầu Use Case.
+
+7.5. Basic Flow
+
+Viết luồng thành công theo từng bước rõ ràng.
+
+Sử dụng format:
+
+Step
+
+Actor/System
+
+Action
+
+1
+
+Actor
+
+...
+
+2
+
+System
+
+...
+
+3
+
+Actor
+
+...
+
+4
+
+System
+
+...
+
+Yêu cầu:
+
+Mỗi bước phải mô tả một hành động cụ thể.
+
+Phân biệt rõ hành động của Actor và phản hồi của System.
+
+Luồng phải phù hợp với UI thực tế.
+
+Không mô tả API hoặc xử lý backend không có căn cứ.
+
+Kết thúc bằng kết quả có thể quan sát hoặc xác nhận được.
+
+7.6. Alternative Flows
+
+Mô tả các luồng thay thế có thể xảy ra.
+
+Mỗi Alternative Flow phải có:
+
+Flow ID, ví dụ A1, A2.
+
+Starting Step.
+
+Condition.
+
+Các bước Actor/System.
+
+Điểm quay lại Basic Flow hoặc kết thúc Use Case.
+
+Không bỏ qua các tình huống hợp lý được xác nhận bởi UI hoặc requirements.
+
+7.7. Exception Flows
+
+Mô tả lỗi hoặc tình huống bất thường có căn cứ, ví dụ:
+
+Input không hợp lệ.
+
+Không thể gửi yêu cầu.
+
+Service không phản hồi.
+
+Lỗi hiển thị dữ liệu.
+
+Người dùng rời khỏi hoặc hủy thao tác.
+
+Chỉ đưa vào những trường hợp có căn cứ từ requirements hoặc implementation. Không tự tạo chi tiết kỹ thuật.
+
+7.8. Postconditions
+
+Phân biệt:
+
+Success Postconditions.
+
+Failure Postconditions.
+
+7.9. Special Requirements
+
+Ghi các yêu cầu UI, usability, performance, accessibility hoặc responsive behavior nếu có căn cứ.
+
+7.10. UI References
+
+Liên kết tới UI screen, component hoặc screenshot tương ứng.
+
+7.11. Traceability
+
+Liệt kê chính xác các Functional Requirements liên quan và Spec Kit references.
+
+8. Prototype và Screenshot Documentation
+
+Trong:
+
+docs/requirements/use-cases/120-ai-conversational-agent/prototypes/README.md
+
+Hãy tạo danh sách prototype/screenshot cần thiết cho từng Use Case.
+
+Mỗi Use Case cần xác định:
+
+Screenshot cho Basic Flow.
+
+Screenshot cho từng Alternative Flow có thay đổi UI đáng kể.
+
+Screenshot cho Exception Flow nếu có UI error state đáng chú ý.
+
+Ưu tiên tái sử dụng screenshot hoặc UI assets đã có trong repository.
+
+Nếu chưa có screenshot:
+
+Ghi rõ screenshot cần chụp.
+
+Mô tả UI state cần thể hiện.
+
+Liên kết với Use Case và bước tương ứng.
+
+Không tạo ảnh giả và không ghi nhận screenshot chưa tồn tại như đã hoàn thành.
+
+9. Traceability và Validation
+
+Sau khi tạo tài liệu, hãy kiểm tra:
+
+Mỗi Use Case có ít nhất một nguồn requirement hoặc căn cứ hợp lệ.
+
+Mỗi FR thuộc Group 120 được xác định có được cover bởi Use Case nào hay chưa.
+
+Không có FR bị bỏ sót mà không được ghi nhận.
+
+Không có Use Case ID trùng lặp.
+
+Tên Use Case trong README, Inventory, Diagram và Specification thống nhất.
+
+Basic Flow phù hợp với UI hiện tại.
+
+Alternative Flow và Exception Flow không mâu thuẫn với Basic Flow.
+
+UI references trỏ đúng tới source hoặc assets hiện có.
+
+Related Spec Kit references chính xác.
+
+Mermaid syntax hợp lệ và có thể render.
+
+Nếu có FR chưa được cover, ghi rõ trong README hoặc Inventory. Không tự tạo Use Case không có căn cứ chỉ để đạt 100% coverage.
+
+10. Quy tắc về nội dung và format
+
+Toàn bộ tài liệu trong repository phải viết bằng English.
+
+Dùng Markdown.
+
+Dùng Mermaid cho diagram.
+
+Dùng bảng cho Inventory và Basic Flow khi phù hợp.
+
+Sử dụng terminology nhất quán với Vision Document và Spec Kit.
+
+Viết rõ ràng, có cấu trúc, đủ chi tiết để developer, tester và reviewer hiểu được hành vi hệ thống.
+
+Không viết quá chung chung như "The system processes the request".
+
+Không tự suy diễn behavior từ tên component.
+
+Không copy nguyên nội dung Spec Kit vào Use Case Documentation.
+
+Use Case Documentation phải tập trung vào tương tác Actor–System, còn Spec Kit tập trung vào đặc tả và triển khai kỹ thuật.
+
+11. Scope giới hạn
+
+Được phép tạo hoặc chỉnh sửa:
+
+docs/requirements/use-cases/120-ai-conversational-agent/
+
+Không được phép:
+
+Chỉnh sửa Group 100 hoặc các Group khác.
+
+Chỉnh sửa docs/requirements/use-case-model.md.
+
+Chỉnh sửa docs/requirements/use-cases/README.md.
+
+Chỉnh sửa Vision Document, Project Plan hoặc Proposal.
+
+Chỉnh sửa bất kỳ file nào trong specs/120-ai-conversational-agent/.
+
+Chỉnh sửa frontend/backend source code.
+
+Thêm Functional Requirements mới.
+
+Thay đổi API, database schema hoặc business logic.
+
+Xóa hoặc ghi đè tài liệu hiện có ngoài phạm vi.
+
+Nếu phát hiện vấn đề cần chỉnh sửa ở các khu vực ngoài phạm vi, hãy ghi nhận trong báo cáo cuối cùng thay vì tự ý sửa.
+
+12. Git và bảo toàn thay đổi
+
+Kiểm tra git status trước khi làm việc.
+
+Bảo toàn toàn bộ thay đổi chưa commit hiện có.
+
+Không xóa file hoặc ghi đè nội dung không liên quan.
+
+Chỉ thay đổi file thuộc phạm vi được phép.
+
+Không commit.
+
+Không push.
+
+Không tạo branch mới.
+
+13. Final Report
+
+Sau khi hoàn thành, báo cáo bằng Vietnamese với các mục:
+
+Files Created – Các file đã tạo.
+
+Files Updated – Các file đã cập nhật.
+
+Use-Case Inventory – Danh sách ID và tên Use Case.
+
+UI Analysis – Những điểm UI mới đã được phản ánh trong Use Case.
+
+FR Coverage – Các FR đã cover và FR chưa cover.
+
+Prototype Status – Screenshot/prototype đã có và còn thiếu.
+
+Issues and Ambiguities – Những điểm chưa xác định hoặc mâu thuẫn.
+
+Validation Results – Kết quả kiểm tra consistency và Mermaid.
+
+Scope Confirmation – Xác nhận không sửa file ngoài Group 120.
+
+Yêu cầu cuối cùng: Hãy ưu tiên độ chính xác và khả năng traceability. Use Case phải phản ánh đúng yêu cầu và UI Group 120 hiện tại của AuraTune, không được tự tưởng tượng thêm tính năng để làm tài liệu trông đầy đủ hơn. Kiểm chứng với docs/PA/PA3
+```
+
+### Tóm tắt phản hồi của AI
+
+- Phân tích trực tiếp mã nguồn triển khai frontend thực tế: đọc component `src/frontend/src/components/chat/AIHostChat.jsx`, công cụ điều phối client-side `src/frontend/src/services/agentTools.js` và dịch vụ kết nối streaming SSE `src/frontend/src/services/agentService.js`. Phát hiện giao diện người dùng mới là một Floating Terminal/CLI tương tác (`#0c0d12`, prompt `❯`, spinner động `⠋ Đang suy nghĩ…`, collapsible reasoning `✻ Đã suy nghĩ trong N giây >`, chấm trạng thái thực thi công cụ `ok`/`error`/`running`/`confirm`, xác nhận xóa hàng đợi `? confirm [y/N]`, và các lệnh tích hợp `/clear`, `/help`, `↑/↓`, `esc`).
+- Đọc và phân tích toàn diện tài liệu nguồn: `docs/proposal/proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `team-contract.md`, `git-workflow.md`, `AuraTune_Use_Case_Documentation_Guide.md`, `docs/PA/PA3-2026.pdf` và trích xuất đầy đủ 38 mã Functional Requirements (`121-FR-001..012`, `122-FR-001..012`, `123-FR-001..014`) từ 3 subfeatures trong `specs/120-ai-conversational-agent/`.
+- Xây dựng hoàn chỉnh tài liệu giới thiệu và mô hình nhóm `docs/requirements/use-cases/120-ai-conversational-agent/README.md` gồm các phần chuẩn: Group Overview (Owner: Lê Công Minh Nhựt), Detailed Scope (In-Scope, Out-of-Scope), Feature Breakdown, Actor Catalog (`Listener`, `External AI Service Provider`, `Guest`), Sơ đồ quan hệ Use Case bằng Mermaid (`graph TD`) có phân định ranh giới hệ thống và quan hệ `<<include>>`/`<<extend>>`, kiến trúc giao diện CLI Terminal với các UX patterns nổi bật, ma trận phụ thuộc liên nhóm (Group 010, 030, 040, 070, 100), và bảng tóm tắt Use Case.
+- Xây dựng danh mục kiểm kê `docs/requirements/use-cases/120-ai-conversational-agent/use-case-inventory.md`:
+  - 4 Use Cases chính thức đã xác nhận (`UC-120-001`, `UC-120-002`, `UC-120-003`, `UC-120-004`), trạng thái Draft.
+  - 2 Unconfirmed Candidates (`UC-120-CAND-01` Voice Input, `UC-120-CAND-02` Server-Side Persistent History Sync) kèm lý do phân loại minh bạch.
+  - Ma trận truy vết hai chiều (Traceability Matrix) bao phủ 100% (38/38 FRs).
+- Viết chi tiết 4 file đặc tả Use-Case Specification tuân thủ chính xác template 11 mục chuẩn của hệ thống:
+  1. `UC-120-001-converse-with-ai-music-host.md`: Hội thoại với AI Music Host qua terminal nổi, Basic Flow 9 bước, AF-01 chọn chip gợi ý, AF-02 duyệt lịch sử lệnh bằng phím mũi tên, AF-03 hủy luồng bằng phím `Esc`, AF-04 xem phím tắt bằng `/help`, EF-01 dịch vụ AI tạm ngưng, EF-02 chặn khách vãng lai.
+  2. `UC-120-002-interpret-music-intent-via-chat.md`: Diễn giải ý định âm nhạc tự nhiên (phát nhạc theo tâm trạng, tìm kiếm bài hát, khám phá playlist, truy vấn nhạc đang phát, từ chối yêu cầu ngoài phạm vi âm nhạc), Basic Flow 8 bước, AF-01 dùng chip gợi ý nhanh, AF-02 tinh chỉnh ý định đa lượt (multi-turn context refinement), AF-03 đổi ý định khi phủ định, AF-04 fallback giải thích hội thoại, EF-01 ý định mơ hồ, EF-02 ngôn ngữ không hỗ trợ, EF-03 lỗi trích xuất tham số.
+  3. `UC-120-003-execute-music-actions-via-conversational-agent.md`: Thực thi hành động nghe nhạc qua công cụ client-side (`search_tracks`, `play_track_now`, `enqueue_tracks`, `clear_queue`, `get_playback_state`, `set_volume`, `get_queue_items`), Basic Flow 10 bước, AF-01 thao tác và điều khiển hàng đợi phát, AF-02 quy trình xác nhận hành động nguy hiểm `? confirm [y/N]` khi gọi `clear_queue` (phím bấm hoặc nút bấm giao diện), AF-03 chuỗi thực thi nhiều công cụ liên tiếp, AF-04 tra cứu trạng thái bài hát đang phát, EF-01 công cụ thực thi thất bại (`dot error`), EF-02 mục tiêu phát nhạc không khả dụng, EF-03 hủy luồng thực thi khi đang chạy, EF-04 AI host mất kết nối.
+  4. `UC-120-004-clear-conversation-history.md`: Xóa lịch sử hội thoại trên màn hình terminal qua lệnh `/clear`, Basic Flow 8 bước (chặn cục bộ, thêm `/clear` vào 30 lệnh gần nhất, xóa `entries`, dựng lại welcome banner `kind: banner`, giữ nguyên nhạc đang phát và không gửi request mạng), AF-01 gọi lại lệnh `/clear` từ phím mũi tên lên, AF-02 xử lý khi gõ lệnh trong lúc agent đang chạy (dừng trước rồi clear), EF-01 hết hạn phiên người dùng.
+- Thiết lập thư mục quản lý Prototype `docs/requirements/use-cases/120-ai-conversational-agent/prototypes/`:
+  - Tạo `prototypes/README.md` quy định mục đích, quy ước đặt tên file, hướng dẫn liên kết ảnh, phân biệt wireframe cũ với actual CLI terminal implementation, và bảng catalog ánh xạ 16 ảnh screenshot cho 4 Use Cases và các Flows.
+  - Sao chép và chuẩn hóa tên 16 ảnh screenshot thực tế từ Spec Kit UI sang thư mục prototypes theo định dạng `UC-120-[SEQ]-[flow].png`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                 | Quyết định                          | Lý do                                                                                                                             |
+| ---------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục 4 Use Cases chính thức                      | Dùng                                | Phản ánh chính xác mục tiêu người dùng và bao phủ trọn vẹn 38 FRs qua 3 subfeatures (121, 122, 123).                              |
+| Ngôn ngữ tài liệu trong Group 120                    | Dùng 100% tiếng Anh                 | Tuân thủ nghiêm ngặt chỉ thị của đề bài và quy định nộp bài của môn học (PA3 submission guidelines).                              |
+| Giao diện người dùng CLI Terminal (`AIHostChat.jsx`) | Dùng làm căn cứ chính cho UI        | Phản ánh chính xác mã nguồn frontend thực tế của nhóm thay vì wireframe drawer cũ.                                                |
+| Sơ đồ Mermaid tại README                             | Dùng                                | Sử dụng cú pháp `graph TD` có system boundary, phân định actor/usecase/external system, quan hệ include/extend rõ ràng.           |
+| Tái sử dụng UI assets từ Spec Kit UI                 | Dùng (16 ảnh)                       | Tận dụng ảnh chụp màn hình UI thực tế từ `specs/120-ai-conversational-agent/*/ui/`, đổi tên theo chuẩn `UC-120-[SEQ]-[flow].png`. |
+| Tính năng nhập giọng nói (Voice Input) & Cloud DB    | Bỏ / Ghi vào Unconfirmed Candidates | Không có trong mã nguồn frontend/backend cũng như không có trong Spec Kit hiện tại; phiên hội thoại quản lý in-memory client.     |
+| Chỉnh sửa file ngoài phạm vi (code, spec, model)     | Bỏ tuyệt đối                        | Tuân thủ nghiêm ngặt quy tắc cách ly và chỉ thị không sửa file ngoài Group 120.                                                   |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Chạy lệnh kiểm tra thư mục xác nhận đầy đủ 7 file markdown (`README.md`, `use-case-inventory.md`, 4 file `UC-120-*.md`, `prototypes/README.md`) và 16 file ảnh PNG.
+- **Kiểm tra độ bao phủ yêu cầu (FR Coverage):** Đối chiếu chéo 38 mã FR (`121-FR-001..012`, `122-FR-001..012`, `123-FR-001..014`) đạt độ bao phủ 100% trong ma trận truy vết `use-case-inventory.md` và từng file đặc tả.
+- **Kiểm tra cấu trúc đặc tả:** Xác nhận cả 4 file đặc tả đều tuân thủ đầy đủ 11 mục chuẩn của hệ thống và phản ánh chính xác từng bước tương tác theo mã nguồn `AIHostChat.jsx`.
+- **Kiểm tra cú pháp Mermaid:** Sơ đồ Use Case Mermaid trong `README.md` được viết đúng cú pháp `graph TD`, không chứa ký tự đặc biệt gây lỗi parser.
+- **Kiểm tra liên kết tương đối (Relative Links):** Kiểm tra toàn bộ đường dẫn ảnh và liên kết chéo giữa README, Inventory, UC specs và Prototypes đều mở chính xác.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận chỉ có các file bên trong `docs/requirements/use-cases/120-ai-conversational-agent/` và `docs/ai-log/AI_log_1.md` được tạo/cập nhật; không có bất kỳ file ngoài phạm vi nào bị thay đổi.
