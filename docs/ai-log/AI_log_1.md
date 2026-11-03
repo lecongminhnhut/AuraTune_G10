@@ -24,6 +24,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 18  | 2026-11-03 | Lập Implementation Plan cho Feature 101 – Listening History Analysis bằng Spec Kit `/speckit.plan`               | 10 – AI Recommendations                           |
 | 19  | 2026-11-03 | Lập Implementation Plan cho Feature 102 – Personalized Recommendations bằng Spec Kit `/speckit.plan`             | 10 – AI Recommendations                           |
 | 20  | 2026-11-03 | Lập Implementation Plan cho Feature 103 – Mood and Context Recommendations bằng Spec Kit `/speckit.plan`         | 10 – AI Recommendations                           |
+| 21  | 2026-11-03 | Lập Implementation Plan cho Feature 121 – Conversational Interface bằng Spec Kit `/speckit.plan`                 | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -3733,3 +3734,215 @@ Completion criteria: Chỉ tạo Implementation Plan cho feature 103 bằng Spec
 - **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 15 mã FR (`103-FR-001..015`), 4 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
 - **Kiểm tra cú pháp Contract và Mermaid:** File `mood-context-recommendations-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Sequence/Flowchart trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
 - **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 103.
+
+---
+
+## Mục 21: Lập Implementation Plan cho Feature 121 – Conversational Interface bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface/`)                                                                                                                                                                                                                 |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                                                                                                            |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu kiến trúc terminal/CLI dialog, giao thức Server-Sent Events (SSE), vòng đời in-memory với `/clear` và lịch sử 30 lệnh, xuất Markdown an toàn, thiết kế data model, OpenAPI 3.0 contract, quickstart guide, và hoàn thiện plan.md. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 121 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `121` thuộc Group 120 – AI Conversational Agent.
+
+**Chỉ lập Plan cho feature 121. Không xử lý feature khác.**
+
+## 1. Xác định Feature 121
+
+Kiểm tra:
+
+- `specs/120-ai-conversational-agent/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 121.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 121 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 121.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 121.
+- Plan của các feature trước đó trong Group 120 nếu có, để tham khảo cách tổ chức và bảo đảm tính nhất quán.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Kiểm tra UI hiện tại của Group 120
+
+Vì UI của AI Conversational Agent đã có thay đổi, hãy kiểm tra frontend implementation mới nhất liên quan đến feature 121.
+
+Xem xét:
+
+- Page và route liên quan.
+- Components và component hierarchy.
+- Layout, styling và responsive behavior.
+- Các nút, input và user interactions.
+- Loading, empty, error và success states nếu có.
+- API/service calls liên quan.
+
+Dùng UI hiện tại làm căn cứ cho phần frontend technical approach trong Plan. Không lấy UI cũ trong tài liệu làm chuẩn nếu implementation đã thay đổi.
+
+Không tự biến UI change thành Functional Requirement mới. Nếu UI và `spec.md` không thống nhất, ghi nhận vấn đề để làm rõ, không tự sửa `spec.md`.
+
+## 4. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 121 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md`, kiến trúc AuraTune và UI implementation hiện tại làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật Plan đúng vị trí mà Spec Kit quy định cho feature 121.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 5. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 121 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Phản ánh UI Group 120 mới nhất.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 121.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI capability hoặc conversation behavior chưa được xác nhận.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 100 – AI Recommendations vào Group 120.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 6. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 121 theo Spec Kit workflow.
+
+Không được:
+
+- Lập Plan cho feature 122 trở đi.
+- Lập Plan cho toàn bộ Group 120.
+- Lập lại Plan của feature khác.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa Use-Case Documentation.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 7. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 121.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra UI approach phù hợp với frontend hiện tại.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md` hoặc UI implementation, chỉ ghi nhận, không tự ý sửa.
+
+## 8. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 121 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Những điểm UI mới được phản ánh trong technical approach.
+6. Các technical decisions đáng chú ý.
+7. Validation results.
+8. Những vấn đề cần clarification.
+9. Danh sách file đã thay đổi.
+
+**Completion criteria:** Chỉ tạo Implementation Plan cho feature 121 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 121**: Nhận diện đúng `121-conversational-interface` tại `specs/120-ai-conversational-agent/121-conversational-interface/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-012, 4 User Stories, 4 UI screenshots, các câu trả lời Clarification Session 2026-10-30/2026-11-01) và Use Cases `UC-120-001`, `UC-120-004`.
+- **Khảo sát UI hiện tại của Group 120**:
+  - Kiểm tra toàn diện component `src/frontend/src/components/chat/AIHostChat.jsx`, `agentService.js`, `agentTools.js`, `TopBar.jsx` và `BottomPlayer.jsx`.
+  - Ghi nhận mô hình giao diện mới nhất: Floating Terminal / CLI dialog neo góc phải (`bottom-[96px] right-2 top-2`, max-w 460px) với theme tối `#0c0d12`, font monospace, banner chào mừng, bảng phím tắt `/help`, braille spinner `⠋` kèm verb xoay vòng và đếm giây, trace suy nghĩ thu gọn/mở rộng, cursor khối nhấp nháy `█`, huy hiệu `✓ xong trong [N]s`, dải suggestion chips và duyệt lịch sử 30 lệnh qua phím mũi tên.
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 121 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 6 vấn đề kỹ thuật:
+    1. Giao thức Streaming: Sử dụng Server-Sent Events (SSE) qua `POST /api/v1/agent/chat` (`Accept: text/event-stream`) truyền kèm Bearer JWT và context phát nhạc (`currentTrack`, `isPlaying`, `volume`).
+    2. Vòng đời & Lưu trữ: Quản lý strictly in-memory tại component React (`entries` state) kết hợp bộ đệm vòng 30 lệnh (`historyRef`). Lệnh `/clear` xử lý tức thời tại client; không ghi database ở v1, xóa sạch khi logout tuân thủ Nghị định 13/2023/NĐ-CP.
+    3. Định dạng văn bản (FR-007): User message hiển thị dạng plain text đã escape chống XSS; AI response render qua parser Markdown có cơ chế sanitize (`rehype-sanitize`) hỗ trợ bold, italics, lists, inline code và link an toàn (`rel="noopener noreferrer"`).
+    4. Xử lý khi AI sự cố (FR-009, FR-011): Hiển thị trạng thái `● tạm ngưng`, alert banner màu hổ phách, disable ô nhập và nút "Thử lại" (Retry) cho tin nhắn lỗi; đảm bảo **cách ly hoàn toàn 100% với audio player (nhạc nền phát liên tục không gián đoạn)**.
+    5. Căn chỉnh kiến trúc UI: Chuẩn hóa technical approach theo đúng implementation thực tế trong `AIHostChat.jsx`.
+    6. Phân quyền & Cách ly tài khoản (FR-001, FR-010): Kiểm tra auth ở client (challenge modal redirect `/login`) và xác thực Bearer JWT ở backend, trích xuất `req.user.id`, đảm bảo không rò rỉ dữ liệu giữa các tài khoản.
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể `UserSession`, `ConversationSession`, cấu trúc đa hình `ChatEntry` (`BannerEntry`, `HelpEntry`, `UserMessageEntry`, `AgentRunEntry`), DTO `PlaybackContextPayload`, schema `AgentStreamEvent`, state machines và quy tắc nghiệp vụ.
+    - Xây dựng `contracts/`: Tài liệu `README.md` và file đặc tả OpenAPI 3.0.3 `conversational-interface-api.json` cho endpoint streaming `POST /api/v1/agent/chat` và health probe `GET /api/v1/agent/health`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử runnable qua 8 kịch bản (Truy cập dialog, Gửi & stream phản hồi với thinking state, Duyệt lịch sử phím mũi tên, Lệnh `/clear`, Phím tắt `/help`, Hủy lượt chạy qua `Esc`, Chịu lỗi AI tạm ngưng và cách ly audio, Cô lập tài khoản người dùng).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context, bảng đối chiếu Baseline hiện tại vs Công việc sẽ làm vs Điểm cần xác nhận.
+    - Đánh giá Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ Mermaid Flowchart kiến trúc phân tầng và Sequence Diagram luồng stream dữ liệu chi tiết.
+    - Xác lập chiến lược kiểm thử đa tầng (Unit, Component, Contract, Security Isolation) và quản trị rủi ro.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 121 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                              | Quyết định   | Lý do                                                                                                                                              |
+| ----------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Khởi tạo Plan qua `setup-plan.sh --json`                          | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, kích hoạt đúng context Feature 121.                                                        |
+| Thiết kế Floating Terminal / CLI dialog (`AIHostChat.jsx`)        | Dùng         | Bám sát chính xác implementation frontend mới nhất của Group 120 thay vì UI cũ trong tài liệu ban đầu.                                             |
+| Giao thức Server-Sent Events (SSE) qua `POST /api/v1/agent/chat`  | Dùng         | Tối ưu cho mô hình request-response streaming tokens, hỗ trợ truyền Authorization header và context phát nhạc, nhẹ hơn WebSockets.                 |
+| Vòng đời hội thoại In-Memory kết hợp 30 lệnh gần nhất             | Dùng         | Tuân thủ Clarification 2026-10-30/2026-11-01 và FR-008; cho phép `/clear` tức thời, không rò rỉ dữ liệu phiên cũ sau khi đăng xuất.                |
+| Markdown an toàn (User: Plain Text; AI: Sanitized Markdown)       | Dùng         | Tuân thủ FR-007; chống triệt để tấn công XSS, cho phép AI hiển thị rich text, danh sách và liên kết an toàn.                                       |
+| Cách ly hoàn toàn với Trình phát nhạc (Zero Audio Disruption)     | Dùng         | Tuân thủ FR-011, SC-005; lỗi hay thao tác trên khung chat không bao giờ làm gián đoạn bài hát đang nghe trong `PlayerContext`.                     |
+| OpenAPI 3.0 Specification (`conversational-interface-api.json`)   | Dùng         | Chuẩn hóa contract cho endpoint stream `POST /api/v1/agent/chat` và `GET /api/v1/agent/health`.                                                    |
+| Lưu trữ vĩnh viễn tin nhắn chat vào bảng PostgreSQL               | Bỏ hoàn toàn | Clarification của spec đã xác nhận rõ mô hình v1 là In-Memory session lifecycle, tránh gánh nặng lưu trữ và rủi ro quyền riêng tư không cần thiết. |
+| Thực thi tool điều khiển nhạc (chỉnh volume, đổi bài, thêm queue) | Bỏ khỏi F121 | Phạm vi thuộc về Feature 123 (`123-real-time-music-assistance`), Feature 121 chỉ tập trung vào hạ tầng giao diện và streaming hội thoại.           |
+| Phân tích ý định âm nhạc từ câu thoại tự nhiên                    | Bỏ khỏi F121 | Phạm vi thuộc về Feature 122 (`122-music-intent-understanding`).                                                                                   |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 121                    | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi nhiệm vụ, bảo toàn working tree và không commit/push.                                                        |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới bên trong `specs/120-ai-conversational-agent/121-conversational-interface/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/conversational-interface-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 12 mã FR (`121-FR-001..012`), 4 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `conversational-interface-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Flowchart và Sequence trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 121, không có file ngoài phạm vi bị tác động.

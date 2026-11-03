@@ -1,0 +1,283 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune AI Conversational Agent API - Feature 121",
+    "description": "API contract for bidirectional conversational interaction with the AuraTune AI Host, supporting Server-Sent Events (SSE) streaming, processing feedback, and health probes.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base path"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/agent/chat": {
+      "post": {
+        "summary": "Send a conversational message and stream AI response",
+        "description": "Dispatches a listener message to the AI host along with current playback context. Returns a Server-Sent Events (SSE) stream emitting thinking states and response text deltas.",
+        "operationId": "streamAgentChat",
+        "tags": ["AI Conversational Agent"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequestPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful streaming response via Server-Sent Events",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentStreamEvent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error (e.g. empty or whitespace prompt, prompt exceeds 500 characters)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Nội dung tin nhắn không được để trống",
+                  "data": null,
+                  "error": {
+                    "code": "VALIDATION_ERROR",
+                    "details": [
+                      {
+                        "field": "prompt",
+                        "issue": "Nội dung tin nhắn phải từ 1 đến 500 ký tự"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access (missing, malformed, or expired JWT token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Phiên đăng nhập không hợp lệ hoặc đã hết hạn",
+                  "data": null,
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "AI Host service unavailable, overloaded, or unreachable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "message": "AI Host tạm thời không khả dụng. Vui lòng thử lại sau.",
+                  "data": null,
+                  "error": {
+                    "code": "AI_SERVICE_UNAVAILABLE",
+                    "details": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/health": {
+      "get": {
+        "summary": "Check AI Host service availability status",
+        "description": "Inspects whether the underlying AI model and host infrastructure are operating and ready to accept conversational requests.",
+        "operationId": "getAgentHealth",
+        "tags": ["AI Conversational Agent"],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service status returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentHealthEnvelope"
+                },
+                "example": {
+                  "success": true,
+                  "message": "AI Host is online",
+                  "data": {
+                    "status": "online",
+                    "latencyMs": 42
+                  },
+                  "error": null
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Standard Bearer JWT token obtained from Group 010 Authentication"
+      }
+    },
+    "schemas": {
+      "ChatRequestPayload": {
+        "type": "object",
+        "required": ["prompt"],
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Plain text prompt entered by the authenticated listener",
+            "example": "bài đang phát là gì?"
+          },
+          "context": {
+            "type": "object",
+            "description": "Current player and listener context at time of dispatch",
+            "properties": {
+              "currentTrack": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": { "type": "string", "format": "uuid" },
+                  "title": { "type": "string" },
+                  "artist": { "type": "string" }
+                }
+              },
+              "isPlaying": {
+                "type": "boolean",
+                "description": "Whether audio is actively playing"
+              },
+              "volume": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Current master playback volume"
+              }
+            }
+          }
+        }
+      },
+      "AgentStreamEvent": {
+        "type": "object",
+        "description": "Polymorphic Server-Sent Events structure formatted per W3C SSE standard",
+        "discriminator": {
+          "propertyName": "type"
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["thinking", "text", "error", "done"]
+          }
+        },
+        "required": ["type"]
+      },
+      "ApiErrorEnvelope": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Lỗi xử lý yêu cầu"
+          },
+          "data": {
+            "nullable": true,
+            "example": null
+          },
+          "error": {
+            "type": "object",
+            "required": ["code", "details"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "AI_SERVICE_UNAVAILABLE"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": { "type": "string" },
+                    "issue": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AgentHealthEnvelope": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "AI Host is online"
+          },
+          "data": {
+            "type": "object",
+            "required": ["status"],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": ["online", "degraded", "unavailable"],
+                "example": "online"
+              },
+              "latencyMs": {
+                "type": "integer",
+                "example": 45
+              }
+            }
+          },
+          "error": {
+            "nullable": true,
+            "example": null
+          }
+        }
+      }
+    }
+  }
+}
