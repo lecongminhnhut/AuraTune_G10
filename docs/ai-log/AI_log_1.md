@@ -18,6 +18,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 12  | 2026-10-30 | Viết spec 123 – Real-Time Music Assistance bằng `/speckit-specify`                                               | 12                                                |
 | 13  | 2026-10-30 | Làm rõ spec 123 bằng `/speckit-clarify` – danh mục hành động, điều phối client và widget phản hồi                | 12                                                |
 | 14  | 2026-11-01 | Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3                         | Toàn bộ 12 nhóm chức năng (010 – 120)             |
+| 15  | 2026-11-03 | Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3        | Toàn bộ 12 nhóm chức năng (010 – 120)             |
 
 ---
 
@@ -1340,3 +1341,484 @@ Do not start Group 020 until Group 010 has been clarified and the project owner 
 - **Rà soát tính nhất quán liên nhóm (Cross-Group Alignment):** 100% các ranh giới chức năng giữa Admin, Nghệ sĩ và Người nghe được phân định rành mạch; các luồng xử lý ngoại lệ khi bài hát bị gỡ hoặc AI ngoại tuyến đều có kịch bản xử lý an toàn và liên tục.
 
 **Kết quả kiểm chứng:** Đạt 100% trên toàn bộ 12 nhóm chức năng và hoàn tất phiên đồng bộ liên nhóm. Hệ thống tài liệu đặc tả hiện đạt trạng thái sẵn sàng cho giai đoạn phân tích mô hình Use-Case (PA3).
+
+---
+
+## Mục 15: Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3
+
+| Trường                   | Nội dung                                                                                                                                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                      |
+| Người thực hiện          | Nhựt                                                                                                                                                                                            |
+| Nhóm tính năng liên quan | Toàn bộ 12 nhóm chức năng (010 – 120), Yêu cầu phần mềm PA3 (Use-Case Model, Guidelines, Directory Structure)                                                                                   |
+| Công cụ AI               | Gemini (Antigravity)                                                                                                                                                                            |
+| Mục đích                 | Xây dựng mô hình Use Case cấp hệ thống, tài liệu hướng dẫn viết đặc tả Use Case chuẩn hóa và khởi tạo cấu trúc thư mục 12 nhóm chức năng cho PA3, đảm bảo truy vết 100% yêu cầu chức năng (FR). |
+
+### Prompt đã dùng
+
+````text
+# TASK: Create AuraTune Use-Case Model, Documentation Guide, and Group Directory Structure
+
+Work directly in the AuraTune repository.
+
+Your task is to:
+1. Create the system-level Use-Case Model.
+2. Create the shared Use-Case Documentation README.
+3. Create the 12 functional group directories.
+
+Do all three in this task.
+
+---
+
+## 1. Inspect Existing Project Sources
+
+Read the following documents before writing:
+
+### Project documentation
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- `docs/management/team-contract.md`
+- `docs/management/git-workflow.md`
+- `docs/management/speckit-workflow-guide.md`
+
+### Spec Kit documentation
+
+Inspect relevant files under all 12 groups:
+
+- `specs/010-authentication/`
+- `specs/020-home-dashboard/`
+- `specs/030-search/`
+- `specs/040-music-player/`
+- `specs/050-queue-management/`
+- `specs/060-playlist-management/`
+- `specs/070-listening-history/`
+- `specs/080-album-interaction/`
+- `specs/090-artist-profile-studio/`
+- `specs/100-ai-recommendations/`
+- `specs/110-admin-functions/`
+- `specs/120-ai-conversational-agent/`
+
+Inspect `spec.md`, `plan.md`, `tasks.md`, and relevant supporting files when available.
+
+Also inspect `specs/README.md` and any existing Use-Case Documentation Guide.
+
+---
+
+## 2. Source Accuracy Rules
+
+All documentation must be based on existing project sources.
+
+- Do not invent actors, use cases, FRs, external systems, or business rules.
+- Preserve existing terminology and requirement IDs.
+- Do not assume a feature exists just because it appears in a group name.
+- Do not assume Google or Facebook authentication is supported unless confirmed by project sources.
+- Distinguish confirmed information, proposed information, unconfirmed information, and unresolved questions.
+- If information is missing, use `TBD` or `Requires clarification`.
+- If sources conflict, document the conflict instead of silently resolving it.
+- Add references to the source files used.
+- Do not claim that a feature is implemented simply because it appears in a specification.
+
+---
+
+## 3. Create the System-Level Use-Case Model
+
+Create:
+
+`docs/requirements/use-case-model.md`
+
+This must be the single system-level Use-Case Model for the entire AuraTune project.
+
+Include these sections:
+
+### 3.1 Document Information
+- Document title
+- Purpose
+- Scope
+- Status
+- Source references
+
+### 3.2 System Overview
+Describe AuraTune using the existing Vision Document and project requirements.
+
+### 3.3 System Boundary
+Explain:
+- What is inside AuraTune.
+- What is outside AuraTune.
+- External actors and systems, if confirmed.
+- Responsibilities and interactions across the boundary.
+
+Do not invent external systems.
+
+### 3.4 Actor Catalog
+For each confirmed actor, document:
+- Actor name
+- Actor type
+- Description
+- Responsibilities
+- Related use cases
+- Source references
+
+Distinguish primary actors, supporting actors, and external systems where appropriate.
+
+### 3.5 Functional Group Overview
+
+Cover all 12 groups:
+
+| ID | Functional Group |
+|---|---|
+| 010 | Authentication |
+| 020 | Home Dashboard |
+| 030 | Search |
+| 040 | Music Player |
+| 050 | Queue Management |
+| 060 | Playlist Management |
+| 070 | Listening History |
+| 080 | Album Interaction |
+| 090 | Artist Profile & Studio |
+| 100 | AI Recommendations |
+| 110 | Admin Functions |
+| 120 | AI Conversational Agent |
+
+For every group, include:
+- Purpose
+- Confirmed capabilities
+- Main actors
+- Related FRs, if available
+- Dependencies on other groups
+- Source references
+- Unresolved questions
+
+### 3.6 System-Level Use-Case Diagram
+Create a Mermaid diagram representing the overall AuraTune system.
+
+The diagram must:
+- Show the system boundary.
+- Show confirmed actors.
+- Show confirmed use cases.
+- Organize use cases by functional group where practical.
+- Show relationships only when supported by sources.
+
+Do not invent `include`, `extend`, or generalization relationships.
+
+If Mermaid cannot represent the desired UML notation, use a clear conceptual Mermaid representation and label it appropriately.
+
+### 3.7 Consolidated Use-Case Catalog
+Include:
+- UC ID
+- Use-case name
+- Primary actor
+- Supporting actors
+- Functional group
+- Related FR IDs
+- Source references
+- Confirmation status
+
+Use existing IDs where available. If IDs are not available, define a provisional convention and label it as provisional.
+
+### 3.8 Use-Case Relationships
+Document supported:
+- `include`
+- `extend`
+- Generalization
+- Cross-group dependencies
+
+Explain each relationship. Mark proposed relationships as unconfirmed.
+
+### 3.9 FR Traceability
+Map existing functional requirements to their functional groups and use cases.
+
+Do not invent missing FR IDs.
+
+### 3.10 Open Questions and Limitations
+List unresolved actors, behaviors, relationships, requirements, and dependencies.
+
+### 3.11 References
+List all source documents used.
+
+---
+
+## 4. Create the Shared Use-Case Documentation README
+
+Create:
+
+`docs/requirements/use-cases/README.md`
+
+This is the single shared guideline for all team members writing Use-Case Specifications.
+
+Include:
+
+### 4.1 Purpose and Scope
+Explain the purpose of this documentation standard and its applicability to all 12 functional groups.
+
+### 4.2 Relationship with Spec Kit
+Explain the distinction and relationship between:
+- Use-Case Model
+- Use-Case Specification
+- Spec Kit `spec.md`
+- Spec Kit `plan.md`
+- Spec Kit `tasks.md`
+
+Explain why these artifacts are not interchangeable.
+
+### 4.3 Use-Case Writing Principles
+Define:
+- One use case represents one meaningful user goal or system interaction.
+- Flows must be clear and testable.
+- Avoid unnecessary implementation details.
+- Use consistent terminology.
+- Avoid duplicate use cases.
+
+### 4.4 Naming and ID Convention
+Define a consistent UC naming and identification convention.
+
+Prefer existing repository conventions. Otherwise, document the proposed convention as provisional.
+
+### 4.5 Actor Guidelines
+Explain:
+- Primary actors
+- Supporting actors
+- External systems
+- Actor responsibilities
+
+### 4.6 Standard Use-Case Specification Template
+
+Define the required structure:
+
+1. Use Case ID
+2. Use Case Name
+3. Functional Group
+4. Primary Actor
+5. Supporting Actors
+6. Description
+7. Preconditions
+8. Trigger
+9. Basic Flow
+10. Alternative Flows
+11. Exception Flows, when applicable
+12. Postconditions
+13. Special Requirements, when applicable
+14. Related Functional Requirements
+15. Related Use Cases
+16. Source References
+17. Prototype / Screenshot References
+
+Explain the expected content of each section.
+
+### 4.7 Basic Flow and Alternative Flow Guidelines
+Explain:
+- Numbered steps.
+- Actor actions and system responses.
+- Alternative flow branching points.
+- Alternative flow termination or return to the basic flow.
+- Validation and failure scenarios.
+- Requirement traceability.
+
+### 4.8 Preconditions and Postconditions
+Explain how to write verifiable conditions.
+
+### 4.9 FR Traceability
+Explain how to link each use case to existing FR IDs.
+
+### 4.10 Mermaid Guidelines
+Define appropriate Mermaid usage for system-level and supporting diagrams.
+
+### 4.11 Prototype and Screenshot Guidelines
+Explain:
+- Basic-flow prototype coverage.
+- Alternative-flow coverage where applicable.
+- Screenshot naming conventions.
+- How to reference screenshots from specifications.
+- Difference between conceptual prototypes and actual implementation screenshots.
+
+### 4.12 Team Responsibilities
+Use `docs/management/team-contract.md` as the source of truth for group ownership.
+
+Do not reassign team members.
+
+### 4.13 Documentation and Review Workflow
+Define:
+1. Review requirements and Spec Kit sources.
+2. Identify use cases and actors.
+3. Draft specifications.
+4. Write basic and alternative flows.
+5. Map FRs.
+6. Prepare prototypes and screenshots.
+7. Request peer review.
+8. Resolve review comments.
+9. Verify consistency with the system-level model.
+10. Update documentation.
+
+Follow the existing Git workflow.
+
+### 4.14 Quality Checklist
+Provide a practical review checklist.
+
+### 4.15 Definition of Done
+Define when a Use-Case Specification is complete and ready for review or submission.
+
+### 4.16 PA3 Compliance
+Explain how this documentation standard supports PA3 requirements.
+
+Do not claim that individual Use-Case Specifications or prototypes have already been completed.
+
+---
+
+## 5. Create the 12 Functional Group Directories
+
+Create exactly the following directories:
+
+```text
+docs/
+└── requirements/
+    ├── use-case-model.md
+    └── use-cases/
+        ├── README.md
+        ├── 010-authentication/
+        ├── 020-home-dashboard/
+        ├── 030-search/
+        ├── 040-music-player/
+        ├── 050-queue-management/
+        ├── 060-playlist-management/
+        ├── 070-listening-history/
+        ├── 080-album-interaction/
+        ├── 090-artist-profile-studio/
+        ├── 100-ai-recommendations/
+        ├── 110-admin-functions/
+        └── 120-ai-conversational-agent/
+````
+
+### Strict Directory Rules
+
+For these 12 group directories:
+
+- Create the directories only.
+- Do not create any files inside them.
+- Do not create per-group `README.md`.
+- Do not create `use-case-inventory.md`.
+- Do not create individual UC specification files.
+- Do not create `prototypes/` subdirectories.
+- Do not create `.gitkeep` or any placeholder files.
+
+The only two Markdown files to create in this task are:
+
+1. `docs/requirements/use-case-model.md`
+2. `docs/requirements/use-cases/README.md`
+
+Preserve existing contents if any of the target directories or files already exist.
+
+---
+
+## 6. PA3 Compliance
+
+Ensure the two shared documents support:
+
+- Use-Case Model deliverable.
+- Use-Case Specification writing standards.
+- Actor identification.
+- Use-case relationships.
+- FR traceability.
+- Prototype and screenshot conventions.
+- Team ownership and review workflow.
+
+Do not claim that all individual Use-Case Specifications, prototypes, or screenshots are complete.
+
+---
+
+## 7. Scope Restrictions
+
+This task is limited to:
+
+- Creating the two shared Markdown documents.
+- Creating the 12 functional group directories.
+
+Do not modify:
+
+- Application source code.
+- Existing Vision Document.
+- Project Plan.
+- Proposal.
+- Team Contract.
+- Existing Spec Kit `spec.md`.
+- Existing Spec Kit `plan.md`.
+- Existing Spec Kit `tasks.md`.
+- Configuration files.
+- Environment files.
+
+Do not delete, rename, or overwrite unrelated files.
+
+Preserve all existing uncommitted changes.
+
+Do not commit or push changes.
+
+---
+
+## 8. Final Verification
+
+After completing the task:
+
+1. Verify that `docs/requirements/use-case-model.md` exists.
+2. Verify that `docs/requirements/use-cases/README.md` exists.
+3. Verify that all 12 functional group directories exist.
+4. Verify that the group directories contain no newly created files.
+5. Verify that no `prototypes/` directories were created.
+6. Verify that the model covers all 12 groups.
+7. Verify that the shared README provides a complete and reusable writing standard.
+8. Verify consistency between the model, group names, actors, and FR references.
+9. Verify internal Markdown links.
+10. Verify that no unrelated files were modified.
+
+Finally, report:
+
+- The two Markdown files created.
+- The 12 directories created.
+- Sources inspected.
+- Any unresolved questions or missing source information.
+- Verification results.
+
+**Completion condition: Two shared documents written successfully and all 12 group directories created, with no files inside the group directories.**
+
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đọc và đối chiếu toàn bộ hệ thống tài liệu nguồn: `docs/proposal/proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `team-contract.md`, `git-workflow.md`, `api-contract.md`, `er-diagram.md`, `specs/` (12 nhóm chức năng), `AuraTune_Use_Case_Documentation_Guide.md` và các template mẫu.
+- Xây dựng hoàn chỉnh tài liệu mô hình Use Case cấp hệ thống `docs/requirements/use-case-model.md` gồm 11 mục chi tiết:
+  - Document Information & System Overview (bối cảnh nhạc phi thương mại mở bản quyền, tuân thủ Nghị định 13/2023/NĐ-CP).
+  - Phân định ranh giới hệ thống bên trong vs các hệ thống bên ngoài (Google OAuth 2.0, Facebook Login, Cloud Media Storage CDN, External AI Service Providers, Spotify Web API offline).
+  - Danh mục 5 tác nhân người dùng (`Guest`, `Listener`, `Playlist Collaborator`, `Artist`, `Administrator`) và sơ đồ kế thừa tác nhân Mermaid (`classDiagram`).
+  - Tổng quan chi tiết 12 nhóm chức năng (010 – 120) gồm mục đích, năng lực đã xác nhận, tác nhân, FR liên quan, dependency và câu hỏi mở.
+  - Sơ đồ Use-Case tổng thể hệ thống dạng Mermaid (`flowchart TB`) phân nhóm theo ranh giới functional groups.
+  - Danh mục 83 Use Cases chuẩn hóa (`UC-[GROUP]-[SEQUENCE]`) bao phủ 100% các FR đã xác nhận từ 12 nhóm.
+  - Phân tích các mối quan hệ `<<include>>`, `<<extend>>`, quan hệ kế thừa tác nhân và phụ thuộc liên nhóm.
+  - Ma trận truy vết yêu cầu chức năng (FR Traceability Matrix) liên kết đầy đủ các mã FR đã kiểm chứng.
+  - Ghi nhận 6 câu hỏi mở kiến trúc (SMTP reset pass, Facebook dev test users, chọn vector DB, HTTP range request CDN, sync playlist cộng tác, voice AI host).
+- Xây dựng tài liệu hướng dẫn chuẩn hóa đặc tả Use Case `docs/requirements/use-cases/README.md` gồm 16 mục chi tiết:
+  - Mục tiêu, phạm vi và phân định bản chất giữa Use-Case Model / Specification với Spec Kit (`spec.md`, `plan.md`, `tasks.md`).
+  - 5 nguyên tắc viết Use Case (hướng mục tiêu người dùng, tương tác Actor – System, không phụ thuộc chi tiết triển khai code/SQL, thuật ngữ chuẩn hóa, không phân mảnh luồng).
+  - Quy ước định danh và đặt tên file: `UC-[GROUP]-[SEQUENCE]-[short-name].md`.
+  - Hướng dẫn tác nhân và template chuẩn 17 mục cho từng file đặc tả Use Case.
+  - Hướng dẫn viết Basic Flow, Alternative Flows (AF), Exception Flows (EF), tiền điều kiện, hậu điều kiện, truy vết FR, Mermaid diagram, prototype/screenshot.
+  - Bảng phân công trách nhiệm 5 thành viên theo đúng `docs/management/team-contract.md`.
+  - Quy trình 10 bước viết và kiểm thử tài liệu Use Case kết hợp Git feature branch / Pull Request review.
+  - Quality Checklist và Definition of Done (DoD) cho việc nghiệm thu tài liệu PA3.
+- Khởi tạo chính xác 12 thư mục chức năng dưới `docs/requirements/use-cases/` (`010-authentication` đến `120-ai-conversational-agent`), tuân thủ nghiêm ngặt quy tắc thư mục rỗng (không tạo bất kỳ file hay folder con nào bên trong).
+- Xử lý hoàn tác và dọn dẹp sạch sẽ các tệp clarification nháp theo yêu cầu của Project Owner trước khi bàn giao.
+```
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                 | Quyết định                          | Lý do                                                                                                                                              |
+| ---------------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Danh mục 12 nhóm chức năng và phân công thành viên   | Giữ nguyên theo `team-contract.md`  | Tuân thủ chính xác phân công ban đầu: Nhựt (G10, G12), Khoa (G01, G06, G07), Đăng (G03, G08), Hoàng (G09, G11), Huy (G02, G04, G05).               |
+| Quy ước định danh Use Case `UC-[GROUP]-[SEQUENCE]`   | Chuẩn hóa và áp dụng toàn hệ thống  | Nhất quán với tài liệu hướng dẫn PA3 và cấu trúc nhóm trong `specs/`.                                                                              |
+| Danh mục tác nhân và ranh giới hệ thống              | Khóa chặt theo Proposal và Vision   | Chỉ sử dụng 5 tác nhân người dùng và 4 hệ thống bên ngoài đã kiểm chứng, không tự ý bổ sung các thành phần nội bộ (DB, router) làm actor.          |
+| Ma trận truy vết yêu cầu chức năng (FR Traceability) | Ánh xạ trực tiếp từ 27 spec hiện có | Bảo đảm 100% các FR đã kiểm chứng (từ `011-FR-001` đến `123-FR-005`) đều có ít nhất một Use Case đại diện, sẵn sàng cho khâu viết đặc tả chi tiết. |
+| Tạo file rác / placeholder trong 12 thư mục nhóm     | Bỏ / Nghiêm cấm tuyệt đối           | Tuân thủ chỉ thị nghiêm ngặt: 12 thư mục nhóm phải hoàn toàn rỗng để các feature lead tự khởi tạo tài liệu sau này.                                |
+
+### Cách kiểm chứng
+
+- **Kiểm tra sự tồn tại và định dạng tài liệu:** Xác nhận sự tồn tại của 2 file Markdown duy nhất: `docs/requirements/use-case-model.md` và `docs/requirements/use-cases/README.md`.
+- **Kiểm tra tính toàn vẹn của 12 thư mục:** Chạy `Get-ChildItem -Directory` và `Get-ChildItem -Recurse -File` xác nhận cả 12 thư mục nhóm đều tồn tại và không chứa bất kỳ file hay thư mục con nào.
+- **Kiểm tra độ bao phủ yêu cầu (FR Coverage):** Đối chiếu bảng Traceability Matrix trong `use-case-model.md` với toàn bộ các mã FR trong `specs/` (100% được bao phủ qua 83 Use Cases).
+- **Kiểm tra tính an toàn của repository (`git status`):** Xác nhận không có file mã nguồn, file cấu hình hay tài liệu proposal/management nào bị chỉnh sửa hoặc xóa nhầm.
