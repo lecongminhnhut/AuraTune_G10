@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Real-Time Music Assistance API - Feature 123",
+    "description": "API contract for client-side tool execution, interactive confirmation, and player/library assistance directives emitted by the AI Conversational Agent.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base path"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/agent/assistance/execute": {
+      "post": {
+        "summary": "Execute or coordinate real-time music assistance actions",
+        "description": "Accepts a validated intent request and returns an execution plan with structured tool calls, confirmation requirements, and embedded preview widgets.",
+        "operationId": "executeAssistancePlan",
+        "tags": ["AI Conversational Agent"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssistanceRequestPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Assistance plan generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistancePlanEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid action parameters or malformed request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized session token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Downstream music service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AssistanceRequestPayload": {
+        "type": "object",
+        "required": ["intentType", "extractedEntities"],
+        "properties": {
+          "intentType": {
+            "type": "string",
+            "example": "play_music"
+          },
+          "extractedEntities": {
+            "type": "object",
+            "example": { "songTitle": "Nơi này có anh", "controlAction": "play" }
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "currentTrack": { "type": "object", "nullable": true },
+              "isPlaying": { "type": "boolean" },
+              "volume": { "type": "integer" }
+            }
+          }
+        }
+      },
+      "AssistancePlanEnvelope": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Assistance plan ready" },
+          "data": { "$ref": "#/components/schemas/AssistancePlanData" },
+          "error": { "nullable": true, "example": null }
+        }
+      },
+      "AssistancePlanData": {
+        "type": "object",
+        "required": ["planId", "clientActions", "confirmationText"],
+        "properties": {
+          "planId": { "type": "string", "example": "plan-123456" },
+          "clientActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolCallDirective"
+            }
+          },
+          "embeddedWidget": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "type": { "type": "string", "example": "playlist" },
+              "playlistId": { "type": "string", "example": "pl-lofi-chill" }
+            }
+          },
+          "confirmationText": {
+            "type": "string",
+            "example": "Đang phát danh sách nhạc chill cho bạn."
+          }
+        }
+      },
+      "ToolCallDirective": {
+        "type": "object",
+        "required": ["id", "name", "args", "label"],
+        "properties": {
+          "id": { "type": "string", "example": "call_1" },
+          "name": {
+            "type": "string",
+            "enum": [
+              "play_playlist",
+              "play_tracks",
+              "playback",
+              "set_volume",
+              "queue_add",
+              "clear_queue",
+              "like_track",
+              "navigate"
+            ],
+            "example": "set_volume"
+          },
+          "args": {
+            "type": "object",
+            "example": { "value": 40 }
+          },
+          "label": { "type": "string", "example": "set_volume(40)" },
+          "confirm": {
+            "type": "string",
+            "nullable": true,
+            "example": "Xóa tất cả bài trong hàng chờ?"
+          }
+        }
+      },
+      "ApiErrorEnvelope": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string" },
+          "data": { "nullable": true, "example": null },
+          "error": {
+            "type": "object",
+            "required": ["code", "details"],
+            "properties": {
+              "code": { "type": "string", "example": "ACTION_EXECUTION_FAILED" },
+              "details": { "type": "array", "items": { "type": "object" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}
