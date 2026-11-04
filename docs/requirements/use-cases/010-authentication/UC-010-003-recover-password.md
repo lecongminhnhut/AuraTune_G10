@@ -13,7 +13,7 @@
 | **Supporting Actors** | None |
 | **Related FR IDs** | `FR-011-011` |
 | **Related Feature ID** | 011 |
-| **Related Spec Kit File** | [`specs/010-authentication/011-local-authentication/spec.md`](../../../specs/010-authentication/011-local-authentication/spec.md) |
+| **Related Spec Kit File** | [`specs/010-authentication/011-local-authentication/spec.md`](../../../../specs/010-authentication/011-local-authentication/spec.md) |
 | **Writer** | Mai Đăng Khoa |
 | **Reviewer** | TBD |
 | **Status** | In Review |

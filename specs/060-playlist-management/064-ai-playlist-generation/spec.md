@@ -36,7 +36,7 @@ As a user, I want to review and modify the AI-generated track list before saving
 
 **Why this priority**: Critical for user satisfaction and control over the AI's suggestions.
 
-**Independent Test**: Can be tested by modifying a generated proposal (remove, reorder, rename) and verifying the changes are reflected in the UI.
+**Independent Test**: Can be tested by removing and reordering proposed tracks and renaming the proposed playlist, then verifying the changes are reflected in the UI.
 
 **Acceptance Scenarios**:
 
@@ -90,7 +90,7 @@ As a user, I want to be informed if the AI service is unavailable so that I unde
 - **FR-003**: System MUST return 10-20 tracks per successful generation request.
 - **FR-004**: System MUST provide a text-based "reason" or explanation for the track selection.
 - **FR-005**: System MUST allow users to preview (play) any track in the proposal before saving.
-- **FR-006**: System MUST allow users to remove, reorder, and rename tracks/playlists within the proposal UI.
+- **FR-006**: System MUST allow users to remove and reorder proposed tracks and rename the proposed playlist within the proposal UI.
 - **FR-007**: System MUST integrate with the Playlist CRUD (061) service to persist the finalized playlist as a standard private playlist.
 - **FR-008**: System MUST use semantic/vector search capabilities to map user prompts to the music library.
 - **FR-009**: System MUST automatically filter out tracks that are unplayable or restricted for the user.

@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Owner |
 | Supporting Actors | None |
-| Related FR IDs | FR-065-02, FR-065-03 |
+| Related FR IDs | 065-FR-002, 065-FR-003, 065-FR-009 |
 | Related Feature ID | 065-collaborative-playlists |
 | Related Spec Kit File | [specs/060-playlist-management/065-collaborative-playlists/spec.md](../../../../specs/060-playlist-management/065-collaborative-playlists/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -105,8 +105,8 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-065-02 | System MUST allow playlist owners to invite registered AuraTune users by entering their email address. |
-| Functional Requirement | FR-065-03 | Invited users MUST immediately receive collaborator access upon invitation. |
+| Functional Requirement | 065-FR-002 | System MUST allow playlist owners to invite registered AuraTune users by entering their email address. |
+| Functional Requirement | 065-FR-003 | Invited users MUST immediately receive collaborator access upon invitation. |
 | Spec Kit Specification | specs/060-playlist-management/065-collaborative-playlists/spec.md | User Story 2 |
 
 ## 15. Open Questions

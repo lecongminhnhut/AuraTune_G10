@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Participant |
 | Supporting Actors | None |
-| Related FR IDs | FR-065-04, FR-065-05, FR-065-10 |
+| Related FR IDs | 065-FR-004, 065-FR-005, 065-FR-009, 065-FR-010 |
 | Related Feature ID | 065-collaborative-playlists |
 | Related Spec Kit File | [specs/060-playlist-management/065-collaborative-playlists/spec.md](../../../../specs/060-playlist-management/065-collaborative-playlists/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -73,7 +73,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-15 | Contributor Record | [FR-065-05] System MUST record the user_id of the member who added each track. |
+| BR-060-15 | Contributor Record | [065-FR-005] System MUST record the user_id of the member who added each track. |
 
 ## 12. Prototype and Screenshots
 
@@ -96,8 +96,8 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-065-04 | Authorized collaborators MUST be able to add, remove, and reorder tracks. |
-| Functional Requirement | FR-065-10 | Collaborative playlists MUST be public by default, but only joined collaborators can modify them. |
+| Functional Requirement | 065-FR-004 | Authorized collaborators MUST be able to add, remove, and reorder tracks. |
+| Functional Requirement | 065-FR-010 | Collaborative playlists MUST be public by default, but only joined collaborators can modify them. |
 | Spec Kit Specification | specs/060-playlist-management/065-collaborative-playlists/spec.md | User Story 4 |
 
 ## 15. Open Questions

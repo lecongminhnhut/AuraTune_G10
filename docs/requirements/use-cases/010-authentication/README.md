@@ -46,9 +46,9 @@ The verified capabilities within Group 010 comprise:
 
 | Feature ID | Feature Name | Related FR IDs | Spec Kit Specification |
 |---|---|---|---|
-| **011** | Local Authentication | `FR-011-001` to `FR-011-011` | [../../../specs/010-authentication/011-local-authentication/spec.md](../../../specs/010-authentication/011-local-authentication/spec.md) |
-| **012** | OAuth Authentication | `FR-012-001` to `FR-012-011` | [../../../specs/010-authentication/012-oauth-authentication/spec.md](../../../specs/010-authentication/012-oauth-authentication/spec.md) |
-| **013** | Session Management | `FR-013-001` to `FR-013-014` | [../../../specs/010-authentication/013-session-management/spec.md](../../../specs/010-authentication/013-session-management/spec.md) |
+| **011** | Local Authentication | `FR-011-001` to `FR-011-011` | [../../../../specs/010-authentication/011-local-authentication/spec.md](../../../../specs/010-authentication/011-local-authentication/spec.md) |
+| **012** | OAuth Authentication | `FR-012-001` to `FR-012-011` | [../../../../specs/010-authentication/012-oauth-authentication/spec.md](../../../../specs/010-authentication/012-oauth-authentication/spec.md) |
+| **013** | Session Management | `FR-013-001` to `FR-013-014` | [../../../../specs/010-authentication/013-session-management/spec.md](../../../../specs/010-authentication/013-session-management/spec.md) |
 
 ---
 
@@ -136,10 +136,10 @@ flowchart LR
 
 | UC ID | Basic Flow Prototype | Alternative Flow Prototypes | Notes |
 |---|---|---|---|
-| **UC-010-001** | [../../../specs/010-authentication/011-local-authentication/ui/02-registration-form-filled.png](../../../specs/010-authentication/011-local-authentication/ui/02-registration-form-filled.png) | [../../../specs/010-authentication/011-local-authentication/ui/04-registration-validation-errors.png](../../../specs/010-authentication/011-local-authentication/ui/04-registration-validation-errors.png) | Implemented UI |
-| **UC-010-002** | [../../../specs/010-authentication/011-local-authentication/ui/08-login-form-filled.png](../../../specs/010-authentication/011-local-authentication/ui/08-login-form-filled.png) | [../../../specs/010-authentication/011-local-authentication/ui/09-login-invalid-credentials.png](../../../specs/010-authentication/011-local-authentication/ui/09-login-invalid-credentials.png) | Implemented UI |
-| **UC-010-004** | [../../../specs/010-authentication/012-oauth-authentication/ui/01-oauth-login-options.png](../../../specs/010-authentication/012-oauth-authentication/ui/01-oauth-login-options.png) | N/A | Implemented UI |
-| **UC-010-006** | [../../../specs/010-authentication/013-session-management/ui/03-user-account-session-menu.png](../../../specs/010-authentication/013-session-management/ui/03-user-account-session-menu.png) | N/A | Implemented UI |
+| **UC-010-001** | [../../../../specs/010-authentication/011-local-authentication/ui/02-registration-form-filled.png](../../../../specs/010-authentication/011-local-authentication/ui/02-registration-form-filled.png) | [../../../../specs/010-authentication/011-local-authentication/ui/04-registration-validation-errors.png](../../../../specs/010-authentication/011-local-authentication/ui/04-registration-validation-errors.png) | Implemented UI |
+| **UC-010-002** | [../../../../specs/010-authentication/011-local-authentication/ui/08-login-form-filled.png](../../../../specs/010-authentication/011-local-authentication/ui/08-login-form-filled.png) | [../../../../specs/010-authentication/011-local-authentication/ui/09-login-invalid-credentials.png](../../../../specs/010-authentication/011-local-authentication/ui/09-login-invalid-credentials.png) | Implemented UI |
+| **UC-010-004** | [../../../../specs/010-authentication/012-oauth-authentication/ui/01-oauth-login-options.png](../../../../specs/010-authentication/012-oauth-authentication/ui/01-oauth-login-options.png) | N/A | Implemented UI |
+| **UC-010-006** | [../../../../specs/010-authentication/013-session-management/ui/03-user-account-session-menu.png](../../../../specs/010-authentication/013-session-management/ui/03-user-account-session-menu.png) | N/A | Implemented UI |
 
 ---
 

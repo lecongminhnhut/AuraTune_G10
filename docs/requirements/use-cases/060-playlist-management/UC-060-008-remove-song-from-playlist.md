@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Editor |
 | Supporting Actors | None |
-| Related FR IDs | FR-062-05, FR-062-06 |
+| Related FR IDs | 062-FR-005, 062-FR-006, 062-FR-007, 065-FR-004, 065-FR-008 |
 | Related Feature ID | 062-playlist-song-management |
 | Related Spec Kit File | [specs/060-playlist-management/062-playlist-song-management/spec.md](../../../../specs/060-playlist-management/062-playlist-song-management/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -74,7 +74,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-09 | Meta Updates | [FR-062-06] System MUST update total song count and duration on removal. |
+| BR-060-09 | Meta Updates | [062-FR-006] System MUST update total song count and duration on removal. |
 
 ## 12. Prototype and Screenshots
 
@@ -95,7 +95,10 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-062-05 | System MUST allow the playlist owner to remove any song from their playlist. |
+| Functional Requirement | 062-FR-005 | System MUST allow the playlist owner to remove any song from their playlist. |
+| Functional Requirement | 062-FR-006 | Update playlist count and duration after a track is removed. |
+| Functional Requirement | 062-FR-007, 065-FR-008 | Only owners and authorized collaborators can modify the playlist. |
+| Functional Requirement | 065-FR-004 | Authorized collaborators can remove tracks from a collaborative playlist. |
 | Spec Kit Specification | specs/060-playlist-management/062-playlist-song-management/spec.md | User Story 3 |
 
 ## 15. Open Questions

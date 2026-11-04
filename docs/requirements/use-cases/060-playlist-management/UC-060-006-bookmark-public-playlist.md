@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Listener |
 | Supporting Actors | None |
-| Related FR IDs | FR-010 |
+| Related FR IDs | 061-FR-010 |
 | Related Feature ID | 061-playlist-crud |
 | Related Spec Kit File | [specs/060-playlist-management/061-playlist-crud/spec.md](../../../../specs/060-playlist-management/061-playlist-crud/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -44,17 +44,7 @@ The listener clicks the "Lưu playlist" (Save to Library) button.
 
 ## 7. Alternative Flows
 
-### AF-01 – Unbookmark Playlist
-
-- **Starting step:** 1
-- **Condition:** Listener already has the playlist saved and wants to remove it.
-
-1. **Listener:** Clicks "Đã lưu" (Saved).
-2. **System:** Removes the reference link from the database.
-3. **System:** Toggles the button state back to "Lưu playlist".
-4. **System:** Removes the playlist from the listener's Library view.
-
-- **Outcome:** Use case ends successfully.
+No alternative flow is defined by the current 061 functional requirements.
 
 ## 8. Exception Flows
 
@@ -77,7 +67,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-06 | Read-only Access | [FR-010] Bookmarking does not grant edit rights. |
+| BR-060-06 | Read-only Access | [061-FR-010] Bookmarking does not grant edit rights. |
 
 ## 12. Prototype and Screenshots
 
@@ -98,9 +88,11 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-010 | System MUST allow authenticated users to save (bookmark/follow) public playlists to their personal library as read-only references. |
+| Functional Requirement | 061-FR-010 | System MUST allow authenticated users to save (bookmark/follow) public playlists to their personal library as read-only references. |
 | Spec Kit Specification | specs/060-playlist-management/061-playlist-crud/spec.md | User Story 4 |
 
 ## 15. Open Questions
 
-None
+| Question ID | Question | Owner | Status | Resolution |
+|---|---|---|---|---|
+| Q-061-01 | Does 061-FR-010 also require users to remove/unfollow a saved public playlist? | Group Owner | Resolved | No removal behavior is specified by 061-FR-010 or its clarification, so this UC covers saving only. Add a separate FR before modeling unfollow behavior. |

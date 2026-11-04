@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Listener |
 | Supporting Actors | None |
-| Related FR IDs | FR-001, FR-002, FR-003, FR-009 |
+| Related FR IDs | 061-FR-001, 061-FR-002, 061-FR-003, 061-FR-009 |
 | Related Feature ID | 061-playlist-crud |
 | Related Spec Kit File | [specs/060-playlist-management/061-playlist-crud/spec.md](../../../../specs/060-playlist-management/061-playlist-crud/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -93,8 +93,8 @@ The listener clicks on the "Tạo playlist" (Create Playlist) button in the Libr
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-01 | Default Status | [FR-002] Playlists must default to Private. |
-| BR-060-02 | Character Limits | [FR-003] Title (max 80), Description (max 300). |
+| BR-060-01 | Default Status | [061-FR-002] Playlists must default to Private. |
+| BR-060-02 | Character Limits | [061-FR-003] Title (max 80), Description (max 300). |
 
 ## 12. Prototype and Screenshots
 
@@ -115,8 +115,10 @@ The listener clicks on the "Tạo playlist" (Create Playlist) button in the Libr
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-001 | System MUST allow authenticated users to create a playlist with a required name and optional description. |
-| Functional Requirement | FR-002 | System MUST default new playlists to Private status. |
+| Functional Requirement | 061-FR-001 | System MUST allow authenticated users to create a playlist with a required name and optional description. |
+| Functional Requirement | 061-FR-002 | System MUST default new playlists to Private status. |
+| Functional Requirement | 061-FR-003 | Playlist title and description are limited to 80 and 300 characters respectively. |
+| Functional Requirement | 061-FR-009 | Provide a default cover image when no cover URL is supplied. |
 | Spec Kit Specification | specs/060-playlist-management/061-playlist-crud/spec.md | User Story 2 |
 
 ## 15. Open Questions

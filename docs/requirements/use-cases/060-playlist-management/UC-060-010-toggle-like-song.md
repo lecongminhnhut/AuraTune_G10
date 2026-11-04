@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Listener |
 | Supporting Actors | None |
-| Related FR IDs | FR-062-02 |
+| Related FR IDs | 062-FR-002 |
 | Related Feature ID | 062-playlist-song-management |
 | Related Spec Kit File | [specs/060-playlist-management/062-playlist-song-management/spec.md](../../../../specs/060-playlist-management/062-playlist-song-management/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -74,7 +74,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-11 | Liked Songs Sync | [FR-062-02] Sync additions/removals with the song "Like" toggle. |
+| BR-060-11 | Liked Songs Sync | [062-FR-002] Sync additions/removals with the song "Like" toggle. |
 
 ## 12. Prototype and Screenshots
 
@@ -94,7 +94,7 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-062-02 | System MUST automatically maintain a "Liked Songs" playlist for every user. |
+| Functional Requirement | 062-FR-002 | System MUST automatically maintain a "Liked Songs" playlist for every user. |
 | Spec Kit Specification | specs/060-playlist-management/062-playlist-song-management/spec.md | User Story 2 |
 
 ## 15. Open Questions

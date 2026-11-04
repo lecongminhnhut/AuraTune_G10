@@ -13,7 +13,7 @@
 | **Supporting Actors** | Facebook (OAuth Provider) |
 | **Related FR IDs** | `FR-012-002`, `FR-012-003`, `FR-012-004`, `FR-012-007` |
 | **Related Feature ID** | 012 |
-| **Related Spec Kit File** | [`specs/010-authentication/012-oauth-authentication/spec.md`](../../../specs/010-authentication/012-oauth-authentication/spec.md) |
+| **Related Spec Kit File** | [`specs/010-authentication/012-oauth-authentication/spec.md`](../../../../specs/010-authentication/012-oauth-authentication/spec.md) |
 | **Writer** | Mai Đăng Khoa |
 | **Reviewer** | TBD |
 | **Status** | In Review |

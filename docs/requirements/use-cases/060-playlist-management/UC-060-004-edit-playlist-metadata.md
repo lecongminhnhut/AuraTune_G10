@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Owner |
 | Supporting Actors | None |
-| Related FR IDs | FR-007 |
+| Related FR IDs | 061-FR-007, 065-FR-006 |
 | Related Feature ID | 061-playlist-crud |
 | Related Spec Kit File | [specs/060-playlist-management/061-playlist-crud/spec.md](../../../../specs/060-playlist-management/061-playlist-crud/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -93,7 +93,7 @@ The listener clicks the "Chỉnh sửa chi tiết" (Edit Details) button (pencil
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-04 | Ownership Check | [FR-007] Only the owner can update playlist metadata. |
+| BR-060-04 | Ownership Check | [061-FR-007] Only the owner can update playlist metadata. |
 
 ## 12. Prototype and Screenshots
 
@@ -113,7 +113,8 @@ The listener clicks the "Chỉnh sửa chi tiết" (Edit Details) button (pencil
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-007 | System MUST allow the owner of a playlist to update its name, description, cover_url, and status. |
+| Functional Requirement | 061-FR-007 | System MUST allow the owner of a playlist to update its name, description, cover_url, and status. |
+| Functional Requirement | 065-FR-006 | Only the playlist owner may edit playlist metadata. |
 | Spec Kit Specification | specs/060-playlist-management/061-playlist-crud/spec.md | User Story 4 |
 
 ## 15. Open Questions

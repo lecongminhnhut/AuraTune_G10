@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Owner |
 | Supporting Actors | None |
-| Related FR IDs | FR-065-01 |
+| Related FR IDs | 065-FR-001, 065-FR-009 |
 | Related Feature ID | 065-collaborative-playlists |
 | Related Spec Kit File | [specs/060-playlist-management/065-collaborative-playlists/spec.md](../../../../specs/060-playlist-management/065-collaborative-playlists/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -78,7 +78,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-12 | Owner Control | [FR-065-01] Only owners can toggle collaborative status. |
+| BR-060-12 | Owner Control | [065-FR-001] Only owners can toggle collaborative status. |
 
 ## 12. Prototype and Screenshots
 
@@ -99,7 +99,7 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-065-01 | Playlist owners MUST be able to toggle the is_collaborative status of any playlist they own. |
+| Functional Requirement | 065-FR-001 | Playlist owners MUST be able to toggle the is_collaborative status of any playlist they own. |
 | Spec Kit Specification | specs/060-playlist-management/065-collaborative-playlists/spec.md | User Story 1 |
 
 ## 15. Open Questions

@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Editor |
 | Supporting Actors | None |
-| Related FR IDs | FR-062-01, FR-062-03, FR-062-06 |
+| Related FR IDs | 062-FR-001, 062-FR-003, 062-FR-006, 062-FR-007, 062-FR-008, 065-FR-004, 065-FR-008 |
 | Related Feature ID | 062-playlist-song-management |
 | Related Spec Kit File | [specs/060-playlist-management/062-playlist-song-management/spec.md](../../../../specs/060-playlist-management/062-playlist-song-management/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -88,8 +88,8 @@ The listener clicks the "Thêm bài hát" (Add songs) button.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-07 | Authorization | [FR-062-07] Only owners or collaborators can add songs. |
-| BR-060-08 | Duplicate Prevention | [FR-062-08] Prevent duplicate songs in the same playlist. |
+| BR-060-07 | Authorization | [062-FR-007] Only owners or collaborators can add songs. |
+| BR-060-08 | Duplicate Prevention | [062-FR-008] Prevent duplicate songs in the same playlist. |
 
 ## 12. Prototype and Screenshots
 
@@ -110,7 +110,11 @@ The listener clicks the "Thêm bài hát" (Add songs) button.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-062-01 | System MUST allow authenticated users to add any song to their owned or collaborative playlists. |
+| Functional Requirement | 062-FR-001 | System MUST allow authenticated users to add any song to their owned or collaborative playlists. |
+| Functional Requirement | 062-FR-003, 062-FR-006 | Persist playlist-song association/order and update playlist count/duration after additions. |
+| Functional Requirement | 062-FR-007, 065-FR-008 | Only owners and authorized collaborators can modify the playlist. |
+| Functional Requirement | 062-FR-008 | Prevent duplicate tracks in the same playlist. |
+| Functional Requirement | 065-FR-004 | Authorized collaborators can add tracks to a collaborative playlist. |
 | Spec Kit Specification | specs/060-playlist-management/062-playlist-song-management/spec.md | User Story 2 |
 
 ## 15. Open Questions

@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Editor |
 | Supporting Actors | None |
-| Related FR IDs | FR-062-04 |
+| Related FR IDs | 062-FR-003, 062-FR-004, 062-FR-007, 065-FR-004, 065-FR-008 |
 | Related Feature ID | 062-playlist-song-management |
 | Related Spec Kit File | [specs/060-playlist-management/062-playlist-song-management/spec.md](../../../../specs/060-playlist-management/062-playlist-song-management/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -75,7 +75,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-10 | Order Persistence | [FR-062-03] System MUST persist sort_order or position. |
+| BR-060-10 | Order Persistence | [062-FR-003] System MUST persist sort_order or position. |
 
 ## 12. Prototype and Screenshots
 
@@ -95,7 +95,10 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-062-04 | System MUST support drag-and-drop reordering of songs within the playlist detail view. |
+| Functional Requirement | 062-FR-004 | System MUST support drag-and-drop reordering of songs within the playlist detail view. |
+| Functional Requirement | 062-FR-003 | Persist each playlist-song association with its position. |
+| Functional Requirement | 062-FR-007, 065-FR-008 | Only owners and authorized collaborators can modify the playlist. |
+| Functional Requirement | 065-FR-004 | Authorized collaborators can reorder tracks in a collaborative playlist. |
 | Spec Kit Specification | specs/060-playlist-management/062-playlist-song-management/spec.md | User Story 3 |
 
 ## 15. Open Questions

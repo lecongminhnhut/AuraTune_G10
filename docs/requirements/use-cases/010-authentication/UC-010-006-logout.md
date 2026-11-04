@@ -13,7 +13,7 @@
 | **Supporting Actors** | None |
 | **Related FR IDs** | `FR-013-006`, `FR-013-009` |
 | **Related Feature ID** | 013 |
-| **Related Spec Kit File** | [`specs/010-authentication/013-session-management/spec.md`](../../../specs/010-authentication/013-session-management/spec.md) |
+| **Related Spec Kit File** | [`specs/010-authentication/013-session-management/spec.md`](../../../../specs/010-authentication/013-session-management/spec.md) |
 | **Writer** | Mai Đăng Khoa |
 | **Reviewer** | TBD |
 | **Status** | In Review |

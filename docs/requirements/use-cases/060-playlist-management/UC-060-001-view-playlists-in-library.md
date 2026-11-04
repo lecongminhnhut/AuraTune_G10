@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Listener |
 | Supporting Actors | None |
-| Related FR IDs | FR-004 |
+| Related FR IDs | 061-FR-004, 061-FR-010, 062-FR-002 |
 | Related Feature ID | 061-playlist-crud |
 | Related Spec Kit File | [specs/060-playlist-management/061-playlist-crud/spec.md](../../../../specs/060-playlist-management/061-playlist-crud/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -23,7 +23,7 @@ The listener wants to browse their music collection and access previously create
 
 ## 3. Description
 
-This use case describes the steps for a listener to navigate to the Library and view all their personal playlists, including the default "Bài hát đã thích" (Liked Songs) and custom user-created playlists.
+This use case describes how a listener views playlists they created, public playlists they bookmarked, and their Liked Songs collection in the Library.
 
 ## 4. Preconditions
 
@@ -36,7 +36,7 @@ The listener clicks on the "Thư viện" (Library) link in the main navigation.
 ## 6. Basic Flow
 
 1. **Listener:** Clicks "Thư viện" on the sidebar or navigation menu.
-2. **System:** Retrieves the list of playlists owned by or shared with the current user.
+2. **System:** Retrieves playlists created by the current user, public playlists they saved, and the user's Liked Songs collection.
 3. **System:** Displays the Library page with a collection of playlist cards.
 4. **Listener:** Browses the list of playlists.
 
@@ -97,7 +97,9 @@ No additional business rules identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-004 | System MUST allow users to retrieve a list of all playlists created by the current authenticated user. |
+| Functional Requirement | 061-FR-004 | System MUST allow users to retrieve a list of all playlists created by the current authenticated user. |
+| Functional Requirement | 061-FR-010 | Saved public playlists appear as read-only references in the user's personal library. |
+| Functional Requirement | 062-FR-002 | The Liked Songs collection is maintained from song Like actions. |
 | Spec Kit Specification | specs/060-playlist-management/061-playlist-crud/spec.md | User Story 1 |
 
 ## 15. Open Questions

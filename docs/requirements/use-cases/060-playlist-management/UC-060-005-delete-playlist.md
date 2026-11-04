@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Owner |
 | Supporting Actors | None |
-| Related FR IDs | FR-008 |
+| Related FR IDs | 061-FR-008, 065-FR-006 |
 | Related Feature ID | 061-playlist-crud |
 | Related Spec Kit File | [specs/060-playlist-management/061-playlist-crud/spec.md](../../../../specs/060-playlist-management/061-playlist-crud/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -102,7 +102,8 @@ The listener clicks the "Xóa playlist" (Delete Playlist) button (trash icon) on
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-008 | System MUST allow the owner of a playlist to delete the playlist permanently after a confirmation step. |
+| Functional Requirement | 061-FR-008 | System MUST allow the owner of a playlist to delete the playlist permanently after a confirmation step. |
+| Functional Requirement | 065-FR-006 | Only the playlist owner may delete the playlist. |
 | Spec Kit Specification | specs/060-playlist-management/061-playlist-crud/spec.md | User Story 3 |
 
 ## 15. Open Questions

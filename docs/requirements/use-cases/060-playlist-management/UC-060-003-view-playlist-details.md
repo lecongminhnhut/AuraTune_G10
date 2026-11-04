@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Listener |
 | Supporting Actors | None |
-| Related FR IDs | FR-005, FR-006 |
+| Related FR IDs | 061-FR-005, 061-FR-006, 065-FR-010 |
 | Related Feature ID | 061-playlist-crud |
 | Related Spec Kit File | [specs/060-playlist-management/061-playlist-crud/spec.md](../../../../specs/060-playlist-management/061-playlist-crud/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -27,8 +27,8 @@ This use case describes how a listener accesses the dedicated page for a playlis
 
 ## 4. Preconditions
 
-- The listener is authenticated (to see private playlists).
 - The playlist exists.
+- Authentication is required to view a private playlist; public playlists can be viewed by guests.
 
 ## 5. Trigger
 
@@ -87,7 +87,7 @@ The listener clicks on a playlist card in the Library, Search results, or via a 
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-03 | Visibility Restriction | [FR-006] Restrict viewing of private playlists to the owner only. |
+| BR-060-03 | Visibility Restriction | [061-FR-006] Restrict viewing of private playlists to the owner only. |
 
 ## 12. Prototype and Screenshots
 
@@ -109,8 +109,9 @@ The listener clicks on a playlist card in the Library, Search results, or via a 
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-005 | System MUST allow users to view the metadata of any playlist marked as public. |
-| Functional Requirement | FR-006 | System MUST restrict viewing of private playlists to the owner only. |
+| Functional Requirement | 061-FR-005 | System MUST allow users to view the metadata of any playlist marked as public. |
+| Functional Requirement | 061-FR-006 | System MUST restrict viewing of private playlists to the owner only. |
+| Functional Requirement | 065-FR-010 | Collaborative playlists are public by default; only joined collaborators can modify them. |
 | Spec Kit Specification | specs/060-playlist-management/061-playlist-crud/spec.md | User Story 3 |
 
 ## 15. Open Questions

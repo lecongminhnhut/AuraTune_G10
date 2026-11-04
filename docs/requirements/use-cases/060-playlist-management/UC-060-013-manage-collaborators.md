@@ -9,7 +9,7 @@
 | Functional Group | 060 – Playlist Management |
 | Primary Actor | Playlist Owner |
 | Supporting Actors | None |
-| Related FR IDs | FR-065-07 |
+| Related FR IDs | 065-FR-007, 065-FR-009 |
 | Related Feature ID | 065-collaborative-playlists |
 | Related Spec Kit File | [specs/060-playlist-management/065-collaborative-playlists/spec.md](../../../../specs/060-playlist-management/065-collaborative-playlists/spec.md) |
 | Writer | Mai Đăng Khoa |
@@ -75,7 +75,7 @@ None identified.
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
-| BR-060-14 | Owner Authority | [FR-065-07] Playlist owners MUST be able to view and revoke collaborator access. |
+| BR-060-14 | Owner Authority | [065-FR-007] Playlist owners MUST be able to view and revoke collaborator access. |
 
 ## 12. Prototype and Screenshots
 
@@ -96,7 +96,7 @@ None identified.
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
-| Functional Requirement | FR-065-07 | Playlist owners MUST be able to view a list of all current collaborators and revoke their access. |
+| Functional Requirement | 065-FR-007 | Playlist owners MUST be able to view a list of all current collaborators and revoke their access. |
 | Spec Kit Specification | specs/060-playlist-management/065-collaborative-playlists/spec.md | User Story 3 |
 
 ## 15. Open Questions
