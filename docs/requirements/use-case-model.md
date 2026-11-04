@@ -127,7 +127,7 @@ The AuraTune system encompasses 12 official functional groups established in the
 - **Purpose**: Acts as the central discovery surface, aggregating personalized music, recent plays, charts, and new releases.
 - **Confirmed Capabilities**: Section ordering (Hero → Recommendations → New Albums → Trending Charts → Featured Artists → Suggested Playlists → Genres); guest vs. authenticated partition; direct one-click playback initializing queue; failure isolation per section; dedicated `/charts` page with period and genre filters.
 - **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`).
-- **Related FR IDs**: `021-FR-001` to `021-FR-008`; `022-FR-001` to `022-FR-004`; `023-FR-001` to `023-FR-003`; `024-FR-001` to `024-FR-004`; `025-FR-001` to `025-FR-003`.
+- **Related FR IDs**: `021-FR-001` to `021-FR-013`; `022-FR-001` to `022-FR-011`; `023-FR-001` to `023-FR-011`; `024-FR-001` to `024-FR-014`; `025-FR-001` to `025-FR-011`.
 - **Dependencies**: Groups `010`, `040`, `050`, `070`, `080`, `090`, `100`.
 - **Source References**: `proposal.md` 6.2; `Vision Document` G02; `specs/020-home-dashboard/`.
 - **Unresolved Questions**: Single composite endpoint `GET /home` vs. granular parallel client requests (Q-020-1).
@@ -145,7 +145,7 @@ The AuraTune system encompasses 12 official functional groups established in the
 - **Purpose**: Provides uninterrupted, continuous audio streaming and playback controls across all pages.
 - **Confirmed Capabilities**: Play, pause, skip, previous (with 3-second restart rule); elapsed/duration display; seeking via HTTP 206 range requests; volume slider and mute; shuffle and repeat modes; synchronized lyrics scrolling; persistent bottom mini-player; full player modal; song sharing; public comment reading; authenticated comment posting and deletion; 30-second listening history dispatch.
 - **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`), Administrator (`ACT-05`), Cloud Media Storage (`ACT-EXT-03`).
-- **Related FR IDs**: `041-FR-001` to `041-FR-006`; `042-FR-001` to `042-FR-004`; `043-FR-001` to `043-FR-002`; `044-FR-001` to `044-FR-003`; `045-FR-001` to `045-FR-003`; `046-FR-001` to `046-FR-004`.
+- **Related FR IDs**: `041-FR-001` to `041-FR-015`; `042-FR-001` to `042-FR-012`; `043-FR-001` to `043-FR-012`; `044-FR-001` to `044-FR-012`; `045-FR-001` to `045-FR-012`; `046-FR-001` to `046-FR-015`.
 - **Dependencies**: Group `050` (Queue), Group `070` (History), Cloud Media Storage (Cloudinary/Cloudflare).
 - **Source References**: `proposal.md` 6.4; `Vision Document` G04; `specs/040-music-player/`.
 - **Unresolved Questions**: Cloud media storage range request verification on free tier (Q-040-1).
@@ -154,7 +154,7 @@ The AuraTune system encompasses 12 official functional groups established in the
 - **Purpose**: Provides real-time dynamic control over the upcoming playback waitlist.
 - **Confirmed Capabilities**: Slide-out queue drawer UI; now-playing top card; upcoming tracks list (max 50 tracks); jump to track; clear upcoming queue; append to queue; de-duplication of manual additions; drag-and-drop reordering; step up/down accessibility buttons; LIFO Play Next prioritization; Play Next override over Shuffle; LocalStorage session persistence across page reload.
 - **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`).
-- **Related FR IDs**: `051-FR-001` to `051-FR-008`; `052-FR-001` to `052-FR-004`; `053-FR-001` to `053-FR-003`; `054-FR-001` to `054-FR-004`.
+- **Related FR IDs**: `051-FR-001` to `051-FR-013`; `052-FR-001` to `052-FR-012`; `053-FR-001` to `053-FR-009`; `054-FR-001` to `054-FR-010`.
 - **Dependencies**: Group `040` (Player), Group `060` (Playlist creation from queue).
 - **Source References**: `proposal.md` 6.5; `Vision Document` G05; `specs/050-queue-management/`.
 - **Unresolved Questions**: Behavior when clicking a single song from search (queue replacement vs. index 0 insertion, Q-050-2).
@@ -440,32 +440,32 @@ flowchart TB
 | `UC-010-007` | Log Out | Listener | None | 010 Authentication | `013-FR-006` | `013/spec.md` US2 | Confirmed |
 | `UC-010-008` | Log Out from All Devices | Listener | None | 010 Authentication | `013-FR-008` | `013/spec.md` US3 | Confirmed |
 | `UC-010-009` | Unlink Social Account | Listener | None | 010 Authentication | `012-FR-011` | `012/spec.md` US4 | Confirmed |
-| `UC-020-001` | Browse Home Dashboard | Guest / Listener | None | 020 Home Dashboard | `021-FR-001..004`, `021-FR-006` | `021/spec.md` US1, US2 | Confirmed |
-| `UC-020-002` | Stream Recommended Music from Home | Guest / Listener | None | 020 Home Dashboard | `022-FR-001..004` | `022/spec.md` US1 | Confirmed |
-| `UC-020-003` | Replay Recently Played Music | Listener | None | 020 Home Dashboard | `023-FR-001..003` | `023/spec.md` US1 | Confirmed |
-| `UC-020-004` | Browse Trending Charts | Guest / Listener | None | 020 Home Dashboard | `024-FR-001..004` | `024/spec.md` US1, US2 | Confirmed |
-| `UC-020-005` | Explore New Album Releases | Guest / Listener | None | 020 Home Dashboard | `025-FR-001..003` | `025/spec.md` US1, US2 | Confirmed |
+| `UC-020-001` | Browse Home Dashboard | Guest / Listener | None | 020 Home Dashboard | `021-FR-001` to `021-FR-013` | `021/spec.md` US1, US2 | Confirmed |
+| `UC-020-002` | Stream Recommended Music from Home | Guest / Listener | None | 020 Home Dashboard | `022-FR-001` to `022-FR-011` | `022/spec.md` US1 | Confirmed |
+| `UC-020-003` | Replay Recently Played Music | Listener | None | 020 Home Dashboard | `023-FR-001` to `023-FR-011` | `023/spec.md` US1 | Confirmed |
+| `UC-020-004` | Browse Trending Charts | Guest / Listener | None | 020 Home Dashboard | `024-FR-001` to `024-FR-014` | `024/spec.md` US1, US2 | Confirmed |
+| `UC-020-005` | Explore New Album Releases | Guest / Listener | None | 020 Home Dashboard | `025-FR-001` to `025-FR-011` | `025/spec.md` US1, US2 | Confirmed |
 | `UC-030-001` | Search Catalog by Text Metadata | Guest / Listener | None | 030 Search | `031-FR-001..006` | `031/spec.md` US1, US2 | Confirmed |
 | `UC-030-002` | Search Music by Lyric Fragment | Guest / Listener | External AI Service | 030 Search | `032-FR-001..005` | `032/spec.md` US1 | Confirmed |
 | `UC-030-003` | Discover Music by Semantic Mood or Context | Guest / Listener | External AI Service | 030 Search | `033-FR-001..005` | `033/spec.md` US1, US2 | Confirmed |
 | `UC-030-004` | Manage Local Search History | Guest / Listener | None | 030 Search | `031-FR-007` | `031/spec.md` US3 | Confirmed |
-| `UC-040-001` | Control Audio Playback | Guest / Listener | Cloud Media Storage | 040 Music Player | `041-FR-001..004`, `041-FR-006` | `041/spec.md` US1, US2 | Confirmed |
-| `UC-040-002` | Adjust Volume and Mute | Guest / Listener | None | 040 Music Player | `042-FR-003..004` | `042/spec.md` US2 | Confirmed |
-| `UC-040-003` | Seek Audio Playback Position | Guest / Listener | Cloud Media Storage | 040 Music Player | `042-FR-001..002` | `042/spec.md` US1 | Confirmed |
-| `UC-040-004` | Toggle Shuffle and Repeat Modes | Guest / Listener | None | 040 Music Player | `043-FR-001..002` | `043/spec.md` US1, US2 | Confirmed |
-| `UC-040-005` | View Synchronized Lyrics | Guest / Listener | None | 040 Music Player | `044-FR-001..003` | `044/spec.md` US1, US2 | Confirmed |
-| `UC-040-006` | Toggle Persistent Mini and Full Player | Guest / Listener | None | 040 Music Player | `045-FR-001..003` | `045/spec.md` US1, US2 | Confirmed |
-| `UC-040-007` | Share Song | Guest / Listener | None | 040 Music Player | `046-FR-001` | `046/spec.md` US1 | Confirmed |
-| `UC-040-008` | Read Track Comments | Guest / Listener | None | 040 Music Player | `046-FR-002` | `046/spec.md` US2 | Confirmed |
-| `UC-040-009` | Post Track Comment | Listener | None | 040 Music Player | `046-FR-003` | `046/spec.md` US3 | Confirmed |
-| `UC-040-010` | Delete Track Comment | Listener / Administrator | None | 040 Music Player | `046-FR-004`, `112-FR-004` | `046/spec.md` US3 | Confirmed |
-| `UC-050-001` | View Playback Queue | Guest / Listener | None | 050 Queue Management | `051-FR-001..003`, `051-FR-006`, `051-FR-008` | `051/spec.md` US1, US2 | Confirmed |
-| `UC-050-002` | Add Track to Queue | Guest / Listener | None | 050 Queue Management | `052-FR-001..002`, `052-FR-004` | `052/spec.md` US1 | Confirmed |
-| `UC-050-003` | Play Track Next | Guest / Listener | None | 050 Queue Management | `054-FR-001..004` | `054/spec.md` US1, US2 | Confirmed |
-| `UC-050-004` | Reorder Upcoming Queue | Guest / Listener | None | 050 Queue Management | `053-FR-001..003` | `053/spec.md` US1, US2 | Confirmed |
-| `UC-050-005` | Remove Track from Queue | Guest / Listener | None | 050 Queue Management | `052-FR-003` | `052/spec.md` US2 | Confirmed |
-| `UC-050-006` | Clear Upcoming Queue | Guest / Listener | None | 050 Queue Management | `051-FR-005` | `051/spec.md` US2 | Confirmed |
-| `UC-050-007` | Save Queue as Playlist | Listener | None | 050 Queue Management | `051-FR-007` | `051/spec.md` US2 | Confirmed |
+| `UC-040-001` | Control Audio Playback | Guest / Listener | Cloud Media Storage | 040 Music Player | `041-FR-001` to `041-FR-015` | `041/spec.md` US1, US2 | Confirmed |
+| `UC-040-002` | Adjust Volume and Mute | Guest / Listener | None | 040 Music Player | `042-FR-006` to `042-FR-011` | `042/spec.md` US2 | Confirmed |
+| `UC-040-003` | Seek Audio Playback Position | Guest / Listener | Cloud Media Storage | 040 Music Player | `042-FR-001` to `042-FR-005`, `042-FR-011`, `042-FR-012` | `042/spec.md` US1 | Confirmed |
+| `UC-040-004` | Toggle Shuffle and Repeat Modes | Guest / Listener | None | 040 Music Player | `043-FR-001` to `043-FR-012` | `043/spec.md` US1, US2 | Confirmed |
+| `UC-040-005` | View Synchronized Lyrics | Guest / Listener | None | 040 Music Player | `044-FR-001` to `044-FR-012` | `044/spec.md` US1, US2 | Confirmed |
+| `UC-040-006` | Toggle Persistent Mini and Full Player | Guest / Listener | None | 040 Music Player | `045-FR-001` to `045-FR-012` | `045/spec.md` US1, US2 | Confirmed |
+| `UC-040-007` | Share Song | Guest / Listener | None | 040 Music Player | `046-FR-001` to `046-FR-005` | `046/spec.md` US1 | Confirmed |
+| `UC-040-008` | Read Track Comments | Guest / Listener | None | 040 Music Player | `046-FR-006`, `046-FR-007`, `046-FR-014`, `046-FR-015` | `046/spec.md` US2 | Confirmed |
+| `UC-040-009` | Post Track Comment | Listener | None | 040 Music Player | `046-FR-008`, `046-FR-009`, `046-FR-012`, `046-FR-013`, `046-FR-015` | `046/spec.md` US3 | Confirmed |
+| `UC-040-010` | Delete Track Comment | Listener / Administrator | None | 040 Music Player | `046-FR-010` to `046-FR-012` | `046/spec.md` US3 | Confirmed |
+| `UC-050-001` | View Playback Queue | Guest / Listener | None | 050 Queue Management | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011` | `051/spec.md` US1, US2 | Confirmed |
+| `UC-050-002` | Add Track to Queue | Guest / Listener | None | 050 Queue Management | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012`, `051-FR-013` | `052/spec.md` US1 | Confirmed |
+| `UC-050-003` | Play Track Next | Guest / Listener | None | 050 Queue Management | `054-FR-001` to `054-FR-010`, `052-FR-012`, `051-FR-013` | `054/spec.md` US1, US2 | Confirmed |
+| `UC-050-004` | Reorder Upcoming Queue | Guest / Listener | None | 050 Queue Management | `053-FR-001` to `053-FR-009` | `053/spec.md` US1, US2 | Confirmed |
+| `UC-050-005` | Remove Track from Queue | Guest / Listener | None | 050 Queue Management | `052-FR-008` to `052-FR-011` | `052/spec.md` US2 | Confirmed |
+| `UC-050-006` | Clear Upcoming Queue | Guest / Listener | None | 050 Queue Management | `051-FR-006`, `051-FR-007` | `051/spec.md` US2 | Confirmed |
+| `UC-050-007` | Save Queue as Playlist | Listener | None | 050 Queue Management | `051-FR-012` | `051/spec.md` US2 | Confirmed |
 | `UC-060-001` | Create Playlist | Listener | None | 060 Playlist Management | `061-FR-001..002` | `061/spec.md` US1 | Confirmed |
 | `UC-060-002` | View Playlist Details | Guest / Listener | None | 060 Playlist Management | `061-FR-003` | `061/spec.md` US1 | Confirmed |
 | `UC-060-003` | Edit Playlist Metadata and Visibility | Listener | None | 060 Playlist Management | `061-FR-002`, `061-FR-004` | `061/spec.md` US2 | Confirmed |
@@ -552,10 +552,10 @@ flowchart TB
 | Functional Group | Verified FR IDs | Mapped Use Cases | Status |
 |---|---|---|---|
 | **010 Authentication** | `011-FR-001` to `011-FR-011`<br>`012-FR-001` to `012-FR-011`<br>`013-FR-001` to `013-FR-014` | `UC-010-001` through `UC-010-009` | Fully Covered |
-| **020 Home Dashboard** | `021-FR-001` to `021-FR-008`<br>`022-FR-001` to `022-FR-004`<br>`023-FR-001` to `023-FR-003`<br>`024-FR-001` to `024-FR-004`<br>`025-FR-001` to `025-FR-003` | `UC-020-001` through `UC-020-005` | Fully Covered |
+| **020 Home Dashboard** | `021-FR-001` to `021-FR-013`<br>`022-FR-001` to `022-FR-011`<br>`023-FR-001` to `023-FR-011`<br>`024-FR-001` to `024-FR-014`<br>`025-FR-001` to `025-FR-011` | `UC-020-001` through `UC-020-005` | Fully Covered |
 | **030 Search** | `031-FR-001` to `031-FR-007`<br>`032-FR-001` to `032-FR-005`<br>`033-FR-001` to `033-FR-005` | `UC-030-001` through `UC-030-004` | Fully Covered |
-| **040 Music Player** | `041-FR-001` to `041-FR-006`<br>`042-FR-001` to `042-FR-004`<br>`043-FR-001` to `043-FR-002`<br>`044-FR-001` to `044-FR-003`<br>`045-FR-001` to `045-FR-003`<br>`046-FR-001` to `046-FR-004` | `UC-040-001` through `UC-040-010` | Fully Covered |
-| **050 Queue Management** | `051-FR-001` to `051-FR-008`<br>`052-FR-001` to `052-FR-004`<br>`053-FR-001` to `053-FR-003`<br>`054-FR-001` to `054-FR-004` | `UC-050-001` through `UC-050-007` | Fully Covered |
+| **040 Music Player** | `041-FR-001` to `041-FR-015`<br>`042-FR-001` to `042-FR-012`<br>`043-FR-001` to `043-FR-012`<br>`044-FR-001` to `044-FR-012`<br>`045-FR-001` to `045-FR-012`<br>`046-FR-001` to `046-FR-015` | `UC-040-001` through `UC-040-010` | Fully Covered |
+| **050 Queue Management** | `051-FR-001` to `051-FR-013`<br>`052-FR-001` to `052-FR-012`<br>`053-FR-001` to `053-FR-009`<br>`054-FR-001` to `054-FR-010` | `UC-050-001` through `UC-050-007` | Fully Covered |
 | **060 Playlist Management** | `061-FR-001` to `061-FR-006`<br>`062-FR-001` to `062-FR-004`<br>`063-FR-001` to `063-FR-002`<br>`064-FR-001` to `064-FR-005`<br>`065-FR-001` to `065-FR-004` | `UC-060-001` through `UC-060-012` | Fully Covered |
 | **070 Listening History** | `071-FR-001` to `071-FR-004`<br>`072-FR-001` to `072-FR-003`<br>`073-FR-001` to `073-FR-003` | `UC-070-001` through `UC-070-006` | Fully Covered |
 | **080 Album Interaction** | `081-FR-001` to `081-FR-002`<br>`082-FR-001` to `082-FR-003`<br>`083-FR-001` to `083-FR-002` | `UC-080-001` through `UC-080-005` | Fully Covered |

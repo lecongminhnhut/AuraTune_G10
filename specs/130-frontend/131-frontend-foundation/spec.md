@@ -23,7 +23,7 @@ Each answer below is a working decision that lets frontend work proceed. The nam
 - Q (OQ-3): What is the product UI language? → A: Vietnamese, matching the current UI. Messages quoted in English in feature specifications describe intent, not final text. Owner: Team.
 - Q (OQ-4): Should `GET /search` include `offset`? → A: Yes. Spec 031 FR-007 governs, and the API Contract needs a matching update. Owner: Đăng (C).
 - Q (OQ-5): What are the routes for account profile and public user profile screens? → A: Out of scope here until group 010 specifies them. The Route Map lists them as not defined. Owner: Khoa (B).
-- Q (OQ-6): Is the queue stored by the client or the server? → A: The client, for the current session, as specified in features 051 to 054. Owner: Huy (E).
+- Q (OQ-6): Is the queue stored by the client or the server? → A: The client, in local browser storage so it survives a page reload, as specified in features 051 to 054. Owner: Huy (E).
 - Q (OQ-7): Which API does the AI Conversational Agent use? → A: Behavior is defined in specs 121 to 123. The client calls only a public Backend API endpoint, and group 120 adds that endpoint to the API Contract before integration. Owner: Nhựt (A).
 - Q (OQ-8): Where is the authoritative API Contract? → A: `docs/analysis-and-design/api-contract.md`, the only copy in the repository. Design documents that reference another path need updating. Owner: Nhựt (A).
 
@@ -277,7 +277,7 @@ This baseline was checked at group level against the code. It is not a requireme
 | 020 Home Dashboard | Huy (E) | 021 to 025 merged after this update | Available | Charts have no `day`/`week`/`month` period control |
 | 030 Search | Đăng (C) | 031, 032, 033 merged | Partial | No 2-character minimum, 100-character limit, Load More, or retry state from spec 031 |
 | 040 Music Player | Huy (E) | 041 to 046 merged after this update | Partial | Simulated audio |
-| 050 Queue Management | Huy (E) | 051 to 054 merged after this update | Available | Queue is session-only by decision; Play Next is ignored while shuffle is on |
+| 050 Queue Management | Huy (E) | 051 to 054 merged after this update | Available | Queue is not yet persisted or limited to 50 tracks; no Save as Playlist; Play Next is ignored while shuffle is on |
 | 060 Playlist Management | Khoa (B) | 061 to 065 not yet standardized | Available | Local data only |
 | 070 Listening History | Khoa (B) | 071 to 073 not yet standardized | Available | Local data only |
 | 080 Album Interaction | Đăng (C) | 081, 082, 083 merged | Available | Requirement-level check pending |

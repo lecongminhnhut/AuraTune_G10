@@ -12,7 +12,7 @@
 
 ### Session 2026-10-31
 
-- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Where is the queue stored? → A: On the client, in local browser storage, so it is restored in a paused state after a page reload (see Session 2026-11-01). The API Contract has no queue endpoints, so the queue does not sync across devices.
 - Q: Can a track be in the upcoming list twice? → A: No. Adding a track already upcoming changes nothing, and the listener is told.
 - Q: Can the current track be removed? → A: No. Only upcoming tracks can be removed.
 - Q: Can several tracks be added at once? → A: Yes. Tracks already upcoming and unavailable tracks are skipped, and the listener sees how many were added.
@@ -63,6 +63,8 @@ As a listener, I want to remove an upcoming track so that I do not hear it in th
 - **Batch with existing tracks**: Only new tracks are added.
 - **Batch with nothing new**: The listener is told nothing was added.
 - **Removing during a transition**: The next track follows the updated list.
+- **Queue at 50 tracks**: The add is refused, and the listener is told the limit was reached.
+- **Batch exceeding the limit**: Only the tracks that fit within 50 are added, and the listener sees how many were added.
 
 ## Requirements *(mandatory)*
 
@@ -105,6 +107,7 @@ As a listener, I want to remove an upcoming track so that I do not hear it in th
 
 These gaps do not change the requirements. They record where the current UI differs from this specification.
 
+- The 50-track limit is not enforced.
 - Adding a single unavailable track is not blocked in the prototype; only batch adds filter them.
 
 ## UI Screenshots

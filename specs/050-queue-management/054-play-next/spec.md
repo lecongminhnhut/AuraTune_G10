@@ -12,7 +12,7 @@
 
 ### Session 2026-10-31
 
-- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Where is the queue stored? → A: On the client, in local browser storage, so it is restored in a paused state after a page reload (see Session 2026-11-01). The API Contract has no queue endpoints, so the queue does not sync across devices.
 - Q: Where does the track go? → A: Directly after the current track. If it is already queued, it moves there and is not duplicated.
 - Q: What if Play Next is used several times? → A: The most recent choice plays first, and earlier choices follow it.
 - Q: What if the track is already playing? → A: The queue does not change, and the listener is told.
@@ -59,6 +59,7 @@ As a listener, I want the chosen track to play next so that I can rely on the qu
 - **Empty upcoming list**: The track becomes the only upcoming track.
 - **Repeated use**: The latest choice comes first.
 - **Repeat one on**: The current track repeats until next is pressed.
+- **Queue at 50 tracks**: A track that is not already queued is refused, and the listener is told the limit was reached. A track already in the queue can still be moved.
 
 ## Requirements *(mandatory)*
 
