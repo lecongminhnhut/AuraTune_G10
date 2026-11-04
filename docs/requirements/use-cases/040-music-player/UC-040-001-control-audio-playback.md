@@ -84,9 +84,17 @@ The actor selects the play control, or starts a track or collection from any lis
 
 ### AF-05 – Short Listening Without a Recorded Play
 - **Starting step:** Step 5 of the Basic Flow.
-- **Condition:** The actor skips or pauses before the 30-second threshold is reached (`041-FR-014`).
+- **Condition:** The actor skips or changes the track before it has been listened to for 30 seconds, or 50% of the duration for a shorter track (`041-FR-014`).
 1. **System:** Does not send a play event for this track.
-- **Continuation:** Resumes at the step that matches the actor's action.
+- **Continuation:** Continues via AF-01 or AF-02, or at the start of the newly selected track.
+
+### AF-06 – Pause Before the Play Threshold
+- **Starting step:** Step 5 of the Basic Flow.
+- **Condition:** The actor pauses before the threshold of 30 seconds, or 50% of a shorter track, is reached (`041-FR-014`).
+1. **System:** Pauses playback and keeps the listening time already counted for the track.
+2. **Actor:** Selects play again.
+3. **System:** Resumes playback and continues counting from the kept listening time; seeking forward adds no listening time (`UC-040-003`).
+- **Continuation:** Resumes at Step 5 of the Basic Flow, where the play event is sent once the threshold is reached.
 
 ---
 
@@ -197,4 +205,5 @@ The actor selects the play control, or starts a track or collection from any lis
 ## 13. Notes and Open Questions
 
 - **History Threshold**: Clarification session 2026-11-01 set the valid-play rule to 30 seconds of continuous playback, or 50% of the duration for shorter tracks.
+- **Pause Interpretation**: The specification does not say whether a pause resets the count. AF-06 keeps the listening time across a pause, and AF-05 drops it only when the track is skipped or changed. This is a working interpretation to confirm with Group 070.
 - **Prototype Gap**: The current prototype simulates playback with a timer and records a play as soon as a track starts (see Known Gaps in the 041 specification).

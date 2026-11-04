@@ -69,8 +69,9 @@ The actor selects the share control in the full player, or "Chia sẻ" in a trac
 ### EF-01 – Sharing Fails
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The link cannot be copied or the share sheet fails (`046-FR-003`).
-1. **System:** Shows a message suggesting that the actor copy the link from the address bar.
-- **Continuation:** Use case ends in failure.
+1. **System:** Shows a message that the link could not be shared and keeps the share control available.
+2. **Actor:** Tries again or closes the message.
+- **Continuation:** Resumes at Step 1 of the Basic Flow on a new attempt; otherwise the use case ends in failure.
 
 ---
 

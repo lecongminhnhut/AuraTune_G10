@@ -18,7 +18,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 
 | UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
-| **UC-050-001** | View Playback Queue | Guest / Listener | None | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011` | `051-view-queue` | Nguyễn Thanh Huy | **Draft** | [`UC-050-001-view-playback-queue.md`](./UC-050-001-view-playback-queue.md) |
+| **UC-050-001** | View Playback Queue | Guest / Listener | None | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011`, `051-FR-013` | `051-view-queue` | Nguyễn Thanh Huy | **Draft** | [`UC-050-001-view-playback-queue.md`](./UC-050-001-view-playback-queue.md) |
 | **UC-050-002** | Add Track to Queue | Guest / Listener | None | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012`, `051-FR-013` | `052-add-and-remove-queue-items` | Nguyễn Thanh Huy | **Draft** | [`UC-050-002-add-track-to-queue.md`](./UC-050-002-add-track-to-queue.md) |
 | **UC-050-003** | Play Track Next | Guest / Listener | None | `054-FR-001` to `054-FR-010`, `052-FR-012`, `051-FR-013` | `054-play-next` | Nguyễn Thanh Huy | **Draft** | [`UC-050-003-play-track-next.md`](./UC-050-003-play-track-next.md) |
 | **UC-050-004** | Reorder Upcoming Queue | Guest / Listener | None | `053-FR-001` to `053-FR-009` | `053-reorder-queue` | Nguyễn Thanh Huy | **Draft** | [`UC-050-004-reorder-upcoming-queue.md`](./UC-050-004-reorder-upcoming-queue.md) |
@@ -57,7 +57,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 | `051-view-queue` | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011` | **UC-050-001** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P2) |
 | `051-view-queue` | `051-FR-006`, `051-FR-007` | **UC-050-006** | User Story 3 (P2) |
 | `051-view-queue` | `051-FR-012` | **UC-050-007** | Clarification session 2026-11-01 |
-| `051-view-queue` | `051-FR-013` | **UC-050-002**, **UC-050-003** | Clarification session 2026-11-01 |
+| `051-view-queue` | `051-FR-013` | **UC-050-001**, **UC-050-002**, **UC-050-003**, **UC-020-002**, **UC-020-005** | Clarification session 2026-11-01 |
 | `052-add-and-remove-queue-items` | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012` | **UC-050-002** | User Story 1 (P1) |
 | `052-add-and-remove-queue-items` | `052-FR-008` to `052-FR-011` | **UC-050-005** | User Story 2 (P1) |
 | `053-reorder-queue` | `053-FR-001` to `053-FR-009` | **UC-050-004** | User Story 1 (P1), User Story 2 (P1) |

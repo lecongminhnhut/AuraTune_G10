@@ -204,9 +204,9 @@ flowchart LR
 1. **Range Request Support (`Q-040-1`)**:
    - *Status*: Open.
    - *Detail*: Precise seeking requires that the chosen cloud storage free tier supports HTTP range requests.
-2. **Seek and the Play Threshold**:
+2. **Seek, Pause, and the Play Threshold**:
    - *Status*: Working interpretation.
-   - *Detail*: `UC-040-003` counts only continuous listening time towards the 30-second threshold, so jumping forward does not count. Confirm with Group 070.
+   - *Detail*: Only real listening time counts towards the threshold of 30 seconds, or 50% of a shorter track. Jumping forward adds no time (`UC-040-003`), a pause keeps the time already counted (`UC-040-001` AF-06), and skipping or changing the track before the threshold records nothing (`UC-040-001` AF-05). Confirm with Group 070.
 3. **Simulated Playback**:
    - *Status*: Prototype limitation.
    - *Detail*: The current frontend simulates audio with a timer, so stream errors, buffering, autoplay blocking, and player restore after reload cannot be shown yet.

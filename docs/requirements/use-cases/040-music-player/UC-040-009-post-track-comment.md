@@ -27,7 +27,7 @@ A signed-in listener writes a comment about the current track in the full player
 
 ## 3. Preconditions
 
-- The actor is signed in as a `Listener` (`ACT-02`) (`046-FR-008`).
+- For the Basic Flow, the actor is signed in as a `Listener` (`ACT-02`) (`046-FR-008`); a guest is handled in EF-01.
 - The comments panel of the current track is open (`UC-040-008`).
 
 ---
@@ -54,6 +54,8 @@ The listener selects the comment input ("Viết bình luận…").
 ### AF-01 – Post With the Keyboard
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The listener presses Enter instead of selecting send.
+1. **Actor:** Presses Enter in the comment input.
+2. **System:** Treats Enter as the send action when the text is not empty (`046-FR-009`).
 - **Continuation:** Resumes at Step 4 of the Basic Flow.
 
 ---

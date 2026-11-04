@@ -28,13 +28,13 @@ A guest or listener reads the lyrics of the current track in the full player whi
 ## 3. Preconditions
 
 - A track is loaded in the player (`UC-040-001`).
-- The full player is open (`UC-040-006`).
+- The full player is open (`UC-040-006`), or the actor uses the lyrics control of the mini player, which opens the full player.
 
 ---
 
 ## 4. Trigger
 
-The actor selects the lyrics tab ("Lời bài hát") in the full player, or the lyrics control in the mini player.
+The actor selects the lyrics tab ("Lời bài hát") in the full player, or the lyrics control ("Xem lời bài hát") in the mini player on wide screens, which opens the full player.
 
 ---
 

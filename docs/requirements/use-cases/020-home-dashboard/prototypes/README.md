@@ -50,6 +50,7 @@ In accordance with project engineering standards:
 | **UC-020-002** | Basic Flow (Playback) | `UC-020-002-basic-flow-playback.png` | `022/ui/03-recommended-playlist-playback.png` | **Available** | Playback started from recommended content. |
 | **UC-020-002** | Basic Flow (Curated Playlists) | `UC-020-002-curated-playlists.png` | `022/ui/05-recommended-categories-curated-moods.png` | **Available** | Curated playlist section using the same playback entry point. |
 | **UC-020-002** | AF-01 (Open Item) | `UC-020-002-AF-01-playlist-detail.png` | `022/ui/04-recommended-playlist-detail-navigation.png` | **Available** | Playlist details opened from a recommended card. |
+| **UC-020-002** | AF-04 (Over 50 Tracks) | `Pending` | `N/A` | **Pending** | Notice that only the first 50 tracks were added to the queue. |
 | **UC-020-002** | EF-01 (AI Unavailable) | `UC-020-002-EF-01-ai-fallback.png` | `022/ui/06-recommended-content-fallback-state.png` | **Available** | Popular fallback with a short notice. |
 | **UC-020-003** | Basic Flow (Recent Tracks) | `UC-020-003-basic-flow.png` | `023/ui/01-recently-played-section-authenticated.png` | **Available** | Recent tracks in the quick access area. |
 | **UC-020-003** | Basic Flow (Playback) | `UC-020-003-basic-flow-playback.png` | `023/ui/02-recently-played-track-playback.png` | **Available** | Playback started from a recent track. |
@@ -69,6 +70,7 @@ In accordance with project engineering standards:
 | **UC-020-005** | Basic Flow (Playback) | `UC-020-005-basic-flow-playback.png` | `025/ui/03-new-album-direct-playback.png` | **Available** | Album played directly from its card. |
 | **UC-020-005** | AF-01 (Album Page) | `UC-020-005-AF-01-album-detail.png` | `025/ui/04-new-album-detail-navigation.png` | **Available** | Album page opened from the card. |
 | **UC-020-005** | AF-02 (Explore) | `UC-020-005-AF-02-explore.png` | `025/ui/05-new-releases-explore-navigation.png` | **Available** | Explore page opened from the section action. |
+| **UC-020-005** | AF-04 (Over 50 Tracks) | `Pending` | `N/A` | **Pending** | Notice that only the first 50 tracks were added to the queue. |
 | **UC-020-005** | EF-01 (Nothing Playable) | `Pending` | `N/A` | **Pending** | Message when an album has no available track. |
 
 ---

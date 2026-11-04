@@ -11,7 +11,7 @@
 | **Functional Group** | 020 – Home Dashboard |
 | **Primary Actor** | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) |
 | **Supporting Actors** | None |
-| **Related FR IDs** | `025-FR-001`, `025-FR-002`, `025-FR-003`, `025-FR-004`, `025-FR-005`, `025-FR-006`, `025-FR-007`, `025-FR-008`, `025-FR-009`, `025-FR-010`, `025-FR-011` |
+| **Related FR IDs** | `025-FR-001`, `025-FR-002`, `025-FR-003`, `025-FR-004`, `025-FR-005`, `025-FR-006`, `025-FR-007`, `025-FR-008`, `025-FR-009`, `025-FR-010`, `025-FR-011`, `051-FR-013` |
 | **Related Feature/Spec** | Feature 025: New Releases (`specs/020-home-dashboard/025-new-releases/spec.md`) |
 | **Status** | Draft |
 | **Writer** | Nguyễn Thanh Huy |
@@ -40,7 +40,7 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 
 ## 5. Basic Flow
 
-1. **System:** Orders albums by release date, newest first, using a stable order for albums released on the same date (`025-FR-002`).
+1. **System:** Orders albums by release date, newest first (`025-FR-002`).
 2. **System:** Shows up to 5 albums in a dedicated section, each with cover art, title, and artist (`025-FR-001`, `025-FR-003`, `025-FR-004`).
 3. **Actor:** Focuses on an album card.
 4. **System:** Highlights the card and shows its play action.
@@ -73,6 +73,13 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 1. **System:** Skips the unavailable tracks and plays only the available ones in album order.
 - **Continuation:** Resumes at Step 7 of the Basic Flow.
 
+### AF-04 – Album Longer Than the Queue Limit
+- **Starting step:** Step 7 of the Basic Flow.
+- **Condition:** The album has more than 50 available tracks (`051-FR-013`).
+1. **System:** Sets only the first 50 available tracks, in album order, as the queue.
+2. **System:** Tells the actor that the queue holds at most 50 tracks and how many tracks were added.
+- **Continuation:** Resumes at Step 8 of the Basic Flow.
+
 ---
 
 ## 7. Exception Flows
@@ -97,7 +104,7 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 
 ### Success
 - The actor sees up to 5 albums ordered by release date, newest first.
-- When played from the card, the album's available tracks are playing in album order and form the queue.
+- When played from the card, the album's available tracks are playing in album order and form the queue, up to 50 tracks.
 
 ### Failure
 - A message, fallback, or empty state is shown, and current playback is not changed.
@@ -107,8 +114,8 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 
 ## 9. Special Requirements
 
-- **Consistency**: Albums with the same release date keep a stable order.
 - **Data Integrity**: Unavailable tracks are filtered out before playback starts (`025-FR-007`).
+- **Capacity**: Starting an album never puts more than 50 tracks in the queue (`051-FR-013`).
 - **Scope Boundary**: Album details, saving, and sharing are not implemented in this use case (`025-FR-011`).
 
 ---
@@ -142,6 +149,10 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Message shown when an album card is played but no track is available.*
 
+### Alternative Flow – AF-04 (Album Longer Than the Queue Limit)
+*[Prototype Pending - To be generated during UI implementation]*  
+*Planned Interface: Notice that only the first 50 tracks were added to the queue. The current prototype does not limit the queue.*
+
 ---
 
 ## 11. Related Use Cases
@@ -150,12 +161,15 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback).
 - **Target Detail Navigation**: `UC-080-001` (View Album Details and Tracklist).
 - **Related Album Playback**: `UC-080-002` (Play Entire Album) – The same playback rule applied from the album page.
+- **Queue Rules**: `UC-050-001` (View Playback Queue) – Shows the queue set here; the 50-track limit belongs to Group 050.
 
 ---
 
 ## 12. Source References
 
 - `specs/020-home-dashboard/025-new-releases/spec.md` – Requirements FR-001 through FR-011, User Stories 1–3, Edge Cases.
+- `specs/050-queue-management/051-view-queue/spec.md` – FR-004: a started collection becomes the queue; FR-013: maximum 50 tracks.
+- `specs/050-queue-management/052-add-and-remove-queue-items/spec.md` – Edge Case "Batch exceeding the limit".
 - `docs/proposal/proposal.md` – Section 6.2: Home Dashboard.
 - `docs/analysis-and-design/api-contract.md` – Section 2.2: `GET /albums/new`; Section 2.7: `GET /albums/:id`.
 
@@ -164,3 +178,5 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ## 13. Notes and Open Questions
 
 - **Prototype Gap**: Album data is demo data in the current prototype.
+- **Same Release Date**: Specification 025 does not define the order of albums released on the same date. Unlike the charts in 024, no stable tie order is required yet.
+- **Albums Over 50 Tracks**: No specification states what happens when a started collection has more than 50 tracks. AF-04 applies the 052 edge case for batch additions: only the tracks that fit are added, and the listener sees how many. This needs to be confirmed as a clarification of spec 051.

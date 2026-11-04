@@ -40,6 +40,7 @@ $$\text{UC-050-[SEQUENCE]-[flow-indicator]-[description].png}$$
 | **UC-050-001** | Basic Flow (Upcoming) | `UC-050-001-basic-flow-upcoming.png` | `051/ui/03-queue-current-and-upcoming.png` | **Available** | Upcoming track actions. |
 | **UC-050-001** | AF-02 (Empty) | `UC-050-001-AF-02-empty-queue.png` | `051/ui/04-queue-empty-state.png` | **Available** | Guidance when nothing is upcoming. |
 | **UC-050-001** | AF-03 (Restore) | `Pending` | `N/A` | **Pending** | Queue restored after reload. |
+| **UC-050-001** | AF-05 (Over 50 Tracks) | `Pending` | `N/A` | **Pending** | Queue holding the first 50 tracks of a long collection. |
 | **UC-050-002** | Basic Flow (Menu) | `UC-050-002-basic-flow-menu.png` | `052/ui/01-track-menu-add-to-queue.png` | **Available** | Track menu with add to queue. |
 | **UC-050-002** | Basic Flow (Confirmation) | `UC-050-002-basic-flow-confirmation.png` | `052/ui/02-add-to-queue-toast-feedback.png` | **Available** | Confirmation after adding. |
 | **UC-050-002** | Basic Flow (Result) | `UC-050-002-basic-flow-result.png` | `052/ui/03-queue-after-adding-song.png` | **Available** | Added track at the end of the queue. |

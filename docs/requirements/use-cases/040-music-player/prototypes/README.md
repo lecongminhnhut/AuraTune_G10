@@ -60,8 +60,8 @@ $$\text{UC-040-[SEQUENCE]-[flow-indicator]-[description].png}$$
 | **UC-040-006** | Basic Flow (Mini player on Home) | `UC-040-006-basic-flow-home.png` | `045/ui/01-bottom-player-home-page.png` | **Available** | Mini player docked on Home. |
 | **UC-040-006** | Basic Flow (Mini player on Search) | `UC-040-006-basic-flow-search.png` | `045/ui/02-bottom-player-search-page.png` | **Available** | The same track still playing after navigating to Search. |
 | **UC-040-006** | Basic Flow (Mini player on Charts) | `UC-040-006-basic-flow-charts.png` | `045/ui/03-bottom-player-charts-page.png` | **Available** | Uninterrupted playback on the Charts page. |
-| **UC-040-006** | AF-01 (Expanding to the full player) | `UC-040-006-AF-01-expand.png` | `045/ui/04-player-expansion-to-fullscreen.png` | **Available** | The full player opened from the mini player. |
-| **UC-040-006** | AF-01 (Collapsing to the mini player) | `UC-040-006-AF-01-collapse.png` | `045/ui/05-player-collapse-to-bottom.png` | **Available** | The full player closed, returning to the same page. |
+| **UC-040-006** | Basic Flow (Expanding to the full player) | `UC-040-006-basic-flow-expand.png` | `045/ui/04-player-expansion-to-fullscreen.png` | **Available** | The full player opened from the mini player. |
+| **UC-040-006** | Basic Flow (Collapsing to the mini player) | `UC-040-006-basic-flow-collapse.png` | `045/ui/05-player-collapse-to-bottom.png` | **Available** | The full player closed, returning to the same page. |
 | **UC-040-006** | AF-02 (Mini player on a phone) | `UC-040-006-AF-02-phone.png` | `045/ui/06-bottom-player-mobile.png` | **Available** | Compact mini player above the mobile navigation at 375 px wide. |
 | **UC-040-006** | AF-01 (Restore After Reload) | `Pending` | `N/A` | **Pending** | The last track and queue restored in a paused state after a reload. |
 | **UC-040-007** | Basic Flow (Share confirmation) | `UC-040-007-basic-flow.png` | `046/ui/01-song-share-action-feedback.png` | **Available** | Share control in the full player and the "link copied" confirmation. |

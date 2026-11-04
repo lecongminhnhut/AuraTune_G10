@@ -19,10 +19,10 @@ This document serves as the official tracking registry for all Use Cases belongi
 | UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-020-001** | Browse Home Dashboard | Guest / Listener | None | `021-FR-001` to `021-FR-013` | `021-home-content-layout` | Nguyễn Thanh Huy | **Draft** | [`UC-020-001-browse-home-dashboard.md`](./UC-020-001-browse-home-dashboard.md) |
-| **UC-020-002** | Stream Recommended Music from Home | Listener / Guest | None | `022-FR-001` to `022-FR-011` | `022-recommended-content` | Nguyễn Thanh Huy | **Draft** | [`UC-020-002-stream-recommended-music-from-home.md`](./UC-020-002-stream-recommended-music-from-home.md) |
+| **UC-020-002** | Stream Recommended Music from Home | Listener / Guest | None | `022-FR-001` to `022-FR-011`, `051-FR-013` | `022-recommended-content` | Nguyễn Thanh Huy | **Draft** | [`UC-020-002-stream-recommended-music-from-home.md`](./UC-020-002-stream-recommended-music-from-home.md) |
 | **UC-020-003** | Replay Recently Played Music | Listener | None | `023-FR-001` to `023-FR-011` | `023-recently-played` | Nguyễn Thanh Huy | **Draft** | [`UC-020-003-replay-recently-played-music.md`](./UC-020-003-replay-recently-played-music.md) |
 | **UC-020-004** | Browse Trending Charts | Guest / Listener | None | `024-FR-001` to `024-FR-014` | `024-trending-charts` | Nguyễn Thanh Huy | **Draft** | [`UC-020-004-browse-trending-charts.md`](./UC-020-004-browse-trending-charts.md) |
-| **UC-020-005** | Explore New Album Releases | Guest / Listener | None | `025-FR-001` to `025-FR-011` | `025-new-releases` | Nguyễn Thanh Huy | **Draft** | [`UC-020-005-explore-new-album-releases.md`](./UC-020-005-explore-new-album-releases.md) |
+| **UC-020-005** | Explore New Album Releases | Guest / Listener | None | `025-FR-001` to `025-FR-011`, `051-FR-013` | `025-new-releases` | Nguyễn Thanh Huy | **Draft** | [`UC-020-005-explore-new-album-releases.md`](./UC-020-005-explore-new-album-releases.md) |
 
 ---
 
@@ -59,3 +59,4 @@ The following candidate use cases were analyzed during requirements engineering 
 | `023-recently-played` | `023-FR-001` through `023-FR-011` | **UC-020-003** | User Story 1 (P1), User Story 2 (P2), User Story 3 (P2) |
 | `024-trending-charts` | `024-FR-001` through `024-FR-014` | **UC-020-004** | User Story 1 (P1), User Story 2 (P2) |
 | `025-new-releases` | `025-FR-001` through `025-FR-011` | **UC-020-005** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P2) |
+| `051-view-queue` (Group 050) | `051-FR-013` | **UC-020-002**, **UC-020-005** | Clarification session 2026-11-01 |

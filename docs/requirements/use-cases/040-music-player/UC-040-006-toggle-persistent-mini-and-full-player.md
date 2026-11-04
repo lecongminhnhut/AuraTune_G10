@@ -123,10 +123,10 @@ The actor navigates to another page while music plays, or selects the mini playe
 ![Mini player on Charts](prototypes/UC-040-006-basic-flow-charts.png)
 *Figure 3: Uninterrupted playback on the Charts page (Step 3).*
 
-![Expanding to the full player](prototypes/UC-040-006-AF-01-expand.png)
+![Expanding to the full player](prototypes/UC-040-006-basic-flow-expand.png)
 *Figure 4: The full player opened from the mini player (Steps 4–5).*
 
-![Collapsing to the mini player](prototypes/UC-040-006-AF-01-collapse.png)
+![Collapsing to the mini player](prototypes/UC-040-006-basic-flow-collapse.png)
 *Figure 5: The full player closed, returning to the same page (Steps 6–7).*
 
 ### Alternative Flow – AF-02 (Phone)

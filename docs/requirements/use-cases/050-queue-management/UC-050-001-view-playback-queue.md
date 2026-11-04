@@ -11,7 +11,7 @@
 | **Functional Group** | 050 – Queue Management |
 | **Primary Actor** | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) |
 | **Supporting Actors** | None |
-| **Related FR IDs** | `051-FR-001`, `051-FR-002`, `051-FR-003`, `051-FR-004`, `051-FR-005`, `051-FR-007`, `051-FR-008`, `051-FR-009`, `051-FR-010`, `051-FR-011` |
+| **Related FR IDs** | `051-FR-001`, `051-FR-002`, `051-FR-003`, `051-FR-004`, `051-FR-005`, `051-FR-007`, `051-FR-008`, `051-FR-009`, `051-FR-010`, `051-FR-011`, `051-FR-013` |
 | **Related Feature/Spec** | Feature 051: View Queue (`specs/050-queue-management/051-view-queue/spec.md`) |
 | **Status** | Draft |
 | **Writer** | Nguyễn Thanh Huy |
@@ -79,6 +79,12 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 1. **System:** Scrolls the list inside the panel and truncates long titles without breaking the layout.
 - **Continuation:** Resumes at Step 5 of the Basic Flow.
 
+### AF-05 – Queue Set From a Collection Longer Than 50 Tracks
+- **Starting step:** Step 4 of the Basic Flow.
+- **Condition:** The queue was set by starting a collection with more than 50 available tracks (`051-FR-004`, `051-FR-013`).
+1. **System:** Shows only the first 50 available tracks of the collection, in collection order, counting the current track; the remaining tracks of the collection are not in the queue.
+- **Continuation:** Resumes at Step 5 of the Basic Flow.
+
 ---
 
 ## 7. Exception Flows
@@ -114,6 +120,7 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 - **Consistency**: The displayed order always matches the playback order, and the count always matches the list.
 - **Accessibility**: The panel opens in 1 interaction and can be closed with the keyboard (Escape).
 - **Storage**: The queue is stored only on the client; there are no queue endpoints in the API Contract, so it does not sync across devices.
+- **Capacity**: The queue never holds more than 50 tracks, including the current track (`051-FR-013`).
 
 ---
 
@@ -141,6 +148,10 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Player and queue restored in a paused state after a page reload. The current prototype resets the queue on reload.*
 
+### Alternative Flow – AF-05 (Collection Longer Than 50 Tracks)
+*[Prototype Pending - To be generated during UI implementation]*  
+*Planned Interface: Queue panel holding the first 50 tracks of a long collection. The current prototype does not limit the queue.*
+
 ---
 
 ## 11. Related Use Cases
@@ -157,7 +168,8 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 
 ## 12. Source References
 
-- `specs/050-queue-management/051-view-queue/spec.md` – Requirements FR-001 to FR-005 and FR-007 to FR-011, User Stories 1–3, Clarifications 2026-10-31 and 2026-11-01.
+- `specs/050-queue-management/051-view-queue/spec.md` – Requirements FR-001 to FR-005, FR-007 to FR-011, and FR-013, User Stories 1–3, Clarifications 2026-10-31 and 2026-11-01.
+- `specs/050-queue-management/052-add-and-remove-queue-items/spec.md` – Edge Case "Batch exceeding the limit".
 - `docs/proposal/Auratune_Vision_Document.md` – Group G05.
 - `docs/proposal/proposal.md` – Section 6.5: Queue Management.
 - `docs/design/architecture/feature-modules.md` – No queue endpoints in the API Contract.
@@ -168,4 +180,5 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 
 - **Storage Decision**: Clarification session 2026-11-01 confirmed that the queue survives a page reload through local browser storage.
 - **Single-Song Start (`Q-050-2`)**: Whether playing a single song from search replaces the queue or inserts the song at the top is still open in the use-case model.
+- **Collections Over 50 Tracks**: Specification 051 does not state what happens when a started collection has more than 50 tracks. AF-05 applies the 052 edge case for batch additions: only the tracks that fit are added. The same rule is used in `UC-020-002` (AF-04) and `UC-020-005` (AF-04). This needs to be confirmed as a clarification of spec 051.
 - **Prototype Gap**: The current prototype does not save the queue, so it resets after a reload; the panel is modal, so the page behind it cannot be used while it is open.

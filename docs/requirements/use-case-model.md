@@ -441,10 +441,10 @@ flowchart TB
 | `UC-010-008` | Log Out from All Devices | Listener | None | 010 Authentication | `013-FR-008` | `013/spec.md` US3 | Confirmed |
 | `UC-010-009` | Unlink Social Account | Listener | None | 010 Authentication | `012-FR-011` | `012/spec.md` US4 | Confirmed |
 | `UC-020-001` | Browse Home Dashboard | Guest / Listener | None | 020 Home Dashboard | `021-FR-001` to `021-FR-013` | `021/spec.md` US1, US2 | Confirmed |
-| `UC-020-002` | Stream Recommended Music from Home | Guest / Listener | None | 020 Home Dashboard | `022-FR-001` to `022-FR-011` | `022/spec.md` US1 | Confirmed |
+| `UC-020-002` | Stream Recommended Music from Home | Guest / Listener | None | 020 Home Dashboard | `022-FR-001` to `022-FR-011`, `051-FR-013` | `022/spec.md` US1 | Confirmed |
 | `UC-020-003` | Replay Recently Played Music | Listener | None | 020 Home Dashboard | `023-FR-001` to `023-FR-011` | `023/spec.md` US1 | Confirmed |
 | `UC-020-004` | Browse Trending Charts | Guest / Listener | None | 020 Home Dashboard | `024-FR-001` to `024-FR-014` | `024/spec.md` US1, US2 | Confirmed |
-| `UC-020-005` | Explore New Album Releases | Guest / Listener | None | 020 Home Dashboard | `025-FR-001` to `025-FR-011` | `025/spec.md` US1, US2 | Confirmed |
+| `UC-020-005` | Explore New Album Releases | Guest / Listener | None | 020 Home Dashboard | `025-FR-001` to `025-FR-011`, `051-FR-013` | `025/spec.md` US1, US2 | Confirmed |
 | `UC-030-001` | Search Catalog by Text Metadata | Guest / Listener | None | 030 Search | `031-FR-001..006` | `031/spec.md` US1, US2 | Confirmed |
 | `UC-030-002` | Search Music by Lyric Fragment | Guest / Listener | External AI Service | 030 Search | `032-FR-001..005` | `032/spec.md` US1 | Confirmed |
 | `UC-030-003` | Discover Music by Semantic Mood or Context | Guest / Listener | External AI Service | 030 Search | `033-FR-001..005` | `033/spec.md` US1, US2 | Confirmed |
@@ -459,7 +459,7 @@ flowchart TB
 | `UC-040-008` | Read Track Comments | Guest / Listener | None | 040 Music Player | `046-FR-006`, `046-FR-007`, `046-FR-014`, `046-FR-015` | `046/spec.md` US2 | Confirmed |
 | `UC-040-009` | Post Track Comment | Listener | None | 040 Music Player | `046-FR-008`, `046-FR-009`, `046-FR-012`, `046-FR-013`, `046-FR-015` | `046/spec.md` US3 | Confirmed |
 | `UC-040-010` | Delete Track Comment | Listener / Administrator | None | 040 Music Player | `046-FR-010` to `046-FR-012` | `046/spec.md` US3 | Confirmed |
-| `UC-050-001` | View Playback Queue | Guest / Listener | None | 050 Queue Management | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011` | `051/spec.md` US1, US2 | Confirmed |
+| `UC-050-001` | View Playback Queue | Guest / Listener | None | 050 Queue Management | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011`, `051-FR-013` | `051/spec.md` US1, US2 | Confirmed |
 | `UC-050-002` | Add Track to Queue | Guest / Listener | None | 050 Queue Management | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012`, `051-FR-013` | `052/spec.md` US1 | Confirmed |
 | `UC-050-003` | Play Track Next | Guest / Listener | None | 050 Queue Management | `054-FR-001` to `054-FR-010`, `052-FR-012`, `051-FR-013` | `054/spec.md` US1, US2 | Confirmed |
 | `UC-050-004` | Reorder Upcoming Queue | Guest / Listener | None | 050 Queue Management | `053-FR-001` to `053-FR-009` | `053/spec.md` US1, US2 | Confirmed |

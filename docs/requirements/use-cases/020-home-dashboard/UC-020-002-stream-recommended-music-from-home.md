@@ -11,7 +11,7 @@
 | **Functional Group** | 020 – Home Dashboard |
 | **Primary Actor** | Listener (`ACT-02`), Guest / Visitor (`ACT-01`) |
 | **Supporting Actors** | None |
-| **Related FR IDs** | `022-FR-001`, `022-FR-002`, `022-FR-003`, `022-FR-004`, `022-FR-005`, `022-FR-006`, `022-FR-007`, `022-FR-008`, `022-FR-009`, `022-FR-010`, `022-FR-011` |
+| **Related FR IDs** | `022-FR-001`, `022-FR-002`, `022-FR-003`, `022-FR-004`, `022-FR-005`, `022-FR-006`, `022-FR-007`, `022-FR-008`, `022-FR-009`, `022-FR-010`, `022-FR-011`, `051-FR-013` |
 | **Related Feature/Spec** | Feature 022: Recommended Content (`specs/020-home-dashboard/022-recommended-content/spec.md`) |
 | **Status** | Draft |
 | **Writer** | Nguyễn Thanh Huy |
@@ -75,6 +75,13 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 2. **System:** Opens the Explore page.
 - **Continuation:** Use case ends successfully.
 
+### AF-04 – Playlist Longer Than the Queue Limit
+- **Starting step:** Step 7 of the Basic Flow.
+- **Condition:** The playlist has more than 50 available tracks (`051-FR-013`).
+1. **System:** Sets only the first 50 available tracks, in playlist order, as the queue.
+2. **System:** Tells the actor that the queue holds at most 50 tracks and how many tracks were added.
+- **Continuation:** Resumes at Step 8 of the Basic Flow.
+
 ---
 
 ## 7. Exception Flows
@@ -106,7 +113,7 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 
 ### Success
 - The actor sees up to 5 available recommended items, and selecting one plays it or opens its page in 1 interaction.
-- When playback starts, the queue contains the playlist's available tracks.
+- When playback starts, the queue contains the playlist's available tracks, up to 50.
 - Guests never see personalized wording or personal data.
 
 ### Failure
@@ -120,6 +127,7 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 - **Performance**: The section must not delay the rest of the Home Dashboard; it loads independently (`022-FR-009`).
 - **Privacy**: Personalized content is shown only to the signed-in listener it belongs to.
 - **Data Integrity**: Unavailable items are filtered out before display (`022-FR-008`).
+- **Capacity**: Starting a playlist never puts more than 50 tracks in the queue (`051-FR-013`).
 - **Scope Boundary**: The system does not generate, rank, or explain recommendations in this use case (`022-FR-011`).
 
 ---
@@ -147,6 +155,10 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ![Playlist detail navigation](prototypes/UC-020-002-AF-01-playlist-detail.png)
 *Figure 5: Playlist details page opened from a recommended card.*
 
+### Alternative Flow – AF-04 (Playlist Longer Than the Queue Limit)
+*[Prototype Pending - To be generated during UI implementation]*  
+*Planned Interface: Notice that only the first 50 tracks were added to the queue. The current prototype does not limit the queue.*
+
 ### Exception Flow – EF-01 (Recommendations Unavailable)
 
 ![AI fallback state](prototypes/UC-020-002-EF-01-ai-fallback.png)
@@ -160,6 +172,7 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 - **Recommendation Source**: `UC-100-002` (Receive Personalized Song Recommendations) – Supplies the recommended songs.
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback).
 - **Target Detail Navigation**: `UC-060-002` (View Playlist Details).
+- **Queue Rules**: `UC-050-001` (View Playback Queue) – Shows the queue set here; the 50-track limit belongs to Group 050.
 
 ---
 
@@ -167,6 +180,8 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 
 - `specs/020-home-dashboard/022-recommended-content/spec.md` – Requirements FR-001 through FR-011, User Stories 1–3, Edge Cases.
 - `specs/100-ai-recommendations/102-personalized-recommendations/spec.md` – Recommendation logic and fallback policy.
+- `specs/050-queue-management/051-view-queue/spec.md` – FR-004: a started collection becomes the queue; FR-013: maximum 50 tracks.
+- `specs/050-queue-management/052-add-and-remove-queue-items/spec.md` – Edge Case "Batch exceeding the limit".
 - `docs/proposal/proposal.md` – Section 6.2: Home Dashboard.
 - `docs/analysis-and-design/api-contract.md` – Section 2.2: `GET /recommendations/songs`, `GET /playlists`; error code `AI_SERVICE_UNAVAILABLE`.
 
@@ -176,3 +191,4 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 
 - **Prototype Gap**: The current prototype shows recommended playlists only; recommended songs are not displayed yet, and recommendations are demo data.
 - **Fallback Trigger**: The same fallback applies to an AI outage, an empty result, and a new listener with no history (022 Edge Cases).
+- **Collections Over 50 Tracks**: No specification states what happens when a started collection has more than 50 tracks. AF-04 applies the 052 edge case for batch additions: only the tracks that fit are added, and the listener sees how many. This needs to be confirmed as a clarification of spec 051.

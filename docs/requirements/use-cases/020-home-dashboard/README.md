@@ -156,10 +156,10 @@ flowchart LR
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
 | **UC-020-001** | Browse Home Dashboard | Guest / Listener | `021-FR-001` to `021-FR-013` | [`UC-020-001-browse-home-dashboard.md`](./UC-020-001-browse-home-dashboard.md) |
-| **UC-020-002** | Stream Recommended Music from Home | Listener / Guest | `022-FR-001` to `022-FR-011` | [`UC-020-002-stream-recommended-music-from-home.md`](./UC-020-002-stream-recommended-music-from-home.md) |
+| **UC-020-002** | Stream Recommended Music from Home | Listener / Guest | `022-FR-001` to `022-FR-011`, `051-FR-013` | [`UC-020-002-stream-recommended-music-from-home.md`](./UC-020-002-stream-recommended-music-from-home.md) |
 | **UC-020-003** | Replay Recently Played Music | Listener | `023-FR-001` to `023-FR-011` | [`UC-020-003-replay-recently-played-music.md`](./UC-020-003-replay-recently-played-music.md) |
 | **UC-020-004** | Browse Trending Charts | Guest / Listener | `024-FR-001` to `024-FR-014` | [`UC-020-004-browse-trending-charts.md`](./UC-020-004-browse-trending-charts.md) |
-| **UC-020-005** | Explore New Album Releases | Guest / Listener | `025-FR-001` to `025-FR-011` | [`UC-020-005-explore-new-album-releases.md`](./UC-020-005-explore-new-album-releases.md) |
+| **UC-020-005** | Explore New Album Releases | Guest / Listener | `025-FR-001` to `025-FR-011`, `051-FR-013` | [`UC-020-005-explore-new-album-releases.md`](./UC-020-005-explore-new-album-releases.md) |
 
 ---
 
@@ -206,6 +206,9 @@ flowchart LR
 3. **Recommended Songs on Home**:
    - *Status*: Confirmed requirement, not yet implemented.
    - *Detail*: `022-FR-002` requires recommended songs for signed-in listeners. The current prototype shows recommended playlists only.
+4. **Collections Over 50 Tracks**:
+   - *Status*: Working interpretation, to be confirmed in spec 051.
+   - *Detail*: Starting a playlist or album sets it as the queue (`051-FR-004`), but the queue holds at most 50 tracks (`051-FR-013`). `UC-020-002` and `UC-020-005` (AF-04) keep only the first 50 available tracks and tell the listener, following the 052 edge case for batch additions.
 
 ---
 

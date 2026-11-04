@@ -28,7 +28,7 @@ A signed-in listener returns to familiar music by selecting one of their recentl
 ## 3. Preconditions
 
 - The actor is signed in as a `Listener` (`ACT-02`) with a valid session (`023-FR-001`).
-- The listener has at least one qualifying entry in their listening history, recorded by `UC-070-001` after 30 seconds of continuous playback.
+- The listener has at least one qualifying entry in their listening history, recorded by `UC-070-001` after 30 seconds of continuous playback, or 50% of the duration for a shorter track (`041-FR-014`).
 - The actor has opened the Home Dashboard (`UC-020-001`).
 
 ---
@@ -109,6 +109,7 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 
 - **Security & Privacy**: A listener's history is never shown to any other user (`023-FR-009`).
 - **Freshness**: A track recorded in history appears on the next Home load.
+- **Play Threshold**: Only plays that reached 30 seconds, or 50% of a shorter track, appear in the recent list. A shorter listen is never recorded, so it never appears here (`041-FR-014`, `UC-040-001` AF-05).
 - **Scope Boundary**: This use case does not record, edit, or delete history (`023-FR-011`).
 
 ---

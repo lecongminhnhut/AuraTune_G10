@@ -141,7 +141,7 @@ flowchart LR
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
-| **UC-050-001** | View Playback Queue | Guest / Listener | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011` | [`UC-050-001-view-playback-queue.md`](./UC-050-001-view-playback-queue.md) |
+| **UC-050-001** | View Playback Queue | Guest / Listener | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011`, `051-FR-013` | [`UC-050-001-view-playback-queue.md`](./UC-050-001-view-playback-queue.md) |
 | **UC-050-002** | Add Track to Queue | Guest / Listener | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012`, `051-FR-013` | [`UC-050-002-add-track-to-queue.md`](./UC-050-002-add-track-to-queue.md) |
 | **UC-050-003** | Play Track Next | Guest / Listener | `054-FR-001` to `054-FR-010`, `052-FR-012`, `051-FR-013` | [`UC-050-003-play-track-next.md`](./UC-050-003-play-track-next.md) |
 | **UC-050-004** | Reorder Upcoming Queue | Guest / Listener | `053-FR-001` to `053-FR-009` | [`UC-050-004-reorder-upcoming-queue.md`](./UC-050-004-reorder-upcoming-queue.md) |
@@ -188,6 +188,9 @@ flowchart LR
 3. **Persistence and Capacity**:
    - *Status*: Confirmed requirement, not yet implemented.
    - *Detail*: The queue must survive a reload (`051-FR-011`) and hold at most 50 tracks (`051-FR-013`). The current prototype does neither.
+4. **Collections Over 50 Tracks**:
+   - *Status*: Working interpretation, to be confirmed in spec 051.
+   - *Detail*: Spec 051 does not say what happens when a started collection (`051-FR-004`) has more than 50 tracks. `UC-050-001` (AF-05), `UC-020-002` and `UC-020-005` (AF-04) keep only the first 50 available tracks and tell the listener, following the 052 edge case for batch additions.
 
 ---
 

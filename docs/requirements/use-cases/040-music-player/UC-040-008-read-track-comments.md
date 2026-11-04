@@ -64,6 +64,7 @@ The actor selects the comments tab ("Bình luận") in the full player.
 ### AF-03 – Write a Comment
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** A signed-in listener wants to add a comment.
+1. **Actor:** Selects the comment input ("Viết bình luận…").
 - **Continuation:** Use case ends; the listener continues in `UC-040-009`.
 
 ### AF-04 – Track Changes
