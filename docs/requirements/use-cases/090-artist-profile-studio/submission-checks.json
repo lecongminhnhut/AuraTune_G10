@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-04",
+  "branch": "090-artist-profile-studio-use-cases",
+  "uc_count": 8,
+  "sections_per_uc": 15,
+  "fr_count_by_feature": {
+    "091": 31,
+    "092": 16,
+    "093": 10
+  },
+  "flow_count_by_uc": {
+    "UC-090-001": 11,
+    "UC-090-002": 14,
+    "UC-090-003": 12,
+    "UC-090-004": 8,
+    "UC-090-005": 15,
+    "UC-090-006": 11,
+    "UC-090-007": 10,
+    "UC-090-008": 9
+  },
+  "flow_visual_status_counts": {
+    "Partial": 89,
+    "Missing": 1
+  },
+  "session_decisions": "G090-D01 through D18 present; historical entries retained",
+  "new_mockup_boards": 10,
+  "diagram_render": "Mermaid 11 / Chrome: passed; visually inspected",
+  "formatting_links_anchors_utf8_whitespace": "passed for all Group 090 files",
+  "source_specs_shared_hashes": "unchanged",
+  "peer_review": "not performed",
+  "status": "Draft",
+  "reviewer": "Not assigned"
+}

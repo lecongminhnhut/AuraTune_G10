@@ -1,0 +1,632 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC-090-001-view-public-artist-profile.md</title><style>body{font:16px/1.65 Segoe UI,Arial;margin:0;color:#182030;background:#f6f7fb}main{max-width:1300px;margin:24px auto;padding:28px 38px;background:white}h1,h2,h3{line-height:1.3;color:#25205c}h2{margin-top:36px;border-bottom:1px solid #ddd;padding-bottom:10px}table{border-collapse:collapse;width:100%;font-size:13px;margin:20px 0;display:block;overflow:auto}th,td{border:1px solid #ccd1dd;text-align:left;padding:8px;vertical-align:top}th{background:#eeebfa}img{max-width:100%;height:auto}pre{overflow:auto;background:#f0f1f7;padding:16px}code{font-size:.9em}a{color:#50399c}.banner{background:#25205c;color:white;padding:12px 24px}blockquote{border-left:4px solid #aaa;padding-left:16px}</style><div class="banner">Group 090 submission reading copy | Draft | Reviewer: Not assigned</div><main><h1 id="uc-090-001--view-public-artist-profile">UC-090-001 – View Public Artist Profile</h1>
+<h2 id="1-metadata">1. Metadata</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Use Case ID</td>
+<td>UC-090-001</td>
+</tr>
+<tr>
+<td>Use Case Name</td>
+<td>View Public Artist Profile</td>
+</tr>
+<tr>
+<td>Functional Group</td>
+<td>090 – Artist Profile &amp; Studio</td>
+</tr>
+<tr>
+<td>Primary Actor</td>
+<td>Guest / Visitor; Listener (Artist and Administrator inherit public access in the model)</td>
+</tr>
+<tr>
+<td>Supporting Actors</td>
+<td>None identified for this use case</td>
+</tr>
+<tr>
+<td>Related FR IDs</td>
+<td>091-FR-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 010A, 010B, 011, 012, 013, 014, 014A, 015, 016, 017, 018, 018A, 019, 020, 021, 022, 023, 024, 025, 026, 027; 092-FR-011 (public-profile consistency only)</td>
+</tr>
+<tr>
+<td>Related Feature ID</td>
+<td>091 – Artist Profile; 092 boundary cross-reference only</td>
+</tr>
+<tr>
+<td>Related Spec Kit File</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a></td>
+</tr>
+<tr>
+<td>Writer</td>
+<td>Thái Hoàng</td>
+</tr>
+<tr>
+<td>Reviewer</td>
+<td>Not assigned</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Draft</td>
+</tr>
+<tr>
+<td>Last Updated</td>
+<td>2026-11-04</td>
+</tr>
+</tbody></table>
+<p>This Draft follows all 15 sections of the extracted <code>uc-specification/UC.template.md</code>. Feature-qualified FR references identify the original literal FR IDs in their respective spec. They are not new source identifiers. The <a href="./use-case-inventory.html">inventory</a> is synchronized with all eight existing Draft specifications; no approval is implied. No peer review or approval is claimed.</p>
+<h2 id="2-goal">2. Goal</h2>
+<p>The visitor identifies an artist, learns about them and discovers their eligible songs, albums and related playlists, with the option to continue to an existing content destination.</p>
+<h2 id="3-description">3. Description</h2>
+<p>AuraTune presents a public artist profile without requiring sign-in or artist-management permission. The profile shows public identity and eligible content, preserving useful information when optional data is missing or a content section fails. This UC ends at viewing the profile or handing off navigation; following, playback, destination-detail behavior and Studio management remain outside scope. G090-D17 adds the narrow selection-time unavailable outcome; G090-D18 adds optional copying of the public artist-profile link.</p>
+<h2 id="4-preconditions">4. Preconditions</h2>
+<ul>
+<li>The visitor can request an artist profile through an existing AuraTune link or navigation entry. Defining search/discovery entry points belongs to their existing features.</li>
+<li>No authentication or artist role is required. Artist existence, public visibility, optional-field availability and successful loading are evaluated during the flow, not assumed as preconditions.</li>
+<li>Public artist identity/visibility and content associations are source dependencies. Their absence or temporary failure follows the applicable alternative/exception flow.</li>
+</ul>
+<h2 id="5-trigger">5. Trigger</h2>
+<p>The visitor opens a link or selects an existing navigation entry for an artist profile.</p>
+<h2 id="6-basic-flow">6. Basic Flow</h2>
+<p>This concrete success scenario uses an existing public artist with an image, biography and eligible content in all three sections; data loads successfully. Selection of an album demonstrates navigation. The actor may instead select a song or playlist through AF-04, or complete the goal by reading the profile through AF-05. The numbered presentation below does not require separate screens, clicks, requests or a particular loading order.</p>
+<ol>
+<li><strong>Actor (Visitor):</strong> Requests the artist&#39;s public profile.</li>
+<li><strong>System:</strong> Establishes that the requested artist exists and is publicly viewable, then presents the artist&#39;s public name, image and biography without exposing private account or management data.</li>
+<li><strong>Actor (Visitor):</strong> Browses the artist&#39;s profile content.</li>
+<li><strong>System:</strong> Presents the featured-songs, albums and related-playlists sections with distinct eligible items under BR-01–BR-04: up to five playable/displayable songs, all viewable associated albums, and up to six eligible official public playlists. Items are ordered according to those rules; restricted items and evidence of their existence are omitted.</li>
+<li><strong>Actor (Visitor):</strong> Selects a displayed album to explore that release.</li>
+<li><strong>System:</strong> Navigates to that album&#39;s existing destination. This use case ends successfully; album-detail and playback behavior remain outside its boundary.</li>
+</ol>
+<h2 id="7-alternative-flows">7. Alternative Flows</h2>
+<h3 id="af-01--optional-artist-information-is-missing">AF-01 – Optional Artist Information Is Missing</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2.</li>
+<li><strong>Condition:</strong> The artist is public, but its optional image, biography or both are unavailable.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Presents the public artist name and any available optional information. For an unavailable image, it shows a neutral fallback that does not imply another identity; for an unavailable biography, it communicates that no biography has been provided.</li>
+<li><strong>Actor (Visitor):</strong> Continues browsing the usable profile.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Resume at Basic Flow step 4. Missing optional information does not produce artist-not-found or a full-profile load failure.</li>
+</ul>
+<h3 id="af-02--one-or-more-content-sections-have-no-eligible-items">AF-02 – One or More Content Sections Have No Eligible Items</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 4; also applicable when EX-01 recovers a section.</li>
+<li><strong>Condition:</strong> A section loads successfully but contains no items satisfying its eligibility rule, including after restricted items have been omitted.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Presents a section-specific empty state for each successfully loaded section with no eligible items, without substitute content or hints about excluded items. It keeps the artist identity and other successful sections usable.</li>
+<li><strong>Actor (Visitor):</strong> Browses the remaining available information.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Resume at Basic Flow step 5 if the visitor selects an eligible album, or AF-04 if a song/playlist is selected. If the visitor finishes viewing, including when all three sections are empty, AF-05 ends the use case successfully. A failed section is handled by EX-01, never by this empty-state flow.</li>
+</ul>
+<h3 id="af-03--artist-does-not-exist-or-is-not-public">AF-03 – Artist Does Not Exist or Is Not Public</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2; also when EX-02 retry establishes this outcome.</li>
+<li><strong>Condition:</strong> The requested artist is nonexistent or its profile is not permitted to be public.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Presents the same artist-not-found outcome for either condition. It discloses no artist name, image, biography, related content, record existence, visibility state or reason for unavailability.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> The use case ends unsuccessfully with no requested artist data disclosed. This is not the temporary-load failure in EX-02. No separate hidden-profile page or sign-in workaround is introduced.</li>
+</ul>
+<h3 id="af-04--select-a-song-or-related-playlist">AF-04 – Select a Song or Related Playlist</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 5, or the selection continuation from AF-02/EX-01.</li>
+<li><strong>Condition:</strong> The visitor chooses a displayed song or related playlist instead of an album.</li>
+</ul>
+<ol>
+<li><strong>Actor (Visitor):</strong> Selects the displayed song or playlist.</li>
+<li><strong>System:</strong> Navigates to the selected item&#39;s existing destination without defining playback or playlist-detail behavior here.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> The use case ends successfully at the navigation handoff, equivalent to Basic Flow step 6. Ordinary destination behavior remains outside scope; EX-03 handles the G090-D17 unavailable-at-selection outcome only.</li>
+</ul>
+<h3 id="af-05--finish-viewing-without-selecting-content">AF-05 – Finish Viewing Without Selecting Content</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 5, or the viewing continuation from AF-02/EX-01.</li>
+<li><strong>Condition:</strong> The visitor has read the available profile information and does not choose a content destination.</li>
+</ul>
+<ol>
+<li><strong>Actor (Visitor):</strong> Finishes viewing the available artist information and content sections.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> The use case ends successfully as a viewing goal. No additional confirmation, button or system message is required or introduced.</li>
+</ul>
+<h3 id="af-06---share-the-public-artist-profile-link">AF-06 - Share the Public Artist Profile Link</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 5, after viewing the available public profile; also from the viewing continuation of AF-02/EX-01.</li>
+<li><strong>Condition:</strong> The visitor chooses to share the artist profile instead of opening a content item or finishing viewing.</li>
+</ul>
+<ol>
+<li><strong>Actor (Visitor):</strong> Selects the profile&#39;s share action.</li>
+<li><strong>System:</strong> Applies the current public-profile visibility rules; if the artist no longer exists or is non-public, follows AF-03 without disclosing or copying restricted artist information.</li>
+<li><strong>System:</strong> Copies the public artist-profile link and reports copy success only when copying succeeds. If copying fails, follows EX-04.</li>
+<li><strong>Actor (Visitor):</strong> May continue viewing the profile. Any recipient opening the link independently follows Basic Flow step 2 and its visibility/not-found/error outcomes; possession of the link grants no additional access.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> The share action succeeds only when the link is copied. Resume at Basic Flow step 5 for further viewing/selection, or AF-05 to finish. No claim of delivery, external publication or recipient access is made. G090-D18 supplements the source and specifies no external sharing channel.</li>
+</ul>
+<h2 id="8-exception-flows">8. Exception Flows</h2>
+<h3 id="ex-01--a-related-content-section-temporarily-fails">EX-01 – A Related-Content Section Temporarily Fails</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 4.</li>
+<li><strong>Condition:</strong> Artist identity loads, but one or more related-content sections cannot load temporarily while other data succeeds.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Keeps the loaded identity and every successful section available, shows a section-specific temporary-unavailability state for each failed section, and allows retry of failed content. A failed section is not labeled empty or artist-not-found.</li>
+<li><strong>Actor (Visitor):</strong> Requests a retry of the failed content.</li>
+<li><strong>System:</strong> Reattempts the failed content for the same artist without requiring navigation to another profile, preserving successful information. On success it presents the recovered content under BR-01–BR-04, or AF-02 if the recovered collection is empty.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> After recovery, resume at Basic Flow step 5 or AF-04/AF-05 as applicable. If the retry fails again, return to EX-01 step 1; another retry repeats step 2. If the visitor chooses not to retry, they may use an available album through Basic Flow step 5, choose available song/playlist content through AF-04, or finish viewing through AF-05; the failed section remains visibly unavailable and its recovery is not claimed. No automatic retry, timing or specific control is prescribed.</li>
+</ul>
+<h3 id="ex-02--the-full-profile-temporarily-cannot-load">EX-02 – The Full Profile Temporarily Cannot Load</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2.</li>
+<li><strong>Condition:</strong> A temporary failure prevents loading the profile, rather than establishing a nonexistent/non-public artist outcome.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Presents a retryable temporary-load error distinguishable from artist-not-found. It does not present unknown artist data or claim that content is empty.</li>
+<li><strong>Actor (Visitor):</strong> Requests a retry for the same artist profile.</li>
+<li><strong>System:</strong> Reattempts loading the requested profile.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Resume at Basic Flow step 2 when the request can be evaluated; apply AF-03 if it establishes nonexistent/non-public status, or EX-01 if identity succeeds but a section fails. A repeated full-profile temporary failure returns to EX-02 step 1. If the visitor does not retry, the use case ends unsuccessfully with the temporary-failure outcome preserved. No endpoint, HTTP status, automatic redirect or retry control design is selected.</li>
+</ul>
+<h3 id="ex-03---selected-content-is-no-longer-available">EX-03 - Selected Content Is No Longer Available</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 6 or AF-04 step 2, after selection and before destination content is presented.</li>
+<li><strong>Condition:</strong> The selected displayed song, album or related playlist is now nonexistent or not permitted for the visitor. A temporary loading failure alone does not establish this condition. One song becoming unavailable does not automatically make its album or playlist unavailable.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> At the selected item&#39;s existing destination, presents the same neutral &quot;Content not found&quot; outcome for nonexistent and non-permitted content, with no target metadata, existence, hidden/restricted/deleted state or reason. Provides an action to return to the artist profile.</li>
+<li><strong>Actor (Visitor):</strong> May choose the return action.</li>
+<li><strong>System:</strong> If chosen, returns to the requested artist profile and evaluates its current availability under Basic Flow step 2, including AF-03/EX-02 when applicable. Previously displayed restricted content is not restored as current permitted data.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Selected-content access ends unsuccessfully with the non-disclosing destination outcome. If the visitor returns, resume at Basic Flow step 2; otherwise remain at that outcome. No automatic return or refresh is required. G090-D17 is an owner-confirmed session addition, not a requirement originally specified by 091.</li>
+</ul>
+<h3 id="ex-04---profile-link-cannot-be-copied">EX-04 - Profile Link Cannot Be Copied</h3>
+<ul>
+<li><strong>Starting step:</strong> AF-06 step 3.</li>
+<li><strong>Condition:</strong> Copying the public artist-profile link fails.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Presents appropriate copy-failure feedback without claiming that the link was copied or the artist was shared. Does not disclose non-public artist information.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> The share attempt ends unsuccessfully. Resume at Basic Flow step 5 if the visitor continues viewing, or AF-05 to finish. No automatic retry, alternative channel or clipboard implementation is prescribed.</li>
+</ul>
+<h2 id="9-postconditions">9. Postconditions</h2>
+<h3 id="91-success-postconditions">9.1 Success Postconditions</h3>
+<ul>
+<li>The visitor has viewed the artist&#39;s permitted public identity and available content sections, with truthful missing-information/empty states where applicable.</li>
+<li>Where a section failed, successfully loaded data remained usable; a retry recovered that section or its temporary-unavailability state remained explicit. Partial usability does not certify full recovery.</li>
+<li>If a content item was selected successfully, navigation was handed off to its existing destination; no playback or detail behavior was redefined.</li>
+<li>If AF-06 succeeds, the public artist-profile link is copied and copy success is reported; delivery and recipient access are not claimed.</li>
+<li>This UC makes no follow, catalog-management, artist-profile-editing or administrative changes.</li>
+</ul>
+<h3 id="92-failure-postconditions">9.2 Failure Postconditions</h3>
+<ul>
+<li>For nonexistent/non-public artists, the visitor receives the identical not-found outcome and no identifying or restricted information about the requested record.</li>
+<li>For a full-profile temporary failure without successful retry, the visitor receives a distinguishable retryable failure, not a not-found or empty-content claim.</li>
+<li>If profile-link copying fails, EX-04 reports failure without a copy/share-success claim.</li>
+<li>For selected content that becomes unavailable, EX-03 presents the neutral destination outcome and return action without target disclosure; no successful access or playback is claimed.</li>
+<li>No restricted artist/content information is disclosed through counts, labels, placeholders or error details, and no management/personal relationship change is performed by this UC.</li>
+</ul>
+<h2 id="10-special-requirements">10. Special Requirements</h2>
+<ul>
+<li><strong>Security:</strong> Enforce public visibility and item permissions, not merely hidden frontend controls (091-FR-006–008, 018/018A; shared security principles). Viewing requires no authentication (091-FR-023). Vision Section 6.2 requires encrypted client/server transmission.</li>
+<li><strong>Performance:</strong> 091-SC-006 targets artist identity or definitive not-found within two seconds for at least 95% of profile-view attempts under normal operating conditions. This is a requirement target, not a measured result or a timeout rule for these flows.</li>
+<li><strong>Usability and Accessibility:</strong> Preserve usable identity/content for missing fields, empty sections and partial failures (091-FR-004/005/017/020/027). Distinguish temporary failure from not-found and empty. Vision Section 6.3 requires responsive desktop/mobile web presentation and consistent mouse, keyboard and touch interaction. No additional accessibility certification is asserted.</li>
+<li><strong>Privacy:</strong> Only designated public artist fields and permitted content may appear. Non-public record existence and excluded content must not be inferable (091-FR-006–008, 018A). No personal following information is loaded or changed as a requirement of this UC.</li>
+<li><strong>Other:</strong> Use AuraTune-recorded all-time plays for featured-song ranking, not Spotify/external popularity. Filter eligibility before ordering/limiting, suppress duplicates, and never fill undersized results with ineligible substitutes. All-time play counts are read for display/ranking; viewing does not introduce a play-recording action.</li>
+</ul>
+<h2 id="11-business-rules">11. Business Rules</h2>
+<p>Rule IDs are local labels, not new source FRs. BR-08 and BR-09 are explicitly owner-confirmed session additions; other rules trace existing sources.</p>
+<table>
+<thead>
+<tr>
+<th>Rule ID</th>
+<th>Rule Description</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BR-01</td>
+<td>Present only public artist fields and content the visitor may view. Exclude hidden/private/removed/unauthorized items without inferable counts, labels, placeholders or error details. Suppress duplicate items within each section; apply eligibility filtering before ordering and limits.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-006–008, FR-022, Assumptions</td>
+</tr>
+<tr>
+<td>BR-02</td>
+<td>Featured songs are associated with the artist and permitted both for display and playback; show at most five. Sort by AuraTune all-time play count descending, release date descending for equal counts, then song ID ascending. External popularity/listening data is not used.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-009/010/010A/010B</td>
+</tr>
+<tr>
+<td>BR-03</td>
+<td>Show all viewable albums associated with the artist. Sort by release date descending, title ascending for equal dates, then album ID ascending.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-011/012</td>
+</tr>
+<tr>
+<td>BR-04</td>
+<td>Related playlists must be official public AuraTune playlists with at least one artist-associated song permitted for display and playback. Show at most six, ordered by update time descending, then playlist ID ascending.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-013/014/014A</td>
+</tr>
+<tr>
+<td>BR-05</td>
+<td>A successfully loaded section with no eligible items is empty; a section that cannot load is temporarily unavailable. Neither state makes the public artist nonexistent; empty sections receive no ineligible substitutes.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-017/019/020/021/027</td>
+</tr>
+<tr>
+<td>BR-06</td>
+<td>Nonexistent and non-public artists have the same not-found outcome, without disclosing identity, content, existence or the reason. Temporary failure is distinguishable.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-018/018A/019; <a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092 spec</a>, FR-011 public-access consistency</td>
+</tr>
+<tr>
+<td>BR-07</td>
+<td>Selection only navigates to an existing destination. Follow/unfollow, track management, artist-profile editing and administration are outside Feature 091.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a>, FR-015/016/024/025/026</td>
+</tr>
+<tr>
+<td>BR-08</td>
+<td>Apply EX-03 to unavailable selected song/album/playlist content: identical neutral destination not-found with return action and no target metadata/state/reason. Artist-not-found, temporary errors and playback remain separate.</td>
+<td>Owner-confirmed <a href="./README.html#session-decision-g090-d17">G090-D17</a>, 2026-11-04; supplements the selection-time edge case</td>
+</tr>
+<tr>
+<td>BR-09</td>
+<td>Share artist copies only the public artist-profile link, reports success only after successful copying and reports failure appropriately. Recipient access remains governed by visibility/not-found rules; the link grants no authorization.</td>
+<td>Owner-confirmed <a href="./README.html#session-decision-g090-d18">G090-D18</a>, 2026-11-04; Vision Section 5.2 G09 and 091 overview UI describe sharing but do not specify this behavior</td>
+</tr>
+</tbody></table>
+<h2 id="12-prototype-and-screenshots">12. Prototype and Screenshots</h2>
+<h3 id="120-current-submission-evidence">12.0 Current Submission Evidence</h3>
+<p><img src="./prototypes/UC-090-001-basic-flow-and-key-states.png" alt="Author-created Basic Flow and key UI states"></p>
+<p><strong>Type/provenance:</strong> Author-created HTML/CSS mockup storyboard, generated by Codex at the owner&#39;s request on 2026-11-04; fictional catalog data. <a href="./prototypes/UC-090-001-basic-flow-and-key-states.html">Editable HTML</a>. Sources: this UC&#39;s current flows/rules, relevant 091/092/093 requirements and confirmed D01-D18 decisions. Layout and sample feedback wording are illustrative, not additional approved requirements or implemented UI.</p>
+<p><strong>Illustration:</strong> Basic Flow presentation and key UI states for AF-01, AF-02, AF-03, AF-04, AF-05, AF-06, EX-01, EX-02, EX-03, EX-04. Multiple panels are independent alternative states, not one live screen or executed sequence. This is <strong>Partial</strong> evidence: no backend, current permissions, storage, persistence, license validation, concurrency or passed test is established. Per-flow residual Missing/Partial states are recorded in the <a href="./prototypes/README.html">prototype index</a>.</p>
+<p><strong>Historical reference review below:</strong> Earlier source-image observations and missing-state statements describe the original assets only. They do not override the new storyboard or current index. No original source image was changed; new local mockups supersede incompatible old UI for submission illustration.</p>
+<p>All six existing Feature 091 PNGs were opened and visually inspected on 2026-11-03. The images are reused in place below as <strong>reference UI mockups</strong>, not evidence of an implemented or deployed system. Their generation/provenance has not been verified. No image was created, copied, cropped or modified. Static visual inspection establishes only the visible presentation, not actual filtering, ordering, permissions, retry or navigation behavior. Prototype coverage remains incomplete.</p>
+<h3 id="121-basic-flow">12.1 Basic Flow</h3>
+<p><img src="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/01-artist-profile-overview.png" alt="Reference mockup of public artist identity and profile sections"></p>
+<p><strong>Covered steps:</strong> Basic Flow step 2 public name/avatar and visible biography; partial step 4 featured-song/album presentation. The image shows one featured song, not the five claimed in its spec description. The album card is cut off at the bottom. Follow, play and mini-player controls are outside this UC. The visible Share control is partial entry-point evidence for AF-06 only; it does not illustrate copying or its result.</p>
+<p><strong>Prototype type:</strong> Reference UI mockup; implementation provenance unverified.</p>
+<p><img src="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/02-artist-biography.png" alt="Reference mockup showing the biography and a complete album card"></p>
+<p><strong>Covered steps:</strong> Basic Flow step 2 biography and step 4 album presentation; the visible album card supplies better album evidence than the file named artist-albums. It does not illustrate missing-biography AF-01 or prove album ordering.</p>
+<p><strong>Prototype type:</strong> Reference UI mockup; implementation provenance unverified.</p>
+<p><img src="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/03-featured-songs.png" alt="Reference mockup showing a featured-song row"></p>
+<p><strong>Covered steps:</strong> Basic Flow step 4 featured-song presentation only. One song is visible, with a hover-like row treatment and playback control. This does not prove a maximum-five limit, eligibility or tie-breaking, and is not evidence of AF-04 destination navigation.</p>
+<p><strong>Prototype type:</strong> Reference UI mockup; implementation provenance unverified.</p>
+<p><img src="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/05-related-playlists.png" alt="Reference mockup showing related playlist cards"></p>
+<p><strong>Covered steps:</strong> Basic Flow step 4 related-playlists section, with two visible cards. Their official/public status, eligible-song associations and ordering require separate verification. Navigation after selection is not shown.</p>
+<p><strong>Prototype type:</strong> Reference UI mockup; implementation provenance unverified.</p>
+<p>The inspected <a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/04-artist-albums.png">04-artist-albums.png</a> repeats the overview-like view with an album card cut off before its title/year. It is not embedded as proof of complete album presentation; the biography image above visibly contains the complete card. Its source annotation cites FR-013, now the related-playlists section requirement, whereas album presentation is FR-011/012. No source annotation was edited.</p>
+<h3 id="122-alternative-flow--af-01">12.2 Alternative Flow – AF-01</h3>
+<p><strong>Evidence missing:</strong> None of the six images shows a missing-image fallback, missing-biography message or both missing. Available biography images show populated data and are not linked as fallback evidence. AF-01 remains without a matching prototype.</p>
+<h3 id="123-alternative-flow--af-02">12.3 Alternative Flow – AF-02</h3>
+<p><strong>Evidence missing:</strong> None of the six images shows a section-specific empty songs, albums or related-playlists state. An artist-not-found image is not an empty-section prototype.</p>
+<h3 id="124-alternative-flow--af-03">12.4 Alternative Flow – AF-03</h3>
+<p><img src="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/06-artist-profile-error.png" alt="Reference mockup of the artist-not-found outcome"></p>
+<p><strong>Covered steps:</strong> AF-03 step 1 visible not-found message, with no requested artist identity or related content shown. It does not prove that unknown and non-public artists actually receive the same result. The visible home-navigation control is not added as a required flow action. A global mini-player remains visible; its unrelated content does not prove requested-artist leakage, but provenance/state isolation must be checked before accepting the image as privacy evidence.</p>
+<p><strong>Prototype type:</strong> Reference UI mockup; implementation provenance unverified. This is not a temporary-load error/retry prototype.</p>
+<h3 id="125-alternative-flows--af-04-and-af-05">12.5 Alternative Flows – AF-04 and AF-05</h3>
+<p><strong>Evidence incomplete:</strong> Song/playlist source rows and cards are visible above, but no selected destination or navigation handoff is shown for AF-04 or Basic Flow step 6. AF-05 introduces no distinct confirmation UI; existing profile mockups illustrate the viewed content only.</p>
+<h3 id="126-exception-flows--ex-01-and-ex-02">12.6 Exception Flows – EX-01 and EX-02</h3>
+<p><strong>Evidence missing:</strong> No matching image shows a section failure with successful content preserved, full-profile temporary failure, retry interaction or recovered section. The not-found image cannot substitute for these states. No placeholder image links are provided.</p>
+<h3 id="127-exception-flow---ex-03">12.7 Exception Flow - EX-03</h3>
+<p><strong>Evidence missing:</strong> No existing image demonstrates the G090-D17 selected-content neutral destination and return action. The artist-not-found mockup concerns a different target and is not evidence for EX-03. No prototype was created or copied.</p>
+<h3 id="128-share-flow---af-06-and-ex-04">12.8 Share Flow - AF-06 and EX-04</h3>
+<p><strong>Evidence partial/missing:</strong> The overview mockup in Section 12.1 shows the Share control (AF-06 entry only). No image illustrates the copied-link success result, copy-failure feedback or current-visibility/recipient outcomes. No prototype is created/copied and no backend or clipboard correctness is established.</p>
+<h2 id="13-related-use-cases">13. Related Use Cases</h2>
+<ul>
+<li>UC-090-002 – Follow or Unfollow Artist is a separate personal goal governed by <a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">Feature 092</a>; no follow flow is included here. Specification: <a href="./UC-090-002-follow-or-unfollow-artist.html">Draft specification</a>.</li>
+<li>UC-090-003 – View Followed Artists may supply an existing link to a public profile. It is not a mandatory predecessor or included behavior. Specification: <a href="./UC-090-003-view-followed-artists.html">Draft specification</a>.</li>
+<li>UC-090-004–008 are separate Studio goals, linked in the <a href="./README.html#6-use-case-summary">group README</a>. No Studio actions are included in this public UC.</li>
+<li>The <a href="../../use-case-model.md#7-consolidated-use-case-catalog">shared model catalog</a> identifies UC-080-001 for album details, UC-060-002 for playlist details and UC-040-001 for playback. They retain their own behavior after navigation; this Draft adds no include/extend relationships or assumed song destination design.</li>
+</ul>
+<h2 id="14-traceability-and-sources">14. Traceability and Sources</h2>
+<p>Every current Feature 091 FR is listed individually below, including suffix IDs. Coverage describes specified behavior or boundary compliance, not a passed implementation test. The Requirement column follows the current source meaning; the Handling column identifies where this Draft addresses it.</p>
+<table>
+<thead>
+<tr>
+<th>Source Type</th>
+<th>ID / File</th>
+<th>Relevant Section</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Authoring guide</td>
+<td><code>C:/Users/Admin/Downloads/AuraTune_Use_Case_Documentation_Guide.md</code></td>
+<td>Source review, actor/system flows, prototype honesty and preservation of existing artifacts</td>
+</tr>
+<tr>
+<td>Extracted template</td>
+<td><code>C:/Users/Admin/Downloads/AuraTune_UC_Templates_Extracted/AuraTune_Use_Case_Templates/uc-specification/UC.template.md</code></td>
+<td>All 15 sections retained</td>
+</tr>
+<tr>
+<td>Repository guide</td>
+<td><a href="../README.md">Use-case guide</a></td>
+<td>Writing, naming, FR and prototype conventions; structural differences resolved for this pass by the owner&#39;s explicit extracted-template instruction</td>
+</tr>
+<tr>
+<td>Model</td>
+<td><a href="../../use-case-model.md">System model</a></td>
+<td>Actor catalog, Group 090 IDs and boundary; old FR mapping not reused</td>
+</tr>
+<tr>
+<td>Inventory</td>
+<td><a href="./use-case-inventory.html">Group inventory</a></td>
+<td>Eight stable IDs; current per-FR allocation; status/links synchronized</td>
+</tr>
+<tr>
+<td>Owner session decision</td>
+<td><a href="./README.html#session-decision-g090-d18">G090-D18</a></td>
+<td>AF-06, EX-04, BR-09 and postconditions; Vision G09/UI Share scope clarification, not an invented 091 FR</td>
+</tr>
+<tr>
+<td>Spec Kit Specification</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">Feature 091</a></td>
+<td>Clarification, US1–US4, Functional Requirements, Success Criteria, Assumptions, Dependencies, Out of Scope and UI descriptions</td>
+</tr>
+<tr>
+<td>Boundary Specification</td>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">Feature 092</a></td>
+<td>FR-011 public-profile consistency and separate personal following scope</td>
+</tr>
+<tr>
+<td>Vision Document</td>
+<td><a href="../../../proposal/Auratune_Vision_Document.md">Vision</a></td>
+<td>Section 3.4 N-08; Section 5.2 G09; Section 6.2/6.3; Section 4.1/AD-04 media dependency, not an added profile actor</td>
+</tr>
+<tr>
+<td>API Contract</td>
+<td><a href="../../../analysis-and-design/api-contract.md">API Contract</a></td>
+<td>Section 2.8 public profile/song/album/playlist retrieval; no new endpoint or transport behavior selected</td>
+</tr>
+<tr>
+<td>API conventions</td>
+<td><a href="../../../design/api/api-conventions.md">API conventions</a></td>
+<td>Public access, permissions and non-disclosing error guidance</td>
+</tr>
+<tr>
+<td>Security</td>
+<td><a href="../../../design/security/README.md">Security principles</a>; <a href="../../../design/database/security-rules.md">data security rules</a></td>
+<td>Server-side permission enforcement, least privilege and private-data protection; no database technology assumed</td>
+</tr>
+<tr>
+<td>Related Use Cases</td>
+<td><a href="./README.html#6-use-case-summary">Group README</a></td>
+<td>UC-090-002–008 boundaries and existing specification links</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Feature-qualified FR ID</th>
+<th>Requirement</th>
+<th>Handling in this Draft</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-001</a></td>
+<td>Request a public artist profile without artist-management capability.</td>
+<td>Preconditions; Basic Flow 1–2.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-002</a></td>
+<td>Display the public artist name.</td>
+<td>Basic Flow 2; AF-01.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-003</a></td>
+<td>Display image and biography when available.</td>
+<td>Basic Flow 2; AF-01.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-004</a></td>
+<td>Neutral missing-image fallback.</td>
+<td>AF-01 step 1.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-005</a></td>
+<td>Explicit missing-biography state with usable profile.</td>
+<td>AF-01 step 1.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-006</a></td>
+<td>Exclude private account/internal management fields.</td>
+<td>Basic Flow 2; BR-01; Security/Privacy.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-007</a></td>
+<td>Only visitor-permitted songs, albums and playlists.</td>
+<td>Basic Flow 4; BR-01; EX-03/BR-08 (G090-D17 session addition).</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-008</a></td>
+<td>Omit restricted items without indirect disclosure.</td>
+<td>Basic Flow 4; AF-02; BR-01; Privacy.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-009</a></td>
+<td>Featured-songs section for associated eligible songs.</td>
+<td>Basic Flow 4; BR-02.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-010</a></td>
+<td>At most five associated displayable/playable songs.</td>
+<td>Basic Flow 4; BR-02.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-010A</a></td>
+<td>AuraTune all-time play count descending; no external popularity.</td>
+<td>BR-02; Special Requirements.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-010B</a></td>
+<td>Song ties: release date descending, then song ID ascending.</td>
+<td>BR-02.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-011</a></td>
+<td>Viewable associated albums section.</td>
+<td>Basic Flow 4; BR-03.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-012</a></td>
+<td>All viewable albums; date descending, title ascending, ID ascending.</td>
+<td>BR-03.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-013</a></td>
+<td>Related-playlists section.</td>
+<td>Basic Flow 4; BR-04.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-014</a></td>
+<td>Official public playlists with at least one eligible associated song.</td>
+<td>BR-04.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-014A</a></td>
+<td>At most six eligible playlists; update descending, ID ascending.</td>
+<td>BR-04.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-015</a></td>
+<td>Navigate selected song, album or playlist to its existing destination.</td>
+<td>Basic Flow 5-6; AF-04; EX-03 for the G090-D17 selection-time exception only.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-016</a></td>
+<td>Do not redefine playback or album/playlist details.</td>
+<td>Boundary compliance: Basic Flow 6, AF-04, BR-07; ordinary destination/playback behavior unchanged. EX-03/BR-08 is a narrow owner-confirmed addition, not attributed to FR-016. No new UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-017</a></td>
+<td>Section-specific empty states preserve the rest of the profile.</td>
+<td>AF-02; BR-05.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-018</a></td>
+<td>Same not-found outcome for nonexistent/non-public artists.</td>
+<td>AF-03; BR-06.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-018A</a></td>
+<td>Not-found reveals no identity, content, existence, visibility or reason.</td>
+<td>AF-03 step 1; failure postconditions; BR-06.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-019</a></td>
+<td>Temporary loading failure differs from not-found.</td>
+<td>EX-01/EX-02; BR-05/06.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-020</a></td>
+<td>Preserve successful data and show section-specific failure.</td>
+<td>EX-01 step 1; success postconditions.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-021</a></td>
+<td>Retry full-profile or section failure.</td>
+<td>EX-01 steps 2–3; EX-02 steps 2–3; explicit continuations.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-022</a></td>
+<td>No duplicate item within a section.</td>
+<td>Basic Flow 4; BR-01.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-023</a></td>
+<td>All public sections available without authentication, subject to item visibility.</td>
+<td>Preconditions; Basic Flow 2/4; Security.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-024</a></td>
+<td>Follow/unfollow belongs to 092.</td>
+<td>Boundary compliance: no following state or controls required by this flow; separate UC-090-002 in Section 13. No new UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-025</a></td>
+<td>Upload/edit/hide/delete songs belongs to 093.</td>
+<td>Boundary compliance: no track-management action in this UC; separate UC-090-005–008. No new UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-026</a></td>
+<td>Exclude artist-profile editing and administrative actions.</td>
+<td>Boundary compliance: read-only public presentation; Group 110 retains administrative behavior; no profile editing invented.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-027</a></td>
+<td>Empty sections must not contain ineligible substitutes.</td>
+<td>AF-02 step 1; BR-01/05.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-011</a></td>
+<td>Public-profile access uses identical nonexistent/non-public not-found without restricted disclosure.</td>
+<td>Cross-feature consistency only: AF-03/BR-06. Follow rejection and hidden-owner unfollow remain outside this UC under 092.</td>
+</tr>
+</tbody></table>
+<h2 id="15-open-questions">15. Open Questions</h2>
+<p>Question IDs below are local to this Draft; they do not allocate new UC or FR IDs.</p>
+<table>
+<thead>
+<tr>
+<th>Question ID</th>
+<th>Question</th>
+<th>Owner</th>
+<th>Status</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Q-01</td>
+<td>Scope: share-artist behavior and assignment.</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+<td>Owner-confirmed <a href="./README.html#session-decision-g090-d18">G090-D18</a>: AF-06/EX-04/BR-09 specifies public-profile-link copying, truthful success/failure and unchanged recipient visibility. Not an original 091 FR; evidence remains incomplete.</td>
+</tr>
+<tr>
+<td>Q-02</td>
+<td>Scope: album metadata versus broader album organization.</td>
+<td>Thái Hoàng / group</td>
+<td>Deferred for this submission</td>
+<td>Owner submission instruction retains album display/navigation and album-name metadata, defers full album management, and preserves the unfulfilled Vision scope gap. <a href="./README.html#shared-open-issues">B-01</a></td>
+</tr>
+<tr>
+<td>Q-03</td>
+<td>Selection-time unavailable outcome.</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+<td>Owner-confirmed <a href="./README.html#session-decision-g090-d17">G090-D17</a>, option A, 2026-11-04: EX-03/BR-08 specifies neutral destination not-found and return action. Supplements the source; current P-017 illustrates the neutral result/return action, with full navigation/return sequence still Partial.</td>
+</tr>
+<tr>
+<td>Q-04</td>
+<td>When will missing-field, empty-section, temporary-failure/retry and navigation evidence be supplied, and how will UI inconsistencies be resolved?</td>
+<td>Thái Hoàng</td>
+<td>Open</td>
+<td>Section 12 records inspected assets and missing evidence; prototype coverage is incomplete.</td>
+</tr>
+<tr>
+<td>Q-05</td>
+<td>Documentation synchronization completed; independent reviewer still needed.</td>
+<td>Thái Hoàng</td>
+<td>Open</td>
+<td>Inventory status/links now match all eight existing Drafts. Synchronization subquestion resolved; Reviewer remains Not assigned. <a href="./README.html#shared-open-issues">Group issue D-01</a></td>
+</tr>
+<tr>
+<td>Q-06</td>
+<td>When will old shared-model FR mapping and source image annotations be aligned with current specs?</td>
+<td>Thái Hoàng / group</td>
+<td>Open</td>
+<td>Deferred; no shared artifact or spec changed.</td>
+</tr>
+</tbody></table>
+<p>The unresolved upload/storage actor concerns UC-090-005 and remains in the <a href="./README.html#8-open-issues-and-decisions">group open issues</a>; it is not silently introduced as a supporting actor of this public-profile UC.</p>
+</main></html>
