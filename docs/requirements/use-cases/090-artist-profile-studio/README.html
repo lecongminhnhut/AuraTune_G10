@@ -1,0 +1,578 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>README.md</title><style>body{font:16px/1.65 Segoe UI,Arial;margin:0;color:#182030;background:#f6f7fb}main{max-width:1300px;margin:24px auto;padding:28px 38px;background:white}h1,h2,h3{line-height:1.3;color:#25205c}h2{margin-top:36px;border-bottom:1px solid #ddd;padding-bottom:10px}table{border-collapse:collapse;width:100%;font-size:13px;margin:20px 0;display:block;overflow:auto}th,td{border:1px solid #ccd1dd;text-align:left;padding:8px;vertical-align:top}th{background:#eeebfa}img{max-width:100%;height:auto}pre{overflow:auto;background:#f0f1f7;padding:16px}code{font-size:.9em}a{color:#50399c}.banner{background:#25205c;color:white;padding:12px 24px}blockquote{border-left:4px solid #aaa;padding-left:16px}</style><div class="banner">Group 090 submission reading copy | Draft | Reviewer: Not assigned</div><main><h1 id="090--artist-profile--studio">090 – Artist Profile &amp; Studio</h1>
+<h2 id="1-group-overview">1. Group Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Group ID</td>
+<td>090</td>
+</tr>
+<tr>
+<td>Group Name</td>
+<td>Artist Profile &amp; Studio</td>
+</tr>
+<tr>
+<td>Group Owner</td>
+<td>Thái Hoàng</td>
+</tr>
+<tr>
+<td>Purpose</td>
+<td>Let visitors discover artists and their public releases, let authenticated accounts keep a personal collection of artists, and let artists manage their own tracks.</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>In Progress</td>
+</tr>
+</tbody></table>
+<p>Start with the <a href="./use-case-inventory.html">inventory</a> for the eight stable UC IDs and requirement allocation. Drafts now exist for <a href="./UC-090-001-view-public-artist-profile.html">UC-090-001</a>, <a href="./UC-090-002-follow-or-unfollow-artist.html">UC-090-002</a>, <a href="./UC-090-003-view-followed-artists.html">UC-090-003</a>, <a href="./UC-090-004-access-artist-studio-dashboard.html">UC-090-004</a>, <a href="./UC-090-005-upload-audio-track.html">UC-090-005</a>, <a href="./UC-090-006-edit-track-metadata.html">UC-090-006</a>, <a href="./UC-090-007-hide-or-unhide-track.html">UC-090-007</a> and <a href="./UC-090-008-delete-track-from-studio.html">UC-090-008</a>; all eight specification files now exist (eight specifications plus group README, inventory, prototype index and submission notes; editable mockups, PNGs and diagram exports are additional assets). Writer: Thái Hoàng. Reviewer: Not assigned. No peer review or approval has occurred.</p>
+<p>The inventory now records UC-090-001 through UC-090-008 as Draft with existing-file links; none is Approved. Current visual observations are recorded in Section 12 of each Draft. None of the eight Drafts has complete prototype evidence or peer review. All eight Drafts now link existing related specifications; obsolete planned references and synchronization notes have been updated.</p>
+<p>Authoring follows the supplied extracted group README template (nine sections) and UC template (15 sections), read from <code>C:/Users/Admin/Downloads/AuraTune_UC_Templates_Extracted/AuraTune_Use_Case_Templates/</code>, together with <code>C:/Users/Admin/Downloads/AuraTune_Use_Case_Documentation_Guide.md</code>. See also the <a href="../README.md">repository guide</a> and <a href="../../use-case-model.md">system model</a>; their differing template/FR conventions are recorded below rather than silently reconciled.</p>
+<h2 id="2-scope">2. Scope</h2>
+<h3 id="21-in-scope">2.1 In Scope</h3>
+<ul>
+<li><p>Public artist identity, optional image/biography, eligible featured songs, albums and related playlists; navigation to existing content destinations; privacy-safe empty, not-found, temporary-failure and retry outcomes (091).</p>
+</li>
+<li><p>Personal follow/unfollow, recognition of following state and viewing the account&#39;s own followed artists, including the visibility and failure rules defined by 092.</p>
+</li>
+<li><p>Artist-only Studio access, own-track catalog/statistics, audio upload, metadata editing, hide/unhide and confirmed deletion (093).</p>
+</li>
+<li><p>Existing paired goals stay combined: follow/unfollow in UC-090-002 and hide/unhide in UC-090-007.</p>
+</li>
+<li><p>Owner-confirmed G090-D18 adds optional public artist-profile-link copying in UC-001, with truthful copy success/failure and unchanged recipient visibility. This supplements Vision G09/091 UI, not an existing source FR.</p>
+</li>
+</ul>
+<h3 id="22-out-of-scope">2.2 Out of Scope</h3>
+<ul>
+<li>Playback, queue processing and destination album/playlist behavior, owned by their respective groups; this group&#39;s public-profile UC only hands off navigation.</li>
+<li>Artist-profile editing and changing profile public visibility, neither defined by 091 nor added here; administrative artist/content actions belong to Group 110.</li>
+<li>Following other users, release notifications, monetization and royalty management.</li>
+<li>Full album organization/management is deferred for this submission at the owner&#39;s request. Existing display/navigation and album-name metadata remain; the complete Vision goal is not claimed fulfilled or assigned elsewhere.</li>
+</ul>
+<h2 id="3-requirement-and-feature-traceability">3. Requirement and Feature Traceability</h2>
+<p>Feature-qualified references such as <code>091-FR-001</code> identify literal <code>FR-001</code> in the linked feature spec. Current source requirements, not the model&#39;s older mappings, govern this documentation.</p>
+<table>
+<thead>
+<tr>
+<th>Feature ID</th>
+<th>Feature Name</th>
+<th>Related FR IDs</th>
+<th>Spec Kit Specification</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>091</td>
+<td>Artist Profile</td>
+<td>31 actual IDs: FR-001–FR-027 plus FR-010A, FR-010B, FR-014A, FR-018A</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091 spec</a></td>
+</tr>
+<tr>
+<td>092</td>
+<td>Follow Artist</td>
+<td>16 actual IDs: FR-001–FR-016</td>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092 spec</a></td>
+</tr>
+<tr>
+<td>093</td>
+<td>Artist Track Management</td>
+<td>10 actual IDs: FR-001–FR-010</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a></td>
+</tr>
+</tbody></table>
+<p>The <a href="./use-case-inventory.html#4-coverage-check">inventory Coverage Check</a> allocates all 57 actual FRs individually, including scope boundaries. This is allocation coverage, not evidence of complete specifications, implementation or tests.</p>
+<p>Other sources: <a href="../../../proposal/Auratune_Vision_Document.md">Vision</a>, N-08/N-09, G09 and AD-04/AD-10; <a href="../../../analysis-and-design/api-contract.md">API Contract</a>, Sections 2.4/2.7/2.8; <a href="../../../design/api/api-conventions.md">API conventions</a>; <a href="../../../design/security/README.md">security principles</a>; <a href="../../../design/database/security-rules.md">data security rules</a>. Repository organization and Git sources: <a href="../../../../specs/README.md">specs README</a> and <a href="../../../management/git-workflow.md">Git workflow</a>.</p>
+<h2 id="4-actors">4. Actors</h2>
+<table>
+<thead>
+<tr>
+<th>Actor</th>
+<th>Actor Type</th>
+<th>Description</th>
+<th>Goals</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Guest / Visitor</td>
+<td>Primary</td>
+<td>Unauthenticated public visitor; no artist-management permission is needed.</td>
+<td>View a public artist profile (UC-090-001).</td>
+</tr>
+<tr>
+<td>Listener</td>
+<td>Primary</td>
+<td>Authenticated standard account; inherits public visitor access.</td>
+<td>Public profile; own follow relationship and followed-artists list (UC-090-001–003).</td>
+</tr>
+<tr>
+<td>Artist</td>
+<td>Primary</td>
+<td>Inherits Listener capabilities; only the authenticated artist role accesses Studio.</td>
+<td>Public/personal goals and own-track Studio goals (UC-090-004–008).</td>
+</tr>
+<tr>
+<td>Administrator</td>
+<td>Primary for personal following</td>
+<td>Inherits Listener access in the model; 092 FR-009 permits non-banned Admin accounts to use only their own following data. No Studio permission is inferred.</td>
+<td>Public profile and own personal follow/list goals; administrative goals remain in Group 110.</td>
+</tr>
+</tbody></table>
+<p>No supporting actor is confirmed for UC-090-001. UC-090-005 now records External Cloud Media/Blob Storage Service as a logical supporting role based on Vision Section 4.1, which explicitly shows AuraTune services saving uploads to external media storage, and 093-FR-010. This upload-persistence role is not inferred from CDN delivery. Provider, interface and equivalence to the shared model&#39;s CDN actor name remain open; the shared model is unchanged. No internal backend, database or UI component is an actor.</p>
+<h2 id="5-use-case-diagram">5. Use-Case Diagram</h2>
+<p>This is a <strong>Use Case representation using Mermaid flowchart</strong>, not standard UML use-case syntax. Human/service actors are outside the AuraTune system boundary; rounded nodes inside are the eight unchanged user goals. Lines are actor associations, not request order or include/extend relationships. Explicit associations avoid relying on an implicit role inheritance chain.</p>
+<details><summary>Mermaid source (portable rendered diagram below)</summary><pre>flowchart LR
+    GUEST[&quot;Guest / Visitor&quot;]
+    USER[&quot;User / Listener - own account&quot;]
+    ARTIST[&quot;Artist - owner&quot;]
+    ADMIN[&quot;Admin / Administrator - personal account&quot;]
+    STORAGE[&quot;External Cloud Media/Blob Storage Service&quot;]
+    subgraph AURATUNE[&quot;AuraTune - Group 090 Artist Profile &amp; Studio&quot;]
+        direction TB
+        UC1([&quot;UC-090-001 - View Public Artist Profile&quot;])
+        UC2([&quot;UC-090-002 - Follow or Unfollow Artist&quot;])
+        UC3([&quot;UC-090-003 - View Followed Artists&quot;])
+        UC4([&quot;UC-090-004 - Access Artist Studio Dashboard&quot;])
+        UC5([&quot;UC-090-005 - Upload Audio Track&quot;])
+        UC6([&quot;UC-090-006 - Edit Track Metadata&quot;])
+        UC7([&quot;UC-090-007 - Hide or Unhide Track&quot;])
+        UC8([&quot;UC-090-008 - Delete Track from Studio&quot;])
+    end
+    GUEST --- UC1
+    USER --- UC1
+    USER --- UC2
+    USER --- UC3
+    ARTIST --- UC1
+    ARTIST --- UC2
+    ARTIST --- UC3
+    ARTIST --- UC4
+    ARTIST --- UC5
+    ARTIST --- UC6
+    ARTIST --- UC7
+    ARTIST --- UC8
+    ADMIN --- UC1
+    ADMIN --- UC2
+    ADMIN --- UC3
+    STORAGE --- UC5
+</pre></details>
+<p>User, Artist and Admin personal associations to UC-002/003 follow <a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-009</a>; authentication, non-banned access and own-account scope constrain those associations. Studio UC-004-008 requires the Artist role and ownership under <a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-001</a>; Admin alone has no Studio association. Public-profile access is inherited/public access shown explicitly for each human role.</p>
+<p>Storage is a logical supporting role only for upload, supported by <a href="../../../proposal/Auratune_Vision_Document.md">Vision Section 4.1</a> (AuraTune services save uploads outside the system) and 093-FR-010&#39;s actual binary persistence. This is not inferred from the shared CDN label, and does not select a provider or a direct browser-upload interface. No internal UI/backend/database actor or include/extend relation is invented.</p>
+<p>IDs, full names and associations were checked against the eight Drafts and inventory. <strong>Actual render verified:</strong> Mermaid 11 rendered the unchanged source in headless Chrome on 2026-11-04; the diagram PNG was visually inspected for boundary, labels and actor associations. <a href="./prototypes/group-090-use-case-diagram.svg">Portable SVG</a> and <a href="./prototypes/group-090-use-case-diagram.png">PNG</a> are included so viewing does not depend on Mermaid support. Rendering in the team&#39;s exact Markdown host remains unverified. The shared model remains unchanged, including its stale FR/actor mappings.</p>
+<p><img src="./prototypes/group-090-use-case-diagram.svg" alt="Rendered Group 090 Use Case representation"></p>
+<h2 id="6-use-case-summary">6. Use-Case Summary</h2>
+<table>
+<thead>
+<tr>
+<th>UC ID</th>
+<th>Use-Case Name</th>
+<th>Primary Actor</th>
+<th>Related FR IDs</th>
+<th>Specification</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UC-090-001</td>
+<td>View Public Artist Profile</td>
+<td>Guest / Visitor; Listener and inherited public access</td>
+<td>All 31 Feature 091 FRs, individually mapped in Draft Section 14</td>
+<td><a href="./UC-090-001-view-public-artist-profile.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-002</td>
+<td>Follow or Unfollow Artist</td>
+<td>Listener; Artist; Administrator, own account only</td>
+<td>092-FR-001–006, 009–016</td>
+<td><a href="./UC-090-002-follow-or-unfollow-artist.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-003</td>
+<td>View Followed Artists</td>
+<td>Listener; Artist; Administrator, own account only</td>
+<td>092-FR-003, 006–009, 012–016</td>
+<td><a href="./UC-090-003-view-followed-artists.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-004</td>
+<td>Access Artist Studio Dashboard</td>
+<td>Artist</td>
+<td>093-FR-001–003</td>
+<td><a href="./UC-090-004-access-artist-studio-dashboard.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-005</td>
+<td>Upload Audio Track</td>
+<td>Artist</td>
+<td>093-FR-001, 004, 005, 009, 010</td>
+<td><a href="./UC-090-005-upload-audio-track.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-006</td>
+<td>Edit Track Metadata</td>
+<td>Artist</td>
+<td>093-FR-001, 005, 006, 009</td>
+<td><a href="./UC-090-006-edit-track-metadata.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-007</td>
+<td>Hide or Unhide Track</td>
+<td>Artist</td>
+<td>093-FR-001, 007, 009</td>
+<td><a href="./UC-090-007-hide-or-unhide-track.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-008</td>
+<td>Delete Track from Studio</td>
+<td>Artist</td>
+<td>093-FR-001, 008, 009</td>
+<td><a href="./UC-090-008-delete-track-from-studio.html">Draft specification</a></td>
+</tr>
+</tbody></table>
+<p>092-FR-011 additionally constrains public-profile not-found consistency in UC-090-001, as already allocated in the inventory; it does not introduce a follow flow into this UC.</p>
+<h2 id="7-prototype-summary">7. Prototype Summary</h2>
+<p>See the <a href="./prototypes/README.html">prototype index</a> for all 90 Basic/Alternative/Exception Flow entries, original-source provenance and residual Missing/Partial coverage. Nine author-created mockup boards supplement 16 original PNGs; mockups do not prove backend or passed tests.</p>
+<table>
+<thead>
+<tr>
+<th>UC ID</th>
+<th>Basic Flow Prototype</th>
+<th>Alternative Flow Prototypes</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UC-090-001</td>
+<td><a href="./prototypes/UC-090-001-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-001--view-public-artist-profile">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-002</td>
+<td><a href="./prototypes/UC-090-002-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-002--follow-or-unfollow-artist">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-003</td>
+<td><a href="./prototypes/UC-090-003-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-003--view-followed-artists">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-004</td>
+<td><a href="./prototypes/UC-090-004-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-004--access-artist-studio-dashboard">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-005</td>
+<td><a href="./prototypes/UC-090-005-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-005--upload-audio-track">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-006</td>
+<td><a href="./prototypes/UC-090-006-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-006--edit-track-metadata">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-007</td>
+<td><a href="./prototypes/UC-090-007-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-007--hide-or-unhide-track">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+<tr>
+<td>UC-090-008</td>
+<td><a href="./prototypes/UC-090-008-basic-flow-and-key-states.png">Current storyboard</a></td>
+<td><a href="./prototypes/README.html#uc-090-008--delete-track-from-studio">Per-flow index</a></td>
+<td>Author-created mockup; Basic UI and key alternatives, Partial sequence coverage.</td>
+</tr>
+</tbody></table>
+<h2 id="8-open-issues-and-decisions">8. Open Issues and Decisions</h2>
+<p>Issue IDs below are local documentation tracking labels, not new FR or UC identifiers.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Issue / Decision Needed</th>
+<th>Impacted UC/FR</th>
+<th>Owner</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G090-Q01</td>
+<td>Share artist settled by owner-confirmed G090-D18: copy the public artist-profile link, truthful copy success/failure and unchanged recipient visibility.</td>
+<td>UC-001 AF-06/EX-04/BR-09</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+</tr>
+<tr>
+<td>G090-Q02</td>
+<td>Full album management deferred for this submission; retain album display/navigation and track album-name metadata. Vision gap retained, not assigned elsewhere.</td>
+<td>UC-001/005/006; Vision G09</td>
+<td>Thái Hoàng / group</td>
+<td>Deferred for this submission</td>
+</tr>
+<tr>
+<td>G090-Q03</td>
+<td>Align the source-supported logical external upload-storage role with the shared CDN actor label; provider/interface remain unconfirmed. Vision 4.1 and 093-FR-010 establish the logical boundary, not CDN equivalence.</td>
+<td>UC-090-005; 093-FR-010</td>
+<td>Thái Hoàng / group</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>G090-Q04</td>
+<td>Align shared model FR references with current specs and personal-role permissions from 092-FR-009 in a later authorized pass.</td>
+<td>All eight UCs; model Group 090</td>
+<td>Thái Hoàng / group</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>G090-Q05</td>
+<td>Correct stale spec image annotations later; 091 album description cites FR-013, now related playlists. Other drift is recorded in inventory.</td>
+<td>091-FR-011–014A; 092 annotations</td>
+<td>Thái Hoàng</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>G090-Q06</td>
+<td>Obtain missing flow-state prototype evidence and resolve visual mismatches documented in UC-090-001 Section 12.</td>
+<td>UC-090-001 AF/EX flows</td>
+<td>Thái Hoàng</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>G090-Q07</td>
+<td>Assign an independent reviewer. Inventory status, links and visual-inspection notes are synchronized for UC-090-001/002/003/004/005/006/007/008; review is still pending.</td>
+<td>UC-090-001/002/003/004/005/006/007/008; inventory</td>
+<td>Thái Hoàng</td>
+<td>Open</td>
+</tr>
+<tr>
+<td>G090-Q08</td>
+<td>Selection-time unavailable outcome settled by owner-confirmed G090-D17: neutral destination not-found with return action and no target disclosure. Source originally left this open; evidence remains missing.</td>
+<td>UC-001 EX-03/BR-08; 091-FR-007/008/015</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+</tr>
+<tr>
+<td>G090-Q09</td>
+<td>Authoring choice settled for this group: complete extracted templates (nine README sections, 15 UC sections, prototype-index columns/Asset Rules) and explicitly requested branch are used. Source convention differences remain documented; no shared convention is rewritten.</td>
+<td>Documentation conventions</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved for Group 090</td>
+</tr>
+</tbody></table>
+<h3 id="current-status-after-g090-d01-d18">Current status after G090-D01-D18</h3>
+<p>D01-D16 remain recorded without reconstruction; D17 records the selection-time outcome; D18 records the latest share-artist confirmation. B-02 through B-11 are Resolved in the current register. Earlier decision paragraphs below are historical snapshots: for example, D08-D13 left parts of B-06 open until D14, and D15 left lengths open until D16. Their original recorded substance is retained. A later decision supersedes the historical open-status note only for the topic it actually settles. Historical notes retain their original scope; UC-001 now includes the D17 selection-time exception.</p>
+<p><strong>Remaining business/scope questions (not resolved by 57 Covered FR rows):</strong></p>
+<p>Share artist (G090-Q01) is resolved by D18 within UC-001; prototype evidence remains incomplete.
+<strong>B-01 / G090-Q02 - deferred scope:</strong> For this submission, the owner requested deferring full album management while retaining existing public album display/navigation and upload/edit album-name metadata. This does not fulfill the entire Vision G09 album-organization goal and does not assign the deferred work to another group. Broader album creation/editing/deletion, membership and ordering require a later scoped feature; no new UC or source FR is added.
+<strong>B-11 / G090-Q08 is resolved by G090-D17:</strong> neutral destination not-found with return action for selected content that has become unavailable; matching prototype evidence remains missing.</p>
+<p><strong>Source alignment:</strong> S-01 remains separate: Admin one-click removal versus confirmed deletion is a conditional conflict only if those mean the same executed action. Removed/deleted state naming and playback wording require scope alignment, not an asserted blanket conflict; no 112 policy is chosen here.</p>
+<p><strong>Technical/model work:</strong> C-01/C-02 and G090-Q03/Q04 cover retrieval, persistence/cleanup, provider/interface/actor-label alignment and stale shared FR/role mappings. <strong>Evidence/review work:</strong> D-01 and G090-Q05/Q06/Q07 cover source annotations, missing flow prototypes, actual renderer verification and independent review. These are not additional business blockers or evidence that the eight Drafts are Approved.</p>
+<h3 id="shared-open-issues">Shared open issues</h3>
+<p>One register consolidates duplicated issues. Local Q IDs remain stable cross-references. All eight specifications remain Draft; Reviewer: Not assigned. Only explicitly recorded owner session decisions D01-D18 are adopted; unselected proposals are not business rules.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Category</th>
+<th>Remaining issue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B-01</td>
+<td>Deferred scope; share resolved</td>
+<td>G090-D18 settles sharing. Owner submission instruction defers broader album management; existing album display/navigation and track album-name metadata remain. Vision gap retained; no assignment to another group or claim of full fulfillment. Audio replacement remains only a future scope note.</td>
+</tr>
+<tr>
+<td>B-02</td>
+<td>Resolved by owner session decision</td>
+<td>Owner-confirmed session decision G090-D06 (2026-11-04), own-Artist Studio statistics: active count includes only Artist-public tracks without Admin restriction that are not deleted. Total plays retains all validly recorded historical plays, including tracks later hidden, restricted or deleted; those actions do not themselves subtract historical plays. An empty catalog has active count 0 but retains historical total plays, which is 0 only if there are no recorded plays. Unavailable data must be distinguishable from 0. No technical data source, schema, storage/cleanup policy or Group 113 formula selected.</td>
+</tr>
+<tr>
+<td>B-03</td>
+<td>Resolved by owner session decision</td>
+<td>G090-D01, confirmed by Thái Hoàng on 2026-11-04: MP3 only; maximum 52,428,800 bytes (50 MiB), inclusive. Reject other formats/oversize with appropriate feedback and no upload-success result. Newly confirmed in this session, not a pre-existing source requirement. Format/size closed by G090-D01; B-04 subsequently resolved by G090-D02/D03.</td>
+</tr>
+<tr>
+<td>B-04</td>
+<td>Resolved by owner session decisions</td>
+<td>G090-D02 confirms the checkbox; G090-D03 (2026-11-04) confirms rights declarations. Select one rights type: Self-owned, Licensed, or Open license. For Self-owned material, the G090-D02 checkbox is mandatory but no external source/license link is required. For Licensed or Open license material, content source and distribution-permission basis are both required as non-empty text; uploading proof documents is not required. For every rights type, explicitly state whether attribution is required; if yes, supply non-empty attribution text. These are Artist declarations, not system verification of legal rights or license validity. Missing required information receives corrective feedback before upload/track saving. No schema/API selected.</td>
+</tr>
+<tr>
+<td>B-05</td>
+<td>Resolved: existing scope confirmed</td>
+<td>Owner scope confirmation G090-D04 (2026-11-04): the Artist enters duration at upload and may edit it in metadata. Validate exactly <code>^\d{1,2}:[0-5]\d$</code>. Within current scope, no measurement from audio or comparison against actual audio length is required; do not claim system-verified duration. Other validation remains unchanged; no source spec changed.</td>
+</tr>
+<tr>
+<td>B-06</td>
+<td>Resolved by owner session decisions</td>
+<td>G090-D08-D13 settle selected recovery, cancellation/departure, input retention and same-account session recovery. G090-D14 closes partial/stale presentation: preserve successful portions; failed portions have error/manual retry; earlier data clearly not updated, never current or fabricated zero/empty. Original source gaps are supplemented by these session decisions; technical/cache/auth/request-tracking mechanisms and evidence remain open separately.</td>
+</tr>
+<tr>
+<td>B-07</td>
+<td>Resolved by owner session decision</td>
+<td>Owner-confirmed session decision G090-D05 (2026-11-04): an eligible Artist-owner may edit the already-permitted metadata, delete through the existing confirmation/cancel flow, and change only their self-hide preference while Admin restriction remains active. None of these actions clears that restriction, publishes the track or permits a new play start. After Admin lifts restriction, public availability requires Artist-public preference and a non-deleted track. Unhide/unrestrict cannot restore a deleted track. No source change, schema selection or group approval.</td>
+</tr>
+<tr>
+<td>B-08</td>
+<td>Resolved by owner session decisions</td>
+<td>G090-D15 sets title non-empty after edge trim, optional/clearable album and catalog-member genre. G090-D16 (2026-11-04) confirms each edit title/album &lt;= 200 Unicode code points, inclusive; duration remains G090-D04/FR-005. No additional normalization/default or upload-policy expansion, schema/API or approval.</td>
+</tr>
+<tr>
+<td>B-09</td>
+<td>Resolved by owner session decision</td>
+<td>Owner-confirmed session decision G090-D08 (2026-11-04), option A: distinguish Studio errors from valid empty/zero results and offer manual retry. An unanswered submitted operation remains explicitly uncertain; reconcile its actual result before a definitive state claim or resubmission. Retrying the same upload submission must not create another track. Concurrent valid operations take effect in successful processing order, with the last successful applicable change prevailing, subject to current ownership, Admin restriction and deletion rules; deleted content cannot be resurrected. No automatic resubmission, schema/API, transaction or deduplication mechanism is selected.</td>
+</tr>
+<tr>
+<td>B-10</td>
+<td>Resolved by owner session decision</td>
+<td>Owner-confirmed session decision G090-D07 (2026-11-04): after a successful Artist hide or delete, deny new play starts through player, playlist, queue or direct URL; queue skips unavailable tracks. Playback already started before success may finish, but replay/repeat is blocked while the track remains unavailable. A hidden track can start new playback again only when Artist preference is public, no Admin restriction remains and the track is not deleted. Unhide/unrestrict cannot restore a deleted track. No physical-file deletion, URL-revocation or streaming mechanism is selected. Existing public-profile omission and distribution rules remain; exact stale-surface refresh presentation/mechanisms remain C-02/B-06, without a new automatic-refresh requirement.</td>
+</tr>
+<tr>
+<td>B-11</td>
+<td>Resolved by owner session decision</td>
+<td>G090-D17, option A: UC-001 EX-03/BR-08 specifies neutral destination not-found and return action without target disclosure. Source and playback rules remain unchanged; prototype evidence is missing.</td>
+</tr>
+<tr>
+<td>C-01</td>
+<td>Technical Follow-up</td>
+<td>Personal-state retrieval/reconciliation, delayed-response isolation and relationship storage/cleanup outside 092 (002/003). Observable outcomes already follow 092-FR-010/012-016; not a missing Group 090 business decision.</td>
+</tr>
+<tr>
+<td>C-02</td>
+<td>Technical Follow-up</td>
+<td>Provider/interface and storage/CDN actor alignment, protected Studio retrieval, persistence/schema/physical cleanup, contracts and measurement of the existing 500 ms upload/edit target (004-008). These alone do not lower FR coverage.</td>
+</tr>
+<tr>
+<td>D-01</td>
+<td>Evidence/documentation/review</td>
+<td>Section 12 gaps across all eight Drafts; shared model/image annotation alignment, group-diagram render verification and reviewer assignment. Static mockups do not prove backend, ownership, persistence or concurrency. No approval/complete prototype coverage.</td>
+</tr>
+<tr>
+<td>S-01</td>
+<td>Source assessment</td>
+<td>Verbatim quotations and action/state analysis below; distinguish contradictory same-action instructions from absent policy or ambiguous terminology.</td>
+</tr>
+</tbody></table>
+<h3 id="session-decision-g090-d01">Session decision G090-D01</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option B: accept MP3 audio only, each file at most <strong>52,428,800 bytes (50 MiB)</strong>, including exactly that threshold. Reject another format or a file above the threshold with appropriate feedback; do not report upload success. This is a new owner-confirmed decision in this conversation, not a requirement previously present in source specs. <a href="./UC-090-005-upload-audio-track.html">UC-090-005</a> applies it at Basic 4, AF-06 and BR-07. B-04 and other unresolved issues remain open; no source spec is modified.</p>
+<h3 id="session-decision-g090-d02">Session decision G090-D02</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: each upload requires a checkbox confirming that the Artist has the right to distribute the content. It is initially unchecked for every upload. If not selected, reject the submission with appropriate feedback before starting audio upload or saving the track; do not report success. The checkbox is the Artist&#39;s declaration, not evidence that the system verified a license. This is a newly confirmed session decision, not an original source requirement. <a href="./UC-090-005-upload-audio-track.html">UC-090-005</a> applies it in Basic 2-4, AF-07 and BR-08. This decision closed the confirmation interaction; G090-D03 subsequently resolved B-04 rights metadata. No source spec or prototype is changed.</p>
+<h3 id="session-decision-g090-d03">Session decision G090-D03</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Select one rights type: Self-owned, Licensed, or Open license. For Self-owned material, the G090-D02 checkbox is mandatory but no external source/license link is required. For Licensed or Open license material, content source and distribution-permission basis are both required as non-empty text; uploading proof documents is not required. For every rights type, explicitly state whether attribution is required; if yes, supply non-empty attribution text. These are Artist declarations, not system verification of legal rights or license validity. Missing required information receives appropriate corrective feedback and blocks submission before starting audio upload or saving the track. G090-D02 remains applicable to every upload. This is a newly confirmed session decision, not a requirement originally stated by the source specs. <a href="./UC-090-005-upload-audio-track.html">UC-090-005</a> applies it in Basic 2-4, AF-08 and BR-09. B-04/Q-02 is resolved; FR-004 input-goal coverage is reassessed as Covered, without claiming complete recovery/prototype/implementation coverage or selecting schema/API.</p>
+<h3 id="session-scope-confirmation-g090-d04">Session scope confirmation G090-D04</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner scope confirmation G090-D04 (2026-11-04): the Artist enters duration at upload and may edit it in metadata. Validate exactly <code>^\d{1,2}:[0-5]\d$</code>. Within current scope, no measurement from audio or comparison against actual audio length is required; do not claim system-verified duration. This confirms retention of current scope under 093-FR-005/006; no new measurement requirement, mismatch tolerance or schema/API is introduced. <a href="./UC-090-005-upload-audio-track.html">UC-005</a> and <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> apply it in duration validation, business rules and traceability. B-05 and both local Q-03 entries are Resolved. All other validation, including session decisions G090-D01/D02/D03, is unchanged.</p>
+<h3 id="session-decision-g090-d05">Session decision G090-D05</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D05 (2026-11-04): an eligible Artist-owner may edit the already-permitted metadata, delete through the existing confirmation/cancel flow, and change only their self-hide preference while Admin restriction remains active. None of these actions clears that restriction, publishes the track or permits a new play start. After Admin lifts restriction, public availability requires Artist-public preference and a non-deleted track. Unhide/unrestrict cannot restore a deleted track. This is a newly confirmed session decision, not group approval or a source-spec edit. UC-004 links the permitted management goals without executing them; UC-006/008 apply existing edit and confirmation/cancel/delete flows; UC-007 AF-04 handles preference-only changes without a misleading publication result. B-07 and UC-006/007/008 Q-01 are Resolved. B-02 statistics is subsequently resolved by G090-D06; B-06 recovery, B-08 field constraints, B-09 concurrency is subsequently resolved by G090-D08; B-10 playback is subsequently resolved by G090-D07. Restricted preference/result illustrations remain missing; no prototype was created.</p>
+<h3 id="session-decision-g090-d06">Session decision G090-D06</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D06 (2026-11-04), own-Artist Studio statistics: active count includes only Artist-public tracks without Admin restriction that are not deleted. Total plays retains all validly recorded historical plays, including tracks later hidden, restricted or deleted; those actions do not themselves subtract historical plays. An empty catalog has active count 0 but retains historical total plays, which is 0 only if there are no recorded plays. Unavailable data must be distinguishable from 0. This newly confirmed decision is for the Artist&#39;s own Studio only. It selects no data source, schema, history-storage/cleanup mechanism or Group 113 platform formula. UC-004 defines the viewing/empty/availability rules; UC-007/008 apply the visibility/deletion consequences. B-02 and UC-004 Q-01/Q-02 are Resolved; FR-002 is Covered for the specified metric behavior, not implementation/prototype approval. B-06 recovery and all unrelated open issues remain open.</p>
+<h3 id="session-decision-g090-d07">Session decision G090-D07</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A for both Artist hide and delete: Owner-confirmed session decision G090-D07 (2026-11-04): after a successful Artist hide or delete, deny new play starts through player, playlist, queue or direct URL; queue skips unavailable tracks. Playback already started before success may finish, but replay/repeat is blocked while the track remains unavailable. A hidden track can start new playback again only when Artist preference is public, no Admin restriction remains and the track is not deleted. Unhide/unrestrict cannot restore a deleted track. No physical-file deletion, URL-revocation or streaming mechanism is selected. UC-007/008 apply this in success flows, postconditions, business rules and traceability. B-10 and their local Q-02 entries are Resolved. FR-007 is Covered for the specified visibility/playback behavior. Recovery B-06, concurrent/repeated operations B-09 and technical/evidence work remain open. No source spec, shared model or prototype is modified.</p>
+<h3 id="session-decision-g090-d08">Session decision G090-D08</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D08 (2026-11-04), option A: distinguish Studio errors from valid empty/zero results and offer manual retry. An unanswered submitted operation remains explicitly uncertain; reconcile its actual result before a definitive state claim or resubmission. Retrying the same upload submission must not create another track. Concurrent valid operations take effect in successful processing order, with the last successful applicable change prevailing, subject to current ownership, Admin restriction and deletion rules; deleted content cannot be resurrected. No automatic resubmission, schema/API, transaction or deduplication mechanism is selected. Applied in Studio UC-004 through UC-008 exception/repeated-operation flows, postconditions and traceability. B-09 is Resolved; B-06 is only partially resolved because G090-D08 alone did not settle cancel/input retention/partial presentation; G090-D09 subsequently resolves upload cancel/departure, with other components still open. FR-008 is Covered for the specified delete behavior. Schemas/APIs, streaming/storage/cleanup, transactions and retry/deduplication mechanisms remain unselected; no source/model/prototype is modified.</p>
+<h3 id="session-decision-g090-d09">Session decision G090-D09</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D09 (2026-11-04), option A: before submission, Cancel/close dismisses the upload form and discards entered form data without starting audio upload or track saving. After submission, leaving/closing the form does not cancel the submitted operation. On returning, reconcile the actual outcome under G090-D08 before claiming success/failure or retrying the same submission. No cancellation request, rollback, file cleanup or technical persistence mechanism is selected. <a href="./UC-090-005-upload-audio-track.html">UC-005</a> specifies AF-10/11, BR-11 and separate cancellation/unknown-outcome postconditions. Upload cancel/departure is resolved; G090-D10 subsequently resolves pre-save edit cancel/close. B-06 remains partially Open for post-Save closing, input retention during errors/session recovery and partial/stale presentation. No source spec, other UC or prototype is changed.</p>
+<h3 id="session-decision-g090-d10">Session decision G090-D10</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D10 (2026-11-04), option A: before submitting Save, Cancel/close discards the unsaved metadata edits. Reopening the edit form retrieves the current saved metadata rather than restoring those discarded edits. This pre-save cancellation sends no metadata update and makes no claim about independent concurrent changes. It does not decide cancellation after Save submission, validation/error/session input retention, schema or storage mechanisms. <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> applies this at AF-04, BR-09 and cancellation postconditions. Only pre-save edit cancel/reopen is resolved. B-06 remains partially Open for other unselected UX components; B-08 field validation is unchanged. No source spec, other UC or prototype is changed.</p>
+<h3 id="session-decision-g090-d11">Session decision G090-D11</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D11 (2026-11-04), option A: while an upload/edit form remains open, retain entered data after validation or operation errors so the Artist can correct it or retry manually. Retain the selected audio file if it remains accessible; do not promise durable file access after it is lost. A lost response still requires actual-outcome reconciliation before resubmission under G090-D08. This does not override explicit Cancel/close discard decisions or decide session recovery, post-Save departure, schema or storage mechanisms. <a href="./UC-090-005-upload-audio-track.html">UC-005</a> and <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> apply this in validation/recovery responses, failure postconditions, rules and traceability. Only validation/operation-error retention while the form is open is resolved; B-06 remains partially Open. Other validations and explicit discard decisions remain unchanged; no source spec, other UC or prototype is modified.</p>
+<h3 id="session-decision-g090-d12">Session decision G090-D12</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D12 (2026-11-04), option A: after the Artist submits Save metadata and before the result is confirmed, closing/leaving the form is allowed and does not cancel that Save request. On returning, reconcile the actual result and load current saved metadata before further editing or resubmission. An unanswered request is not assumed saved, failed or unchanged. No automatic replay, rollback, schema/API or technical request-tracking mechanism is selected. <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> applies AF-05, BR-11 and post-departure conditions. Only post-Save departure is resolved; B-06 remains partially Open for session-recovery interaction/retention and partial/stale display. B-08 field validation and other open issues are unchanged. No source, other UC or prototype is modified.</p>
+<h3 id="session-decision-g090-d13">Session decision G090-D13</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D13 (2026-11-04), option A: on session expiry during upload/edit, retain temporary entered data within the working session only while it remains accessible. Continue only after the same account signs in again and current authorization is rechecked. Reconcile any already-submitted request before retry; expiry does not prove failure or cancellation. A different account must not receive the former account&#39;s draft, pending action or delayed result. No durable draft/file retention, automatic replay, authentication mechanism or schema/API is selected. <a href="./UC-090-005-upload-audio-track.html">UC-005</a> and <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> apply this in EX-01, postconditions, rules and traceability. Session-recovery behavior is resolved for upload/edit; B-06 remains partially Open for unspecified partial/stale-data presentation. No original validation, other UC, source spec, shared model or prototype is modified.</p>
+<h3 id="session-decision-g090-d14">Session decision G090-D14</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D14 (2026-11-04), option A: retain successfully loaded Studio catalog/statistics portions when another portion fails; show a distinct error/unavailable state and manual retry for each failed portion. Previously loaded data may remain visible only when clearly marked not updated, never as newly confirmed data or a replacement zero/empty result. Retry does not invalidate successful portions. This selects no endpoint partition, refresh interval, cache/storage mechanism or exact visual layout. <a href="./UC-090-004-access-artist-studio-dashboard.html">UC-004</a> specifies EX-02, BR-11 and partial-success/failure postconditions. B-06 is now Resolved across its selected components; UC-004 Q-03, UC-005 Q-05 and UC-006 Q-04 are synchronized accordingly. Earlier decision notes saying B-06 was partially Open record their historical scope; this register and G090-D14 state the current resolution. Technical implementation, prototype and reviewer work are not resolved by this business decision. No source spec, shared model or prototype is modified.</p>
+<h3 id="session-decision-g090-d15">Session decision G090-D15</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D15 (2026-11-04), option A for metadata editing: title must be non-empty after trimming leading/trailing whitespace; album is optional and may be cleared; genre must be a member of the system genre catalog; duration keeps the already-confirmed exact regex. No maximum title/album length is selected. This does not introduce album management, a genre default, further normalization, schema/API or an audio-duration measurement requirement. <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> applies Basic 4, AF-06, BR-13 and validation postconditions. B-08 is partially resolved; UC-006 Q-02 and FR-006 Needs Clarification now identify only the remaining maximum title/album length decision. Other validation and all prior decisions remain unchanged. No source spec, other UC or prototype is modified.</p>
+<h3 id="session-decision-g090-d16">Session decision G090-D16</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: Owner-confirmed session decision G090-D16 (2026-11-04), option A for metadata editing: title and album each have a maximum of 200 Unicode code points, inclusive. Count code points, not bytes or UTF-16 code units; do not claim a grapheme-cluster limit. Existing title non-empty/edge-whitespace, optional-clearable album, catalog-genre and exact duration validations remain unchanged. This decision does not automatically extend the new maximum to upload or select schema/API/storage. <a href="./UC-090-006-edit-track-metadata.html">UC-006</a> applies Basic 4, AF-06, BR-14 and postconditions. B-08 and local Q-02 are Resolved; FR-006 is Covered for the specified metadata-edit behavior. All 57 FRs have specification coverage within their defined scope, not implementation/prototype approval. Earlier notes leaving length Open record the state before this decision. No source, other UC, shared model or prototype is modified.</p>
+<h3 id="session-decision-g090-d17">Session decision G090-D17</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: when a displayed song, album or related playlist becomes nonexistent or no longer permitted before selection, its existing destination presents the same neutral &quot;Content not found&quot; outcome for either condition, with an action to return to the artist profile. Do not display target metadata, existence, hidden/restricted/deleted state or reason. This is a new owner-confirmed session decision, not an original source requirement or group approval. Artist-not-found and playback rules remain unchanged. Temporary load failures are not reclassified as not-found. No automatic redirect/refresh or technical mechanism is selected. <a href="./UC-090-001-view-public-artist-profile.html">UC-001</a> specifies EX-03, BR-08, failure postconditions and Q-03 resolution. B-11 / G090-Q08 is Resolved. Share artist and broader album organization remain separate open scope questions. No source, shared artifact or prototype is changed.</p>
+<h3 id="session-decision-g090-d18">Session decision G090-D18</h3>
+<p>Confirmed by Thái Hoàng on 2026-11-04, option A: include share artist in the current scope by copying the public artist-profile link. Report success only when copying succeeds; present appropriate failure feedback when copying fails. The recipient remains subject to the existing visibility and artist-not-found rules. This is an owner-confirmed session decision supplementing Vision Section 5.2 G09 and the Share control described in 091 UI Screenshots, not a pre-existing 091 FR or group approval. No external sharing channel, endpoint, clipboard API, URL schema or new UC ID is selected. <a href="./UC-090-001-view-public-artist-profile.html">UC-001</a> records AF-06, EX-04, BR-09 and postconditions. G090-Q01 is Resolved; B-01 remains open only for broader album organization. Eight UC IDs/names remain unchanged; source specs and shared model/index are not changed. Prototype coverage is incomplete.</p>
+<h3 id="submission-scope-treatment---broader-album-organization">Submission scope treatment - broader album organization</h3>
+<p>For this submission, the owner requested deferring full album management while retaining existing public album display/navigation and upload/edit album-name metadata. This does not fulfill the entire Vision G09 album-organization goal and does not assign the deferred work to another group. Broader album creation/editing/deletion, membership and ordering require a later scoped feature; no new UC or source FR is added. This records the owner&#39;s submission instruction, not a source edit, a new D01-D18 decision or peer approval.</p>
+<h3 id="submission-readiness">Submission readiness</h3>
+<p>See <a href="./SUBMISSION.html">submission notes</a> for the mandatory/recommended distinction, package layout, checks and remaining limitations. Ten local mockup storyboards supplement the 16 original reference PNGs; each Basic Flow has a locally embedded image. UI coverage remains Partial/Missing as itemized in the prototype index. Reviewer: Not assigned; all specifications: Draft.</p>
+<h3 id="source-assessment-s-01">Source assessment S-01</h3>
+<p>The following are verbatim current-source passages, with exact line references to <a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md">112</a>. No source or precedence decision is changed.</p>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L19">112 line 19</a>:</p>
+<blockquote>
+<ul>
+<li>Q: Which moderation actions require a reason and confirmation? → A: Only a hide/restrict action and a delete action require a non-blank reason and a confirmation step before execution. A restore/unrestrict action does not require a reason and does not require a second confirmation; it simply clears the moderation restriction for a song that is currently restricted and still exists. A duplicate restore request remains a no-op.</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L25">112 line 25</a>:</p>
+<blockquote>
+<ul>
+<li>Q: What happens when moderation actions are repeated or performed concurrently? → A: Repeating a restrict on an already restricted song is a no-op and must not overwrite the reason; repeating an unrestrict on a non-restricted song is also a no-op. Delete on a missing song returns not-found and creates no side effect. Valid opposing actions are handled in system order, and the last successful action decides the persisted state. Once a song is deleted, later actions must not restore it through 112. Failed actions do not mutate the saved state. The next successful refresh reflects the current state; real-time UI synchronization is not required.</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L30">112 line 30</a>:</p>
+<blockquote>
+<ul>
+<li>Q: How does the admin interface execute song removal and restoration actions? → A: The admin interface supports one-click direct actions with immediate toast notifications (<code>Đã gỡ “[Tên bài]” vì vi phạm bản quyền.</code> / <code>Đã khôi phục “[Tên bài]”.</code>). When executed without a custom reason prompt, the system assigns a default violation reason (&quot;Vi phạm bản quyền&quot;).</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L31">112 line 31</a>:</p>
+<blockquote>
+<ul>
+<li>Q: What is the underlying data preservation policy when a track is removed? → A: Content delisting is non-destructive: the song&#39;s status transitions to <code>removed</code>, it is skipped in active playback queues and delisted from search/home/public playlists, but historical play counts and moderation audit logs are preserved in the system.</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L192">112 line 192</a>:</p>
+<blockquote>
+<ul>
+<li><strong>FR-007</strong>: The system MUST allow a valid authenticated admin to remove a song from public availability and maintain a final consistent state, without claiming success when the removal fails. A delete action MUST require both a non-blank reason and a confirmation step before execution. Whether the implementation uses a hard delete or soft delete is a design detail, not a required business decision in this feature.</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L208">112 line 208</a>:</p>
+<blockquote>
+<ul>
+<li><strong>FR-023</strong>: The system MUST allow an already-started playback to continue until completion, but MUST prevent replay, repeat, or a new play attempt for the same song once it becomes unavailable. A restored song may become playable again only if the Artist remains publicly visible and the song has not been deleted.</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L214">112 line 214</a>:</p>
+<blockquote>
+<ul>
+<li><strong>FR-029</strong>: The system MUST support direct one-click track removal and restoration actions in the admin content moderation interface, displaying an immediate toast notification and recording the default copyright or community violation reason.</li>
+</ul>
+</blockquote>
+<p><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md#L215">112 line 215</a>:</p>
+<blockquote>
+<ul>
+<li><strong>FR-030</strong>: When a track is removed for copyright or community violations, the system MUST non-destructively preserve historical playback records and audit logs while immediately blocking public streaming and skipping the item in active queues.</li>
+</ul>
+</blockquote>
+<p>Action/state assessment:</p>
+<ul>
+<li><strong>Confirmation: conditional same-action conflict.</strong> FR-007 requires confirmation before Admin delete; FR-029 and line 30 describe executed one-click removal. If both denote the same delete executed on the initial click, both cannot be satisfied. If removal is a distinct delisting action, they concern different actions and a conflict is not established. Source owner must clarify that identity; Group 090 chooses neither reading. Artist confirmation independently follows 093-FR-008/US5.</li>
+<li><strong>Reason: compatible.</strong> A non-blank system default can satisfy a non-blank reason requirement. Absence of a custom prompt is not itself a conflict. No Artist reason field is introduced.</li>
+<li><strong>Playback: wording/scope clarification, not a proven conflict.</strong> FR-023 distinguishes already-started playback from new/repeated requests. FR-030&#39;s immediate block can govern new public streaming while an existing stream finishes; it does not explicitly require terminating that stream. The earlier blanket conflict claim is withdrawn. Artist hide/delete playback is now independently confirmed by G090-D07; it is not inferred from this moderation wording.</li>
+<li><strong>Removed/deleted: state/action mapping gap, not a proven conflict.</strong> Non-destructive storage is compatible with final public deletion. Restoration of merely restricted/removed content need not restore finally deleted content. The source does not unambiguously equate these states. No deleted-song recovery is added; source terminology needs alignment before treating a restore control as such recovery. Hard/soft deletion and physical cleanup remain C-02.</li>
+</ul>
+<h3 id="source-answered-subquestions">Source-answered subquestions</h3>
+<p>093-FR-004/005/006 and US3 settle supplied genre, optional upload album, exact duration syntax and the four editable fields. Upload and edit syntax agree; measured duration is not required. US3/US5 do not exclude self-hidden tracks; ordinary edit/confirmed deletion do not add such an exception. G090-D05 separately confirms the owner&#39;s restricted-track edit/delete and preference-only changes without bypass. Restricted editing/deletion is confirmed by G090-D05. 112-FR-024/025 settles owner viewing/reason and no bypass. 092-FR-016 settles deleted-artist privacy and excludes storage/cleanup from 092. All eight files are now linked; synchronization is complete, peer review is pending. Published-audio replacement is a scope note, not an upload blocker or a newly permitted/prohibited operation.</p>
+<h2 id="9-review-record">9. Review Record</h2>
+<table>
+<thead>
+<tr>
+<th>Reviewer</th>
+<th>Review Date</th>
+<th>Result</th>
+<th>Summary of Changes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Not assigned</td>
+<td>Not performed</td>
+<td>Pending; no peer review or approval</td>
+<td>UC-090-001 through UC-090-008 are Draft; README/inventory status, links and evidence notes synchronized. G090-D17 synchronized in UC-001, README and inventory; B-11 resolved. Submission pass adds local mockups/diagram exports and synchronizes all eight Drafts; source specs and shared model/index remain unchanged. Actual Chrome diagram rendering checked; incomplete flow evidence and independent review remain pending.</td>
+</tr>
+</tbody></table>
+</main></html>

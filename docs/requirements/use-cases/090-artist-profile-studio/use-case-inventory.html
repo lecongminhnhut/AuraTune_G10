@@ -1,0 +1,709 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>use-case-inventory.md</title><style>body{font:16px/1.65 Segoe UI,Arial;margin:0;color:#182030;background:#f6f7fb}main{max-width:1300px;margin:24px auto;padding:28px 38px;background:white}h1,h2,h3{line-height:1.3;color:#25205c}h2{margin-top:36px;border-bottom:1px solid #ddd;padding-bottom:10px}table{border-collapse:collapse;width:100%;font-size:13px;margin:20px 0;display:block;overflow:auto}th,td{border:1px solid #ccd1dd;text-align:left;padding:8px;vertical-align:top}th{background:#eeebfa}img{max-width:100%;height:auto}pre{overflow:auto;background:#f0f1f7;padding:16px}code{font-size:.9em}a{color:#50399c}.banner{background:#25205c;color:white;padding:12px 24px}blockquote{border-left:4px solid #aaa;padding-left:16px}</style><div class="banner">Group 090 submission reading copy | Draft | Reviewer: Not assigned</div><main><h1 id="use-case-inventory--090-artist-profile--studio">Use-Case Inventory – 090 Artist Profile &amp; Studio</h1>
+<h2 id="1-purpose">1. Purpose</h2>
+<p>This inventory records the eight existing Group 090 use cases from the shared Use-Case Model and maps the current feature requirements to those user goals. It is an inventory for owner review, not an approval baseline or evidence of implemented behavior. Each use case requires a separate specification; UC-090-001 through UC-090-008 now have Drafts. All eight specification files now exist.</p>
+<ul>
+<li>Group owner and writer: Thái Hoàng.</li>
+<li>Reviewer: Not assigned.</li>
+<li>Last updated: 2026-11-04.</li>
+<li>Repository root checked: <code>C:/Users/Admin/Documents/AuraTune_G10</code>.</li>
+<li>Branch checked: <code>090-artist-profile-studio-use-cases</code>; working tree was clean before this inventory was created. No branch change was made.</li>
+<li>Initial scope: inventory only. Subsequent documentation passes created UC-090-001 through UC-090-008 Drafts; this update synchronizes their status, links and evidence notes. The group README now contains its scoped diagram and <a href="./prototypes/README.html">prototype index</a>. New images, shared model/index updates, implementation workflows, commits and pushes remain deferred.</li>
+</ul>
+<h3 id="source-basis">Source basis</h3>
+<ul>
+<li>Authoring guide read: <code>C:/Users/Admin/Downloads/AuraTune_Use_Case_Documentation_Guide.md</code>.</li>
+<li>Exact extracted template read: <code>C:/Users/Admin/Downloads/AuraTune_UC_Templates_Extracted/AuraTune_Use_Case_Templates/group/use-case-inventory.template.md</code>. These external local inputs are not repository dependencies.</li>
+<li><a href="../README.md">Repository use-case guide</a> and <a href="../../use-case-model.md">shared model</a>, actor catalog, Group 090 diagram and consolidated catalog.</li>
+<li><a href="../../../proposal/Auratune_Vision_Document.md">Vision Document</a>, Section 5.2 G09 and AD-04/AD-10.</li>
+<li><a href="../../../../specs/README.md">Specs README</a> and <a href="../../../management/git-workflow.md">Git workflow</a>.</li>
+<li><a href="../../../analysis-and-design/api-contract.md">API Contract</a>, Sections 2.4 and 2.8; <a href="../../../design/api/api-conventions.md">API conventions</a>, authorization/ownership; <a href="../../../design/security/README.md">security principles</a> and <a href="../../../design/database/security-rules.md">data security rules</a>.</li>
+<li><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">Feature 091: 091-artist-profile</a>, Functional Requirements, user scenarios, clarifications and UI asset descriptions.</li>
+<li><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">Feature 092: 092-follow-artist</a>, Functional Requirements, user scenarios, clarifications and UI asset descriptions.</li>
+<li><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">Feature 093: 093-artist-track-management</a>, Functional Requirements, user scenarios, clarifications and UI asset descriptions.</li>
+</ul>
+<h2 id="2-inventory">2. Inventory</h2>
+<p>Related FR identifiers are feature-qualified references: <code>091-FR-001</code> means literal <code>FR-001</code> in Feature 091, not a newly assigned source ID. Feature links resolve to the source specification. All eight existing Draft specifications are linked below. The group contains ten documentation files: this inventory, the group README and eight UC specifications.</p>
+<table>
+<thead>
+<tr>
+<th>UC ID</th>
+<th>Use-Case Name</th>
+<th>Primary Actor</th>
+<th>Supporting Actors</th>
+<th>Related FR IDs</th>
+<th>Feature ID</th>
+<th>Writer</th>
+<th>Reviewer</th>
+<th>Status</th>
+<th>Specification</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UC-090-001</td>
+<td>View Public Artist Profile</td>
+<td>Guest / Visitor; Listener (inherited public access also available to Artist)</td>
+<td>None identified</td>
+<td><code>091-FR-001</code>, <code>091-FR-002</code>, <code>091-FR-003</code>, <code>091-FR-004</code>, <code>091-FR-005</code>, <code>091-FR-006</code>, <code>091-FR-007</code>, <code>091-FR-008</code>, <code>091-FR-009</code>, <code>091-FR-010</code>, <code>091-FR-010A</code>, <code>091-FR-010B</code>, <code>091-FR-011</code>, <code>091-FR-012</code>, <code>091-FR-013</code>, <code>091-FR-014</code>, <code>091-FR-014A</code>, <code>091-FR-015</code>, <code>091-FR-016</code>, <code>091-FR-017</code>, <code>091-FR-018</code>, <code>091-FR-018A</code>, <code>091-FR-019</code>, <code>091-FR-020</code>, <code>091-FR-021</code>, <code>091-FR-022</code>, <code>091-FR-023</code>, <code>091-FR-024</code>, <code>091-FR-025</code>, <code>091-FR-026</code>, <code>091-FR-027</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-001-view-public-artist-profile.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-002</td>
+<td>Follow or Unfollow Artist</td>
+<td>Listener; Artist; Administrator (own account only)</td>
+<td>None identified</td>
+<td><code>092-FR-001</code>, <code>092-FR-002</code>, <code>092-FR-003</code>, <code>092-FR-004</code>, <code>092-FR-005</code>, <code>092-FR-006</code>, <code>092-FR-009</code>, <code>092-FR-010</code>, <code>092-FR-011</code>, <code>092-FR-012</code>, <code>092-FR-013</code>, <code>092-FR-014</code>, <code>092-FR-015</code>, <code>092-FR-016</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-002-follow-or-unfollow-artist.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-003</td>
+<td>View Followed Artists</td>
+<td>Listener; Artist; Administrator (own account only)</td>
+<td>None identified</td>
+<td><code>092-FR-003</code>, <code>092-FR-006</code>, <code>092-FR-007</code>, <code>092-FR-008</code>, <code>092-FR-009</code>, <code>092-FR-012</code>, <code>092-FR-013</code>, <code>092-FR-014</code>, <code>092-FR-015</code>, <code>092-FR-016</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-003-view-followed-artists.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-004</td>
+<td>Access Artist Studio Dashboard</td>
+<td>Artist</td>
+<td>None identified</td>
+<td><code>093-FR-001</code>, <code>093-FR-002</code>, <code>093-FR-003</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-004-access-artist-studio-dashboard.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-005</td>
+<td>Upload Audio Track</td>
+<td>Artist</td>
+<td>External Cloud Media/Blob Storage Service (logical upload role; provider/CDN-label alignment open)</td>
+<td><code>093-FR-001</code>, <code>093-FR-004</code>, <code>093-FR-005</code>, <code>093-FR-009</code>, <code>093-FR-010</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-005-upload-audio-track.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-006</td>
+<td>Edit Track Metadata</td>
+<td>Artist</td>
+<td>None identified</td>
+<td><code>093-FR-001</code>, <code>093-FR-005</code>, <code>093-FR-006</code>, <code>093-FR-009</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-006-edit-track-metadata.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-007</td>
+<td>Hide or Unhide Track</td>
+<td>Artist</td>
+<td>None identified</td>
+<td><code>093-FR-001</code>, <code>093-FR-007</code>, <code>093-FR-009</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-007-hide-or-unhide-track.html">Draft specification</a></td>
+</tr>
+<tr>
+<td>UC-090-008</td>
+<td>Delete Track from Studio</td>
+<td>Artist</td>
+<td>None identified</td>
+<td><code>093-FR-001</code>, <code>093-FR-008</code>, <code>093-FR-009</code></td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093</a></td>
+<td>Thái Hoàng</td>
+<td>Not assigned</td>
+<td>Draft</td>
+<td><a href="./UC-090-008-delete-track-from-studio.html">Draft specification</a></td>
+</tr>
+</tbody></table>
+<h3 id="goal-boundaries-and-actor-decisions">Goal boundaries and actor decisions</h3>
+<ul>
+<li><strong>UC-090-001:</strong> One public-profile discovery goal includes identity, biography, featured songs, albums, related playlists and navigation. These sections form one profile experience; empty states, missing fields, privacy checks, not-found and retry are alternative/exception behavior rather than independent goals. Playback and destination-detail behavior remain owned by their existing features.</li>
+<li><strong>UC-090-002:</strong> Follow and unfollow remain combined as management of one personal account–artist relationship, preserving the existing model ID. Duplicate requests, hidden-profile owner unfollow and failed/uncertain outcomes are variants of this goal.</li>
+<li><strong>UC-090-003:</strong> Returning to a private collection of followed artists is independently useful without changing a relationship, so list viewing remains separate. Feature 092 FR-009 explicitly permits non-banned User, Artist and Admin accounts; the actor labels above use the model terms Listener, Artist and Administrator. No role gains cross-account access.</li>
+<li><strong>UC-090-004:</strong> Inspecting the artist&#39;s own catalog and aggregate statistics is a complete read goal, separate from modifying tracks. Authentication and ownership checks constrain every Studio goal and are not separate use cases.</li>
+<li><strong>UC-090-005 / 006 / 008:</strong> Uploading a new track, correcting an existing track&#39;s metadata and permanently deleting a track have distinct inputs, outcomes and confirmation needs, so remain separate. Cancel, invalid duration and other validation do not receive UC IDs.</li>
+<li><strong>UC-090-007:</strong> Hide and unhide/republish remain two directions of one visibility goal under the existing ID. Republish changes Artist preference on the existing hidden track, not a new upload; public availability still requires no Admin restriction and no deletion (D05/D07). Play-count preservation and exclusion from public discovery are required effects (093 clarification and SC-003).</li>
+<li><strong>Upload supporting-actor source review:</strong> Vision Section 4.1 explicitly places media storage outside AuraTune and shows its services saving uploads there; 093-FR-010 requires actual binary persistence/permanent playable URL. UC-090-005 therefore records External Cloud Media/Blob Storage Service as the logical supporting upload role. Provider/interface and equivalence to the shared model&#39;s CDN label remain open, not inferred from delivery/streaming. No shared actor ID/model or internal-component actor is added.</li>
+</ul>
+<h2 id="3-status-definitions">3. Status Definitions</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Not Started</td>
+<td>No specification draft exists.</td>
+</tr>
+<tr>
+<td>Draft</td>
+<td>The writer is preparing the specification.</td>
+</tr>
+<tr>
+<td>In Review</td>
+<td>The specification and its prototype are ready for peer review.</td>
+</tr>
+<tr>
+<td>Changes Requested</td>
+<td>Reviewer identified changes that must be addressed.</td>
+</tr>
+<tr>
+<td>Approved</td>
+<td>Group owner/reviewer accepted the specification and its traceability.</td>
+</tr>
+</tbody></table>
+<p>UC-090-001 through UC-090-008 are Draft because their specification files now exist and contain initial specifications. All eight specification files have been verified to exist; none is Approved. The shared model&#39;s Confirmed label identifies catalog entries; it does not establish specification review or approval.</p>
+<h2 id="4-coverage-check">4. Coverage Check</h2>
+<p>All 57 FRs retain their existing UC allocation. <strong>Covered</strong> means the stated FR has corresponding flow/rule text within its source-defined scope, not implemented/tested/approved behavior. <strong>Needs Clarification</strong> identifies an unresolved observable business boundary preventing complete specification. Providers, schemas, physical cleanup and prototype gaps are tracked separately and do not independently downgrade coverage.</p>
+<p>Coverage below means allocation to a user goal or explicit scope boundary, not completed specification, prototype, implementation or test coverage. Requirement text is retained from the current specs to avoid losing conditions. Each row identifies its feature, literal FR ID and source path.</p>
+<p>Fresh count from actual Functional Requirements bullets: <strong>57 distinct feature-qualified FRs</strong>: 091 = 31 (FR-001–FR-027 plus FR-010A, FR-010B, FR-014A, FR-018A); 092 = 16 (FR-001–FR-016); 093 = 10 (FR-001–FR-010). No numeric range was used as a substitute for counting actual IDs.</p>
+<table>
+<thead>
+<tr>
+<th>FR ID</th>
+<th>Requirement Summary</th>
+<th>Covered by UC IDs</th>
+<th>Coverage Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-001</a></td>
+<td>AuraTune MUST allow a visitor to request the public profile of an existing, viewable artist without requiring the visitor to use artist-management capabilities.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-002</a></td>
+<td>The profile MUST display the artist&#39;s public name.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-003</a></td>
+<td>The profile MUST display the artist&#39;s public image and biography when each is available.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-004</a></td>
+<td>When the artist image is unavailable, the profile MUST show a neutral artist-image fallback that does not imply a different identity.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-005</a></td>
+<td>When the artist biography is unavailable, the profile MUST communicate that no biography has been provided while keeping the rest of the profile usable.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-006</a></td>
+<td>The profile MUST NOT expose private account attributes, internal management data, or any other field not designated for public artist presentation.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-007</a></td>
+<td>The profile MUST present only songs, albums, and playlists that the current visitor is permitted to view.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>UC-001 Basic 4/6, AF-04 and EX-03/BR-08; G090-D17 supplements the selection-time source gap with neutral destination not-found and return action, preserving non-disclosure. Prototype evidence remains missing.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-008</a></td>
+<td>Hidden, private, removed, or otherwise unauthorized content MUST be omitted from all profile sections and MUST NOT be inferable through item counts, labels, placeholders, or error details.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>UC-001 Basic 4/6, AF-04 and EX-03/BR-08; G090-D17 supplements the selection-time source gap with neutral destination not-found and return action, preserving non-disclosure. Prototype evidence remains missing.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-009</a></td>
+<td>The profile MUST provide a featured-songs section for eligible songs associated with the artist.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-010</a></td>
+<td>The featured-songs section MUST include no more than five songs associated with the artist that are both permitted to be displayed and permitted to be played on AuraTune.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-010A</a></td>
+<td>Eligible featured songs MUST be ordered by all-time play count recorded by AuraTune, highest first; popularity or listening data from Spotify or another external platform MUST NOT be used.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-010B</a></td>
+<td>Featured songs with equal AuraTune-recorded all-time play counts MUST be ordered by release date descending, then by song ID ascending if release dates are also equal.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-011</a></td>
+<td>The profile MUST provide an albums section containing viewable albums associated with the artist.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-012</a></td>
+<td>The albums section MUST include all viewable albums associated with the artist, ordered by release date descending, then by title ascending when release dates are equal, then by album ID ascending when both preceding values are equal.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-013</a></td>
+<td>The profile MUST provide a related-playlists section.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-014</a></td>
+<td>A related playlist MUST be an official public AuraTune playlist containing at least one song associated with the artist that is both permitted to be displayed and permitted to be played on AuraTune.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-014A</a></td>
+<td>The related-playlists section MUST display no more than six eligible playlists, ordered by most recent update time descending, then by playlist ID ascending when update times are equal.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-015</a></td>
+<td>Selecting a displayed song, album, or playlist MUST navigate the visitor to the existing destination for that selected item.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>UC-001 Basic 4/6, AF-04 and EX-03/BR-08; G090-D17 supplements the selection-time source gap with neutral destination not-found and return action, preserving non-disclosure. Prototype evidence remains missing.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-016</a></td>
+<td>This feature MUST NOT redefine song playback, album-detail, or playlist-detail behavior after navigation.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Scope boundary: UC-090-001 only hands off navigation; existing playback, album and playlist features own behavior after arrival. The narrow selection-time outcome is separately owner-confirmed by G090-D17, not attributed to FR-016. No new UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-017</a></td>
+<td>Each content section with no eligible viewable items MUST present a section-specific empty state and MUST NOT prevent the visitor from using other available profile information.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-018</a></td>
+<td>A nonexistent artist and an artist whose profile is not permitted to be public MUST produce the same artist-not-found outcome.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-018A</a></td>
+<td>The artist-not-found outcome MUST NOT expose the artist&#39;s name, image, biography, related content, record existence, public-visibility state, or reason for being unavailable.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-019</a></td>
+<td>A temporary data-loading failure MUST be distinguishable from a not-found outcome.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-020</a></td>
+<td>If one related-content section fails while other profile data succeeds, the profile MUST preserve all successfully loaded information and show a section-specific temporary-unavailability state.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-021</a></td>
+<td>The visitor MUST be able to retry a temporary full-profile failure or a failed related-content section.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-022</a></td>
+<td>The profile MUST prevent duplicate display of the same content item within a section.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-023</a></td>
+<td>Every visitor, including an unauthenticated visitor, MUST be able to view all otherwise-public artist-profile sections; item-specific visibility restrictions MUST still be enforced.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-024</a></td>
+<td>The profile MUST NOT include follow or unfollow controls as part of this feature; those behaviors belong to feature 092.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Scope boundary: follow controls excluded from Feature 091; allocated to UC-090-002 under Feature 092. No new UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-025</a></td>
+<td>The profile MUST NOT include uploading, editing, hiding, or deleting songs; those behaviors belong to feature 093.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Scope boundary: track management excluded from Feature 091; handled by existing UC-090-005–008 under Feature 093. No new UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-026</a></td>
+<td>The profile MUST NOT include artist-profile editing or administrative actions; administrative behavior belongs to Group 110.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Scope boundary: no profile-editing or administration UC added to Group 090; administration belongs to Group 110. Profile editing is outside Feature 091, not presumed supported here.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md">091-FR-027</a></td>
+<td>When a section has no content satisfying its eligibility rule, the profile MUST show that section&#39;s empty state and MUST NOT add substitute content that falls outside the rule.</td>
+<td>UC-090-001</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-001</a></td>
+<td>The system MUST allow an authenticated user to follow an existing artist whose profile is publicly accessible.</td>
+<td>UC-090-002</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-002</a></td>
+<td>The system MUST allow an authenticated user to unfollow an artist they follow, including a hidden artist through a valid request, without changing relationships with other artists or adding a hidden-artist interface.</td>
+<td>UC-090-002</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-003</a></td>
+<td>Following state, changes, and personal lists MUST be scoped to the authenticated account. No role, including Admin, MAY read another account&#39;s private following list or change another account&#39;s following relationships within feature 092. The owner MUST be the authenticated account.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-004</a></td>
+<td>Each account–artist pair MUST have at most one following relationship. Repeating follow for an existing publicly accessible artist MUST leave one relationship and MUST NOT change its original follow time; repeating unfollow for an existing publicly accessible artist MUST leave none. These are required final states, not new transport response rules.</td>
+<td>UC-090-002</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-005</a></td>
+<td>On a public artist profile, authenticated users MUST be able to distinguish confirmed Following, confirmed Not following, and an unresolved or failed state for their own account. Unresolved state MUST NOT be presented as Not following.</td>
+<td>UC-090-002</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-006</a></td>
+<td>A confirmed change MUST be reflected in the displayed personal state and the next successful personal-list load, and MUST persist across later authenticated sessions until unfollowed while the account and artist continue to exist; hidden-profile behavior MUST follow FR-013. This feature does not define permanent account or artist deletion.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-007</a></td>
+<td>The system MUST provide an authenticated user with their own followed-artists list, without duplicates, using only publicly permitted artist information. Hidden or unauthorized information MUST NOT be inferable through counts, labels, placeholders, or error details. Each publicly accessible entry MUST identify the artist by public display name and allow opening their public profile.</td>
+<td>UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-008</a></td>
+<td>A successfully loaded collection with no publicly visible followed artists MUST have an explicit empty state, including when retained relationships refer only to hidden profiles. A failed or unfinished load MUST NOT be presented as an empty collection.</td>
+<td>UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-009</a></td>
+<td>Authenticated, non-banned accounts with the User, Artist, or Admin role MUST be allowed to follow/unfollow artists and view their own following list. Unauthenticated guests, banned accounts, and unauthorized requests MUST NOT change relationships or disclose personal following data. When existing authentication recovery cannot restore access, the user MUST be directed to sign in again.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-010</a></td>
+<td>A failed change MUST NOT modify the saved relationship state and MUST provide understandable feedback and retry. The last confirmed display MUST NOT override a newer saved result from another successful operation. An uncertain outcome MUST be reconciled before a definitive state is displayed. Retrying MUST satisfy FR-004.</td>
+<td>UC-090-002</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-011</a></td>
+<td>Following a nonexistent or non-public artist MUST be rejected without creating a relationship or exposing restricted artist information. A nonexistent and a non-public artist MUST produce the same artist-not-found outcome for follow attempts and public-profile access, without revealing record existence, name, image, biography, related content, visibility state, or reason. Owner unfollow of a retained hidden relationship remains allowed under FR-013.</td>
+<td>UC-090-001, UC-090-002</td>
+<td>Covered</td>
+<td>Follow rejection in UC-090-002; public-profile not-found consistency in UC-090-001, traced through 091-FR-018/018A.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-012</a></td>
+<td>Account changes MUST clear or replace personal following state with that of the newly authenticated account; delayed results from a previous account MUST NOT be displayed as, or applied to, the new account&#39;s data.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-013</a></td>
+<td>When a followed profile becomes non-public, the system MUST omit the artist from the personal list without a placeholder while retaining the relationship and original follow time. If the profile becomes public again, it MUST reappear in the required order unless unfollowed. A valid unfollow request by the relationship owner MUST remain allowed while the profile is hidden and MUST NOT disclose the artist name, image, or internal profile status. No interface displaying hidden artists MUST be added.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-014</a></td>
+<td>The personal list MUST be ordered by follow time descending, with ascending artist ID as the tie-break rule. Repeated follow MUST preserve the original follow time and list position relative to unchanged entries. A new follow after successful unfollow MUST use the time of the new relationship.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-015</a></td>
+<td>For overlapping follow/unfollow operations on the same account–artist pair, the operation successfully processed last by the system MUST determine the saved state, regardless of device click times. Failed operations MUST NOT change that state. Each device MUST reflect the saved result on its next successful state or list load; real-time synchronization is not required. Duplicate follow MUST still preserve the original follow time under FR-004.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md">092-FR-016</a></td>
+<td>Unfollow requests for a permanently deleted artist or a nonexistent artist ID MUST return the same artist-not-found outcome, without disclosing old information or prior existence. Permanently deleted artists MUST NOT appear in the following list or be inferable through placeholders, counts, labels, or error details. Feature 092 MUST NOT prescribe relationship storage or cleanup after deletion. This does not alter FR-013: an existing hidden profile can still be unfollowed by the relationship owner.</td>
+<td>UC-090-002, UC-090-003</td>
+<td>Covered</td>
+<td>Deletion behavior allocated to relationship/list flows; relationship storage and cleanup remain outside this feature.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-001</a></td>
+<td>AuraTune MUST restrict access to <code>/studio</code> to authenticated users with <code>role: &#39;artist&#39;</code>.</td>
+<td>UC-090-004, UC-090-005, UC-090-006, UC-090-007, UC-090-008</td>
+<td>Covered</td>
+<td>Shared role gate for dashboard and all Studio actions; denial is a flow/constraint, not a standalone goal. Server-side ownership also follows shared security sources.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-002</a></td>
+<td>The Studio dashboard MUST display summary statistics for the artist: total tracks, active tracks, and total play count.</td>
+<td>UC-090-004</td>
+<td>Covered</td>
+<td>UC-004 Basic 2, AF-01/03, BR-03/05/09 and owner decision G090-D06 specify active eligibility, retained valid historical plays after hide/restrict/delete, empty-catalog active 0 and unavailable-versus-zero distinction. B-02 resolved. B-06 recovery, C-02 technical retrieval and evidence remain separate; no Group 113 formula imported. G090-D14/UC-004 EX-02/BR-11 defines partial success, per-portion error/manual retry and not-updated old-data labeling. B-06 resolved; implementation/prototype not certified.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-003</a></td>
+<td>The Studio catalog MUST render all artist-associated tracks with cover art, title, album, duration, genre, play count, status, and management action buttons.</td>
+<td>UC-090-004</td>
+<td>Covered</td>
+<td>Catalog fields/actions are specified in UC-090-004 Basic 4/AF-03 and BR-04/07. Count semantics belong to FR-002/B-02; representation design and evidence are separate follow-ups. G090-D14/UC-004 EX-02/BR-11 defines partial success, per-portion error/manual retry and not-updated old-data labeling. B-06 resolved; implementation/prototype not certified.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-004</a></td>
+<td>AuraTune MUST allow artists to upload new tracks by providing an audio file, title, optional album name, genre, and duration.</td>
+<td>UC-090-005</td>
+<td>Covered</td>
+<td>Input goal specified by Basic 2-4, AF-01/02/06/07/08 and BR-01/03/07/08/09 in UC-005. Owner decisions G090-D01/D02/D03 supplement original source: MP3/size, checkbox, rights-type and conditional source/distribution/attribution declarations. B-04 resolved; no license verification, schema/API or proof-document requirement added. B-05 is resolved by G090-D04, retaining manual duration entry/edit and exact regex without required measurement/comparison; B-06 recovery is resolved by D08-D14; prototype/implementation not certified. G090-D09: AF-10 pre-submission Cancel discards inputs without upload/save; AF-11 leaving after submission does not cancel, with reconciliation on return. G090-D11: retain values after validation/operation errors while form remains open, accessible file only, reconcile unknown outcomes before resubmission. No coverage change from missing prototype/technical retention mechanism. G090-D13/EX-01: temporary accessible input only, same-account authorized recovery, no cross-account transfer, submitted-outcome reconciliation before retry.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-005</a></td>
+<td>Duration input MUST validate against the pattern <code>^\d{1,2}:[0-5]\d$</code>.</td>
+<td>UC-090-005, UC-090-006</td>
+<td>Covered</td>
+<td>Upload Basic 4/AF-01/BR-02 and metadata-edit Basic 4/AF-01/BR-03. Owner scope confirmation G090-D04 (2026-11-04) retains the exact source regex, manual upload entry and metadata editing, with no required audio-length measurement/comparison or system-verification claim.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-006</a></td>
+<td>AuraTune MUST allow artists to edit metadata (title, album, genre, duration) of uploaded tracks.</td>
+<td>UC-090-006</td>
+<td>Covered</td>
+<td>UC-006 Basic 4, AF-01/06, BR-02/03/13/14 and G090-D04/D05/D15/D16 specify editable fields, restricted-owner permission, title non-empty/edge trim, optional/clearable album, catalog genre, exact duration regex and &lt;= 200 Unicode code points for each title/album. B-08 resolved. Recovery/cancel rules are separately traced; technical/prototype/review completion not claimed.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-007</a></td>
+<td>AuraTune MUST allow artists to toggle track visibility between active (&quot;Công khai&quot;) and hidden (&quot;Đang ẩn&quot;).</td>
+<td>UC-090-007</td>
+<td>Covered</td>
+<td>UC-007 Basic 2-4, AF-01/04, BR-07/08/09 and G090-D05/D07 specify ordinary and restricted preference-only changes, eligibility and playback consequences. B-07/B-10 resolved. B-06 recovery and B-09 repeated/concurrent behavior are resolved by the recorded owner decisions; technical/evidence work remains separate; no technical/evidence completion claimed.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-008</a></td>
+<td>AuraTune MUST require modal confirmation before permanently deleting a track.</td>
+<td>UC-090-008</td>
+<td>Covered</td>
+<td>UC-008 confirmation/cancel/delete, G090-D05 restricted ownership, G090-D07 playback and G090-D08 repeated/concurrent/manual-recovery behavior are specified. B-09 resolved. B-06 presentation is resolved through D14; mechanisms and evidence remain separate from implementation/prototype completion.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-009</a></td>
+<td>The system MUST provide toast notifications upon upload, update, status toggle, and deletion.</td>
+<td>UC-090-005, UC-090-006, UC-090-007, UC-090-008</td>
+<td>Covered</td>
+<td>Goal behavior or constraint; no separate validation/error UC.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-010</a></td>
+<td>AuraTune MUST persist uploaded audio files to backend cloud media/blob storage (e.g., Cloudinary or S3) and associate the permanent audio URL with the track record for public streaming.</td>
+<td>UC-090-005</td>
+<td>Covered</td>
+<td>Upload outcome is allocated; UC-090-005 traces the logical external storage boundary to Vision 4.1. Provider/interface and shared CDN-label alignment remain unconfirmed; no CDN upload role inferred from delivery.</td>
+</tr>
+</tbody></table>
+<h3 id="coverage-result-and-outstanding-gaps">Coverage result and outstanding gaps</h3>
+<ul>
+<li>Unallocated FRs: <strong>0</strong>. All 57 source FR rows retain their existing allocation and current Covered status for defined specification scope. This does not resolve Vision scope discrepancies, source alignment, technical work, prototype coverage, implementation/testing or independent review.</li>
+<li>D01-D18 are present in the <a href="./README.html#shared-open-issues">decision register</a>. B-02 through B-11 are Resolved; earlier decision paragraphs retain historical open-status snapshots and are not current blockers.</li>
+<li>Deferred scope: broader album organization (B-01/G090-Q02), per the owner&#39;s submission instruction. Retain album display/navigation and album-name metadata, without claiming the complete Vision goal or assigning deferred work elsewhere. Share artist is resolved by G090-D18 within UC-001 AF-06/EX-04/BR-09; this session addition is not a new source FR or UC ID, and prototype evidence remains incomplete. B-11 / G090-Q08 is resolved by owner-confirmed G090-D17: UC-001 EX-03/BR-08 specifies neutral destination not-found with return action. This supplements the source; matching prototype evidence remains missing. Audio replacement remains only an unaccepted future scope note. No new UC is added.</li>
+<li>S-01 source action/state alignment, C-01/C-02 technical/model follow-ups and D-01 prototype/reviewer work remain separate. No CDN upload equivalence or provider is inferred from the actor name.</li>
+<li>The group diagram rendered successfully with Mermaid 11/Chrome; exported SVG/PNG included. The <a href="./prototypes/README.html">prototype index</a> records 10 new local mockup boards and 16 historical reference PNGs; exact team-host preview remains unverified. All eight UC files remain Draft with Reviewer Not assigned.</li>
+</ul>
+<h3 id="scope-discrepancies-and-questions-for-group-confirmation">Scope discrepancies and questions for group confirmation</h3>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Source and observation</th>
+<th>Decision needed / current treatment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Share artist</td>
+<td>Vision Section 5.2 G09 explicitly mentions sharing an artist; 091–093 do not specify the share goal, inputs, outcome or privacy rules. The 091 overview description mentions a Share control.</td>
+<td>Resolved by owner-confirmed G090-D18: public artist-profile-link copying in UC-001 AF-06/EX-04/BR-09, truthful copy success/failure and unchanged recipient visibility. Supplements the source; no new source FR or UC ID. Prototype evidence remains incomplete.</td>
+</tr>
+<tr>
+<td>Organize tracks into albums</td>
+<td>Vision G09 states that artists organize tracks into albums. 093 FR-004/006 allow an album name/metadata assignment; the API also lists album CRUD, but the three specs do not define a complete album-organization journey.</td>
+<td>Deferred for this submission at the owner&#39;s request; existing display/navigation and metadata remain. Not full fulfillment of Vision and not assigned to another group. No new UC or source FR.</td>
+</tr>
+<tr>
+<td>Stale model FR mapping</td>
+<td>Shared model catalog/coverage still lists only 091-FR-001–003, 092-FR-001–004 and 093-FR-001–005. For example, current 093-FR-002 is statistics, not upload; current 092-FR-004 is relationship uniqueness, not list viewing.</td>
+<td>Use this current-spec mapping for review; coordinate a later shared-model correction. Model and its Fully Covered claim were not edited or adopted as evidence.</td>
+</tr>
+<tr>
+<td>Actor alignment</td>
+<td>Shared model lists Listener for 092 and Cloud Media Storage for upload; current 092 FR-009 explicitly allows User/Artist/Admin personal access. Vision 4.1 explicitly supports external upload persistence; the CDN name alone does not establish actor equivalence. UC-090-005 documents the logical role without selecting a provider.</td>
+<td>Confirm the expanded personal-role associations and external upload/storage boundary in a later model review. Eight IDs and goal divisions remain unchanged.</td>
+</tr>
+<tr>
+<td>UI annotation drift</td>
+<td>In 091, the albums image cites FR-013, which now means related playlists. In 092, the list image cites FR-005 (now profile following state), and the empty-list image cites FR-015 (now overlapping-operation order).</td>
+<td>Current FR text takes precedence for this mapping; visually inspect assets and correct annotations in a separately authorized pass. No images or specs edited.</td>
+</tr>
+<tr>
+<td>Differing documentation conventions</td>
+<td>Repository guide describes a 17-section specification but shows 13 sections; the supplied guide uses a 12-section UC template. Repository Git workflow, specs README and repository UC guide show differing branch conventions.</td>
+<td>This inventory follows the supplied extracted inventory template. Keep the explicitly requested current branch; resolve downstream specification/Git conventions before that work.</td>
+</tr>
+<tr>
+<td>Technical contract details</td>
+<td>API Contract supports public profiles, follow/unfollow and own lists, and artist-owned song operations, but does not fully settle following-state retrieval, hidden retention/order, upload-service boundary or deletion cleanup.</td>
+<td>Preserve explicit 091/092/093 behavioral decisions; do not invent endpoints, schemas, providers, transport responses or cleanup policies. Resolve implementation contracts later.</td>
+</tr>
+</tbody></table>
+<h3 id="prototype-evidence-and-remaining-work">Prototype evidence and remaining work</h3>
+<p>The <a href="./prototypes/README.html">prototype index</a> catalogs all 16 source PNGs and every current Basic/Alternative/Exception Flow with Partial/Missing visual status. The <a href="./README.html#5-use-case-diagram">group diagram</a> retains all eight inventory IDs and explicit role associations. Rendering remains unverified in the actual Markdown preview; source/UC files are unchanged.</p>
+<p>The 16 PNG files below exist on disk. Subsequent Draft authoring visually inspected all six 091 assets and all five 092 assets; observations and limitations are recorded in the Drafts. The 093 dashboard, upload, edit, hide and delete assets have now also been visually inspected; all 16 group assets have been inspected, with incomplete flow evidence. These are candidate/reference UI mockups, not verified implementation screenshots or proof of complete flow coverage. No prototype has been copied, created or approved.</p>
+<table>
+<thead>
+<tr>
+<th>UC</th>
+<th>Existing candidate assets</th>
+<th>States still requiring visual verification / evidence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UC-090-001</td>
+<td><a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/01-artist-profile-overview.png">01-artist-profile-overview.png</a>; <a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/02-artist-biography.png">02-artist-biography.png</a>; <a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/03-featured-songs.png">03-featured-songs.png</a>; <a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/04-artist-albums.png">04-artist-albums.png</a>; <a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/05-related-playlists.png">05-related-playlists.png</a>; <a href="../../../../specs/090-artist-profile-studio/091-artist-profile/ui/06-artist-profile-error.png">06-artist-profile-error.png</a></td>
+<td>All six assets visually inspected; see <a href="./UC-090-001-view-public-artist-profile.html#12-prototype-and-screenshots">Draft Section 12</a>. Missing-field, empty, temporary-failure/retry and navigation evidence remains incomplete; album asset is clipped and static privacy/ordering behavior is unproven.</td>
+</tr>
+<tr>
+<td>UC-090-002</td>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/ui/01-artist-not-following.png">01-artist-not-following.png</a>; <a href="../../../../specs/090-artist-profile-studio/092-follow-artist/ui/02-artist-following.png">02-artist-following.png</a>; <a href="../../../../specs/090-artist-profile-studio/092-follow-artist/ui/03-unfollow-artist.png">03-unfollow-artist.png</a></td>
+<td>All three assets visually inspected; see <a href="./UC-090-002-follow-or-unfollow-artist.html#12-prototype-and-screenshots">Draft Section 12</a>. Unfollow image retains follow and unfollow toasts. Unresolved/failed state, reconciliation, access/expiry, hidden-owner and multi-device evidence remains incomplete; no hidden-artist UI is added.</td>
+</tr>
+<tr>
+<td>UC-090-003</td>
+<td><a href="../../../../specs/090-artist-profile-studio/092-follow-artist/ui/04-following-artists-list.png">04-following-artists-list.png</a>; <a href="../../../../specs/090-artist-profile-studio/092-follow-artist/ui/05-following-list-empty.png">05-following-list-empty.png</a></td>
+<td>Both list assets visually inspected; see <a href="./UC-090-003-view-followed-artists.html#12-prototype-and-screenshots">Draft Section 12</a>. Visible follow dates support newest-first; artist-ID ties, hidden/deleted omission, restoration, loading/failure/retry, account isolation and navigation remain unproven. Empty-state wording needs hidden-only review; coverage incomplete.</td>
+</tr>
+<tr>
+<td>UC-090-004</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/01-artist-track-management.png">01-artist-track-management.png</a></td>
+<td>Dashboard visually inspected; see <a href="./UC-090-004-access-artist-studio-dashboard.html#12-prototype-and-screenshots">Draft Section 12</a>. G090-D14 partial/stale/error/per-portion-retry states lack evidence. Sample totals match visible rows but do not prove aggregation/ownership. Empty, hidden/restricted, guest/non-artist/banned/expired and cross-account evidence is missing. Footer is stale for upload persistence; load-error/retry is owner-defined by D08/D14 but lacks matching visual evidence.</td>
+</tr>
+<tr>
+<td>UC-090-005</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/02-upload-track.png">02-upload-track.png</a></td>
+<td>Upload modal inspected; see <a href="./UC-090-005-upload-audio-track.html#12-prototype-and-screenshots">Draft Section 12</a>. Only pre-submit inputs/notice are illustrated; G090-D09 cancel/discard/departure/reconciliation result evidence is absent; G090-D01 format/size policy is confirmed but boundary/rejection evidence is missing, as are G090-D02 checkbox/rejection and G090-D03 rights-declaration/correction evidence, validation result, binary persistence, usable URL, success/publication or recovery evidence. Metadata-only demo does not satisfy FR-010.</td>
+</tr>
+<tr>
+<td>UC-090-006</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/03-edit-track.png">03-edit-track.png</a></td>
+<td>Edit mockup visually inspected; see <a href="./UC-090-006-edit-track-metadata.html#12-prototype-and-screenshots">Draft Section 12</a>. Populated inputs are illustrated; G090-D12 post-Save departure/reconciliation/reload evidence is missing; G090-D10 pre-save discard/reopening lacks result evidence; visible upload toast does not prove edit success. Save/table result, validation, ownership, hidden/restricted and recovery evidence remain missing.</td>
+</tr>
+<tr>
+<td>UC-090-007</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/04-hide-track.png">04-hide-track.png</a></td>
+<td>Hide-result mockup visually inspected; see <a href="./UC-090-007-hide-or-unhide-track.html#12-prototype-and-screenshots">Draft Section 12</a>. Hidden badge and hide toast are visible; the Eye action does not prove unhide success. Public omission, retained history, playback, moderation and failure/access evidence remain missing.</td>
+</tr>
+<tr>
+<td>UC-090-008</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/05-delete-track.png">05-delete-track.png</a></td>
+<td>Confirmation mockup visually inspected; see <a href="./UC-090-008-delete-track-from-studio.html#12-prototype-and-screenshots">Draft Section 12</a>. Title/warning and Cancel/Delete buttons are visible; cancellation result, deletion toast/removal/statistics, public/playback and error/access evidence are missing.</td>
+</tr>
+</tbody></table>
+<p>Counts: Feature 091 = 6 PNGs; Feature 092 = 5 PNGs; Feature 093 = 5 PNGs. No per-flow prototype coverage is marked complete. Future specifications must classify reused assets as prototypes/wireframes or implementation screenshots only after verification.</p>
+<h2 id="5-review-checklist">5. Review Checklist</h2>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Every UC in the diagram is listed in this inventory.</li>
+<li><input checked="" disabled="" type="checkbox"> Every inventory entry has a corresponding specification file.</li>
+<li><input disabled="" type="checkbox"> UC IDs and names are consistent across the model, inventory and specification files.</li>
+<li><input checked="" disabled="" type="checkbox"> Every in-scope FR is mapped to one or more UCs, or has a documented reason for not being represented as a UC.</li>
+<li><input checked="" disabled="" type="checkbox"> Feature IDs and Spec Kit paths are valid.</li>
+<li><input disabled="" type="checkbox"> Writers and reviewers are assigned.</li>
+<li><input checked="" disabled="" type="checkbox"> Status values reflect the actual review state.</li>
+</ul>
+<p>Checklist scope: the current group diagram was checked against all eight inventory IDs/names and the Draft actor scope; the model diagram was previously compared with the eight inventory IDs. Names use the model catalog wording (the diagram abbreviates UC-090-004 as Access Studio Dashboard). All eight inventory specification paths were verified to exist. Full three-way model/inventory/specification consistency remains unchecked; file existence alone does not establish names, actor associations or FR alignment with the stale model. Writers are assigned; reviewers are not. Checked items record inventory checks performed by the writer, not independent peer review or group approval. Prototype verification, detailed specifications and peer review remain outstanding.</p>
+</main></html>

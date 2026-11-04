@@ -1,0 +1,537 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UC-090-004-access-artist-studio-dashboard.md</title><style>body{font:16px/1.65 Segoe UI,Arial;margin:0;color:#182030;background:#f6f7fb}main{max-width:1300px;margin:24px auto;padding:28px 38px;background:white}h1,h2,h3{line-height:1.3;color:#25205c}h2{margin-top:36px;border-bottom:1px solid #ddd;padding-bottom:10px}table{border-collapse:collapse;width:100%;font-size:13px;margin:20px 0;display:block;overflow:auto}th,td{border:1px solid #ccd1dd;text-align:left;padding:8px;vertical-align:top}th{background:#eeebfa}img{max-width:100%;height:auto}pre{overflow:auto;background:#f0f1f7;padding:16px}code{font-size:.9em}a{color:#50399c}.banner{background:#25205c;color:white;padding:12px 24px}blockquote{border-left:4px solid #aaa;padding-left:16px}</style><div class="banner">Group 090 submission reading copy | Draft | Reviewer: Not assigned</div><main><h1 id="uc-090-004--access-artist-studio-dashboard">UC-090-004 – Access Artist Studio Dashboard</h1>
+<h2 id="1-metadata">1. Metadata</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Use Case ID</td>
+<td>UC-090-004</td>
+</tr>
+<tr>
+<td>Use Case Name</td>
+<td>Access Artist Studio Dashboard</td>
+</tr>
+<tr>
+<td>Functional Group</td>
+<td>090 – Artist Profile &amp; Studio</td>
+</tr>
+<tr>
+<td>Primary Actor</td>
+<td>Artist, accessing only their own Studio</td>
+</tr>
+<tr>
+<td>Supporting Actors</td>
+<td>None identified for the dashboard-viewing goal</td>
+</tr>
+<tr>
+<td>Related FR IDs</td>
+<td>093-FR-001, 093-FR-002, 093-FR-003; 111-FR-011 (protected-access ban constraint); 112-FR-024/025 (restricted-owner viewing and moderation boundary)</td>
+</tr>
+<tr>
+<td>Related Feature ID</td>
+<td>093 – Artist Track Management</td>
+</tr>
+<tr>
+<td>Related Spec Kit File</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a></td>
+</tr>
+<tr>
+<td>Writer</td>
+<td>Thái Hoàng</td>
+</tr>
+<tr>
+<td>Reviewer</td>
+<td>Not assigned</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Draft</td>
+</tr>
+<tr>
+<td>Last Updated</td>
+<td>2026-11-04</td>
+</tr>
+</tbody></table>
+<p>This Draft follows all 15 sections of the extracted UC template. Feature-qualified references retain literal source FR IDs. Three current 093 requirements apply directly, matching the inventory; other 093 requirements belong to UC-090-005–008. Cross-group requirements constrain access and the viewing of restricted tracks; they do not add administration to Studio. No peer review or approval has occurred.</p>
+<h2 id="2-goal">2. Goal</h2>
+<p>The artist inspects their own released-track catalog and the three Studio summary statistics to understand their available catalog and recorded plays before choosing any separate management goal.</p>
+<h2 id="3-description">3. Description</h2>
+<p>AuraTune checks Studio access and ownership, presents the artist header and public-profile link, and shows artist-scoped statistics and track rows. Hidden tracks remain available for owner inspection with preserved play counts. Where the source explicitly permits an active artist-owner to view an admin-restricted track, the view shows the restricted state and reason without private Admin information. This UC is a viewing goal; upload, edit, hide/unhide, deletion and moderation decisions are separate.</p>
+<h2 id="4-preconditions">4. Preconditions</h2>
+<ul>
+<li>The requester can attempt to open the existing Studio entry at <code>/studio</code> (093 US1/US6). No new route or endpoint is introduced.</li>
+<li>Successful access requires a valid authenticated account holding the artist role, no active account ban, and ownership/authorization for the requested Studio data. These are checked during the flow, not global assumptions excluding denied or expired requests.</li>
+<li>Authentication/session state and the current account&#39;s artist association/catalog are dependencies. No minimum number of tracks is required; a successfully empty catalog follows AF-01.</li>
+<li>The Basic Flow assumes a successful authorized data load and ordinary artist-managed active/hidden track states. Load failure and moderation-related aggregation gaps are explicitly recorded below rather than treated as completed behavior.</li>
+</ul>
+<h2 id="5-trigger">5. Trigger</h2>
+<p>The requester opens AuraTune Studio to view the catalog and statistics belonging to their current artist account.</p>
+<h2 id="6-basic-flow">6. Basic Flow</h2>
+<p>This successful scenario uses a valid, non-banned artist-owner whose catalog contains tracks with ordinary artist-managed states. The numbered steps describe the viewing interaction, not a requirement for separate requests, screens or additional controls.</p>
+<ol>
+<li><strong>Actor (Artist):</strong> Opens their own Studio.</li>
+<li><strong>System:</strong> Verifies current authentication, artist-role access and the artist ownership scope. It presents the Studio header, artist name, public-profile link and summary cards for total tracks, active tracks and total play count for that artist (093 US1 scenario 1; FR-001/002), using G090-D06: count only non-deleted, unrestricted Artist-public tracks as active and retain validly recorded historical plays across later hide/restrict/delete. Data that cannot be obtained is distinguished from 0.</li>
+<li><strong>Actor (Artist):</strong> Inspects their catalog and statistics.</li>
+<li><strong>System:</strong> Presents all artist-associated tracks within that authorized scope, with cover art, title, album, duration, genre, play count, current status and management action controls. An uploaded audio filename is shown when applicable under US1 scenario 2. Ordinary artist-managed states are active (&quot;Công khai&quot;) and hidden (&quot;Đang ẩn&quot;); hidden tracks retain historical plays in Studio. The actor can finish reviewing without performing any change.</li>
+</ol>
+<p><strong>Outcome:</strong> The viewing goal ends successfully. No upload, edit, visibility change, deletion, playback or administrative action is executed. Controls identify separate management goals, not additional steps required to complete this UC.</p>
+<h2 id="7-alternative-flows">7. Alternative Flows</h2>
+<h3 id="af-01--the-artist-has-no-released-tracks">AF-01 – The Artist Has No Released Tracks</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 4, after a successful authorized load.</li>
+<li><strong>Condition:</strong> The artist&#39;s current Studio catalog has no released tracks.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Presents the clean catalog empty state with a prompt to upload the first track, as required by 093 US1 scenario 3. It keeps the three artist-scoped summary cards required by FR-002; empty current track counts imply no current tracks or active tracks, not a new kind of KPI.</li>
+<li><strong>Actor (Artist):</strong> Views the empty catalog and available first-upload prompt.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Ends successfully as an empty-catalog viewing goal. Selecting upload would start UC-090-005, whose flow is not described here. G090-D06 sets active count to 0 for an empty catalog while preserving validly recorded historical total plays; total plays is 0 only when no such plays exist. A failed/unavailable load is not a genuine empty/zero result. Manual retry follows G090-D08; D14 specifies stale-data labeling and per-portion recovery; exact layout remains illustrative.</li>
+</ul>
+<h3 id="af-02--no-authentication-or-no-artist-role">AF-02 – No Authentication or No Artist Role</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2.</li>
+<li><strong>Condition:</strong> The requester is unauthenticated or has a valid account without the artist role.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> For an unauthenticated request, presents the login-required notice prompting login with an artist account, as specified by 093 US6 scenario 1.</li>
+<li><strong>System:</strong> For an authenticated non-artist request, presents the forbidden notice explaining that Studio requires an artist account, as specified by 093 US6 scenario 2 and FR-001. It does not disclose private Studio catalog/statistics or grant access to management controls.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Ends without Studio access for the denied request. These steps describe mutually exclusive conditions, not two successive notices. A future valid artist request starts at Basic Flow step 1. An Admin role alone does not confer Studio access; admin song-management API permissions remain a separate boundary.</li>
+</ul>
+<h3 id="af-03--the-owner-inspects-an-admin-restricted-track">AF-03 – The Owner Inspects an Admin-Restricted Track</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 4, with valid active artist-owner access.</li>
+<li><strong>Condition:</strong> An existing owned track has an admin moderation restriction.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Allows the valid artist-owner to view their own restricted track with the metadata relevant to ownership/moderation, its current restricted state and the restriction reason, without exposing private information about the Admin who imposed it (112-FR-024).</li>
+<li><strong>Actor (Artist):</strong> Reviews that information as a viewing result.</li>
+<li><strong>System:</strong> Keeps Artist self-hide preference distinct from effective Admin-restricted availability. G090-D05 permits the owner to start the separate metadata-edit, confirmed-delete or preference-change UC without allowing publication or a new play start; this viewing flow executes none of those mutations.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Ends successfully for restricted-track inspection. Viewing does not play, self-unrestrict or republish the track to bypass moderation (112-FR-025), and grants no access to another owner&#39;s non-public track. This is not a deleted-track restore flow. G090-D06 excludes Admin-restricted tracks from active count while retaining their valid historical plays. Exact combined-state row presentation remains a C-02 technical/UI follow-up, not an unresolved active-count rule.</li>
+</ul>
+<h3 id="af-04--requested-data-belongs-to-another-account">AF-04 – Requested Data Belongs to Another Account</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2 or 4 before returning artist-specific data.</li>
+<li><strong>Condition:</strong> A request attempts to read another artist&#39;s non-public Studio catalog, statistics or track information, including when the current account differs from the data owner.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Checks ownership/authorization at the server boundary and refuses disclosure outside the current artist&#39;s permitted scope, under the shared security principles and 112-FR-024 for restricted tracks.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Ends without disclosing the other account&#39;s private Studio data. This UC does not change either account&#39;s catalog. A subsequent own-Studio request starts at Basic Flow step 1 and must pass current access checks. Exact denial UI and handling of previously rendered or delayed data are technical/UX follow-ups, not copied from feature 092&#39;s personal-following rules.</li>
+</ul>
+<h3 id="af-05--the-artist-account-is-banned">AF-05 – The Artist Account Is Banned</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2, or a later protected data request serving this viewing goal.</li>
+<li><strong>Condition:</strong> The artist account is currently banned, including a ban applied after authentication while the token has not expired.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Denies the protected request based on the current ban state, without executing it or returning private Studio data (111-FR-011).</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> Ends without a successful Studio load for that request. Unban and login are separate account/authentication behavior; 111 requires sign-in again after unban. No new ban reason, duration or public-browsing restriction is introduced, and no immediate removal of already-rendered UI is assumed.</li>
+</ul>
+<h2 id="8-exception-flows">8. Exception Flows</h2>
+<h3 id="ex-01--authentication-is-expired-or-invalid">EX-01 – Authentication Is Expired or Invalid</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2 or any protected data request used by this viewing goal.</li>
+<li><strong>Condition:</strong> The request lacks valid authenticated access because authentication is expired or invalid.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Rejects protected Studio access without disclosing the private catalog/statistics or performing management actions. Authentication follows the existing shared authentication contract, not a new Studio mechanism.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> The request ends without a successful Studio load. A later request with valid artist access begins at Basic Flow step 1; no automatic refresh, replay, redirect, new HTTP status or Studio-specific recovery UI is defined. This differs from a successfully loaded empty catalog. If the account is banned, AF-05 remains applicable even if the token is unexpired.</li>
+</ul>
+<h3 id="ex-02--partial-load-or-failed-reload-with-manual-recovery">EX-02 – Partial load or failed reload with manual recovery</h3>
+<ul>
+<li><strong>Starting step:</strong> Basic Flow step 2 or 4, including a later manual reload of the Artist&#39;s Studio data.</li>
+<li><strong>Condition:</strong> Catalog/statistics cannot load fully, one portion fails while another succeeds, or reload fails after earlier data was displayed.</li>
+</ul>
+<ol>
+<li><strong>System:</strong> Keeps each successfully loaded portion usable and gives each failed portion its own error/unavailable state with manual retry. It does not label failed or unknown data empty or zero.</li>
+<li><strong>System:</strong> If earlier data remains visible after a failed reload, clearly marks it not updated. It does not present that old data as a newly confirmed catalog/statistic or let it override a newer confirmed result. No private data from another account may be retained as the current account&#39;s data.</li>
+<li><strong>Artist:</strong> Requests manual retry for the failed portion if they wish to continue.</li>
+<li><strong>System:</strong> Rechecks current Artist access/ownership and retries the failed portion without invalidating successful portions. A successful retry presents current data under the existing catalog/statistics rules; a truly empty catalog uses AF-01 and confirmed statistics use G090-D06. Failure again keeps the per-portion error and any old data&#39;s not-updated distinction.</li>
+</ol>
+<ul>
+<li><strong>Outcome:</strong> On recovery, resume the relevant Basic Flow presentation at step 2 or 4. Continued failure returns to EX-02 step 1; if the Artist stops, successful portions remain usable but full recovery is not claimed. A total failure has an error/retry outcome, not fabricated zero statistics; only available earlier data may be shown as not updated. Access loss follows EX-01/AF-02/04/05, not retention of unauthorized data. No automatic refresh, backend partition or exact UI layout is selected. Source: G090-D14 and G090-D08.</li>
+</ul>
+<h2 id="9-postconditions">9. Postconditions</h2>
+<h3 id="91-success-postconditions">9.1 Success Postconditions</h3>
+<ul>
+<li><p>Under G090-D14, a partially available Studio remains usable for successful portions. Failed portions remain explicitly unavailable/retryable, and old displayed data is marked not updated; partial usability is not a claim that every portion loaded or recovered.</p>
+</li>
+<li><p>Studio statistics follow G090-D06: only non-deleted, unrestricted Artist-public tracks count as active; hide/restrict/delete do not themselves reduce validly recorded historical total plays. Missing statistical data is not reported as 0. No storage/cleanup or platform-wide statistics policy is implied.</p>
+</li>
+<li><p>Under G090-D05, a restricted track stays non-public and cannot start new playback after permitted metadata/preference changes. Delete does not create a restore path. A later valid Admin unrestrict permits public availability only if the Artist preference is public and the track has not been deleted; viewing itself changes no state.</p>
+</li>
+<li><p>The authorized artist has viewed their own Studio identity/public-profile link, the three defined summary statistics and their permitted track catalog, or the specified empty catalog with a first-upload prompt.</p>
+</li>
+<li><p>Track rows contain the source-required metadata and management controls; artist-hidden tracks preserve plays in Studio rather than disappearing as they do from public discovery.</p>
+</li>
+<li><p>For valid restricted-track viewing, the owner sees the restriction/state and reason without private Admin information and without gaining moderation-bypass powers.</p>
+</li>
+<li><p>No catalog content, visibility, account role, ban state, play count or moderation decision is changed by viewing. Statistical semantics follow G090-D06; implementation correctness is not certified by this Draft.</p>
+</li>
+</ul>
+<h3 id="92-failure-postconditions">9.2 Failure Postconditions</h3>
+<ul>
+<li><p>G090-D14 preserves successful portions and distinguishes failed/unknown data from empty/zero. Earlier visible values after failed reload are explicitly not updated, not newly confirmed or transferred across accounts.</p>
+</li>
+<li><p>G090-D08 requires explicit error/uncertainty feedback and manual recovery; unresolved results do not become definitive saved/unchanged/deleted claims. All ownership/restriction/deleted-state boundaries remain enforced.</p>
+</li>
+<li><p>Missing/expired/invalid authentication, non-artist role, ban or insufficient ownership prevents protected data disclosure for the rejected request; no management action is executed by this UC.</p>
+</li>
+<li><p>A data-load failure is not reported as a successful catalog/statistics load. Manual recovery and truthful error/uncertainty feedback follow G090-D08/EX-02; G090-D14 specifies per-portion errors/retry, preservation of successful portions and explicit not-updated labeling for earlier data.</p>
+</li>
+<li><p>The behavior of previously rendered Studio data after account changes or access revocation is not asserted; backend requests must still enforce current authorization.</p>
+</li>
+</ul>
+<h2 id="10-special-requirements">10. Special Requirements</h2>
+<ul>
+<li><strong>Security:</strong> Artist-role gating from 093-FR-001 applies to dashboard and management capabilities. Shared <a href="../../../design/security/README.md">security principles</a> and <a href="../../../design/database/security-rules.md">data security rules</a> require server-side authentication, ownership and least privilege; frontend hiding is insufficient. 111-FR-011 denies protected requests for banned accounts even with an unexpired token.</li>
+<li><strong>Performance:</strong> 093-SC-002&#39;s 500 ms target applies to upload/metadata-edit reflection, not dashboard initial loading. No Studio-load target, timeout or refresh interval is defined here.</li>
+<li><strong>Usability and Accessibility:</strong> Present the source-defined metadata, statuses and first-upload empty prompt. <a href="../../../proposal/Auratune_Vision_Document.md">Vision</a>, Section 6.3, supplies responsive desktop/mobile and mouse/keyboard/touch requirements. No new accessibility certification or dashboard interaction is assumed.</li>
+<li><strong>Privacy:</strong> Keep catalog/statistics scoped to the authorized artist. Restricted-owner visibility must expose no private Admin information (112-FR-024). Public profile access remains the separate public boundary in UC-090-001.</li>
+<li><strong>Other:</strong> Only total tracks, active tracks and total play count are defined summary statistics. Do not introduce admin KPIs, search, filtering, sort order, pagination, automatic refresh, provider choices or storage schemas. Static prototype arithmetic is not verification of aggregation policy.</li>
+</ul>
+<h2 id="11-business-rules">11. Business Rules</h2>
+<p>Rule labels below identify source rules locally, not new FR IDs.</p>
+<table>
+<thead>
+<tr>
+<th>Rule ID</th>
+<th>Rule Description</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BR-01</td>
+<td>Only authenticated artist-role accounts may enter Studio; guests receive login-required and authenticated non-artists receive forbidden. Admin access to separate management APIs is not artist-role permission.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a>, FR-001, US6</td>
+</tr>
+<tr>
+<td>BR-02</td>
+<td>Scope Studio data and controls to the artist&#39;s own authorized tracks; deny other artists&#39; private data at the server boundary.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a>, Input, US1, FR-002/003; <a href="../../../design/database/security-rules.md">security rules</a>, Sections 2/3</td>
+</tr>
+<tr>
+<td>BR-03</td>
+<td>Display total tracks, active tracks and total play count, without inventing additional statistics. G090-D06 defines active-count eligibility and historical-play retention after hide/restrict/delete; unavailable data is not 0.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a>, FR-002</td>
+</tr>
+<tr>
+<td>BR-04</td>
+<td>Catalog rows include cover, title, album, duration, genre, plays, status and management controls; uploaded filename is conditional. Artist-hidden tracks remain inspectable with historical plays preserved.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a>, FR-003, US1 scenario 2, clarification on hiding, SC-003</td>
+</tr>
+<tr>
+<td>BR-05</td>
+<td>No released tracks yields a clean empty catalog prompting first upload. G090-D06 requires active count 0 with retained historical total plays, 0 only if none exist; unavailable data is not a successful empty/zero result.</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a>, US1 scenario 3, FR-002</td>
+</tr>
+<tr>
+<td>BR-06</td>
+<td>A ban blocks subsequent protected requests even before token expiry and rejects new login until unban; sign-in is required again after unban.</td>
+<td><a href="../../../../specs/110-admin-functions/111-user-management/spec.md">111 spec</a>, FR-011, ban-session clarification</td>
+</tr>
+<tr>
+<td>BR-07</td>
+<td>A valid artist-owner can view their own restricted track&#39;s relevant metadata, restricted state and reason without private Admin information; cannot play or bypass moderation through self-unrestriction/republishing.</td>
+<td><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md">112 spec</a>, FR-024/025</td>
+</tr>
+<tr>
+<td>BR-08</td>
+<td>Owner-confirmed session decision G090-D05 (2026-11-04): an eligible Artist-owner may edit the already-permitted metadata, delete through the existing confirmation/cancel flow, and change only their self-hide preference while Admin restriction remains active. None of these actions clears that restriction, publishes the track or permits a new play start. After Admin lifts restriction, public availability requires Artist-public preference and a non-deleted track. Unhide/unrestrict cannot restore a deleted track.</td>
+<td>Owner-confirmed session decision G090-D05, 2026-11-04; not group approval</td>
+</tr>
+<tr>
+<td>BR-09</td>
+<td>Owner-confirmed session decision G090-D06 (2026-11-04), own-Artist Studio statistics: active count includes only Artist-public tracks without Admin restriction that are not deleted. Total plays retains all validly recorded historical plays, including tracks later hidden, restricted or deleted; those actions do not themselves subtract historical plays. An empty catalog has active count 0 but retains historical total plays, which is 0 only if there are no recorded plays. Unavailable data must be distinguishable from 0.</td>
+<td>Owner-confirmed session decision G090-D06, 2026-11-04; not group approval or a source-spec edit</td>
+</tr>
+<tr>
+<td>BR-10</td>
+<td>Owner-confirmed session decision G090-D08 (2026-11-04), option A: distinguish Studio errors from valid empty/zero results and offer manual retry. An unanswered submitted operation remains explicitly uncertain; reconcile its actual result before a definitive state claim or resubmission. Retrying the same upload submission must not create another track. Concurrent valid operations take effect in successful processing order, with the last successful applicable change prevailing, subject to current ownership, Admin restriction and deletion rules; deleted content cannot be resurrected. No automatic resubmission, schema/API, transaction or deduplication mechanism is selected.</td>
+<td>Owner-confirmed session decision G090-D08; not an original 093 requirement or group approval</td>
+</tr>
+<tr>
+<td>BR-11</td>
+<td>Owner-confirmed session decision G090-D14 (2026-11-04), option A: retain successfully loaded Studio catalog/statistics portions when another portion fails; show a distinct error/unavailable state and manual retry for each failed portion. Previously loaded data may remain visible only when clearly marked not updated, never as newly confirmed data or a replacement zero/empty result. Retry does not invalidate successful portions. This selects no endpoint partition, refresh interval, cache/storage mechanism or exact visual layout.</td>
+<td>Owner-confirmed session decision G090-D14; newly confirmed here, not original source requirement or group approval</td>
+</tr>
+</tbody></table>
+<h2 id="12-prototype-and-screenshots">12. Prototype and Screenshots</h2>
+<h3 id="120-current-submission-evidence">12.0 Current Submission Evidence</h3>
+<p><img src="./prototypes/UC-090-004-basic-flow-and-key-states.png" alt="Author-created Basic Flow and key UI states"></p>
+<p><strong>Type/provenance:</strong> Author-created HTML/CSS mockup storyboard, generated by Codex at the owner&#39;s request on 2026-11-04; fictional catalog data. <a href="./prototypes/UC-090-004-basic-flow-and-key-states.html">Editable HTML</a>. Sources: this UC&#39;s current flows/rules, relevant 091/092/093 requirements and confirmed D01-D18 decisions. Layout and sample feedback wording are illustrative, not additional approved requirements or implemented UI.</p>
+<p><strong>Illustration:</strong> Basic Flow presentation and key UI states for AF-01, AF-02, AF-03, EX-01, EX-02. Multiple panels are independent alternative states, not one live screen or executed sequence. This is <strong>Partial</strong> evidence: no backend, current permissions, storage, persistence, license validation, concurrency or passed test is established. Per-flow residual Missing/Partial states are recorded in the <a href="./prototypes/README.html">prototype index</a>.</p>
+<p><strong>Shared access/recovery illustration:</strong> <a href="./prototypes/Group090-access-and-recovery-states.png">P-025 mockup</a> illustrates applicable AF-02, AF-04, AF-05, EX-01. These are independent UI states, not proof of enforcement or a complete recovery sequence.</p>
+<p><strong>Historical reference review below:</strong> Earlier source-image observations and missing-state statements describe the original assets only. They do not override the new storyboard or current index. No original source image was changed; new local mockups supersede incompatible old UI for submission illustration.</p>
+<h3 id="121-basic-flow">12.1 Basic Flow</h3>
+<p><img src="../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/01-artist-track-management.png" alt="Reference UI mockup of the Artist Studio dashboard and catalog"></p>
+<p><strong>Covered steps:</strong> Visually inspected on 2026-11-03. Basic Flow step 2 is partially illustrated by the AuraTune Studio header/public-profile link and cards showing 3 tracks, 3 public tracks and 63,000 plays. Step 4 is partially illustrated by three public rows: Midnight Coffee (24,000), Rainy Window (18,000) and Slow Afternoon (21,000), with covers, album/duration text, genres, green public badges and hide/delete controls. The visible numbers add to 63,000, but that arithmetic proves neither correct account scoping nor the aggregation policy. The image does not visibly establish an edit control or uploaded filename, and does not prove artist-name association beyond the header.</p>
+<p><strong>Prototype type:</strong> Reference UI mockup; implementation provenance unverified, not proof of a deployed system. The static image proves no access control, complete catalog retrieval, backend statistics correctness, hidden/restricted state, error behavior or successful operation. Global search/player/library UI is contextual, not extra Studio functionality.</p>
+<p><strong>Source discrepancy:</strong> The footer says the demo only stores track information and does not upload audio to the server, whereas current 093-FR-010 requires cloud audio persistence. This asset is therefore not upload-implementation evidence; UC-090-005 must follow the current requirement. No image/source was changed.</p>
+<p>G090-D14 successful/failed portions, old-data not-updated labeling and per-portion retry lack verified prototype evidence; static sample totals do not establish these behaviors.</p>
+<h3 id="122-alternative-flow--af-01">12.2 Alternative Flow – AF-01</h3>
+<p><strong>Missing evidence:</strong> This image has three tracks; it does not illustrate an empty Studio or first-upload prompt. Empty-state values are specified by G090-D06 but not demonstrated by this populated mockup; no backend/statistical correctness is inferred.</p>
+<h3 id="123-alternative-flows--af-02-through-af-05">12.3 Alternative Flows – AF-02 through AF-05</h3>
+<table>
+<thead>
+<tr>
+<th>Flow</th>
+<th>Evidence status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AF-02 login-required / non-artist forbidden</td>
+<td>No matching asset inspected or identified for these states; visible account avatar/Studio sidebar does not verify role gating.</td>
+</tr>
+<tr>
+<td>AF-03 restricted-owner viewing</td>
+<td>No restricted row, reason or private-Admin exclusion evidence in the dashboard image. It also contains no hidden track, so hidden-play preservation remains unverified.</td>
+</tr>
+<tr>
+<td>AF-04 ownership boundary</td>
+<td>No two-account or denied cross-artist request evidence.</td>
+</tr>
+<tr>
+<td>AF-05 ban</td>
+<td>No banned-artist protected-access evidence.</td>
+</tr>
+</tbody></table>
+<h3 id="124-exception--recovery-evidence">12.4 Exception / Recovery Evidence</h3>
+<p>Expired/invalid-session behavior has no matching image. G090-D14 now specifies partial/failure/not-updated/manual-retry behavior, but these states have no matching prototype evidence here; the original 093 did not specify them. Prototype coverage remains incomplete. No new/copy images or placeholder links are provided; the remaining four 093 images were not inspected in this pass.</p>
+<h2 id="13-related-use-cases">13. Related Use Cases</h2>
+<ul>
+<li><a href="./UC-090-001-view-public-artist-profile.html">UC-090-001 – View Public Artist Profile</a>: destination identified by the Studio&#39;s public-profile link; public visibility and profile behavior remain its responsibility. No new navigation or profile-editing flow is added here.</li>
+<li>UC-090-005 – Upload Audio Track: separate goal reached from upload controls/empty prompt. Specification: <a href="./UC-090-005-upload-audio-track.html">Draft specification</a>.</li>
+<li>UC-090-006 – Edit Track Metadata: separate goal identified by row-management capability. Specification: <a href="./UC-090-006-edit-track-metadata.html">Draft specification</a>.</li>
+<li>UC-090-007 – Hide or Unhide Track: separate visibility goal; no moderation bypass inferred. Specification: <a href="./UC-090-007-hide-or-unhide-track.html">Draft specification</a>.</li>
+<li>UC-090-008 – Delete Track from Studio: separate confirmed-deletion goal. Specification: <a href="./UC-090-008-delete-track-from-studio.html">Draft specification</a>.</li>
+<li><a href="./UC-090-002-follow-or-unfollow-artist.html">UC-090-002</a> and <a href="./UC-090-003-view-followed-artists.html">UC-090-003</a> are personal-following goals, not prerequisites or included Studio behavior. Their retry/account-change rules are not automatically imported here.</li>
+<li>Account bans and moderation actions remain Group 110. Existing authentication mechanisms remain in Group 010. No include/extend relation is invented.</li>
+</ul>
+<h2 id="14-traceability-and-sources">14. Traceability and Sources</h2>
+<table>
+<thead>
+<tr>
+<th>Source Type</th>
+<th>ID / File</th>
+<th>Relevant Section</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Authoring guide</td>
+<td><code>C:/Users/Admin/Downloads/AuraTune_Use_Case_Documentation_Guide.md</code></td>
+<td>Source-based actor/system flows, preservation and honest evidence</td>
+</tr>
+<tr>
+<td>Extracted UC template</td>
+<td><code>C:/Users/Admin/Downloads/AuraTune_UC_Templates_Extracted/AuraTune_Use_Case_Templates/uc-specification/UC.template.md</code></td>
+<td>All 15 sections retained</td>
+</tr>
+<tr>
+<td>Group artifacts</td>
+<td><a href="./README.html">README</a>; <a href="./use-case-inventory.html">inventory</a></td>
+<td>Stable UC-090-004 name/path and 093-FR-001–003 allocation</td>
+</tr>
+<tr>
+<td>Existing Drafts</td>
+<td><a href="./UC-090-001-view-public-artist-profile.html">UC-090-001</a>; <a href="./UC-090-002-follow-or-unfollow-artist.html">UC-090-002</a>; <a href="./UC-090-003-view-followed-artists.html">UC-090-003</a></td>
+<td>Public/personal boundaries and documentation style; unchanged</td>
+</tr>
+<tr>
+<td>Owner session decision</td>
+<td>G090-D05, confirmed by Thái Hoàng on 2026-11-04</td>
+<td>Owner-confirmed session decision G090-D05 (2026-11-04): an eligible Artist-owner may edit the already-permitted metadata, delete through the existing confirmation/cancel flow, and change only their self-hide preference while Admin restriction remains active. None of these actions clears that restriction, publishes the track or permits a new play start. After Admin lifts restriction, public availability requires Artist-public preference and a non-deleted track. Unhide/unrestrict cannot restore a deleted track. Newly confirmed in this conversation; source specs remain unchanged.</td>
+</tr>
+<tr>
+<td>Owner session decision</td>
+<td>G090-D06, confirmed by Thái Hoàng on 2026-11-04</td>
+<td>Owner-confirmed session decision G090-D06 (2026-11-04), own-Artist Studio statistics: active count includes only Artist-public tracks without Admin restriction that are not deleted. Total plays retains all validly recorded historical plays, including tracks later hidden, restricted or deleted; those actions do not themselves subtract historical plays. An empty catalog has active count 0 but retains historical total plays, which is 0 only if there are no recorded plays. Unavailable data must be distinguishable from 0. No technical data source, schema, history-storage/cleanup mechanism or Group 113 formula is selected.</td>
+</tr>
+<tr>
+<td>Owner session decision</td>
+<td>G090-D08, confirmed by Thái Hoàng on 2026-11-04</td>
+<td>Owner-confirmed session decision G090-D08 (2026-11-04), option A: distinguish Studio errors from valid empty/zero results and offer manual retry. An unanswered submitted operation remains explicitly uncertain; reconcile its actual result before a definitive state claim or resubmission. Retrying the same upload submission must not create another track. Concurrent valid operations take effect in successful processing order, with the last successful applicable change prevailing, subject to current ownership, Admin restriction and deletion rules; deleted content cannot be resurrected. No automatic resubmission, schema/API, transaction or deduplication mechanism is selected. Remaining cancel/input-retention/partial-presentation details are B-06; mechanics are C-02.</td>
+</tr>
+<tr>
+<td>Owner session decision</td>
+<td>G090-D14, confirmed by Thái Hoàng on 2026-11-04</td>
+<td>Owner-confirmed session decision G090-D14 (2026-11-04), option A: retain successfully loaded Studio catalog/statistics portions when another portion fails; show a distinct error/unavailable state and manual retry for each failed portion. Previously loaded data may remain visible only when clearly marked not updated, never as newly confirmed data or a replacement zero/empty result. Retry does not invalidate successful portions. This selects no endpoint partition, refresh interval, cache/storage mechanism or exact visual layout. EX-02, postconditions and BR-11.</td>
+</tr>
+<tr>
+<td>Spec Kit Specification</td>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093 spec</a></td>
+<td>Complete spec: clarifications, US1/US6, FRs, SCs, dependencies and screenshots</td>
+</tr>
+<tr>
+<td>Account constraint</td>
+<td><a href="../../../../specs/110-admin-functions/111-user-management/spec.md">111 spec</a></td>
+<td>FR-011 and ban/session clarification; file exists on this branch</td>
+</tr>
+<tr>
+<td>Moderation constraint</td>
+<td><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md">112 spec</a></td>
+<td>FR-024/025 and restricted-owner clarification; file exists on this branch</td>
+</tr>
+<tr>
+<td>Vision Document</td>
+<td><a href="../../../proposal/Auratune_Vision_Document.md">Vision</a></td>
+<td>G09/G11, AD-10 and Section 6.2/6.3; no extra Studio KPI or automatic preapproval imposed</td>
+</tr>
+<tr>
+<td>API Contract</td>
+<td><a href="../../../analysis-and-design/api-contract.md">API Contract</a></td>
+<td>Shared protected-access/error conventions; Section 2.4 distinguishes public song reads from artist/admin song operations; no dedicated private Studio dashboard/statistics retrieval contract defined</td>
+</tr>
+<tr>
+<td>Security</td>
+<td><a href="../../../design/security/README.md">Security principles</a>; <a href="../../../design/database/security-rules.md">data security rules</a></td>
+<td>Server-side authentication/ownership, least privilege and private-data protection</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Feature-qualified FR</th>
+<th>Current meaning / scope</th>
+<th>Handling / owner</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-001</a></td>
+<td>Restrict Studio to authenticated artist-role users.</td>
+<td>Basic Flow 2; AF-02/04/05; EX-01; BR-01/02/06. Shared gate also constrains UC-090-005–008.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-002</a></td>
+<td>Total tracks, active tracks and total play count for the artist.</td>
+<td>Basic Flow 2; AF-01; BR-03; G090-D06/BR-09 defines active count/history retention; Q-01/02 resolved, data-unavailability feedback still follows the separate B-06 gap.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-003</a></td>
+<td>All authorized artist-associated tracks with cover/title/album/duration/genre/plays/status/management controls.</td>
+<td>Basic Flow 4; AF-01/03/04; BR-02/04; restriction-display alignment Q-02.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-004</a></td>
+<td>Upload audio with metadata.</td>
+<td>UC-090-005; only entry control/prompt is identified here. No upload flow.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-005</a></td>
+<td>Validate duration input format.</td>
+<td>UC-090-005/006; this UC displays existing duration and does not submit input.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-006</a></td>
+<td>Edit uploaded-track metadata.</td>
+<td>UC-090-006; management control only here.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-007</a></td>
+<td>Toggle active/hidden visibility.</td>
+<td>UC-090-007; this UC reads state and retained plays, does not toggle.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-008</a></td>
+<td>Modal confirmation for permanent deletion.</td>
+<td>UC-090-008; no confirmation flow here.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-009</a></td>
+<td>Toast on upload/update/status toggle/deletion.</td>
+<td>UC-090-005–008; no dashboard-load toast invented.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md">093-FR-010</a></td>
+<td>Cloud persistence/permanent audio URL for upload.</td>
+<td>UC-090-005; no upload/CDN actor added to this viewing goal. Prototype footer is stale for this requirement.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/110-admin-functions/111-user-management/spec.md">111-FR-011</a></td>
+<td>Deny new login and subsequent protected requests after ban, until explicit unban.</td>
+<td>Cross-group constraint: AF-05; BR-06. No ban/unban action added.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md">112-FR-024</a></td>
+<td>Active artist-owner may inspect restricted track metadata/state/reason without private Admin information.</td>
+<td>Cross-group constraint: AF-03/04; BR-07; aggregate semantics settled by G090-D06; exact row-state presentation remains C-02.</td>
+</tr>
+<tr>
+<td><a href="../../../../specs/110-admin-functions/112-content-moderation/spec.md">112-FR-025</a></td>
+<td>Artist cannot play/self-unrestrict/republish restricted track to bypass moderation; no default deleted-track restore.</td>
+<td>Boundary: AF-03 outcome; BR-07. No playback/restore/mutation flow specified.</td>
+</tr>
+</tbody></table>
+<p>093 US1 scenarios 1–3 additionally require the header/public-profile link, conditional filename and first-upload empty prompt. 093 SC-003 and the hiding clarification require preserved historical plays for artist-hidden tracks. The old shared model&#39;s mapping of 093-FR-001 alone to this UC is incomplete; current FR-002/003 define statistics/catalog, not upload/edit as in its older mapping. Shared sources are not edited.</p>
+<p>Source discrepancies are not silently resolved: 093 describes artist active/hidden state while 112 adds independent moderation restriction/owner-visible reason; they require joint presentation/counting alignment, not collapse into one invented enum. 112&#39;s older assumptions say the artist-hide distinction remains open despite later explicit clarifications/FR-024/025; its November removal/restoration wording also differs from earlier deletion/restore descriptions. This UC preserves explicit restricted-owner viewing and moderation safety, and leaves ambiguous removed/deleted terminology to source alignment, without asserting recoverability; G090-D06 independently defines Studio metrics for these visibility/deletion outcomes. Broad Artist/Admin API mutation permission does not override 093&#39;s artist-only Studio gate.</p>
+<h2 id="15-open-questions">15. Open Questions</h2>
+<p>Question IDs are local labels; the categories distinguish business/UX gaps, source alignment and technical/evidence follow-ups.</p>
+<table>
+<thead>
+<tr>
+<th>Question ID</th>
+<th>Question</th>
+<th>Owner</th>
+<th>Status</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Q-01</td>
+<td>Business: post-deletion historical-play aggregate population.</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+<td>Owner-confirmed session decision G090-D06 (2026-11-04), own-Artist Studio statistics: active count includes only Artist-public tracks without Admin restriction that are not deleted. Total plays retains all validly recorded historical plays, including tracks later hidden, restricted or deleted; those actions do not themselves subtract historical plays. An empty catalog has active count 0 but retains historical total plays, which is 0 only if there are no recorded plays. Unavailable data must be distinguishable from 0. <a href="./README.html#shared-open-issues">B-02</a> resolved. Exact row representation stays a C-02 technical/UI follow-up; B-06 recovery is resolved by D08-D14; technical/evidence work remains.</td>
+</tr>
+<tr>
+<td>Q-02</td>
+<td>Business: active-count membership under Admin restriction; combined-state presentation.</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+<td>Owner-confirmed session decision G090-D06 (2026-11-04), own-Artist Studio statistics: active count includes only Artist-public tracks without Admin restriction that are not deleted. Total plays retains all validly recorded historical plays, including tracks later hidden, restricted or deleted; those actions do not themselves subtract historical plays. An empty catalog has active count 0 but retains historical total plays, which is 0 only if there are no recorded plays. Unavailable data must be distinguishable from 0. <a href="./README.html#shared-open-issues">B-02</a> resolved. Exact row representation stays a C-02 technical/UI follow-up; B-06 recovery is resolved by D08-D14; technical/evidence work remains.</td>
+</tr>
+<tr>
+<td>Q-03</td>
+<td>Business/UX: Studio load failure, partial results and recovery.</td>
+<td>Thái Hoàng / group</td>
+<td>Resolved</td>
+<td>G090-D08-D13 settle the selected recovery/cancel/retention/session rules; G090-D14 settles the remaining partial/stale Studio presentation: preserve successful portions, per-failed-portion error/manual retry, earlier data explicitly not updated and never substituted for current/zero values. <a href="./README.html#shared-open-issues">B-06</a> resolved. Technical implementation and missing prototype evidence remain separate.</td>
+</tr>
+<tr>
+<td>Q-04</td>
+<td>Technical Follow-up: retrieve authorized Studio catalog/statistics and isolate delayed responses.</td>
+<td>Thái Hoàng / group</td>
+<td>Open</td>
+<td><a href="./README.html#shared-open-issues">Group issue C-02</a></td>
+</tr>
+<tr>
+<td>Q-05</td>
+<td>Evidence: when will empty, hidden/restricted, login-required, forbidden, banned, expired-session and two-account states be demonstrated, including fields absent from the current image?</td>
+<td>Thái Hoàng</td>
+<td>Open</td>
+<td>Dashboard mockup inspected; static sample totals/rows are not correctness/security evidence. Coverage incomplete.</td>
+</tr>
+<tr>
+<td>Q-06</td>
+<td>Documentation/review: independent review and shared model/image alignment.</td>
+<td>Thái Hoàng / group</td>
+<td>Open</td>
+<td><a href="./README.html#shared-open-issues">Group issue D-01</a>; 112 action/state wording is assessed in the group source assessment below, not assumed contradictory.</td>
+</tr>
+</tbody></table>
+<p>The group-level D18 sharing decision, deferred album scope and external upload-actor follow-ups are recorded in the <a href="./README.html#8-open-issues-and-decisions">group README</a>. They are not prerequisites for recording this read-only Dashboard Draft.</p>
+</main></html>
