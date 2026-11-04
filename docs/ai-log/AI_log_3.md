@@ -16,6 +16,8 @@
 | 12 | 2026-10-30 | Viết spec 083 – Save and Share Album bằng `/speckit-specify` | 080 | 
 | 13 | 2026-10-30 | Làm rõ spec 083 bằng `/speckit-clarify` – UI/UX loading, lỗi, nút share và quota | 080 | 
 | 14 | 2026-10-30 | Làm rõ spec 083 (bổ sung) bằng `/speckit-clarify` – Hành vi bỏ lưu trong thư viện | 080 |
+| 15 | 2026-11-04 | Kiểm tra và đề xuất chỉnh sửa tài liệu Use-Case Group 030 | 03 Search |
+| 16 | 2026-11-04 | Kiểm tra và đề xuất chỉnh sửa tài liệu Use-Case Group 080 | 08 Album Interaction |
 
 ---
 
@@ -788,3 +790,300 @@ You can reply with the option letter (e.g., "A"), accept the recommendation by s
 **Kết quả kiểm chứng:** Đạt. Toàn bộ các khía cạnh hành vi, luồng UX, ranh giới dữ liệu và tiêu chí nghiệm thu đều đã được xử lý xong.
 
 **Ghi chú:** Đạt. Tính năng đã sẵn sàng để chuyển tiếp qua giai đoạn lập kế hoạch nhiệm vụ (`$speckit-plan`).
+
+## Mục 15: Kiểm tra và đề xuất chỉnh sửa tài liệu Use-Case Group 030
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-04 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030-Search |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Review tài liệu Use-Case, phát hiện mâu thuẫn với Spec Kit và đề xuất các phương án chỉnh sửa thông qua hình thức trắc nghiệm. |
+
+### Prompt đã dùng
+
+```text
+# PHẦN 1. PHẠM VI CÔNG VIỆC
+
+Đóng vai trò là System Analyst / QA Reviewer. Nhiệm vụ của bạn là kiểm tra, đánh giá tính chính xác, tính đầy đủ và sự nhất quán của bộ tài liệu Use-Case thuộc Group 030 – Search.
+
+Thông tin group cần review:
+- Group ID: 030
+- Group Name: Search
+- Thư mục cần đánh giá: `docs/requirements/use-cases/030-search/`
+
+GIỚI HẠN NGHIÊM NGẶT:
+- CHỈ ĐỌC VÀ ĐỐI CHIẾU tài liệu.
+- TUYỆT ĐỐI KHÔNG tạo mới, ghi đè, hay tự ý chỉnh sửa bất kỳ file nào trong hệ thống.
+- CHỈ XUẤT RA BÁO CÁO ĐÁNH GIÁ (Review Report) chứa các lỗi phát hiện được và đề xuất sửa đổi.
+- Bỏ qua tài liệu Use Case của các group khác, chỉ tập trung vào Group 030.
+
+---
+
+# PHẦN 2. TÀI LIỆU NGUỒN CẦN ĐỐI CHIẾU (SOURCE OF TRUTH)
+
+Trước khi đánh giá tài liệu Use Case, bạn BẮT BUỘC phải đọc và lấy thông tin chuẩn từ các tài liệu sau để làm hệ quy chiếu:
+
+1. Tài liệu dự án chung:
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- `docs/PA/` (đặc biệt là yêu cầu của PA3)
+
+2. Spec Kit của Group 030:
+- Đọc toàn bộ: `specs/030-search/`
+- Chú ý các Functional Requirements (FR) và Feature definitions đã được chốt.
+
+---
+
+# PHẦN 3. QUY TẮC KIỂM TRA KHÔNG ĐƯỢC VI PHẠM
+
+Khi đối chiếu tài liệu Use Case của Group 030 với Tài liệu nguồn, hãy áp dụng các nguyên tắc bắt lỗi sau:
+
+1. Lỗi "Bịa đặt" (Hallucination): Báo cáo NGAY LẬP TỨC nếu tài liệu Use Case chứa các chức năng, Actor, FR ID, thuật toán, hoặc công thức scoring KHÔNG TỒN TẠI trong Spec Kit.
+2. Lỗi "Vượt quyền" (Out of Scope): Phát hiện nếu Group 030 đưa các chức năng của group khác (VD: AI Chatbot của Group 120) vào tài liệu của mình.
+3. Lỗi "Thiếu sót" (Omission): Liệt kê các FR hoặc Feature có trong Spec Kit nhưng KHÔNG có Use Case tương ứng.
+4. Lỗi "Suy diễn trạng thái": Kiểm tra xem các tính năng đang ở mức `Proposed` hoặc `TBD` có bị ghi nhầm thành `Confirmed` hay không.
+
+Không tự suy diễn để hợp lý hóa cái sai của tài liệu. Nếu mâu thuẫn, lấy "Tài liệu nguồn" (Phần 2) làm gốc để bắt lỗi "Tài liệu Use Case".
+
+---
+
+# PHẦN 4. HẠNG MỤC CẦN KIỂM TRA CHI TIẾT
+
+Tiến hành đọc và kiểm tra các file trong thư mục `docs/requirements/use-cases/030-search/` theo các tiêu chí sau:
+
+## 4.1. Đánh giá README.md
+- File có tồn tại không?
+- Có đủ Metadata (Group Info, Scope, Actors, Dependencies) không?
+- Bảng Feature - FR ID có khớp với Spec Kit không?
+- **Sơ đồ Use-Case (Mermaid):** 
+  - Sơ đồ có render được không? Có đặt đúng trong README không?
+  - Có thể hiện rõ System Boundary của Group 030 không?
+  - Ký hiệu Actor và Use Case có đúng chuẩn không? Các quan hệ `include`/`extend` có hợp lý và có căn cứ không?
+
+## 4.2. Đánh giá use-case-inventory.md
+- Có bảng thống kê đầy đủ không?
+- Các UC ID có tuân thủ format `UC-030-[SEQUENCE]` không?
+- Cột "Related FR IDs" và "Related Feature" có link chính xác tới Spec Kit không?
+- Có Use Case nào trong sơ đồ Mermaid mà KHÔNG có trong Inventory (và ngược lại) không?
+
+## 4.3. Đánh giá UC Specifications (Các file .md của từng UC)
+- Tên file có khớp với format `UC-030-[SEQUENCE]-[short-name].md` không?
+- **Template:** Có tuân thủ đúng cấu trúc 13 phần (Metadata, Description, Preconditions, Trigger, Basic Flow, Alternative Flows, Exception Flows, Postconditions, v.v.) không?
+- **Basic Flow:** Các bước Actor/System có xen kẽ hợp lý không? Có bị lẫn lộn mô tả code/database vào hành động của user không?
+- **Alternative Flows:** Mỗi AF có ID riêng, Starting Step, Condition và Continuation rõ ràng không? Có AF nào bị thiếu không?
+- **Pre/Post-conditions:** Viết có cụ thể, có thể test được không (Tránh các câu vô nghĩa như "Hệ thống hoạt động bình thường").
+
+## 4.4. Đánh giá Prototypes & Traceability
+- Thư mục `prototypes/` có `README.md` hướng dẫn không?
+- Các file ảnh được tham chiếu trong UC Spec có tuân thủ naming convention không?
+- Nếu ghi `Pending` hoặc `Not Available`, nó có được note rõ ràng để đánh giá PA3 không?
+- Truy vết toàn diện (Traceability): Tất cả các FR thuộc Group 030 → Có UC trong Inventory → Có file UC Spec → Có ảnh Prototype hoặc note phù hợp.
+
+---
+
+# PHẦN 5. YÊU CẦU ĐẦU RA BÁO CÁO (REVIEW REPORT)
+
+Hãy trả về một Báo cáo Kiểm tra Tài liệu (Audit Report) với cấu trúc sau:
+
+## 1. TỔNG QUAN (EXECUTIVE SUMMARY)
+- Số lượng tài liệu đã đọc & đối chiếu.
+- Đánh giá mức độ hoàn thiện của Group 030 theo chuẩn PA3 (Tốt/Khá/Cần sửa nhiều).
+
+## 2. LỖI NGHIÊM TRỌNG (CRITICAL ISSUES)
+- Liệt kê các lỗi vi phạm ranh giới hệ thống, bịa đặt Actor/FR/Chức năng, hoặc mâu thuẫn lớn với Spec Kit.
+
+## 3. KẾT QUẢ KIỂM TRA TỪNG HẠNG MỤC (DETAILED FINDINGS)
+- **3.1. README & Mermaid Diagram:** (Chỉ ra lỗi và đề xuất sửa).
+- **3.2. Use-Case Inventory:** (Có UC nào dư/thiếu, mapping sai FR không?).
+- **3.3. UC Specifications:** (Đánh giá chất lượng Basic Flow/Alt Flow, cấu trúc template).
+- **3.4. Prototypes & UI Mapping:** (Kiểm tra liên kết ảnh).
+
+## 4. KẾT QUẢ TRACEABILITY
+- Báo cáo các FR bị bỏ sót (Orphan FRs) hoặc các Use Case không phục vụ FR nào (Ghost UCs).
+
+## 5. ĐỀ XUẤT HÀNH ĐỘNG (ACTIONABLE RECOMMENDATIONS)
+- Đưa ra checklist các việc Group 030 cần làm để fix tài liệu (ghi rõ file nào cần sửa gì, thêm/bớt nội dung nào). 
+
+**LƯU Ý:** Báo cáo phải cụ thể, trích dẫn rõ ID hoặc tên file bị lỗi. Không đưa ra nhận xét chung chung. Không cung cấp script để sửa file, chỉ cung cấp đề xuất bằng text.
+
+Hãy đưa ra các câu hỏi để chỉnh sửa các yêu cầu bạn nêu lên. Yêu cầu nêu rõ file cần chỉnh sửa, nội dung chỉnh sửa, các câu hỏi đưa ra thuộc dạng trắc nghiệm, sau khi được tôi chấp nhận yêu cầu chỉnh sửa, bạn tiến hành sửa đổi tài liêu được nhắc đến. LƯU Ý: chỉ sửa đổi các tài liệu thuộc use-case, tuân thủ tuyệt đối các tài liệu tham khảo. 
+```
+
+### Tóm tắt phản hồi của AI
+
+- AI đã kiểm tra 12 tài liệu và phát hiện Group 030 có nhiều lỗi liên quan đến đường dẫn spec, sai tên file (UC-002) và các mâu thuẫn yêu cầu hệ thống.
+- AI chỉ ra rằng sơ đồ Mermaid đang biểu diễn sai ranh giới hệ thống khi `include` Music Player.
+- Trạng thái Feature 032/033 trong README (Planned) mâu thuẫn với khẳng định "Implemented UI" trong thư mục prototype.
+- UC-003 chứa quy định timeout (1.500 ms) không khớp với requirement `033-FR-016` (3.000 ms).
+- Theo yêu cầu trắc nghiệm, AI đã cung cấp 3 câu hỏi để người dùng lựa chọn phương án xử lý trực tiếp cho: lỗi tên file/đường dẫn, đồng bộ mã FR/hành vi không cơ sở, và điều chỉnh timeout/Mermaid.
+- Điểm cần kiểm tra: Nhóm cần loại bỏ các tính năng vượt phạm vi spec (như hiển thị "Most Played", tải audio byte trực tiếp, playlist) nếu chưa được duyệt.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Đổi tên file `UC-030-002-ai-lyrics-saerch.md` và cập nhật lại toàn bộ đường dẫn spec theo thư mục thực tế (Phương án 1A) | Dùng | Đảm bảo liên kết tài liệu không bị gãy và phản ánh chính xác cấu trúc repository hiện hành. |
+| Bổ sung tiền tố Feature cho FR ID, đồng thời loại bỏ các chi tiết không có trong spec (Phương án 2A) | Dùng | Tăng cường tính truy vết (traceability) và tránh việc tự ý bổ sung requirements không tồn tại. |
+| Sửa timeout 3.000 ms theo `033-FR-016`, đổi quan hệ `include` thành `delegation` cho Music Player và bỏ nhãn "Implemented UI" (Phương án 3A) | Dùng | Phân định rõ ràng ranh giới nghiệp vụ với Group 040 và bảo đảm tính nhất quán tuyệt đối với Spec Kit. |
+
+### Cách kiểm chứng
+
+- [ ] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt sau khi chỉnh sửa.
+
+**Ghi chú:** Đã xác nhận đồng ý áp dụng toàn bộ các đề xuất A (1A, 2A, 3A) từ phản hồi của AI. Các tài liệu thuộc Use-Case Group 030 đã được cấu trúc và đồng bộ lại chính xác với `031`, `032`, `033` mà không làm thay đổi tài liệu Spec Kit gốc.
+
+## Mục 16: Kiểm tra và đề xuất chỉnh sửa tài liệu Use-Case Group 080
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-04 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Review tài liệu Use-Case, phát hiện mâu thuẫn với Spec Kit, rà soát tính truy vết (traceability) và thực thi các sửa đổi thông qua lựa chọn trắc nghiệm. |
+
+### Prompt đã dùng
+
+```text
+# PHẦN 1. PHẠM VI CÔNG VIỆC
+
+Đóng vai trò là System Analyst / QA Reviewer. Nhiệm vụ của bạn là kiểm tra, đánh giá tính chính xác, tính đầy đủ và sự nhất quán của bộ tài liệu Use-Case thuộc Group 080 – Album Interaction.
+
+Thông tin group cần review:
+- Group ID: 080
+- Group Name: Album Interaction
+- Thư mục cần đánh giá: `docs/requirements/use-cases/080-album-interaction/`
+
+GIỚI HẠN NGHIÊM NGẶT:
+- CHỈ ĐỌC VÀ ĐỐI CHIẾU tài liệu.
+- TUYỆT ĐỐI KHÔNG tạo mới, ghi đè, hay tự ý chỉnh sửa bất kỳ file nào trong hệ thống.
+- CHỈ XUẤT RA BÁO CÁO ĐÁNH GIÁ (Review Report) chứa các lỗi phát hiện được và đề xuất sửa đổi.
+- Bỏ qua tài liệu Use Case của các group khác, chỉ tập trung vào Group 080.
+
+---
+
+# PHẦN 2. TÀI LIỆU NGUỒN CẦN ĐỐI CHIẾU (SOURCE OF TRUTH)
+
+Trước khi đánh giá tài liệu Use Case, bạn BẮT BUỘC phải đọc và lấy thông tin chuẩn từ các tài liệu sau để làm hệ quy chiếu:
+
+1. Tài liệu dự án chung:
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+
+2. Spec Kit của Group 080:
+- Đọc toàn bộ: `specs/080-album-interaction/`
+- Chú ý các Functional Requirements (FR) và Feature definitions đã được chốt.
+
+---
+
+# PHẦN 3. QUY TẮC KIỂM TRA KHÔNG ĐƯỢC VI PHẠM
+
+Khi đối chiếu tài liệu Use Case của Group 080 với Tài liệu nguồn, hãy áp dụng các nguyên tắc bắt lỗi sau:
+
+1. Lỗi "Bịa đặt" (Hallucination): Báo cáo NGAY LẬP TỨC nếu tài liệu Use Case chứa các chức năng, Actor, FR ID, thuật toán, hoặc công thức scoring KHÔNG TỒN TẠI trong Spec Kit.
+2. Lỗi "Vượt quyền" (Out of Scope): Phát hiện nếu Group 080 đưa các chức năng của group khác (VD: AI Chatbot của Group 120) vào tài liệu của mình.
+3. Lỗi "Thiếu sót" (Omission): Liệt kê các FR hoặc Feature có trong Spec Kit nhưng KHÔNG có Use Case tương ứng.
+4. Lỗi "Suy diễn trạng thái": Kiểm tra xem các tính năng đang ở mức `Proposed` hoặc `TBD` có bị ghi nhầm thành `Confirmed` hay không.
+
+Không tự suy diễn để hợp lý hóa cái sai của tài liệu. Nếu mâu thuẫn, lấy "Tài liệu nguồn" (Phần 2) làm gốc để bắt lỗi "Tài liệu Use Case".
+
+---
+
+# PHẦN 4. HẠNG MỤC CẦN KIỂM TRA CHI TIẾT
+
+Tiến hành đọc và kiểm tra các file trong thư mục `docs/requirements/use-cases/080-album-interaction/` theo các tiêu chí sau:
+
+## 4.1. Đánh giá README.md
+- File có tồn tại không?
+- Có đủ Metadata (Group Info, Scope, Actors, Dependencies) không?
+- Bảng Feature - FR ID có khớp với Spec Kit không?
+- **Sơ đồ Use-Case (Mermaid):** 
+  - Sơ đồ có render được không? Có đặt đúng trong README không?
+  - Có thể hiện rõ System Boundary của Group 080 không?
+  - Ký hiệu Actor và Use Case có đúng chuẩn không? Các quan hệ `include`/`extend` có hợp lý và có căn cứ không?
+
+## 4.2. Đánh giá use-case-inventory.md
+- Có bảng thống kê đầy đủ không?
+- Các UC ID có tuân thủ format `UC-080-[SEQUENCE]` không?
+- Cột "Related FR IDs" và "Related Feature" có link chính xác tới Spec Kit không?
+- Có Use Case nào trong sơ đồ Mermaid mà KHÔNG có trong Inventory (và ngược lại) không?
+
+## 4.3. Đánh giá UC Specifications (Các file .md của từng UC)
+- Tên file có khớp với format `UC-080-[SEQUENCE]-[short-name].md` không?
+- **Template:** Có tuân thủ đúng cấu trúc 13 phần (Metadata, Description, Preconditions, Trigger, Basic Flow, Alternative Flows, Exception Flows, Postconditions, v.v.) không?
+- **Basic Flow:** Các bước Actor/System có xen kẽ hợp lý không? Có bị lẫn lộn mô tả code/database vào hành động của user không?
+- **Alternative Flows:** Mỗi AF có ID riêng, Starting Step, Condition và Continuation rõ ràng không? Có AF nào bị thiếu không?
+- **Pre/Post-conditions:** Viết có cụ thể, có thể test được không (Tránh các câu vô nghĩa như "Hệ thống hoạt động bình thường").
+
+## 4.4. Đánh giá Prototypes & Traceability
+- Thư mục `prototypes/` có `README.md` hướng dẫn không?
+- Các file ảnh được tham chiếu trong UC Spec có tuân thủ naming convention không?
+- Nếu ghi `Pending` hoặc `Not Available`, nó có được note rõ ràng để đánh giá PA3 không?
+- Truy vết toàn diện (Traceability): Tất cả các FR thuộc Group 080 → Có UC trong Inventory → Có file UC Spec → Có ảnh Prototype hoặc note phù hợp.
+
+---
+
+# PHẦN 5. YÊU CẦU ĐẦU RA BÁO CÁO (REVIEW REPORT)
+
+Hãy trả về một Báo cáo Kiểm tra Tài liệu (Audit Report) với cấu trúc sau:
+
+## 1. TỔNG QUAN (EXECUTIVE SUMMARY)
+- Số lượng tài liệu đã đọc & đối chiếu.
+- Đánh giá mức độ hoàn thiện của Group 080 (Tốt/Khá/Cần sửa nhiều).
+
+## 2. LỖI NGHIÊM TRỌNG (CRITICAL ISSUES)
+- Liệt kê các lỗi vi phạm ranh giới hệ thống, bịa đặt Actor/FR/Chức năng, hoặc mâu thuẫn lớn với Spec Kit.
+
+## 3. KẾT QUẢ KIỂM TRA TỪNG HẠNG MỤC (DETAILED FINDINGS)
+- **3.1. README & Mermaid Diagram:** (Chỉ ra lỗi và đề xuất sửa).
+- **3.2. Use-Case Inventory:** (Có UC nào dư/thiếu, mapping sai FR không?).
+- **3.3. UC Specifications:** (Đánh giá chất lượng Basic Flow/Alt Flow, cấu trúc template).
+- **3.4. Prototypes & UI Mapping:** (Kiểm tra liên kết ảnh).
+
+## 4. KẾT QUẢ TRACEABILITY
+- Báo cáo các FR bị bỏ sót (Orphan FRs) hoặc các Use Case không phục vụ FR nào (Ghost UCs).
+
+## 5. ĐỀ XUẤT HÀNH ĐỘNG (ACTIONABLE RECOMMENDATIONS)
+- Đưa ra checklist các việc Group 080 cần làm để fix tài liệu (ghi rõ file nào cần sửa gì, thêm/bớt nội dung nào). 
+
+**LƯU Ý:** Báo cáo phải cụ thể, trích dẫn rõ ID hoặc tên file bị lỗi. Không đưa ra nhận xét chung chung. Không cung cấp script để sửa file, chỉ cung cấp đề xuất bằng text.
+
+Hãy đưa ra các câu hỏi để chỉnh sửa các yêu cầu bạn nêu lên. Yêu cầu nêu rõ file file cần chỉnh sửa, nội dung chỉnh sửa, các câu hỏi đưa ra thuộc dạng trắc nghiệm, sau khi được tôi chấp nhận yêu cầu chỉnh sửa, bạn tiến hành sửa đổi tài liêu được nhắc đến. LƯU Ý: chỉ sửa đổi các tài liệu thuộc use-case, tuân thủ tuyệt đối các tài liệu tham khảo. 
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đã đối chiếu 15 tài liệu chính và đưa ra đánh giá: **Cần sửa nhiều**. Có đủ 3 UC cho 3 Feature nhưng chất lượng liên kết và bám sát nghiệp vụ chưa tốt.
+- **Lỗi nghiêm trọng:** Đường dẫn spec bị sai (`spec-081.md` không tồn tại); UC-002 cho phép `Guest` phát nhạc sai lệch với spec; khẳng định trạng thái "Confirmed" sai thực tế (spec đang là Draft); UC-001 bịa thêm tính năng không thuộc phạm vi (ngày phát hành, bản quyền, hover actions).
+- **Lỗi mô hình hóa:** Sơ đồ Mermaid sử dụng `<<include>>` và `<<extend>>` sai mục đích khi trỏ tới Music Player và Auth subsystem.
+- **Thiếu sót luồng nghiệp vụ:** UC-003 thiếu exception flow khi share lỗi, không định nghĩa rõ các nền tảng mạng xã hội; UC-001 thiếu luồng xử lý empty tracklist; UC-002 thiếu luồng track mất khả dụng lúc phát.
+- AI đã cung cấp báo cáo chi tiết và đề xuất các phương án chỉnh sửa thông qua hình thức trắc nghiệm (chọn phương án A, B, C cho từng vấn đề) và tiến hành áp dụng khi được phê duyệt.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sửa tên group, trạng thái (về Draft), đường dẫn spec và chuẩn hóa FR mapping trong `README.md` & `use-case-inventory.md` | Dùng (Option 1A) | Đảm bảo tính truy vết tài liệu chính xác, sửa các link gãy và phản ánh đúng trạng thái thực tế của dự án. |
+| Thay quan hệ `include`/`extend` trong sơ đồ Mermaid bằng `dependency/delegation` | Dùng (Option 3A) | Phản ánh đúng chuẩn Use-Case, làm rõ ranh giới nghiệp vụ giữa Album Interaction và Player/Auth. |
+| **UC-080-001:** Bỏ ngày phát hành/copyright, hover actions; thêm luồng empty tracklist và điều hướng khi tải | Dùng (Option 2A, 4A) | Bám sát chặt chẽ ranh giới của Feature 081, không "vượt quyền" thiết kế tính năng ngoài spec. |
+| **UC-080-002:** Giới hạn Actor là `Listener`; thêm luồng track unavailable; làm rõ hành vi chèn Queue (Insert Next) | Dùng (Option 4A) | Ngăn chặn Guest phát nhạc trái phép; xử lý triệt để mâu thuẫn giữa `082-FR-004` và clarification nội bộ. |
+| **UC-080-003:** Thêm các lựa chọn Share (Facebook, X, Zalo...), luồng mở link, lỗi share và pending state khi gỡ lưu | Dùng (Option 4A) | Tránh việc mô tả hời hợt, đảm bảo phủ kín toàn bộ kịch bản nghiệp vụ theo `083-FR-011` và `083-FR-012`. |
+| Sửa đường dẫn, đánh giá trạng thái UI trong thư mục `prototypes/` | Dùng (Option 1A) | Đảm bảo liên kết ảnh không bị vỡ và không tuyên bố khống "Implemented UI" khi chưa có code thực tế. |
+
+### Cách kiểm chứng
+
+- [ ] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt sau khi chỉnh sửa.
