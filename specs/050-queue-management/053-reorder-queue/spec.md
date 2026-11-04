@@ -12,7 +12,7 @@
 
 ### Session 2026-10-31
 
-- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Where is the queue stored? → A: On the client, in local browser storage, so it is restored in a paused state after a page reload (see Session 2026-11-01). The API Contract has no queue endpoints, so the queue does not sync across devices.
 - Q: Which methods are supported? → A: Drag and drop as stated in the proposal, plus up and down controls for keyboard and touch use.
 - Q: Can the current track be moved? → A: No. Reordering applies only to upcoming tracks.
 - Q: What happens if a track is dropped in its own position? → A: Nothing changes.

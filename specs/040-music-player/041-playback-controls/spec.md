@@ -124,6 +124,7 @@ As a listener, I want the next track to start automatically so that my music con
 
 These gaps do not change the requirements. They record where the current UI differs from this specification.
 
+- A play is recorded as soon as a track starts, not after 30 seconds or 50% of its duration.
 - The prototype simulates playback with a timer, so no real audio plays.
 - Stream errors, buffering, and autoplay restrictions cannot occur in the prototype and have no UI yet.
 

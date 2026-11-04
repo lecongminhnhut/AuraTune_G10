@@ -15,7 +15,6 @@
 - Q: Does the player stay during page navigation? → A: Yes. It stays on every route, and playback does not restart.
 - Q: How does a listener open and close the full player? → A: From the mini player's track area or expand control, and closing returns to the same page.
 - Q: What is shown on phones? → A: A compact mini player with track information and play or pause, above the mobile navigation.
-- Q: Does the player survive a full page reload? → A: No. After a reload, the player returns to its idle state.
 
 ### Session 2026-11-01
 
@@ -70,7 +69,7 @@ As a phone user, I want a compact player so that it does not block content.
 
 ### Edge Cases
 
-- **Full-page reload**: The player returns to idle, and the listener can start again.
+- **Full-page reload**: The last track and queue are restored in a paused state, and the listener presses play to continue.
 - **Sign-out during playback**: Listener data is cleared, and public playback rules apply.
 - **Full player open during navigation**: The page behind cannot be used until the full player closes.
 - **Overlay conflicts**: Opening the queue or AI host closes competing overlays.
@@ -118,6 +117,7 @@ As a phone user, I want a compact player so that it does not block content.
 
 These gaps do not change the requirements. They record where the current UI differs from this specification.
 
+- The current track and queue are not saved in browser storage, so the player returns to its idle state after a page reload.
 - The mini player shows a demo label because playback is simulated.
 
 ## UI Screenshots

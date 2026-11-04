@@ -12,7 +12,7 @@
 
 ### Session 2026-10-31
 
-- Q: Where is the queue stored? → A: On the client, for the current session. The API Contract has no queue endpoints, so the queue does not survive a page reload and does not sync across devices.
+- Q: Where is the queue stored? → A: On the client, in local browser storage, so it is restored in a paused state after a page reload (see Session 2026-11-01). The API Contract has no queue endpoints, so the queue does not sync across devices.
 - Q: What does the queue panel show? → A: A now-playing area and an ordered list of upcoming tracks with their count.
 - Q: Where does a queue come from? → A: Starting a collection such as a playlist, album, chart, or result list sets that collection as the queue.
 - Q: Can a listener jump to an upcoming track? → A: Yes. Selecting a track's play action plays it immediately.
@@ -79,7 +79,9 @@ As a listener, I want a clear empty state and a way to clear the queue so that I
 - **Last track playing**: The upcoming list is empty.
 - **Long titles**: Text is truncated without breaking the layout.
 - **Many tracks**: The list scrolls inside the panel.
-- **Page reload**: The queue resets to the default state.
+- **Page reload**: The current track and upcoming tracks are restored in a paused state.
+- **Queue at 50 tracks**: Further additions are refused, and the listener is told the limit was reached.
+- **Guest selects Save as Playlist**: The listener is asked to sign in and returns to the queue afterwards.
 
 ## Requirements *(mandatory)*
 
@@ -101,7 +103,7 @@ As a listener, I want a clear empty state and a way to clear the queue so that I
 
 ### Key Entities *(include if feature involves data)*
 
-- **Queue**: The ordered tracks for the current session.
+- **Queue**: The ordered tracks for playback, kept in local browser storage and limited to 50 tracks.
 - **Upcoming Tracks**: Queue tracks positioned after the current track.
 
 ## Success Criteria *(mandatory)*
@@ -123,6 +125,9 @@ As a listener, I want a clear empty state and a way to clear the queue so that I
 
 These gaps do not change the requirements. They record where the current UI differs from this specification.
 
+- The queue is not saved in browser storage, so it resets after a page reload.
+- There is no Save as Playlist action in the queue panel.
+- The 50-track limit is not enforced.
 - The queue panel opens as a modal, so the page behind it cannot be used while it is open.
 
 ## UI Screenshots
