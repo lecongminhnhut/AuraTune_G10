@@ -1,0 +1,375 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Mood & Context Recommendations API (Feature 103)",
+    "version": "1.0.0",
+    "description": "API contract for situational music discovery across 4 core moods and 4 activity contexts, delivering Songs and theme-curated Mood Playlists with alternative suggestions and graceful degradation."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    },
+    {
+      "url": "https://api.auratune.internal/api/v1",
+      "description": "Staging / Internal Environment"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/recommendations/mood-context/tags": {
+      "get": {
+        "summary": "List Supported Mood and Context Preset Tags",
+        "description": "Retrieves the taxonomy of active preset tags grouped into Core Moods and Activity Contexts with localized labels, icons, and styling metadata.",
+        "operationId": "getMoodContextTags",
+        "tags": [
+          "Mood & Context Recommendations"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of supported tags retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MoodTagsApiResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Danh sách nhãn tâm trạng và ngữ cảnh",
+                  "data": {
+                    "tags": [
+                      { "id": "chill", "label": "Chill / Thư giãn", "category": "mood", "icon": "coffee", "color_gradient": "from-teal-500 to-emerald-700" },
+                      { "id": "energetic", "label": "Năng lượng / Hưng phấn", "category": "mood", "icon": "zap", "color_gradient": "from-amber-500 to-orange-600" },
+                      { "id": "melancholy", "label": "Trầm lắng / U buồn", "category": "mood", "icon": "cloud-rain", "color_gradient": "from-indigo-600 to-blue-900" },
+                      { "id": "focus", "label": "Tập trung", "category": "mood", "icon": "target", "color_gradient": "from-violet-600 to-purple-800" },
+                      { "id": "study_work", "label": "Học tập / Làm việc", "category": "context", "icon": "book-open", "color_gradient": "from-cyan-600 to-blue-700" },
+                      { "id": "workout", "label": "Tập luyện / Thể thao", "category": "context", "icon": "flame", "color_gradient": "from-rose-500 to-red-700" },
+                      { "id": "late_night", "label": "Đêm muộn", "category": "context", "icon": "moon", "color_gradient": "from-purple-900 to-slate-950" },
+                      { "id": "travel_commute", "label": "Di chuyển / Đi lại", "category": "context", "icon": "compass", "color_gradient": "from-sky-500 to-indigo-700" }
+                    ]
+                  },
+                  "error": null
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/recommendations/mood-context": {
+      "get": {
+        "summary": "Retrieve Recommendations by Mood or Activity Context",
+        "description": "Returns a recommendation stream consisting of individual Songs and theme-curated Mood Playlists matching the requested preset tag.",
+        "operationId": "getMoodContextRecommendations",
+        "tags": [
+          "Mood & Context Recommendations"
+        ],
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "query",
+            "required": true,
+            "description": "The selected preset tag identifier.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "chill",
+                "energetic",
+                "melancholy",
+                "focus",
+                "study_work",
+                "workout",
+                "late_night",
+                "travel_commute"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filter results by entity type.",
+            "schema": {
+              "type": "string",
+              "enum": ["all", "song", "playlist"],
+              "default": "all"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recommendation stream retrieved successfully (or handled via friendly empty state / degraded state).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MoodRecommendationApiResponse"
+                },
+                "examples": {
+                  "standardSuccess": {
+                    "summary": "Standard Results Matching Tag",
+                    "value": {
+                      "success": true,
+                      "message": "Gợi ý âm nhạc theo tâm trạng/ngữ cảnh",
+                      "data": {
+                        "tag": "chill",
+                        "tag_category": "mood",
+                        "is_service_degraded": false,
+                        "total_items": 2,
+                        "items": [
+                          {
+                            "id": "e0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+                            "type": "song",
+                            "title": "Mùa Hè Của Em",
+                            "subtitle": "Vũ.",
+                            "image_url": "https://storage.auratune.vn/covers/mua-he.jpg",
+                            "badge": "Chill",
+                            "target_id": "e0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+                            "extra": {
+                              "duration": 215,
+                              "audio_url": "/api/v1/songs/e0a1b2c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c/stream",
+                              "artist_id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d"
+                            }
+                          },
+                          {
+                            "id": "f1a2b3c4-d5e6-7a8b-9c0d-1e2f3a4b5c6d",
+                            "type": "playlist",
+                            "title": "Lofi Chill Cho Đêm Muộn",
+                            "subtitle": "AuraTune Curators",
+                            "image_url": "https://storage.auratune.vn/covers/lofi-chill.jpg",
+                            "badge": "Chill Playlist",
+                            "target_id": "f1a2b3c4-d5e6-7a8b-9c0d-1e2f3a4b5c6d",
+                            "extra": {
+                              "track_count": 30,
+                              "is_official": true
+                            }
+                          }
+                        ],
+                        "alternative_suggestions": ["focus", "late_night"],
+                        "generated_at": "2026-11-03T18:45:00.000Z"
+                      },
+                      "error": null
+                    }
+                  },
+                  "emptyMatchesWithAlternatives": {
+                    "summary": "Empty Matches with Quick Suggestions (AF-02)",
+                    "value": {
+                      "success": true,
+                      "message": "Hiện chưa có bài hát phù hợp với tâm trạng này",
+                      "data": {
+                        "tag": "melancholy",
+                        "tag_category": "mood",
+                        "is_service_degraded": false,
+                        "total_items": 0,
+                        "items": [],
+                        "alternative_suggestions": ["chill", "focus"],
+                        "generated_at": "2026-11-03T18:45:00.000Z"
+                      },
+                      "error": null
+                    }
+                  },
+                  "serviceDegradedState": {
+                    "summary": "AI Service Timeout / Outage Degraded State (EF-01)",
+                    "value": {
+                      "success": true,
+                      "message": "Dịch vụ gợi ý tâm trạng tạm thời không phản hồi",
+                      "data": {
+                        "tag": "workout",
+                        "tag_category": "context",
+                        "is_service_degraded": true,
+                        "total_items": 0,
+                        "items": [],
+                        "alternative_suggestions": ["energetic", "focus"],
+                        "fallback_shortcuts": [
+                          { "title": "Bảng xếp hạng thịnh hành", "target_url": "/explore" },
+                          { "title": "Tuyển tập đã thích", "target_url": "/playlist/liked" }
+                        ],
+                        "generated_at": "2026-11-03T18:45:00.000Z"
+                      },
+                      "error": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid or unselected mood/context tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Nhãn tâm trạng hoặc ngữ cảnh không hợp lệ",
+                  "data": null,
+                  "error": {
+                    "code": "INVALID_MOOD_TAG",
+                    "details": [
+                      "Tag must be one of: chill, energetic, melancholy, focus, study_work, workout, late_night, travel_commute"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Unauthorized - Missing or invalid Bearer JWT",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Yêu cầu đăng nhập để nhận gợi ý theo tâm trạng",
+              "data": null,
+              "error": {
+                "code": "UNAUTHORIZED",
+                "details": []
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "MoodTagsApiResponse": {
+        "type": "object",
+        "required": ["success", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "nullable": true },
+          "data": {
+            "type": "object",
+            "required": ["tags"],
+            "properties": {
+              "tags": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/MoodTag" }
+              }
+            }
+          },
+          "error": { "type": "object", "nullable": true }
+        }
+      },
+      "MoodTag": {
+        "type": "object",
+        "required": ["id", "label", "category", "icon"],
+        "properties": {
+          "id": { "type": "string", "example": "chill" },
+          "label": { "type": "string", "example": "Chill / Thư giãn" },
+          "category": { "type": "string", "enum": ["mood", "context"], "example": "mood" },
+          "icon": { "type": "string", "example": "coffee" },
+          "color_gradient": { "type": "string", "example": "from-teal-500 to-emerald-700" }
+        }
+      },
+      "MoodRecommendationApiResponse": {
+        "type": "object",
+        "required": ["success", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "nullable": true },
+          "data": { "$ref": "#/components/schemas/MoodRecommendationResult" },
+          "error": { "type": "object", "nullable": true }
+        }
+      },
+      "MoodRecommendationResult": {
+        "type": "object",
+        "required": ["tag", "tag_category", "is_service_degraded", "total_items", "items", "alternative_suggestions", "generated_at"],
+        "properties": {
+          "tag": { "type": "string", "example": "chill" },
+          "tag_category": { "type": "string", "enum": ["mood", "context"], "example": "mood" },
+          "is_service_degraded": { "type": "boolean", "example": false },
+          "total_items": { "type": "integer", "example": 2 },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MoodRecommendedItem" }
+          },
+          "alternative_suggestions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["focus", "late_night"]
+          },
+          "fallback_shortcuts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string", "example": "Bảng xếp hạng thịnh hành" },
+                "target_url": { "type": "string", "example": "/explore" }
+              }
+            }
+          },
+          "generated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "MoodRecommendedItem": {
+        "type": "object",
+        "required": ["id", "type", "title", "subtitle", "badge", "target_id"],
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "type": { "type": "string", "enum": ["song", "playlist"] },
+          "title": { "type": "string" },
+          "subtitle": { "type": "string" },
+          "image_url": { "type": "string", "nullable": true },
+          "badge": { "type": "string" },
+          "target_id": { "type": "string", "format": "uuid" },
+          "extra": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string" },
+          "data": { "type": "object", "nullable": true, "example": null },
+          "error": {
+            "type": "object",
+            "required": ["code", "details"],
+            "properties": {
+              "code": { "type": "string", "example": "INVALID_MOOD_TAG" },
+              "details": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

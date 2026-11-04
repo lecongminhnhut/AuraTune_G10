@@ -21,6 +21,12 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 15  | 2026-11-03 | Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3        | Toàn bộ 12 nhóm chức năng (010 – 120)             |
 | 16  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 100 – AI Recommendations theo chuẩn PA3 và Spec Kit                    | 10 – AI Recommendations                           |
 | 17  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent theo chuẩn PA3 và UI CLI vừa cập nhật    | 12 – AI Conversational Agent                      |
+| 18  | 2026-11-03 | Lập Implementation Plan cho Feature 101 – Listening History Analysis bằng Spec Kit `/speckit.plan`               | 10 – AI Recommendations                           |
+| 19  | 2026-11-03 | Lập Implementation Plan cho Feature 102 – Personalized Recommendations bằng Spec Kit `/speckit.plan`             | 10 – AI Recommendations                           |
+| 20  | 2026-11-03 | Lập Implementation Plan cho Feature 103 – Mood and Context Recommendations bằng Spec Kit `/speckit.plan`         | 10 – AI Recommendations                           |
+| 21  | 2026-11-03 | Lập Implementation Plan cho Feature 121 – Conversational Interface bằng Spec Kit `/speckit.plan`                 | 12 – AI Conversational Agent                      |
+| 22  | 2026-11-03 | Lập Implementation Plan cho Feature 122 – Music Intent Understanding bằng Spec Kit `/speckit.plan`               | 12 – AI Conversational Agent                      |
+| 23  | 2026-11-03 | Lập Implementation Plan cho Feature 123 – Real-Time Music Assistance bằng Spec Kit `/speckit.plan`               | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -3162,3 +3168,1208 @@ Yêu cầu cuối cùng: Hãy ưu tiên độ chính xác và khả năng tracea
 - **Kiểm tra cú pháp Mermaid:** Sơ đồ Use Case Mermaid trong `README.md` được viết đúng cú pháp `graph TD`, không chứa ký tự đặc biệt gây lỗi parser.
 - **Kiểm tra liên kết tương đối (Relative Links):** Kiểm tra toàn bộ đường dẫn ảnh và liên kết chéo giữa README, Inventory, UC specs và Prototypes đều mở chính xác.
 - **Kiểm tra phạm vi Git (`git status`):** Xác nhận chỉ có các file bên trong `docs/requirements/use-cases/120-ai-conversational-agent/` và `docs/ai-log/AI_log_1.md` được tạo/cập nhật; không có bất kỳ file ngoài phạm vi nào bị thay đổi.
+
+**Kết quả kiểm chứng:** Hoàn thành xuất sắc 100% các tiêu chí PA3 cho Group 120 – AI Conversational Agent.
+
+**Ghi chú:** Toàn bộ tài liệu Group 120 lưu tại `docs/requirements/use-cases/120-ai-conversational-agent/`.
+
+---
+
+## Mục 18: Lập Implementation Plan cho Feature 101 – Listening History Analysis bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                       |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                     |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                           |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 101: Listening History Analysis (`specs/100-ai-recommendations/101-listening-history-analysis/`)                                                                                                                              |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                   |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu kiến trúc, thiết kế data model, OpenAPI contract, hướng dẫn kiểm thử và hoàn thiện plan.md chuẩn bị cho khâu chia task `/speckit.tasks`. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 101 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `101` thuộc Group 100 – AI Recommendations.
+
+**Chỉ lập Plan cho feature 101. Không xử lý feature khác.**
+
+## 1. Xác định Feature 101
+
+Kiểm tra:
+
+- `specs/100-ai-recommendations/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 101.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 101 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 101.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 101.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 101 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 4. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 101 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 101.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI algorithm hoặc scoring formula.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 120 vào Group 100.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 101 theo Spec Kit workflow.
+
+Không được:
+
+- Lập Plan cho feature 102 trở đi.
+- Lập Plan cho toàn bộ Group 100.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 101.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
+
+## 7. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 101 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Validation results.
+7. Những vấn đề cần clarification.
+8. Danh sách file đã thay đổi.
+
+Completion criteria: Chỉ tạo Implementation Plan cho feature 101 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 101**: Nhận diện đúng `101-listening-history-analysis` tại `specs/100-ai-recommendations/101-listening-history-analysis/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-014, 3 User Stories, 5 UI screenshots).
+- **Phân tích tài liệu kiến trúc & ranh giới hệ thống**:
+  - Đọc và đối chiếu kỹ lưỡng: `docs/management/speckit-workflow-guide.md`, `team-contract.md`, `proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `api-contract.md`, `api-conventions.md`, `database/README.md`, `src/frontend/STRUCTURE.md` và mã nguồn UI thực tế `HistoryPage.jsx`.
+  - Phân định rõ ràng: Feature 101 chỉ phụ trách **Tổng thời lượng nghe** và **Top thể loại theo thời lượng nghe tích lũy**. Tính năng **Top bài hát** và **Top nghệ sĩ** thuộc thẩm quyền sở hữu của Group 070 (Listening History); các tính năng gợi ý bài hát thuộc Feature 102/103. Feature 101 là tính toán thống kê xác định, hoàn toàn không gọi Python AI Service bên ngoài.
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 101 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 5 vấn đề kiến trúc:
+    1. Phương thức tính toán: Chọn dynamic SQL aggregation on-demand thay vì bảng pre-computed `user_listening_stats` để đảm bảo độ tươi mới dữ liệu theo FR-003 & FR-013.
+    2. Lọc dữ liệu & xử lý ngoại lệ: Lọc triệt để `user_id IS NULL`, `song_id IS NULL` và `listened_duration <= 0`. Loại trừ bài hát thiếu trường `genre` khỏi xếp hạng top thể loại theo FR-012.
+    3. Định nghĩa endpoint: `GET /api/v1/users/me/stats/listening-analysis` với query param `range` (`7`, `30`, `all`), yêu cầu JWT Bearer Token, tuân thủ envelope JSON và mã lỗi chuẩn.
+    4. Tích hợp Frontend: Thiết kế Service Layer (`statsService.js`) với Mock Adapter fallback hỗ trợ demo độc lập.
+    5. Chiến lược kiểm thử: Unit tests, Contract tests và Security tests (cô lập dữ liệu người dùng theo Nghị định 13/2023/NĐ-CP).
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể nguồn `listening_history`, `songs`, DTO tổng hợp `ListeningAnalysisResult`, `GenreRankingItem`, sơ đồ quan hệ ER Mermaid và sơ đồ máy trạng thái (state machine).
+    - Xây dựng thư mục `contracts/` chứa OpenAPI 3.0 specification `listening-analysis-api.json` và tài liệu diễn giải `contracts/README.md`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử end-to-end qua 4 kịch bản (Happy path, Insufficient data empty state, Account isolation / 401 Unauthorized, Dynamic refresh khi phát nhạc mới).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context (React 18 / Vite 5 / Tailwind CSS cho frontend; Node.js REST API cho backend; PostgreSQL cho database).
+    - Lập bảng phân định minh bạch 3 trạng thái: Đã có sẵn / Sẽ triển khai / Cần xác nhận.
+    - Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ kiến trúc Mermaid và luồng dữ liệu 6 bước chi tiết.
+    - Mô tả quy tắc xếp hạng thể loại, tie-breaker, các mức độ rủi ro kỹ thuật và biện pháp giảm thiểu.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 101 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                      | Quyết định   | Lý do                                                                                                                                            |
+| --------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Khởi tạo Plan qua `setup-plan.sh --json`                  | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, cập nhật đúng context Feature 101.                                                       |
+| Tính toán Dynamic SQL trực tiếp từ `listening_history`    | Dùng         | Tuân thủ nghiêm ngặt FR-003 và phiên clarify ngày 2026-10-20; loại bỏ sự phụ thuộc vào bảng pre-computed `user_listening_stats` chưa hoàn thiện. |
+| OpenAPI 3.0 Specification (`listening-analysis-api.json`) | Dùng         | Chuẩn hóa contract cho endpoint `GET /api/v1/users/me/stats/listening-analysis` theo envelope và mã lỗi chung của AuraTune.                      |
+| Service Layer Adapter ở frontend (`statsService.js`)      | Dùng         | Tương thích với `HistoryPage.jsx` và kiến trúc Frontend Foundation (`specs/130-frontend/131-frontend-foundation/`), hỗ trợ Mock mode.            |
+| Loại trừ Top bài hát & Top nghệ sĩ                        | Dùng         | Giữ vững ranh giới phân quyền cho Group 070 (Listening History) per FR-004 và FR-011.                                                            |
+| External AI Service / Python AI Model                     | Bỏ hoàn toàn | Feature 101 là tính toán thống kê xác định, tuyệt đối không gọi AI service bên ngoài theo FR-009.                                                |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 101            | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi, bảo toàn working tree và không commit/push.                                                               |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới/cập nhật bên trong `specs/100-ai-recommendations/101-listening-history-analysis/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/listening-analysis-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 14 mã FR (`101-FR-001..014`) và 3 User Stories trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model và API contract.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `listening-analysis-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 101.
+
+---
+
+## Mục 19: Lập Implementation Plan cho Feature 102 – Personalized Recommendations bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                             |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                           |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                 |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations/`)                                                                                                                                                                                |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                                                                         |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu kiến trúc đa thực thể, cơ chế cold-start & graceful degradation, thiết kế data model, OpenAPI contract, hướng dẫn kiểm thử và hoàn thiện plan.md chuẩn bị cho khâu chia task `/speckit.tasks`. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 102 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `102` thuộc Group 100 – AI Recommendations.
+
+**Chỉ lập Plan cho feature 102. Không xử lý feature khác.**
+
+## 1. Xác định Feature 102
+
+Kiểm tra:
+
+- `specs/100-ai-recommendations/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 102.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 102 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 102.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 102.
+- Plan của feature 101 nếu cần tham khảo cách tổ chức và bảo đảm tính nhất quán.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 102 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật Plan đúng vị trí mà Spec Kit quy định cho feature 102.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 4. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 102 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 102.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI algorithm hoặc scoring formula.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 120 vào Group 100.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 102 theo Spec Kit workflow.
+
+Không được:
+
+- Lập Plan cho feature 101 hoặc feature 103 trở đi.
+- Lập Plan cho toàn bộ Group 100.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit, bao gồm Plan đã hoàn thành của feature 101.
+
+## 6. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 102.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
+
+## 7. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 102 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Validation results.
+7. Những vấn đề cần clarification.
+8. Danh sách file đã thay đổi.
+
+Completion criteria: Chỉ tạo Implementation Plan cho feature 102 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 102**: Nhận diện đúng `102-personalized-recommendations` tại `specs/100-ai-recommendations/102-personalized-recommendations/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-015, 4 User Stories, 3 UI screenshots, các câu trả lời Clarification Session 2026-10-30) và Use Case `UC-100-002`.
+- **Phân tích tài liệu kiến trúc & ranh giới hệ thống**:
+  - Đối chiếu kỹ lưỡng: `docs/management/speckit-workflow-guide.md`, `team-contract.md`, `proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `api-contract.md`, `api-conventions.md`, `database/README.md`, `system-architecture.md`, và mã nguồn UI thực tế `HomePage.jsx`.
+  - Phân định rõ ràng: Feature 102 phụ trách luồng gợi ý âm nhạc cá nhân hóa đa thực thể (Songs, Albums, Artists, Playlists) trên Home Dashboard. Việc phát nhạc ủy quyền cho Group 040 (Music Player); hiển thị container trang chủ phối hợp với Group 020 (Home Dashboard); ghi nhận lịch sử nghe thuộc Group 070 (Listening History); không bao gồm thống kê nghe nhạc (Feature 101) hay lọc theo tâm trạng/ngữ cảnh (Feature 103) hay AI Chat Host (Group 120).
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 102 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 6 vấn đề kỹ thuật trọng yếu:
+    1. Cấu trúc gợi ý đa thực thể: Sử dụng schema thẻ đa hình `RecommendedItem` với discriminator `type` (`"song" | "album" | "artist" | "playlist"`), kết hợp cơ chế catalog hydration từ PostgreSQL để đảm bảo không trả về thực thể đã bị ẩn/xóa.
+    2. Chính sách Cold-Start: Thu thập tín hiệu từ `listening_history` ($\ge 30$s), `user_liked_songs`, và `user_follows_artist`. Nếu dữ liệu $< 3$ lượt nghe hoặc vừa bị xóa lịch sử (`UC-070-004`), lập tức chuyển sang fallback nội dung phổ biến/thịnh hành với badge `"Phổ biến"`, không để xảy ra màn hình trắng (FR-005, SC-002).
+    3. Giao tiếp AI Service & Chịu lỗi (Graceful Degradation): Backend gọi `POST /ai/recommend` tới Python AI Service với timeout nghiêm ngặt **2.5 giây**. Nếu timeout hoặc lỗi 5xx, backend bắt lỗi và trả về HTTP `200 OK` kèm nội dung thịnh hành dự phòng và banner thông báo nhẹ nhàng, tuyệt đối không làm crash Home Dashboard (FR-006, EF-01, SC-003).
+    4. Thiết kế Endpoint: Cung cấp `GET /api/v1/recommendations/personalized` (hỗ trợ query `type`, `limit`) và alias tương thích ngược `GET /api/v1/recommendations/songs`.
+    5. Bảo vệ quyền riêng tư & Nghị định 13/2023/NĐ-CP: Bóc tách `user_id` nghiêm ngặt từ JWT Bearer Token (`req.user.id`), từ chối mọi `user_id` từ query/body, không truyền thông tin PII (email, tên) sang AI Service (FR-003, FR-004, SC-001).
+    6. Tích hợp Frontend: Thiết kế `recommendationService.js` và `mockRecommendationService.js`, xử lý điều hướng 1-click (click song -> phát nhạc; click album/artist/playlist -> chuyển trang chi tiết).
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể tín hiệu nguồn (`listening_history`, `user_liked_songs`, `user_follows_artist`), thực thể catalog (`songs`, `albums`, `artists`, `playlists`), DTO tổng hợp `RecommendationFeedResult`, thẻ đa hình `RecommendedItem`, sơ đồ máy trạng thái (state machine) luồng xử lý feed và các quy tắc toàn vẹn dữ liệu.
+    - Xây dựng thư mục `contracts/` chứa OpenAPI 3.0 specification `personalized-recommendations-api.json` và tài liệu hướng dẫn tích hợp, hợp đồng microservice nội bộ Backend–AI `contracts/README.md`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử qua 5 kịch bản (Kịch bản chuẩn cá nhân hóa, Cold-start cho tài khoản mới, Gián đoạn AI Service và suy giảm mềm, Cô lập quyền riêng tư / 401 Unauthorized, Chuyển sang Cold-start sau khi xóa lịch sử nghe).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context (React 18 / Vite 5 / Tailwind CSS cho frontend; Node.js REST API cho backend; PostgreSQL cho database; FastAPI cho internal AI service).
+    - Lập bảng phân định minh bạch 3 trạng thái: Đã có sẵn / Sẽ triển khai / Cần xác nhận.
+    - Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ Mermaid Sequence Diagram cho luồng gọi API đa tầng và Flowchart cho điều hướng tương tác card.
+    - Bổ sung Complexity Tracking, Verification & Test Strategy.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 102 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                | Quyết định   | Lý do                                                                                                                                                  |
+| ------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Khởi tạo Plan qua `setup-plan.sh --json`                            | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, kích hoạt đúng context Feature 102.                                                            |
+| Cấu trúc gợi ý đa thực thể (`RecommendedItem`)                      | Dùng         | Tuân thủ Clarification 1B (2026-10-30) và FR-002, hỗ trợ đồng thời Song, Album, Artist, Playlist trong cùng 1 request tối ưu trải nghiệm Home.         |
+| Fallback Cold-start tức thì từ Catalog Database                     | Dùng         | Tuân thủ Clarification 2A, FR-005 và UC-100-002 AF-01; bảo đảm người dùng mới luôn có nhạc nghe, ngăn chặn lỗi crash hoặc màn hình trống (SC-002).     |
+| Chịu lỗi Graceful Degradation (Timeout 2.5s -> HTTP 200 Fallback)   | Dùng         | Tuân thủ Clarification 3A, FR-006 và EF-01; bảo đảm tính sẵn sàng cao của Home Dashboard, không để lỗi hạ tầng AI chặn luồng duyệt web của người dùng. |
+| OpenAPI 3.0 Specification (`personalized-recommendations-api.json`) | Dùng         | Chuẩn hóa contract cho endpoint `GET /api/v1/recommendations/personalized` và alias `GET /api/v1/recommendations/songs` theo chuẩn chung AuraTune.     |
+| Tách biệt trách nhiệm với Feature 101, 103 và Group 120             | Dùng         | Loại bỏ hoàn toàn thống kê lịch sử nghe (F101), lọc theo tâm trạng (F103) và AI host chat (G120) khỏi phạm vi F102 theo FR-010..013.                   |
+| Lưu trữ metadata hiển thị trực tiếp trong Vector Store              | Bỏ hoàn toàn | Tránh lỗi dữ liệu cũ (stale cache), đảm bảo các bài hát/album đã bị xóa khỏi catalog không xuất hiện trên feed gợi ý (FR-008, SC-005).                 |
+| Trả mã lỗi HTTP 503 về Client khi AI Service gặp sự cố              | Bỏ hoàn toàn | Tránh hiển thị thông báo lỗi gián đoạn trải nghiệm trên Home Dashboard, vi phạm tiêu chí suy giảm mềm của FR-006.                                      |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 102                      | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi nhiệm vụ, bảo toàn working tree và không commit/push.                                                            |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới bên trong `specs/100-ai-recommendations/102-personalized-recommendations/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/personalized-recommendations-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 15 mã FR (`102-FR-001..015`), 4 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `personalized-recommendations-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Sequence/Flowchart trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 102.
+
+---
+
+## Mục 20: Lập Implementation Plan cho Feature 103 – Mood and Context Recommendations bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                                          |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations/`)                                                                                                                                                                                       |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                                                                                        |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu taxonomy nhãn cố định, giới hạn thực thể (Songs & Mood Playlists), cơ chế gợi ý thay thế khi rỗng (AF-02) và suy giảm mềm khi AI sự cố (EF-01), thiết kế data model, OpenAPI contract, và hoàn thiện plan.md. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 103 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `103` thuộc Group 100 – AI Recommendations.
+
+**Chỉ lập Plan cho feature 103. Không xử lý feature khác.**
+
+## 1. Xác định Feature 103
+
+Kiểm tra:
+
+- `specs/100-ai-recommendations/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 103.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 103 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 103.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 103.
+- Plan của feature 101 và 102 nếu cần tham khảo cách tổ chức và bảo đảm tính nhất quán.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 103 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật Plan đúng vị trí mà Spec Kit quy định cho feature 103.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 4. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 103 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 103.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI algorithm hoặc scoring formula.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 120 vào Group 100.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 103 theo Spec Kit workflow.
+
+Không được:
+
+- Lập lại Plan cho feature 101 hoặc 102.
+- Lập Plan cho feature 104 trở đi.
+- Lập Plan cho toàn bộ Group 100.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit, bao gồm Plan đã hoàn thành của feature 101 và 102.
+
+## 6. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 103.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
+
+## 7. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 103 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Validation results.
+7. Những vấn đề cần clarification.
+8. Danh sách file đã thay đổi.
+
+Completion criteria: Chỉ tạo Implementation Plan cho feature 103 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 103**: Nhận diện đúng `103-mood-and-context-recommendations` tại `specs/100-ai-recommendations/103-mood-and-context-recommendations/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-015, 4 User Stories, 4 UI screenshots, các câu trả lời Clarification Session 2026-10-30) và Use Case `UC-100-003`.
+- **Phân tích tài liệu kiến trúc & ranh giới hệ thống**:
+  - Đối chiếu kỹ lưỡng: `docs/management/speckit-workflow-guide.md`, `team-contract.md`, `proposal.md`, `Auratune_Vision_Document.md`, `project_plan.md`, `api-contract.md`, `api-conventions.md`, `database/README.md`, `system-architecture.md`, `aiMockData.js` và Use Case `UC-100-003`.
+  - Phân định rõ ràng: Feature 103 phụ trách luồng khám phá âm nhạc theo tâm trạng thời gian thực và ngữ cảnh hoạt động. Không bao gồm thống kê nghe nhạc (F101), gợi ý cá nhân hóa theo gu nghe lịch sử (F102), tìm kiếm ngữ nghĩa văn bản tự do (Group 030), quản lý playlist (Group 060) hay trợ lý hội thoại AI Host (Group 120).
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 103 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 6 vấn đề kỹ thuật trọng yếu:
+    1. Taxonomy nhãn định sẵn (Curated Preset Taxonomy): Xác định bộ 8 nhãn chip cố định (4 Core Moods: `chill`, `energetic`, `melancholy`, `focus`; 4 Activity Contexts: `study_work`, `workout`, `late_night`, `travel_commute`) với cơ chế whitelist chặt chẽ và endpoint metadata `GET .../tags`.
+    2. Giới hạn loại thực thể: Chỉ trả về **Songs** (để phát nhạc ngay) và **Mood Playlists** (để nghe xuyên suốt hoạt động). Loại trừ Album và Artist riêng lẻ để tránh xung đột cảm xúc (FR-003, Clarification 2026-10-30).
+    3. Xử lý kết quả rỗng (AF-02): Khi tag không khớp bài hát nào trong catalog, trả về HTTP 200 với `items: []` và mảng `alternative_suggestions: ["chill", "focus"]` để UI render thẻ gợi ý thân thiện, không gượng ép trả nhạc ngẫu nhiên gây lệch cảm xúc.
+    4. Xử lý sự cố AI Service & Chịu lỗi (EF-01): Enforce timeout 2.5s khi gọi `POST /ai/recommend/mood`. Khi AI offline/timeout, backend bắt lỗi, thử fallback playlist cục bộ từ PostgreSQL; nếu vẫn không có, trả về HTTP 200 kèm cờ `is_service_degraded: true` và `fallback_shortcuts`, không bao giờ trả lỗi 500/503 làm crash giao diện.
+    5. Chống Race Condition khi chuyển đổi nhãn nhanh (AF-01): Dùng `AbortController` hủy các request HTTP cũ trên client, kiểm tra tag echo và áp dụng in-memory cache TTL 5 phút đảm bảo chuyển chip dưới 1.0 giây (thực tế $< 50$ms).
+    6. Quyền riêng tư & Nghị định 13/2023/NĐ-CP: Bắt buộc Bearer JWT, giữ kín lựa chọn tâm trạng theo tài khoản người nghe (FR-005, FR-006, SC-001).
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể taxonomy `MoodTag`, DTO `MoodRecommendationResult`, thẻ `MoodRecommendedItem`, sơ đồ máy trạng thái (state machine) và các quy tắc toàn vẹn dữ liệu.
+    - Xây dựng thư mục `contracts/` chứa OpenAPI 3.0 specification `mood-context-recommendations-api.json` và tài liệu hướng dẫn tích hợp, hợp đồng microservice nội bộ Backend–AI `contracts/README.md`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử qua 5 kịch bản (Kịch bản chuẩn chọn tâm trạng, Xử lý khi không có bài hát phù hợp, Xử lý khi AI Service sự cố, Cô lập quyền riêng tư / 401 Unauthorized, Chuyển đổi nhãn liên tục và hủy request).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context (React 18 / Vite 5 / Tailwind CSS cho frontend; Node.js REST API cho backend; PostgreSQL cho database; FastAPI cho internal AI service).
+    - Lập bảng phân định minh bạch 3 trạng thái: Đã có sẵn / Sẽ triển khai / Cần xác nhận.
+    - Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ Mermaid Sequence Diagram cho luồng gọi API và Flowchart cho điều hướng tương tác card.
+    - Bổ sung Complexity Tracking, Verification & Test Strategy.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 103 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                | Quyết định   | Lý do                                                                                                                                                  |
+| ------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Khởi tạo Plan qua `setup-plan.sh --json`                            | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, kích hoạt đúng context Feature 103.                                                            |
+| Taxonomy 8 preset tags cố định với whitelist validation             | Dùng         | Tuân thủ Clarification 2026-10-30 và FR-002; ngăn chặn input tự do, loại trừ câu hỏi ngôn ngữ tự nhiên thuộc phạm vi Search (G030) và Host (G120).     |
+| Giới hạn thực thể ở Songs và Mood Playlists                         | Dùng         | Tuân thủ Clarification 2026-10-30 và FR-003; Album và Nghệ sĩ không đảm bảo tính đồng nhất về mặt cảm xúc.                                             |
+| Gợi ý nhãn thay thế (`alternative_suggestions`) khi rỗng            | Dùng         | Tuân thủ Clarification 2026-10-30, FR-004 và AF-02; giữ chân người nghe bằng gợi ý chủ động, không trả nhạc sai tâm trạng.                             |
+| Chịu lỗi Graceful Degradation (Timeout 2.5s -> HTTP 200 Degraded)   | Dùng         | Tuân thủ FR-004, EF-01 và SC-003; giữ cho giao diện khám phá luôn hoạt động ổn định, cung cấp shortcut thoát luồng mượt mà.                            |
+| OpenAPI 3.0 Specification (`mood-context-recommendations-api.json`) | Dùng         | Chuẩn hóa contract cho endpoint `GET /api/v1/recommendations/mood-context` và `GET /api/v1/recommendations/mood-context/tags`.                         |
+| Input văn bản tự do / Natural language query                        | Bỏ hoàn toàn | Phạm vi thuộc về Semantic Search (`033-semantic-vector-search`) và AI Host (`121-conversational-interface`), không thuộc Feature 103 (FR-011, FR-013). |
+| Trả mã lỗi HTTP 500/503 về Client khi AI Service gặp sự cố          | Bỏ hoàn toàn | Tránh làm gián đoạn trải nghiệm trên giao diện khám phá, vi phạm tiêu chí suy giảm mềm của FR-004.                                                     |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 103                      | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi nhiệm vụ, bảo toàn working tree và không commit/push.                                                            |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới bên trong `specs/100-ai-recommendations/103-mood-and-context-recommendations/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/mood-context-recommendations-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 15 mã FR (`103-FR-001..015`), 4 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `mood-context-recommendations-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Sequence/Flowchart trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 103.
+
+---
+
+## Mục 21: Lập Implementation Plan cho Feature 121 – Conversational Interface bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface/`)                                                                                                                                                                                                                 |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                                                                                                            |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu kiến trúc terminal/CLI dialog, giao thức Server-Sent Events (SSE), vòng đời in-memory với `/clear` và lịch sử 30 lệnh, xuất Markdown an toàn, thiết kế data model, OpenAPI 3.0 contract, quickstart guide, và hoàn thiện plan.md. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 121 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `121` thuộc Group 120 – AI Conversational Agent.
+
+**Chỉ lập Plan cho feature 121. Không xử lý feature khác.**
+
+## 1. Xác định Feature 121
+
+Kiểm tra:
+
+- `specs/120-ai-conversational-agent/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 121.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 121 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 121.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 121.
+- Plan của các feature trước đó trong Group 120 nếu có, để tham khảo cách tổ chức và bảo đảm tính nhất quán.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Kiểm tra UI hiện tại của Group 120
+
+Vì UI của AI Conversational Agent đã có thay đổi, hãy kiểm tra frontend implementation mới nhất liên quan đến feature 121.
+
+Xem xét:
+
+- Page và route liên quan.
+- Components và component hierarchy.
+- Layout, styling và responsive behavior.
+- Các nút, input và user interactions.
+- Loading, empty, error và success states nếu có.
+- API/service calls liên quan.
+
+Dùng UI hiện tại làm căn cứ cho phần frontend technical approach trong Plan. Không lấy UI cũ trong tài liệu làm chuẩn nếu implementation đã thay đổi.
+
+Không tự biến UI change thành Functional Requirement mới. Nếu UI và `spec.md` không thống nhất, ghi nhận vấn đề để làm rõ, không tự sửa `spec.md`.
+
+## 4. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 121 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md`, kiến trúc AuraTune và UI implementation hiện tại làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật Plan đúng vị trí mà Spec Kit quy định cho feature 121.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 5. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 121 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Phản ánh UI Group 120 mới nhất.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 121.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI capability hoặc conversation behavior chưa được xác nhận.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 100 – AI Recommendations vào Group 120.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 6. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 121 theo Spec Kit workflow.
+
+Không được:
+
+- Lập Plan cho feature 122 trở đi.
+- Lập Plan cho toàn bộ Group 120.
+- Lập lại Plan của feature khác.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa Use-Case Documentation.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 7. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 121.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra UI approach phù hợp với frontend hiện tại.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md` hoặc UI implementation, chỉ ghi nhận, không tự ý sửa.
+
+## 8. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 121 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Những điểm UI mới được phản ánh trong technical approach.
+6. Các technical decisions đáng chú ý.
+7. Validation results.
+8. Những vấn đề cần clarification.
+9. Danh sách file đã thay đổi.
+
+**Completion criteria:** Chỉ tạo Implementation Plan cho feature 121 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 121**: Nhận diện đúng `121-conversational-interface` tại `specs/120-ai-conversational-agent/121-conversational-interface/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-012, 4 User Stories, 4 UI screenshots, các câu trả lời Clarification Session 2026-10-30/2026-11-01) và Use Cases `UC-120-001`, `UC-120-004`.
+- **Khảo sát UI hiện tại của Group 120**:
+  - Kiểm tra toàn diện component `src/frontend/src/components/chat/AIHostChat.jsx`, `agentService.js`, `agentTools.js`, `TopBar.jsx` và `BottomPlayer.jsx`.
+  - Ghi nhận mô hình giao diện mới nhất: Floating Terminal / CLI dialog neo góc phải (`bottom-[96px] right-2 top-2`, max-w 460px) với theme tối `#0c0d12`, font monospace, banner chào mừng, bảng phím tắt `/help`, braille spinner `⠋` kèm verb xoay vòng và đếm giây, trace suy nghĩ thu gọn/mở rộng, cursor khối nhấp nháy `█`, huy hiệu `✓ xong trong [N]s`, dải suggestion chips và duyệt lịch sử 30 lệnh qua phím mũi tên.
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 121 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 6 vấn đề kỹ thuật:
+    1. Giao thức Streaming: Sử dụng Server-Sent Events (SSE) qua `POST /api/v1/agent/chat` (`Accept: text/event-stream`) truyền kèm Bearer JWT và context phát nhạc (`currentTrack`, `isPlaying`, `volume`).
+    2. Vòng đời & Lưu trữ: Quản lý strictly in-memory tại component React (`entries` state) kết hợp bộ đệm vòng 30 lệnh (`historyRef`). Lệnh `/clear` xử lý tức thời tại client; không ghi database ở v1, xóa sạch khi logout tuân thủ Nghị định 13/2023/NĐ-CP.
+    3. Định dạng văn bản (FR-007): User message hiển thị dạng plain text đã escape chống XSS; AI response render qua parser Markdown có cơ chế sanitize (`rehype-sanitize`) hỗ trợ bold, italics, lists, inline code và link an toàn (`rel="noopener noreferrer"`).
+    4. Xử lý khi AI sự cố (FR-009, FR-011): Hiển thị trạng thái `● tạm ngưng`, alert banner màu hổ phách, disable ô nhập và nút "Thử lại" (Retry) cho tin nhắn lỗi; đảm bảo **cách ly hoàn toàn 100% với audio player (nhạc nền phát liên tục không gián đoạn)**.
+    5. Căn chỉnh kiến trúc UI: Chuẩn hóa technical approach theo đúng implementation thực tế trong `AIHostChat.jsx`.
+    6. Phân quyền & Cách ly tài khoản (FR-001, FR-010): Kiểm tra auth ở client (challenge modal redirect `/login`) và xác thực Bearer JWT ở backend, trích xuất `req.user.id`, đảm bảo không rò rỉ dữ liệu giữa các tài khoản.
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể `UserSession`, `ConversationSession`, cấu trúc đa hình `ChatEntry` (`BannerEntry`, `HelpEntry`, `UserMessageEntry`, `AgentRunEntry`), DTO `PlaybackContextPayload`, schema `AgentStreamEvent`, state machines và quy tắc nghiệp vụ.
+    - Xây dựng `contracts/`: Tài liệu `README.md` và file đặc tả OpenAPI 3.0.3 `conversational-interface-api.json` cho endpoint streaming `POST /api/v1/agent/chat` và health probe `GET /api/v1/agent/health`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử runnable qua 8 kịch bản (Truy cập dialog, Gửi & stream phản hồi với thinking state, Duyệt lịch sử phím mũi tên, Lệnh `/clear`, Phím tắt `/help`, Hủy lượt chạy qua `Esc`, Chịu lỗi AI tạm ngưng và cách ly audio, Cô lập tài khoản người dùng).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context, bảng đối chiếu Baseline hiện tại vs Công việc sẽ làm vs Điểm cần xác nhận.
+    - Đánh giá Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ Mermaid Flowchart kiến trúc phân tầng và Sequence Diagram luồng stream dữ liệu chi tiết.
+    - Xác lập chiến lược kiểm thử đa tầng (Unit, Component, Contract, Security Isolation) và quản trị rủi ro.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 121 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                              | Quyết định   | Lý do                                                                                                                                              |
+| ----------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Khởi tạo Plan qua `setup-plan.sh --json`                          | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, kích hoạt đúng context Feature 121.                                                        |
+| Thiết kế Floating Terminal / CLI dialog (`AIHostChat.jsx`)        | Dùng         | Bám sát chính xác implementation frontend mới nhất của Group 120 thay vì UI cũ trong tài liệu ban đầu.                                             |
+| Giao thức Server-Sent Events (SSE) qua `POST /api/v1/agent/chat`  | Dùng         | Tối ưu cho mô hình request-response streaming tokens, hỗ trợ truyền Authorization header và context phát nhạc, nhẹ hơn WebSockets.                 |
+| Vòng đời hội thoại In-Memory kết hợp 30 lệnh gần nhất             | Dùng         | Tuân thủ Clarification 2026-10-30/2026-11-01 và FR-008; cho phép `/clear` tức thời, không rò rỉ dữ liệu phiên cũ sau khi đăng xuất.                |
+| Markdown an toàn (User: Plain Text; AI: Sanitized Markdown)       | Dùng         | Tuân thủ FR-007; chống triệt để tấn công XSS, cho phép AI hiển thị rich text, danh sách và liên kết an toàn.                                       |
+| Cách ly hoàn toàn với Trình phát nhạc (Zero Audio Disruption)     | Dùng         | Tuân thủ FR-011, SC-005; lỗi hay thao tác trên khung chat không bao giờ làm gián đoạn bài hát đang nghe trong `PlayerContext`.                     |
+| OpenAPI 3.0 Specification (`conversational-interface-api.json`)   | Dùng         | Chuẩn hóa contract cho endpoint stream `POST /api/v1/agent/chat` và `GET /api/v1/agent/health`.                                                    |
+| Lưu trữ vĩnh viễn tin nhắn chat vào bảng PostgreSQL               | Bỏ hoàn toàn | Clarification của spec đã xác nhận rõ mô hình v1 là In-Memory session lifecycle, tránh gánh nặng lưu trữ và rủi ro quyền riêng tư không cần thiết. |
+| Thực thi tool điều khiển nhạc (chỉnh volume, đổi bài, thêm queue) | Bỏ khỏi F121 | Phạm vi thuộc về Feature 123 (`123-real-time-music-assistance`), Feature 121 chỉ tập trung vào hạ tầng giao diện và streaming hội thoại.           |
+| Phân tích ý định âm nhạc từ câu thoại tự nhiên                    | Bỏ khỏi F121 | Phạm vi thuộc về Feature 122 (`122-music-intent-understanding`).                                                                                   |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 121                    | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi nhiệm vụ, bảo toàn working tree và không commit/push.                                                        |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới bên trong `specs/120-ai-conversational-agent/121-conversational-interface/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/conversational-interface-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 12 mã FR (`121-FR-001..012`), 4 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `conversational-interface-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Flowchart và Sequence trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 121, không có file ngoài phạm vi bị tác động.
+
+---
+
+## Mục 22: Lập Implementation Plan cho Feature 122 – Music Intent Understanding bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                                                                  |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                        |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding/`)                                                                                                                                                                                                                 |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                                                                                                                |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu kiến trúc Two-Tier Hybrid (LLM + Regex Rule Matcher), bộ lọc PII (Nghị định 13/2023/NĐ-CP), phân rã câu ghép (compound clauses), giải quyết ngữ cảnh, thiết kế data model, OpenAPI contract, quickstart guide, và hoàn thiện plan.md. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 122 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `122` thuộc Group 120 – AI Conversational Agent.
+
+**Chỉ lập Plan cho feature 122. Không xử lý feature khác. Không liên quan đến PA3.**
+
+## 1. Xác định Feature 122
+
+Kiểm tra:
+
+- `specs/120-ai-conversational-agent/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 122.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 122 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 122.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 122.
+- Plan của feature 121 nếu cần tham khảo cách tổ chức và bảo đảm tính nhất quán.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Kiểm tra UI hiện tại của Group 120
+
+Kiểm tra frontend implementation mới nhất liên quan đến feature 122:
+
+- Page và route liên quan.
+- Components và component hierarchy.
+- Layout, styling và responsive behavior.
+- Buttons, inputs và user interactions.
+- Loading, empty, error và success states nếu có.
+- API/service calls liên quan.
+
+Sử dụng UI hiện tại làm căn cứ cho phần frontend technical approach trong Plan.
+
+Không sử dụng UI cũ nếu implementation đã thay đổi. Không tự biến UI change thành Functional Requirement mới.
+
+Nếu UI và `spec.md` không thống nhất, ghi nhận vấn đề để làm rõ, không tự ý sửa `spec.md`.
+
+## 4. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 122 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md`, kiến trúc AuraTune và UI implementation hiện tại làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật Plan đúng vị trí mà Spec Kit quy định cho feature 122.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 5. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 122 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Phản ánh UI Group 120 mới nhất nếu có liên quan.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 122.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI capability hoặc conversation behavior chưa được xác nhận.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 100 – AI Recommendations vào Group 120.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 6. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 122 theo Spec Kit workflow.
+
+Không được:
+
+- Lập lại Plan cho feature 121.
+- Lập Plan cho feature 123 trở đi.
+- Lập Plan cho toàn bộ Group 120.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa Use-Case Documentation.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit, bao gồm Plan đã hoàn thành của feature 121.
+
+## 7. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 122.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra UI approach phù hợp với frontend hiện tại nếu có liên quan.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md` hoặc UI implementation, chỉ ghi nhận, không tự ý sửa.
+
+## 8. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 122 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Những điểm UI được phản ánh trong technical approach nếu có.
+7. Validation results.
+8. Những vấn đề cần clarification.
+9. Danh sách file đã thay đổi.
+
+**Completion criteria:** Chỉ tạo Implementation Plan cho feature 122 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 122**: Nhận diện đúng `122-music-intent-understanding` tại `specs/120-ai-conversational-agent/122-music-intent-understanding/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-012, 5 User Stories, các câu trả lời Clarification Session 2026-10-30/2026-11-01) và Use Case `UC-120-002`.
+- **Khảo sát UI & Implementation hiện tại của Group 120**:
+  - Đối chiếu mã nguồn trong `src/frontend/src/utils/agentService.js`, ghi nhận thuật toán phân rã câu ghép theo NFC normalization (`split(/\s*(?:[,;]|\s+rồi\s+|\s+sau đó\s+)\s*/i)`) và hàm khớp mẫu `planClause(text, context)`.
+  - Phản ánh cơ chế reasoning trace của intent engine vào các dòng suy nghĩ hiển thị trên UI terminal (`AIHostChat.jsx`).
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 122 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 6 vấn đề kỹ thuật:
+    1. Kiến trúc phân loại hybrid hai tầng (Two-Tier Hybrid Architecture): Tier 1 dùng mô hình LLM / Python AI Service trả về JSON cấu trúc qua function calling; Tier 2 dùng bộ regex deterministic (`planClause`) làm fallback < 5ms khi timeout (> 1,200ms) hoặc mất kết nối.
+    2. Bộ lọc PII Pre-Sanitization: Làm sạch 100% email, số điện thoại và mật khẩu/token trước khi gửi ra dịch vụ AI bên ngoài (FR-008, SC-003, Nghị định 13/2023/NĐ-CP).
+    3. Phân rã câu ghép (Compound Clause Decomposition): Tách các chỉ thị nối tiếp qua liên từ (`rồi`, `sau đó`, `,`) thành mảng `clauses` có thứ tự cho Orchestrator (FR-005).
+    4. Giải quyết từ chỉ xuất ngữ cảnh (Contextual Resolution): Trích xuất `context.currentTrack` cho _"bài này"_, _"ca sĩ này"_ và tính toán toán học cho mức âm lượng tương đối _"to lên"_, _"nhỏ lại"_ (FR-004).
+    5. Smart Heuristic Defaults: Tự động gán nguồn phát mặc định (gợi ý cá nhân hóa / bài hát thịnh hành) khi nhận lệnh mơ hồ như _"bật nhạc đi"_ mà không chặn bằng câu hỏi vặn lại (FR-005).
+    6. Tách biệt ranh giới hệ thống (FR-012): Feature 122 chỉ trích xuất ý định có cấu trúc gửi về Centralized AI Agent Orchestrator; tuyệt đối không gọi API player hay can thiệp giao diện.
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể `IntentAnalysisRequest`, `PlaybackContextSnapshot`, DTO canonical `MusicIntentResult`, danh mục `MusicEntitySlots`, cấu trúc `IntentClause` và state machine luồng xử lý.
+    - Xây dựng `contracts/`: Tài liệu `README.md` và file đặc tả OpenAPI 3.0.3 `music-intent-understanding-api.json` cho endpoint phân tích ý định `POST /api/v1/agent/intent/analyze`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử runnable qua 8 kịch bản (Phát bài hát cụ thể, Hỏi bài đang phát & chỉnh âm lượng tương đối, Tìm kiếm theo mood/context, Tách câu ghép, Xử lý lệnh mơ hồ, Cô lập chit-chat, Làm sạch PII, Chịu lỗi fallback khi AI timeout).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context, bảng đối chiếu Baseline hiện tại vs Công việc sẽ làm vs Điểm cần xác nhận.
+    - Đánh giá Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ Mermaid Flowchart kiến trúc phân tầng và Sequence Diagram luồng phân tích ý định chi tiết.
+    - Xác lập chiến lược kiểm thử đa tầng (Unit, Accuracy Benchmark >= 90%, Contract, Resilience Timeout) và quản trị rủi ro.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 122 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                              | Quyết định   | Lý do                                                                                                                                                  |
+| ----------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Khởi tạo Plan qua `setup-plan.sh --json`                          | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, kích hoạt đúng context Feature 122.                                                            |
+| Kiến trúc Two-Tier Hybrid (LLM + Regex Fallback)                  | Dùng         | Kết hợp khả năng hiểu ngữ nghĩa tự nhiên linh hoạt của LLM với độ tin cậy < 5ms của regex, bảo đảm không bao giờ gián đoạn phát nhạc (FR-010, SC-005). |
+| Pre-Sanitization PII Scrubber                                     | Dùng         | Tuân thủ nghiêm ngặt FR-008, SC-003 và Nghị định 13/2023/NĐ-CP; loại bỏ dữ liệu nhạy cảm trước khi rời biên giới mạng nội bộ.                          |
+| Sequential Clause Decomposition (`rồi`, `sau đó`, `,`)            | Dùng         | Tuân thủ FR-005 và phản ánh chính xác implementation trong `agentService.js`; cho phép người nghe ra lệnh đa bước mượt mà.                             |
+| Smart Heuristic Defaults cho câu lệnh mơ hồ                       | Dùng         | Tuân thủ Clarification 2026-10-30 (Option C) và FR-005; loại bỏ câu hỏi làm phiền, chủ động phát nhạc theo gu hoặc bài thịnh hành.                     |
+| Centralized AI Agent Orchestrator Pattern                         | Dùng         | Tuân thủ Clarification 2026-10-30 (Option A) và FR-007; định tuyến tập trung đến Feature 123, Search (030), hoặc Interface (121).                      |
+| OpenAPI 3.0 Specification (`music-intent-understanding-api.json`) | Dùng         | Chuẩn hóa contract cho endpoint phân tích ý định `POST /api/v1/agent/intent/analyze`.                                                                  |
+| Thực thi trực tiếp lệnh player (play, pause, set volume, queue)   | Bỏ khỏi F122 | Vi phạm ranh giới phân tách (FR-012); việc thực thi hành động thuộc phạm vi độc quyền của Feature 123 (`123-real-time-music-assistance`).              |
+| Trực tiếp render giao diện chat hoặc bubble tin nhắn              | Bỏ khỏi F122 | Vi phạm ranh giới phân tách (FR-012); việc hiển thị thuộc phạm vi của Feature 121 (`121-conversational-interface`).                                    |
+| Lưu trữ vĩnh viễn intent logs vào bảng PostgreSQL                 | Bỏ hoàn toàn | Pipeline xử lý in-memory theo phiên, tránh thu thập profiling không cần thiết vi phạm Nghị định 13/2023/NĐ-CP.                                         |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 122                    | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi nhiệm vụ, bảo toàn working tree và không commit/push.                                                            |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới bên trong `specs/120-ai-conversational-agent/122-music-intent-understanding/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/music-intent-understanding-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 12 mã FR (`122-FR-001..012`), 5 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `music-intent-understanding-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Flowchart và Sequence trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 122.
+
+---
+
+## Mục 23: Lập Implementation Plan cho Feature 123 – Real-Time Music Assistance bằng `/speckit.plan`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-03                                                                                                                                                                                                                                                                                                                                               |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                     |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance/`)                                                                                                                                                                                                              |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.plan`                                                                                                                                                                                                                                                                                             |
+| Mục đích                 | Thực thi workflow lập kế hoạch kỹ thuật (Implementation Plan) theo chuẩn Spec Kit: khởi tạo plan template, nghiên cứu kiến trúc Client-Side Tool Dispatching (`agentTools.js`), chính sách xác nhận an toàn cho thao tác phá hủy `clear_queue` (`[y/N]`), điều phối lệnh ghép nối tiếp, nhúng thẻ preview card, OpenAPI contract, và hoàn thiện plan.md. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 123 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `123` thuộc Group 120 – AI Conversational Agent.
+
+**Chỉ lập Plan cho feature 123. Không xử lý feature khác. Không liên quan đến PA3.**
+
+## 1. Xác định Feature 123
+
+Kiểm tra:
+
+- `specs/120-ai-conversational-agent/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 123.
+- Metadata và configuration liên quan.
+
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+
+Nếu không tìm thấy feature 123 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+
+Đọc các tài liệu cần thiết:
+
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 123.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 123.
+- Plan của feature 121 và 122 nếu cần tham khảo cách tổ chức và bảo đảm tính nhất quán.
+
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Kiểm tra UI hiện tại của Group 120
+
+Kiểm tra frontend implementation mới nhất liên quan đến feature 123:
+
+- Page và route liên quan.
+- Components và component hierarchy.
+- Layout, styling và responsive behavior.
+- Buttons, inputs và user interactions.
+- Loading, empty, error và success states nếu có.
+- API/service calls liên quan.
+
+Sử dụng UI hiện tại làm căn cứ cho phần frontend technical approach trong Plan.
+
+Không sử dụng UI cũ nếu implementation đã thay đổi. Không tự biến UI change thành Functional Requirement mới.
+
+Nếu UI và `spec.md` không thống nhất, ghi nhận vấn đề để làm rõ, không tự ý sửa `spec.md`.
+
+## 4. Thực thi `/speckit.plan`
+
+Sau khi xác định đúng feature context:
+
+1. Chọn feature 123 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md`, kiến trúc AuraTune và UI implementation hiện tại làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật Plan đúng vị trí mà Spec Kit quy định cho feature 123.
+
+Không tự viết Plan thủ công thay cho Spec Kit command.
+
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 5. Yêu cầu đối với Plan
+
+Plan cần:
+
+- Bám sát requirements của feature 123 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Phản ánh UI Group 120 mới nhất nếu có liên quan.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+
+Không tự ý:
+
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 123.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI capability hoặc conversation behavior chưa được xác nhận.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group 100 – AI Recommendations vào Group 120.
+
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 6. Scope giới hạn
+
+Chỉ được tạo hoặc cập nhật Plan của feature 123 theo Spec Kit workflow.
+
+Không được:
+
+- Lập lại Plan cho feature 121 hoặc 122.
+- Lập Plan cho feature 124 trở đi.
+- Lập Plan cho toàn bộ Group 120.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa Use-Case Documentation.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit, bao gồm Plan đã hoàn thành của feature 121 và 122.
+
+## 7. Validation
+
+Sau khi thực thi `/speckit.plan`:
+
+- Kiểm tra Plan thuộc đúng feature 123.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra UI approach phù hợp với frontend hiện tại nếu có liên quan.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+Nếu phát hiện vấn đề trong `spec.md` hoặc UI implementation, chỉ ghi nhận, không tự ý sửa.
+
+## 8. Final Report
+
+Báo cáo bằng Vietnamese:
+
+1. Tên và đường dẫn feature 123 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Những điểm UI được phản ánh trong technical approach nếu có.
+7. Validation results.
+8. Những vấn đề cần clarification.
+9. Danh sách file đã thay đổi.
+
+**Completion criteria:** Chỉ tạo Implementation Plan cho feature 123 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác định chính xác Feature 123**: Nhận diện đúng `123-real-time-music-assistance` tại `specs/120-ai-conversational-agent/123-real-time-music-assistance/` cùng tài liệu đặc tả nguồn `spec.md` (FR-001..FR-014, 5 User Stories, các câu trả lời Clarification Session 2026-10-30/2026-11-01) và Use Case `UC-120-003`.
+- **Khảo sát UI & Implementation hiện tại của Group 120**:
+  - Đối chiếu mã nguồn trong `src/frontend/src/components/chat/agentTools.js` và `AIHostChat.jsx`.
+  - Phân tích cơ chế thực thi tool cục bộ (`executeTool`), hộp thoại xác nhận tương tác `askConfirm(signal)` cho lệnh `clear_queue`, thanh hiển thị trạng thái từng bước (`running`, `confirm`, `ok`, `error`, `skipped`), và việc nhúng component `PlaylistCard` compact trong dòng phản hồi của AI host.
+- **Thực thi workflow Spec Kit `/speckit.plan`**:
+  - Kích hoạt context Feature 123 qua `.specify/scripts/bash/setup-plan.sh --json` và cập nhật `.specify/feature.json`.
+  - **Phase 0 (Outline & Research)**: Xây dựng `research.md` giải quyết triệt để 6 vấn đề kỹ thuật:
+    1. Kiến trúc điều phối hành động (Client-Side Tool Dispatching): Backend AI Orchestrator gửi chỉ thị `tool_call` trong SSE stream; client web tiếp nhận và trực tiếp gọi `agentTools.js` để tác động lên `PlayerContext` và REST APIs thư viện, bảo đảm độ trễ cực thấp (< 1,000ms per SC-001).
+    2. Chính sách xác nhận thao tác phá hủy (Destructive-Only Confirmation Policy): Các thao tác thông thường chạy tức thì; chỉ riêng thao tác xóa sạch hàng chờ (`clear_queue`) bắt buộc dừng lại yêu cầu người dùng bấm `y`/`n` hoặc gõ phím xác nhận (FR-013).
+    3. Thực thi tool nối tiếp trong lệnh ghép (Sequential Compound Tool Pipeline): Chạy lần lượt từng tool từ trái qua phải, cập nhật trạng thái chấm tròn trực quan tương ứng (FR-014).
+    4. Thẻ tương tác xem trước phong phú (Interactive Rich Preview Card): Nhúng thẻ `PlaylistCard` compact ngay trong luồng chat khi thực thi phát danh sách gợi ý (FR-004).
+    5. Nguyên tắc bất biến không gián đoạn âm thanh (Zero Audio Disruption): Mọi lỗi do thiếu bài hát trong catalog hoặc lỗi mạng đều được bọc trong `try/catch`, trả về thông báo lỗi nhẹ nhàng và **tuyệt đối không bao giờ ngắt bài hát đang phát** (FR-008, SC-003).
+    6. Tích hợp lịch sử nghe nhạc: Tự động gửi `POST /api/v1/users/me/history` khi bài hát bắt đầu phát theo đúng chuẩn Group 070 (FR-010, SC-005).
+  - **Phase 1 (Design & Contracts)**:
+    - Xây dựng `data-model.md`: Định nghĩa thực thể chỉ thị `AssistanceActionCommand`, registry danh mục tool và tham số, kết quả `ToolExecutionResult`, bundle `AssistanceExecutionPlan`, và state machine thực thi tool có xác nhận.
+    - Xây dựng `contracts/`: Tài liệu `README.md` và file đặc tả OpenAPI 3.0.3 `real-time-music-assistance-api.json` cho endpoint điều phối hỗ trợ `POST /api/v1/agent/assistance/execute`.
+    - Xây dựng `quickstart.md`: Hướng dẫn kiểm thử runnable qua 8 kịch bản (Điều khiển phát nhạc, Chỉnh âm lượng, Thao tác hàng chờ theo chuỗi, Xác nhận xóa hàng chờ `[y/N]`, Thẻ playlist nhúng, Chịu lỗi khi bài hát không có trong catalog, Tương tác thư viện `like_track`, Ghi nhận lịch sử nghe tự động).
+  - **Hoàn thiện Implementation Plan (`plan.md`)**:
+    - Điền đầy đủ Technical Context, bảng đối chiếu Baseline hiện tại vs Công việc sẽ làm vs Điểm cần xác nhận.
+    - Đánh giá Constitution Check đạt PASS 100%.
+    - Cung cấp sơ đồ Mermaid Flowchart kiến trúc phân tầng và Sequence Diagram luồng thực thi tool có xác nhận.
+    - Xác lập chiến lược kiểm thử đa tầng (Unit, Component, Contract, Audio Continuity Stress Tests) và quản trị rủi ro.
+- **Validation & Báo cáo**:
+  - Chạy script kiểm tra điều kiện tiên quyết `.specify/scripts/bash/check-prerequisites.sh --json` đạt PASS 100%, sẵn sàng cho phase `/speckit.tasks`.
+  - Kiểm tra `git status` xác nhận không có bất kỳ file nào ngoài Feature 123 bị ảnh hưởng.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                               | Quyết định   | Lý do                                                                                                                                                                |
+| ------------------------------------------------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Khởi tạo Plan qua `setup-plan.sh --json`                           | Dùng         | Tuân thủ quy trình chuẩn của Spec Kit trong repository, kích hoạt đúng context Feature 123.                                                                          |
+| Mô hình Client-Side Tool Dispatching (`agentTools.js`)             | Dùng         | Tuân thủ Clarification 2026-10-30 (Option A) và FR-003; điều khiển trực tiếp thẻ `<audio>` và queue tại browser, độ trễ $< 50$ms, không cần socket 2 chiều phức tạp. |
+| Chính sách Destructive-Only Confirmation (`clear_queue`)           | Dùng         | Tuân thủ Clarification 2026-11-01 và FR-013; bảo vệ hàng chờ của người dùng khỏi bị xóa nhầm, loại bỏ phiền toái xác nhận ở các lệnh thường.                         |
+| Sequential Compound Tool Pipeline                                  | Dùng         | Tuân thủ Clarification 2026-11-01 và FR-014; thực thi tuần tự từng bước trong lệnh ghép, hiển thị chỉ báo trạng thái minh bạch.                                      |
+| Nhúng trực tiếp thẻ `PlaylistCard` compact vào chat                | Dùng         | Tuân thủ Clarification 2026-10-30 (Option A) và FR-004; mang lại trải nghiệm xem trước trực quan và nút tương tác play/pause tại chỗ.                                |
+| Bắt lỗi phòng thủ bảo vệ bài hát đang nghe (Zero Audio Disruption) | Dùng         | Tuân thủ FR-008, SC-003; bảo đảm nhạc nền phát xuyên suốt 100%, lỗi tìm kiếm hay thiếu quyền không làm dừng phát nhạc.                                               |
+| Tự động đăng ký `listening_history`                                | Dùng         | Tuân thủ FR-010, SC-005; đồng bộ dữ liệu nghe nhạc phục vụ thống kê cá nhân (Group 070).                                                                             |
+| OpenAPI 3.0 Specification (`real-time-music-assistance-api.json`)  | Dùng         | Chuẩn hóa contract cho endpoint điều phối hành động hỗ trợ `POST /api/v1/agent/assistance/execute`.                                                                  |
+| Phân tích ý định âm ngữ tự nhiên                                   | Bỏ khỏi F123 | Vi phạm ranh giới phân tách (FR-012); việc phân tích ý định thuộc phạm vi độc quyền của Feature 122 (`122-music-intent-understanding`).                              |
+| Render shell khung chat hoặc quản lý lịch sử tin nhắn              | Bỏ khỏi F123 | Vi phạm ranh giới phân tách (FR-012); việc hiển thị chat thuộc phạm vi của Feature 121 (`121-conversational-interface`).                                             |
+| Bắt xác nhận với tất cả hành động (play, pause, volume, like)      | Bỏ hoàn toàn | Gây cản trở nghiêm trọng trải nghiệm nghe nhạc đàm thoại tự nhiên.                                                                                                   |
+| Chỉnh sửa mã nguồn hoặc file ngoài Feature 123                     | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt giới hạn phạm vi nhiệm vụ, bảo toàn working tree và không commit/push.                                                                          |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính toàn vẹn tài liệu:** Xác nhận đầy đủ 6 artifact được tạo mới bên trong `specs/120-ai-conversational-agent/123-real-time-music-assistance/` (`plan.md`, `research.md`, `data-model.md`, `contracts/README.md`, `contracts/real-time-music-assistance-api.json`, `quickstart.md`).
+- **Chạy script kiểm tra Spec Kit:** Chạy `.specify/scripts/bash/check-prerequisites.sh --json` xác nhận kết quả trả về `AVAILABLE_DOCS: ["research.md", "data-model.md", "contracts/", "quickstart.md"]`, sẵn sàng 100% cho bước `/speckit.tasks`.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 14 mã FR (`123-FR-001..014`), 5 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
+- **Kiểm tra cú pháp Contract và Mermaid:** File `real-time-music-assistance-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Flowchart và Sequence trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
+- **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 123.

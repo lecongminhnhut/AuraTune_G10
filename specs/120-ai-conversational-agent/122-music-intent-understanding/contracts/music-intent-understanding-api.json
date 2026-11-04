@@ -1,0 +1,306 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Music Intent Understanding API - Feature 122",
+    "description": "API contract for natural language music intent classification, slot entity extraction, compound clause decomposition, and orchestrator payload generation.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base path"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/agent/intent/analyze": {
+      "post": {
+        "summary": "Analyze conversational message to determine music intent and extract entity slots",
+        "description": "Ingests natural language prompt and playback context snapshot. Strips PII, resolves contextual references, decomposes compound chained clauses, and returns a structured intent payload for the Centralized AI Agent Orchestrator.",
+        "operationId": "analyzeMusicIntent",
+        "tags": ["AI Conversational Agent"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntentAnalysisRequestPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Intent successfully analyzed and structured result returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicIntentResultEnvelope"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error (e.g. empty message or invalid body)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Nội dung tin nhắn không được để trống",
+                  "data": null,
+                  "error": {
+                    "code": "VALIDATION_ERROR",
+                    "details": [
+                      {
+                        "field": "rawPrompt",
+                        "issue": "Nội dung tin nhắn phải từ 1 đến 500 ký tự"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized request (missing or invalid JWT token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Phiên đăng nhập không hợp lệ hoặc đã hết hạn",
+                  "data": null,
+                  "error": {
+                    "code": "UNAUTHORIZED",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "AI service unavailable and fallback exhausted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Dịch vụ nhận diện ý định tạm thời không khả dụng",
+                  "data": null,
+                  "error": {
+                    "code": "AI_SERVICE_UNAVAILABLE",
+                    "details": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Standard Bearer JWT session token"
+      }
+    },
+    "schemas": {
+      "IntentAnalysisRequestPayload": {
+        "type": "object",
+        "required": ["rawPrompt"],
+        "properties": {
+          "rawPrompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "Natural language prompt from user",
+            "example": "phát nhạc chill rồi giảm âm lượng 40%"
+          },
+          "context": {
+            "type": "object",
+            "description": "Active playback and user situational context",
+            "properties": {
+              "currentTrack": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": { "type": "string" },
+                  "title": { "type": "string" },
+                  "artist": { "type": "string" }
+                }
+              },
+              "isPlaying": {
+                "type": "boolean",
+                "example": true
+              },
+              "volume": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 60
+              }
+            }
+          }
+        }
+      },
+      "MusicIntentResultEnvelope": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Intent analysis completed successfully" },
+          "data": { "$ref": "#/components/schemas/MusicIntentResultData" },
+          "error": { "nullable": true, "example": null }
+        }
+      },
+      "MusicIntentResultData": {
+        "type": "object",
+        "required": [
+          "requestId",
+          "intentType",
+          "confidenceScore",
+          "completenessStatus",
+          "extractedEntities",
+          "clauses",
+          "suggestedAction",
+          "sanitizedPrompt"
+        ],
+        "properties": {
+          "requestId": { "type": "string", "example": "req-intent-10293847" },
+          "intentType": {
+            "type": "string",
+            "enum": [
+              "play_music",
+              "search_music",
+              "query_music_info",
+              "manage_library",
+              "general_chitchat",
+              "unknown"
+            ],
+            "example": "play_music"
+          },
+          "confidenceScore": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "example": 0.95
+          },
+          "completenessStatus": {
+            "type": "string",
+            "enum": ["complete", "missing_parameters", "ambiguous"],
+            "example": "complete"
+          },
+          "extractedEntities": {
+            "$ref": "#/components/schemas/MusicEntitySlots"
+          },
+          "clauses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IntentClause"
+            }
+          },
+          "suggestedAction": {
+            "type": "string",
+            "enum": [
+              "real_time_assistance",
+              "search_service",
+              "recommendation_service",
+              "dialogue_response",
+              "unrecognized_fallback"
+            ],
+            "example": "real_time_assistance"
+          },
+          "inferredDefaults": {
+            "type": "object",
+            "nullable": true,
+            "example": null
+          },
+          "sanitizedPrompt": {
+            "type": "string",
+            "example": "phát nhạc chill rồi giảm âm lượng 40%"
+          }
+        }
+      },
+      "MusicEntitySlots": {
+        "type": "object",
+        "properties": {
+          "songTitle": { "type": "string", "nullable": true, "example": "Nơi này có anh" },
+          "artistName": { "type": "string", "nullable": true, "example": "Sơn Tùng M-TP" },
+          "albumTitle": { "type": "string", "nullable": true },
+          "genre": { "type": "string", "nullable": true, "example": "lofi" },
+          "mood": { "type": "string", "nullable": true, "example": "chill" },
+          "activity": { "type": "string", "nullable": true, "example": "học bài" },
+          "lyricsSnippet": { "type": "string", "nullable": true },
+          "controlAction": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "play",
+              "pause",
+              "resume",
+              "next",
+              "previous",
+              "set_volume",
+              "like_track",
+              "clear_queue",
+              "navigate"
+            ],
+            "example": "set_volume"
+          },
+          "volumeLevel": { "type": "integer", "nullable": true, "minimum": 0, "maximum": 100, "example": 40 },
+          "playlistName": { "type": "string", "nullable": true },
+          "targetTrackId": { "type": "string", "nullable": true }
+        }
+      },
+      "IntentClause": {
+        "type": "object",
+        "required": ["clauseIndex", "rawClauseText", "intentType", "extractedEntities", "suggestedAction"],
+        "properties": {
+          "clauseIndex": { "type": "integer", "example": 0 },
+          "rawClauseText": { "type": "string", "example": "phát nhạc chill" },
+          "intentType": { "type": "string", "example": "play_music" },
+          "extractedEntities": { "$ref": "#/components/schemas/MusicEntitySlots" },
+          "suggestedAction": { "type": "string", "example": "real_time_assistance" }
+        }
+      },
+      "ApiErrorEnvelope": {
+        "type": "object",
+        "required": ["success", "message", "data", "error"],
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string" },
+          "data": { "nullable": true, "example": null },
+          "error": {
+            "type": "object",
+            "required": ["code", "details"],
+            "properties": {
+              "code": { "type": "string", "example": "VALIDATION_ERROR" },
+              "details": { "type": "array", "items": { "type": "object" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}
