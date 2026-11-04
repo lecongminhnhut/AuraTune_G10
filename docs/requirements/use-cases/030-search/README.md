@@ -21,7 +21,7 @@
 Functional Group 030 provides the core search and discovery capabilities of the AuraTune platform. It allows users to actively find specific music catalog entities using text keywords, while extending traditional search paradigms with AI-powered semantic vector search to understand lyrical fragments and abstract emotional contexts.
 
 ### 2.2 In-Scope Capabilities
-The verified capabilities within Group 030 comprise:
+The documented capabilities within Group 030 comprise:
 
 1. **Metadata Search (Feature 031)**:
    - Text-based search across song titles, artist names, album names, and playlist names.
@@ -30,11 +30,11 @@ The verified capabilities within Group 030 comprise:
    - Maintaining a strict localized browser history (LocalStorage) of up to 10 recent queries.
    - Refining results via category filters and sorting options.
 
-2. **AI Lyrics Search (Feature 032)** *(Planned - Separate Use Case)*:
+2. **AI Lyrics Search (Feature 032)** *(Spec status: Draft)*:
    - Searching tracks by specific, remembered lyric fragments using semantic AI analysis.
    - Automatic graceful degradation to keyword search fallback upon AI service timeout.
 
-3. **Semantic Vector Search (Feature 033)** *(Planned - Separate Use Case)*:
+3. **Semantic Vector Search (Feature 033)** *(Spec status: Draft)*:
    - Processing free-form natural language prompts (e.g., "sad music for a rainy night").
    - Ranking results using a weighted ensemble of metadata (30%), lyrics (40%), and audio characteristics (30%).
    - Automatic removal/masking of Personally Identifiable Information (PII) before external AI processing.
@@ -57,9 +57,9 @@ To maintain strict architectural boundaries, the following capabilities are expl
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
-| **031** | Metadata Search | `FR-001` to `FR-019` | `specs/031-metadata-search/spec.md` |
-| **032** | AI Lyrics Search | `FR-001` to `FR-019` | `specs/032-ai-lyrics-search/spec.md` |
-| **033** | Semantic Vector Search | `FR-001` to `FR-017` | `specs/033-semantic-vector-search/spec.md` |
+| **031** | Metadata Search (Draft) | `031-FR-001` to `031-FR-019` | `specs/030-search/031-metadata-search/spec.md` |
+| **032** | AI Lyrics Search (Draft) | `032-FR-001` to `032-FR-019` | `specs/030-search/032-ai-lyrics-search/spec.md` |
+| **033** | Semantic Vector Search (Draft) | `033-FR-001` to `033-FR-017` (including `033-FR-003a`, `033-FR-004a`, `033-FR-011a`) | `specs/030-search/033-semantic-vector-search/spec.md` |
 
 ---
 
@@ -69,7 +69,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 |---|---|---|---|
 | **Listener** (`ACT-02`) | Primary Human Actor | Authenticated platform user who searches for music. | `UC-030-001`, `UC-030-002`, `UC-030-003` |
 | **Public User / Guest** (`ACT-01`) | Primary Human Actor | Unauthenticated visitor who can search the public catalog. | `UC-030-001`, `UC-030-002` |
-| **External AI Service Provider** (`ACT-EXT-04`) | External System (Supporting Actor) | Third-party cloud AI service for vector embeddings. | `UC-030-002`, `UC-030-003` |
+| **External AI Service Provider** (`ACT-EXT-04`) | External System (Supporting Actor) | External AI service used for lyrics matching and semantic search processing. | `UC-030-002`, `UC-030-003` |
 
 ---
 
@@ -101,10 +101,10 @@ flowchart LR
     UC030_2 -.->|Generates semantic matches| AIService
     UC030_3 -.->|Generates vector embeddings| AIService
 
-    %% Inter-group delegations
-    UC030_1 -.->|<<include>>| Player
-    UC030_2 -.->|<<include>>| Player
-    UC030_3 -.->|<<include>>| Player
+    %% Optional delegation when a user selects a playable song
+    UC030_1 -.->|delegates playback on song selection| Player
+    UC030_2 -.->|delegates playback on song selection| Player
+    UC030_3 -.->|delegates playback on song selection| Player
 ```
 
 ---
@@ -113,9 +113,9 @@ flowchart LR
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
-| **UC-030-001** | Search by Metadata | Public User, Listener | `FR-001` to `FR-019` | [`UC-030-001-metadata-search.md`](./UC-030-001-metadata-search.md) |
-| **UC-030-002** | AI Lyrics Search | Public User, Listener | `FR-001` to `FR-019` | [`UC-030-002-ai-lyrics-search.md`](./UC-030-002-ai-lyrics-search.md) |
-| **UC-030-003** | Semantic Vector Search | Listener | `FR-001` to `FR-017` | [`UC-030-003-semantic-vector-search.md`](./UC-030-003-semantic-vector-search.md) |
+| **UC-030-001** | Search by Metadata | Public User, Listener | `031-FR-001` to `031-FR-019` | [`UC-030-001-metadata-search.md`](./UC-030-001-metadata-search.md) |
+| **UC-030-002** | AI Lyrics Search | Public User, Listener | `032-FR-001` to `032-FR-019` | [`UC-030-002-ai-lyrics-search.md`](./UC-030-002-ai-lyrics-search.md) |
+| **UC-030-003** | Semantic Vector Search | Listener | `033-FR-001` to `033-FR-017` (including lettered FRs) | [`UC-030-003-semantic-vector-search.md`](./UC-030-003-semantic-vector-search.md) |
 
 ## 5.7. Dependencies and Integration
 
@@ -170,7 +170,7 @@ flowchart LR
 - `docs/management/team-contract.md`
 - `docs/requirements/use-case-model.md`
 - `docs/requirements/use-cases/README.md`
-- `specs/031-metadata-search/spec.md`
-- `specs/032-ai-lyrics-search/spec.md`
-- `specs/033-semantic-vector-search/spec.md`
+- `specs/030-search/031-metadata-search/spec.md`
+- `specs/030-search/032-ai-lyrics-search/spec.md`
+- `specs/030-search/033-semantic-vector-search/spec.md`
 - `docs/requirements/use-cases/030-search/prototypes/README.md`

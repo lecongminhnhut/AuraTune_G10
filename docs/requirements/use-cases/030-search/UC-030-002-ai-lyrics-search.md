@@ -12,7 +12,7 @@
 | **Primary Actor** | Public User / Guest (`ACT-01`), Listener (`ACT-02`) |
 | **Supporting Actors** | External AI Service Provider (`ACT-EXT-04`) |
 | **Related FR IDs** | `032-FR-001` through `032-FR-019` |
-| **Related Feature/Spec** | Feature 032: AI Lyrics Search (`specs/032-ai-lyrics-search/spec.md`) |
+| **Related Feature/Spec** | Feature 032: AI Lyrics Search (`specs/030-search/032-ai-lyrics-search/spec.md`) |
 | **Status** | Draft |
 | **Writer** | Nguyễn Khánh Đăng |
 | **Reviewer** | TBD |
@@ -44,11 +44,11 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 1. **Actor:** Navigates to the Search view, selects the "Theo lời bài hát" tab, enters a remembered lyric fragment, and submits the search.
 2. **System:** Trims whitespace and validates that the fragment contains $\ge 3$ words and $\le 200$ characters (`032-FR-014`).
 3. **System:** Dispatches the query via `POST /ai/search/lyrics` to the External AI Service Provider (`ACT-EXT-04`) for semantic matching (`032-FR-002`).
-4. **System:** The AI service processes the semantic intent, overcoming minor differences in spacing, capitalization, or punctuation (`032-FR-003`).
+4. **System:** The AI search operation matches the submitted incomplete lyric fragment against available lyric data (`032-FR-003`).
 5. **System:** Retrieves an initial batch of up to 20 candidate songs that best match the meaning of the lyric fragment (`032-FR-013`).
 6. **System:** Renders the matched results on the interface, displaying the highlighted matching lyric line alongside song metadata (title, artist, cover art) to ensure the user can identify it (`032-FR-004`).
 7. **Actor:** Reviews the matches and selects a result.
-8. **System:** Delegates playback initiation to the Music Player (`UC-040-001`), loading audio bytes directly.
+8. **System:** Delegates playback initiation to the Music Player (`UC-040-001`).
 
 ---
 
@@ -172,7 +172,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 
 ## 12. Source References
 
-- `specs/032-ai-lyrics-search/spec.md` – Requirements FR-001 through FR-019, User Stories 1–3.
+- `specs/030-search/032-ai-lyrics-search/spec.md` – Requirements 032-FR-001 through 032-FR-019, User Stories 1–3.
 - `docs/proposal/Auratune_Vision_Document.md` – Section 3.4 (N-02) & Group G03.
 
 ---

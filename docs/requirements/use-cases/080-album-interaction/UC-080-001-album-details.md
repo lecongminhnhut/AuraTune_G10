@@ -12,7 +12,7 @@
 | **Primary Actor** | Listener (`ACT-02`), Guest/Visitor (`ACT-01`) |
 | **Supporting Actors** | None |
 | **Related FR IDs** | `081-FR-001` to `081-FR-016` |
-| **Related Feature/Spec** | Feature 081: Album Details (`spec-081.md`) |
+| **Related Feature/Spec** | Feature 081: Album Details (`specs/080-album-interaction/081-album-details/spec.md`) |
 | **Status** | Draft |
 | **Writer** | Nguyễn Khánh Đăng |
 | **Reviewer** | TBD |
@@ -44,27 +44,32 @@ The visitor navigates to an album URL (e.g., `/album/:id`) or clicks an album ca
 3. **System:** Extracts the available metadata: cover art, title, artist name, release year, and the complete tracklist.
 4. **System:** Calculates total album duration by summing up the durations of all tracks with available duration data (`081-FR-004`).
 5. **System:** Renders the Album Details header, displaying the cover art, title, artist, year, calculated total duration, track count, and a release type badge ("Đĩa đơn" if 1 track, "Album" if 2+ tracks) (`081-FR-003`).
-6. **System:** Renders the tracks as one flat list in artist-intended order. Each track row displays its index, title, artist, album name, play count (formatted with locale grouping, e.g., "24.000 lượt nghe"), and duration. Track rows support hover actions including play, like, download, and more options (`081-FR-005a`, `081-FR-006`).
-7. **System:** Displays the album's exact release date and copyright metadata at the bottom of the tracklist (e.g., "Phát hành 20/9/2026 · © 2026 AuraTune Studio").
-8. **System:** Renders the "More from [Artist]" ("Thêm từ [Nghệ sĩ]") section at the bottom of the page showing other available albums by the same artist (`081-FR-016`).
-9. **Actor:** Reviews the album information and tracklist.
+6. **System:** Renders the tracks as one flat list in the order provided by the album response. Each track row displays its index, title, artist, album name, play count (formatted with locale grouping, e.g., "24.000 lượt nghe"), and duration (`081-FR-005`, `081-FR-005a`, `081-FR-006`).
+7. **System:** Renders the "More from [Artist]" ("Thêm từ [Nghệ sĩ]") section at the bottom of the page showing other available albums by the same artist (`081-FR-016`).
+8. **Actor:** Reviews the album information and tracklist.
 
 ## 6. Alternative Flows
 
-### AF-01 – Progressive Tracklist Rendering
+### AF-01 – Empty Tracklist
+- **Starting step:** Step 3 of the Basic Flow.
+- **Condition:** The album response contains no tracks (`081-FR-010`).
+1. **System:** Displays an empty track-list state and does not invent track data or duration.
+- **Outcome:** Use case completes with album details and an empty track list.
+
+### AF-02 – Progressive Tracklist Rendering
 - **Starting step:** Step 6 of the Basic Flow
 - **Condition:** The album contains a very large number of tracks.
 1. **System:** Renders the first batch of track rows immediately for UI responsiveness while the total duration in the header still accurately reflects the complete tracklist (`081-FR-014`).
 2. **Actor:** Scrolls down the tracklist.
 3. **System:** Progressively renders the remaining track rows in order.
-- **Outcome:** Resume at Basic Flow step 9.
+- **Outcome:** Resume at Basic Flow step 8.
 
-### AF-02 – Return to Cached Album
+### AF-03 – Return to Previously Viewed Album
 - **Starting step:** Step 1 of the Basic Flow
 - **Condition:** The visitor uses browser navigation to return to an album viewed recently.
-1. **System:** Immediately displays the previously loaded album details from the local cache (`081-FR-015`).
+1. **System:** Immediately displays previously loaded details for that album (`081-FR-015`).
 2. **System:** Silently fetches fresh data in the background and refreshes the page content when the request completes.
-- **Outcome:** Resume at Basic Flow step 9.
+- **Outcome:** Resume at Basic Flow step 8.
 
 ## 7. Exception Flows
 
@@ -86,8 +91,14 @@ The visitor navigates to an album URL (e.g., `/album/:id`) or clicks an album ca
 - **Starting step:** Step 5 of the Basic Flow
 - **Condition:** The album data is missing the cover image or specific text fields.
 1. **System:** Displays a default placeholder image within the responsive cover-art frame (`081-FR-009a`).
-2. **System:** Hides or safely handles missing optional text fields without breaking the layout.
+2. **System:** Displays an em dash for unavailable duration or play-count values, preserves valid zero values as zero, and safely handles other missing optional values (`081-FR-009`).
 - **Outcome:** Resume at Basic Flow step 6.
+
+### EX-04 – Requested Album Changes While Loading
+- **Starting step:** Step 2 of the Basic Flow.
+- **Condition:** The visitor navigates to another album before the current request completes (`081-FR-012`).
+1. **System:** Displays only data corresponding to the currently requested album ID; a late response for the previous album is not shown as current.
+- **Outcome:** Continue with the Basic Flow for the currently requested album.
 
 ---
 
@@ -115,22 +126,22 @@ The visitor navigates to an album URL (e.g., `/album/:id`) or clicks an album ca
 ### Basic Flow - Album Header
 ![Album Details](prototypes/UC-080-001-album-details.png)
 **Covered steps:** Basic Flow steps 5.
-**Prototype type:** Implemented UI
+**Prototype type:** Available; source type to verify
 
 ### Basic Flow - Album Metadata & Related
 ![Album Metadata](prototypes/UC-080-001-album-metadata.png)
-**Covered steps:** Basic Flow steps 7-8.
-**Prototype type:** Implemented UI
+**Covered steps:** Basic Flow step 7.
+**Prototype type:** Available; source type to verify
 
 ### Basic Flow - Track Play Counts
 ![Album Track Play Counts](prototypes/UC-080-001-album-track-play-counts.png)
 **Covered steps:** Basic Flow step 6.
-**Prototype type:** Implemented UI
+**Prototype type:** Available; source type to verify
 
 ### Exception Flow - Album Not Found
 ![Album Error State](prototypes/UC-080-001-album-error-state.png)
 **Covered steps:** EX-01.
-**Prototype type:** Implemented UI
+**Prototype type:** Available; source type to verify
 
 ---
 
@@ -142,7 +153,7 @@ The visitor navigates to an album URL (e.g., `/album/:id`) or clicks an album ca
 
 ## 12. Source References
 
-- `spec-081.md` – Requirements FR-001 through FR-016.
+- `specs/080-album-interaction/081-album-details/spec.md` – Requirements 081-FR-001 through 081-FR-016, including lettered requirements.
 - `docs/proposal/proposal.md`
 
 ---

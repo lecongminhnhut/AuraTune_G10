@@ -9,17 +9,17 @@ This document serves as the official tracking registry for all Use Cases belongi
 - **Functional Group**: 080 – Album
 - **Group Owner**: Nguyễn Khánh Đăng
 - **Baseline Version**: 1.0.0 (PA3 Review Baseline)
-- **Total Confirmed Use Cases**: 3
+- **Total Draft Use Cases**: 3
 
 ---
 
-## 2. Confirmed Use-Case Inventory
+## 2. Draft Use-Case Inventory
 
 | UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
-| **UC-080-001** | View Album Details | Listener, Guest | None | `FR-001` to `FR-016` | `081-album-details` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-001-view-album-details.md`](./UC-080-001-view-album-details.md) |
-| **UC-080-002** | Play Album Tracklist | Listener, Guest | Music Player (`040`) | `FR-001` to `FR-016` | `082-album-tracklist-playback` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-002-play-album-tracklist.md`](./UC-080-002-play-album-tracklist.md) |
-| **UC-080-003** | Save and Share Album | Listener, Guest | Auth (`010`) | `FR-001` to `FR-014` | `083-save-and-share-album` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-003-save-and-share-album.md`](./UC-080-003-save-and-share-album.md) |
+| **UC-080-001** | View Album Details | Listener, Guest | None | `081-FR-001` to `081-FR-016`, including lettered FRs | `081-album-details` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-001-album-details.md`](./UC-080-001-album-details.md) |
+| **UC-080-002** | Play Album Tracklist | Listener | Music Player (`040`) | `082-FR-001` to `082-FR-016` | `082-album-tracklist` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-002-album-tracklist.md`](./UC-080-002-album-tracklist.md) |
+| **UC-080-003** | Save and Share Album | Listener, Guest | Auth (`010`) | `083-FR-001` to `083-FR-014` | `083-save-and-share-album` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-003-save-and-share-album.md`](./UC-080-003-save-and-share-album.md) |
 
 ---
 
@@ -50,6 +50,6 @@ The following candidate use cases were analyzed during requirements engineering 
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|
-| `081-album-details` | `081-FR-001` through `081-FR-016` | **UC-080-001** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P2) |
-| `082-album-tracklist-playback` | `082-FR-001` through `082-FR-016` | **UC-080-002** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P1) |
-| `083-save-and-share-album` | `083-FR-001` through `083-FR-014` | **UC-080-003** | User Story 1 (P1), User Story 2 (P1) |
+| `specs/080-album-interaction/081-album-details/spec.md` | `081-FR-001` through `081-FR-016`, including lettered FRs | **UC-080-001** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P2) |
+| `specs/080-album-interaction/082-album-tracklist/spec.md` | `082-FR-001` through `082-FR-016` | **UC-080-002** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P1) |
+| `specs/080-album-interaction/083-save-and-share-album/spec.md` | `083-FR-001` through `083-FR-014` | **UC-080-003** | User Story 1 (P1), User Story 2 (P1) |

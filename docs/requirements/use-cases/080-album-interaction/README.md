@@ -1,4 +1,4 @@
-# Functional Group 080: Album – Use-Case Documentation
+# Functional Group 080: Album Interaction – Use-Case Documentation
 
 ---
 
@@ -7,7 +7,7 @@
 | Attribute | Details |
 |---|---|
 | **Group ID** | 080 |
-| **Group Name** | Album |
+| **Group Name** | Album Interaction (G08: Album Details) |
 | **Group Owner** | Nguyễn Khánh Đăng |
 | **Module Purpose** | Manages the album discovery and playback experience, including viewing album metadata, exploring tracklists, initiating album playback, and saving/sharing album links. |
 | **Documentation Status** | Draft — Baseline for Sprint 3 (PA3) Review |
@@ -18,10 +18,10 @@
 ## 2. Scope
 
 ### 2.1 Purpose and Objectives
-Functional Group 080 provides the core catalog browsing experience for releases. It allows listeners and guests to explore an album's complete metadata (cover art, artist, release year, total duration), view its ordered tracklist with individual play counts, seamlessly transition into playback for the full album or a specific track, and engage with the album by saving it to a personal library or sharing its URL.
+Functional Group 080 provides the core catalog browsing experience for releases. Listeners and guests can explore album metadata (cover art, artist, release year, total duration) and tracklists with individual play counts. Listeners can start album or track playback; listeners and guests can share album URLs, while saving an album requires sign-in.
 
 ### 2.2 In-Scope Capabilities
-The verified capabilities within Group 080 comprise three distinct subfeatures:
+The capabilities specified for Group 080 comprise three distinct features. Their source specifications are currently Draft:
 
 1. **Album Details (Feature 081)**:
    - Retrieving and rendering album metadata (cover art, artist, year, total duration).
@@ -40,7 +40,7 @@ The verified capabilities within Group 080 comprise three distinct subfeatures:
 3. **Save and Share Album (Feature 083)**:
    - Authenticated bookmarking of albums into a personal library (`Saved Albums`).
    - Toggling the saved state with dynamic UI feedback (Bookmark vs. BookmarkCheck icons).
-   - Public sharing of album URLs via the Web Share API or clipboard copy.
+   - Sharing album URLs through Copy Link, Facebook, Instagram, X, and Zalo.
    - Enforcing authentication checks before allowing save actions.
 
 ### 2.3 Out-of-Scope Exclusions
@@ -59,9 +59,9 @@ To maintain strict architectural boundaries, the following capabilities are expl
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
-| **081** | Album Details | `FR-001` to `FR-016` | `spec-081.md` |
-| **082** | Album Tracklist Playback | `FR-001` to `FR-016` | `spec-082.md` |
-| **083** | Save and Share Album | `FR-001` to `FR-014` | `spec-083.md` |
+| **081** | Album Details (Draft) | `081-FR-001` to `081-FR-016` (including lettered FRs) | `specs/080-album-interaction/081-album-details/spec.md` |
+| **082** | Album Tracklist Playback (Draft) | `082-FR-001` to `082-FR-016` | `specs/080-album-interaction/082-album-tracklist/spec.md` |
+| **083** | Save and Share Album (Draft) | `083-FR-001` to `083-FR-014` | `specs/080-album-interaction/083-save-and-share-album/spec.md` |
 
 ---
 
@@ -69,15 +69,15 @@ To maintain strict architectural boundaries, the following capabilities are expl
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
-| **Listener** (`ACT-02`) | Primary Human Actor | Authenticated platform user who views details, plays tracks, and saves albums to their library. | `UC-080-001`, `UC-080-002`, `UC-080-003` |
-| **Guest / Visitor** (`ACT-01`) | Primary Human Actor | Unauthenticated user who views public details, plays tracks, and shares albums. | `UC-080-001`, `UC-080-002`, `UC-080-003` |
+| **Listener** (`ACT-02`) | Primary Human Actor | Platform user who views details, plays tracks, and saves or shares albums. | `UC-080-001`, `UC-080-002`, `UC-080-003` |
+| **Guest / Visitor** (`ACT-01`) | Primary Human Actor | Unauthenticated visitor who views public details and shares albums. | `UC-080-001`, `UC-080-003` |
 | **Music Player** (`Group 040`) | External System (Supporting Actor) | Internal subsystem responsible for receiving track data and executing audio playback. | `UC-080-002` |
 
 ---
 
 ## 5. Use-Case Diagram
 
-The following Mermaid diagram visualizes the boundary, actors, confirmed use cases, and external relationships for **Group 080 – Album**.
+The following Mermaid flowchart visualizes the boundary, actors, draft use cases, and cross-group dependencies for **Group 080 – Album Interaction**.
 
 ```mermaid
 flowchart LR
@@ -100,12 +100,11 @@ flowchart LR
     Listener -->|Saves & shares| UC080_3
     
     Guest -->|Views| UC080_1
-    Guest -->|Plays tracks| UC080_2
     Guest -->|Shares| UC080_3
 
-    %% External & Subsystem Associations
-    UC080_2 -.->|<<include>><br>Delegates track playback| Player
-    UC080_3 -.->|<<extend>><br>Login challenge on save| Auth
+    %% Optional cross-group dependencies
+    UC080_2 -.->|delegates selected playback| Player
+    UC080_3 -.->|uses authentication for save actions| Auth
 
     %% Styling
     classDef actor fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
@@ -120,9 +119,9 @@ flowchart LR
 ```
 
 ### Diagram Legend
-- **Ovals (`([ ... ])`)**: Confirmed Use Cases.
+- **Ovals (`([ ... ])`)**: Draft Use Cases.
 - **Solid Arrow (`-->`)**: Direct primary actor invocation.
-- **Dashed Arrow (`-.->`)**: External system dependency or cross-group inclusion (`<<include>>` / `<<extend>>`).
+- **Dashed Arrow (`-.->`)**: Optional cross-group dependency or delegation; it does not mean UML `include` or `extend`.
 - **Subsystem Boundary (`subgraph`)**: Scope boundary of Group 080.
 
 ---
@@ -131,9 +130,9 @@ flowchart LR
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
-| **UC-080-001** | View Album Details | Listener, Guest | `FR-001` to `FR-016` | [`UC-080-001-view-album-details.md`](./UC-080-001-view-album-details.md) |
-| **UC-080-002** | Play Album Tracklist | Listener, Guest | `FR-001` to `FR-016` | [`UC-080-002-play-album-tracklist.md`](./UC-080-002-play-album-tracklist.md) |
-| **UC-080-003** | Save and Share Album | Listener, Guest | `FR-001` to `FR-014` | [`UC-080-003-save-and-share-album.md`](./UC-080-003-save-and-share-album.md) |
+| **UC-080-001** | View Album Details | Listener, Guest | `081-FR-001` to `081-FR-016` | [`UC-080-001-album-details.md`](./UC-080-001-album-details.md) |
+| **UC-080-002** | Play Album Tracklist | Listener | `082-FR-001` to `082-FR-016` | [`UC-080-002-album-tracklist.md`](./UC-080-002-album-tracklist.md) |
+| **UC-080-003** | Save and Share Album | Listener, Guest | `083-FR-001` to `083-FR-014` | [`UC-080-003-save-and-share-album.md`](./UC-080-003-save-and-share-album.md) |
 
 ---
 
@@ -171,6 +170,6 @@ flowchart LR
 - `docs/proposal/proposal.md`
 - `docs/management/team-contract.md`
 - `docs/requirements/use-case-model.md`
-- `spec-081.md`
-- `spec-082.md`
-- `spec-083.md`
+- `specs/080-album-interaction/081-album-details/spec.md`
+- `specs/080-album-interaction/082-album-tracklist/spec.md`
+- `specs/080-album-interaction/083-save-and-share-album/spec.md`

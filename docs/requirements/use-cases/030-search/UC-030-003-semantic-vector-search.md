@@ -1,4 +1,4 @@
-# UC-030-003 – Semantic Vector Music Search
+﻿# UC-030-003 – Semantic Vector Music Search
 
 ## 1. Metadata
 
@@ -9,8 +9,8 @@
 | **Functional Group** | 030 – Search | 
 | **Primary Actor** | Listener (`ACT-02`) | 
 | **Supporting Actors** | External AI Service Provider (`ACT-EXT-04`) | 
-| **Related FR IDs** | `033-FR-001` through `033-FR-017` | 
-| **Related Feature/Spec** | Feature 033: Semantic Vector Music Search (`specs/033-semantic-vector-search/spec.md`) | 
+| **Related FR IDs** | `033-FR-001` through `033-FR-017`, including `033-FR-003a`, `033-FR-004a`, and `033-FR-011a` |
+| **Related Feature/Spec** | Feature 033: Semantic Vector Music Search (`specs/030-search/033-semantic-vector-search/spec.md`) |
 | **Status** | Draft | 
 | **Writer** | Nguyễn Khánh Đăng | 
 | **Reviewer** | TBD | 
@@ -21,7 +21,7 @@ A listener describes a mood, emotion, or contextual situation in natural languag
 
 ## 3. Preconditions
 
-* The user is an authenticated Listener (`ACT-02`).
+* The user is a Listener (`ACT-02`); the feature does not introduce new permissions.
 * The music catalog has been processed, and vector embeddings for song metadata, lyrics, and audio characteristics (tempo, energy, valence, etc.) are available (`033-FR-003`, `033-FR-003a`).
 
 ## 4. Trigger
@@ -37,8 +37,8 @@ The listener submits a natural-language description containing at least one alph
 5. **System:** The AI service matches the query vector against music documents.
 6. **System:** Calculates a unified semantic relevance score for matching tracks using a weighted ensemble: Metadata (30%), Lyrics (40%), and Audio Characteristics (30%) (`033-FR-004a`).
 7. **System:** Returns a ranked result set descending by relevance score, excluding duplicates (`033-FR-006`).
-8. **System:** Renders the matched results in a live dropdown or full results page, displaying an "AI hiểu ý bạn" card that briefly explains the contextual match (`033-FR-002`, `033-FR-005`).
-9. **Actor:** Selects a suggested track or playlist.
+8. **System:** Renders the matched song results with enough standard song information for the listener to identify each result (`033-FR-005`).
+9. **Actor:** Selects a suggested song.
 10. **System:** Delegates playback to the Music Player (`UC-040-001`).
 
 ## 6. Alternative Flows
@@ -63,7 +63,7 @@ The listener submits a natural-language description containing at least one alph
 ### AF-03 – Invalid Input Length
 
 * **Starting step:** Step 2 of the Basic Flow.
-* **Condition:** The user inputs an empty string, whitespace only, or $> 150$ characters (`033-FR-015`).
+* **Condition:** The user inputs an empty or whitespace-only string, or a query exceeding 150 characters (`033-FR-015`).
 1. **System:** Rejects the input client-side.
 2. **System:** Displays a clear validation message ("Vui lòng nhập mô tả ý nghĩa" or limit exceeded warning) without initiating a network request.
 * **Continuation:** Resumes at Step 1 of the Basic Flow.
@@ -73,10 +73,10 @@ The listener submits a natural-language description containing at least one alph
 ### EF-01 – AI Service Unavailable or Timeout (Graceful Degradation)
 
 * **Starting step:** Step 4 of the Basic Flow.
-* **Condition:** The AI semantic processing fails to yield a usable response within 1,500 milliseconds, reaches the absolute 3,000 milliseconds timeout, or returns a 5xx error (`033-FR-007`, `033-FR-016`).
+* **Condition:** The AI semantic processing is unavailable, returns an invalid response, cannot safely process the request, returns a 5xx error, or has not produced a usable response within 3,000 milliseconds (`033-FR-007`, `033-FR-016`).
 1. **System:** Intercepts the timeout or error condition to prevent infinite loading.
 2. **System:** Aborts the semantic search vector request.
-3. **System:** Automatically falls back to a standard keyword search using the original user query text (`033-FR-007`).
+3. **System:** Automatically falls back to a standard keyword search using the submitted query within the system; personal data is not sent to the third-party AI service (`033-FR-007`, `033-FR-010`, `033-FR-011`, `033-FR-012`).
 4. **System:** Renders the keyword search results and displays a non-intrusive banner indicating that AI semantic search is temporarily unavailable and keyword results are being shown (`033-FR-008`).
 5. **System:** Ensures no internal service credentials or diagnostic details are exposed to the user (`033-FR-008`).
 * **Continuation:** The user interacts with the fallback results; use case completes in degraded mode.
@@ -94,7 +94,7 @@ The listener submits a natural-language description containing at least one alph
 ## 9. Special Requirements
 
 * **Privacy & Security**: Enforce strict PII masking (Decree 13/2023/ND-CP). Emails and authenticated user names MUST NEVER be transmitted in the query payload to `ACT-EXT-04` (`033-FR-010`, `033-FR-012`).
-* **Performance Threshold**: The system applies a rapid 1,500ms soft timeout for semantic processing to begin keyword fallback smoothly, with an absolute hard timeout at 3,000ms (`033-FR-016`).
+* **Performance Threshold**: The system stops waiting for a usable semantic-search response after 3,000ms and starts keyword fallback (`033-FR-016`). The separate 1,500ms outcome is specified as a success criterion (`SC-003a`), not as the FR-016 timeout rule.
 
 ## 10. Prototype and Screenshots
 
@@ -135,4 +135,4 @@ The listener submits a natural-language description containing at least one alph
 
 ## 12. Source References
 
-* `specs/033-semantic-vector-search/spec.md` – Requirements FR-001 through FR-017, User Stories 1–4.
+* `specs/030-search/033-semantic-vector-search/spec.md` – Requirements 033-FR-001 through 033-FR-017, including lettered requirements, User Stories 1–4.
