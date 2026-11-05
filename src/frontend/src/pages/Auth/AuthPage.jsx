@@ -67,17 +67,17 @@ export default function AuthPage({ mode }) {
     return Object.keys(nextErrors).length === 0
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     if (!validate()) return
     if (isRegister) {
-      const result = store.register(form)
+      const result = await store.register(form)
       if (!result.ok) { setErrors({ [result.field]: result.error }); return }
       store.toast(`Chào mừng ${result.user.displayName} đến với AuraTune!`)
       navigate(next, { replace: true })
       return
     }
-    const result = store.login(form)
+    const result = await store.login(form)
     if (!result.ok) {
       const lockedText = result.lockedUntil ? ` Có thể thử lại lúc ${new Date(result.lockedUntil).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}.` : ''
       setFormError(`${result.error}${lockedText}${result.remaining && result.remaining <= 3 ? ` Còn ${result.remaining} lần thử trước khi tài khoản bị tạm khóa.` : ''}`)
@@ -184,7 +184,7 @@ export default function AuthPage({ mode }) {
         <Link to="/" className="mt-7 flex items-center justify-center gap-2 text-xs font-medium text-zinc-500 transition hover:text-white"><Icon name="arrowLeft" size={15} /> Quay về trang chủ</Link>
         {!isRegister && (
           <div className="mt-5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-[11px] leading-5 text-zinc-500">
-            <p className="font-semibold text-zinc-400">Tài khoản demo (mật khẩu: Aura1234)</p>
+            <p className="font-semibold text-zinc-400">Tài khoản demo (mật khẩu: Aura1234!)</p>
             <p>demo@auratune.vn · artist@auratune.vn · admin@auratune.vn</p>
           </div>
         )}

@@ -1,0 +1,14 @@
+{
+  "name": "auratune",
+  "version": "1.0.0",
+  "description": "AuraTune - Personal & Collaborative Music Platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/backend/server.js",
+    "dev:backend": "node --watch src/backend/server.js",
+    "dev:frontend": "cd src/frontend && npm run dev",
+    "dev": "node src/backend/server.js",
+    "test:backend": "node src/backend/test-server.js"
+  }
+}

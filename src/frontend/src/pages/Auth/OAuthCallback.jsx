@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from '../../components/common/Icon.jsx';
 import Logo from '../../components/common/Logo.jsx';
 import { useStore } from '../../context/AppStore.jsx';
@@ -8,8 +8,12 @@ export default function OAuthCallback() {
   const store = useStore();
   const { search } = useLocation();
   const [status, setStatus] = useState({ loading: true, error: '', success: false, message: '' });
+  const processedRef = useRef(false);
 
   useEffect(() => {
+    if (processedRef.current) return;
+    processedRef.current = true;
+
     async function handleCallback() {
       const provider = getQueryParam(search, 'provider') || 'google';
       const isCancel = getQueryParam(search, 'error') === 'access_denied';
@@ -40,7 +44,7 @@ export default function OAuthCallback() {
         avatarUrl: mockAvatar,
       };
 
-      const result = store.loginWithOAuth(oauthPayload);
+      const result = await store.loginWithOAuth(oauthPayload);
 
       if (result.ok) {
         setStatus({
@@ -119,3 +123,4 @@ export default function OAuthCallback() {
     </div>
   );
 }
+
