@@ -1,23 +1,24 @@
-# Quickstart & Verification Guide: Local Authentication
+# Quickstart & Verification Guide: Local Authentication (011)
 
 ## Environment Setup
-1. Đảm bảo biến môi trường `SUPABASE_URL` và `SUPABASE_ANON_KEY` được thiết lập trong file `.env`.
-2. Chạy ứng dụng Frontend: `cd src/frontend && pnpm dev`.
+1. Ensure environment variables `SUPABASE_URL` and `SUPABASE_ANON_KEY` are configured in `.env`.
+2. Start the Frontend application: `cd src/frontend && pnpm dev`.
 
 ## Verification Scenarios
 
-### Test Case 1: Đăng ký thành công & Bắt lỗi Validation
-1. Mở trang `/auth`. Chọn tab **Đăng ký**.
-2. Thử bấm Submit khi chưa điền thông tin ➔ Kiểm tra hiển thị thông báo lỗi từng trường.
-3. Nhập mật khẩu yếu (vd: `123456`) ➔ Báo lỗi mật khẩu không đủ độ mạnh.
-4. Nhập đầy đủ nhưng chưa tích **Đồng ý điều khoản** ➔ Nút Đăng ký bị disabled hoặc thông báo lỗi.
-5. Nhập email mới hợp lệ + mật khẩu mạnh + tích chọn Điều khoản ➔ Đăng ký thành công, thông báo Toast và chuyển tới trang Home.
+### Test Case 1: Successful Registration & Validation Errors
+1. Open page `/login` or `/register`. Select the **Register** tab.
+2. Submit without filling fields ➔ Verify field validation error messages display.
+3. Enter a weak password (e.g., `123456`) ➔ Password strength error displays.
+4. Fill required fields but leave **Terms agreement** unchecked ➔ Validation error requires checking Terms.
+5. Fill valid new email + strong password + check Terms ➔ Successful registration, Toast notification appears, and user is redirected to Home.
 
-### Test Case 2: Đăng nhập & Tạm khóa Tài khoản
-1. Nhập sai mật khẩu 1-4 lần ➔ Hiển thị số lần thử còn lại.
-2. Nhập sai mật khẩu lần thứ 5 ➔ Hiển thị thông báo tài khoản bị khóa 15 phút.
+### Test Case 2: Login & Account Lockout
+1. Enter wrong password 1-4 times ➔ Remaining attempt count warning displays.
+2. Enter wrong password the 5th time ➔ Account lockout banner displays indicating a 15-minute lock.
 
-### Test Case 3: Chuyển hướng theo Role
-1. Đăng nhập với tài khoản `role: user` ➔ Hiển thị User Menu chuẩn.
-2. Đăng nhập với tài khoản `role: artist` ➔ Hiển thị tùy chọn truy cập **Artist Studio**.
-3. Đăng nhập với tài khoản `role: admin` ➔ Hiển thị tùy chọn truy cập **Admin Dashboard**.
+### Test Case 3: Role-Based Redirection
+1. Log in with account `role: user` ➔ Standard User Menu displays.
+2. Log in with account `role: artist` ➔ Navigation options include **Artist Studio**.
+3. Log in with account `role: admin` ➔ Navigation options include **Admin Dashboard**.
+

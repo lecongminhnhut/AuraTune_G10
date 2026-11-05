@@ -27,9 +27,9 @@
 
 ## Phase 3: User Story 1 - New User Registration (Priority: P1) 🎯 MVP
 
-**Goal**: Cho phép người dùng mới tạo tài khoản bằng Email + Mật khẩu + Tên hiển thị và chấp nhận Điều khoản.
+**Goal**: Allow new users to create an account using Email + Password + Display Name and agree to the Terms of Service.
 
-**Independent Test**: Điền form đăng ký với email mới, kiểm tra record được tạo trong DB và chuyển hướng về Home.
+**Independent Test**: Fill out registration form with a new email, verify user record is created in DB and user is redirected to Home.
 
 - [x] T005 [P] [US1] Build Registration UI Form with email, display name, password fields and Terms checkbox in `src/frontend/src/pages/Auth/AuthPage.jsx`
 - [x] T006 [P] [US1] Add frontend validation for password strength (min 8 chars, 1 upper, 1 lower, 1 digit, 1 special char) in `src/frontend/src/pages/Auth/AuthPage.jsx`
@@ -40,9 +40,9 @@
 
 ## Phase 4: User Story 2 - User Login (Priority: P1) 🎯 MVP
 
-**Goal**: Cho phép người dùng đã đăng ký đăng nhập bằng email & mật khẩu.
+**Goal**: Allow registered users to log in using email & password.
 
-**Independent Test**: Nhập credentials đúng -> thành công lưu token/session & chuyển hướng Home.
+**Independent Test**: Enter correct credentials -> successfully store token/session & redirect to Home.
 
 - [x] T009 [P] [US2] Build Login UI Form with email, password fields and Remember Me option in `src/frontend/src/pages/Auth/AuthPage.jsx`
 - [x] T010 [US2] Implement `signInWithPassword` method in `src/database/services/authService.js`
@@ -52,9 +52,9 @@
 
 ## Phase 5: User Story 3 - Role-Based Access (Priority: P1)
 
-**Goal**: Phân quyền theo vai trò (`user`, `artist`, `admin`) cho người dùng.
+**Goal**: Assign role-based access permissions (`user`, `artist`, `admin`) to users.
 
-**Independent Test**: Đăng nhập với tài khoản role `artist` hoặc `admin` -> menu hiển thị đúng nút Studio/Dashboard.
+**Independent Test**: Log in with an account having `artist` or `admin` role -> menu correctly displays Studio/Admin Dashboard options.
 
 - [x] T012 [P] [US3] Extend User profile state with `role` attribute in `src/frontend/src/context/AppStore.jsx`
 - [x] T013 [P] [US3] Add Role-based UI guards for Navigation & Studio link in `src/frontend/src/components/common/Sidebar.jsx` and `src/frontend/src/components/common/TopBar.jsx`
@@ -64,9 +64,9 @@
 
 ## Phase 6: User Story 4 - Account Lockout Security (Priority: P2)
 
-**Goal**: Khóa tài khoản 15 phút sau 5 lần nhập sai mật khẩu liên tiếp.
+**Goal**: Lock account for 15 minutes after 5 consecutive failed login attempts.
 
-**Independent Test**: Nhập sai 5 lần -> Hiển thị cảnh báo tài khoản bị tạm khóa 15 phút.
+**Independent Test**: Fail login 5 times -> Display warning banner indicating a 15-minute temporary lockout.
 
 - [x] T015 [US4] Implement failed login attempts counter & lockout check logic in `src/database/services/authService.js`
 - [x] T016 [US4] Display account lockout banner with countdown on Login form in `src/frontend/src/pages/Auth/AuthPage.jsx`
@@ -75,9 +75,9 @@
 
 ## Phase 7: User Story 5 - Password Reset via Email (Priority: P2)
 
-**Goal**: Khôi phục mật khẩu qua email khi người dùng quên mật khẩu.
+**Goal**: Recover password via email when the user forgets their password.
 
-**Independent Test**: Gửi yêu cầu reset pass -> Nhận link và đặt lại mật khẩu mới.
+**Independent Test**: Send reset password request -> Receive link and set a new password.
 
 - [x] T017 [P] [US5] Build Forgot Password & Reset Password UI dialog in `src/frontend/src/pages/Auth/AuthPage.jsx`
 - [x] T018 [US5] Implement `resetPasswordForEmail` & `updateUserPassword` in `src/database/services/authService.js`
@@ -88,4 +88,5 @@
 
 - [x] T019 Run quickstart validation test cases according to `quickstart.md`
 - [x] T020 Run `speckit-analyze` to verify code compliance with `spec.md`
+
 

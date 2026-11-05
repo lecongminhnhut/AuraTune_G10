@@ -1,4 +1,4 @@
-# Data Model: Local Authentication
+# Data Model: Local Authentication (011)
 
 ## Entities
 
@@ -14,6 +14,7 @@
 - `updated_at` (TIMESTAMPTZ, DEFAULT NOW())
 
 ## State Transitions
-- `UNAUTHENTICATED` ➔ `ACTIVE_USER` (Đăng ký thành công & tích chọn Terms)
-- `ACTIVE_USER` ➔ `LOCKED_USER` (5 lần đăng nhập thất bại)
-- `LOCKED_USER` ➔ `ACTIVE_USER` (Hết thời gian lockout 15 phút)
+- `UNAUTHENTICATED` ➔ `ACTIVE_USER` (Successful registration & Terms checked)
+- `ACTIVE_USER` ➔ `LOCKED_USER` (5 consecutive failed login attempts)
+- `LOCKED_USER` ➔ `ACTIVE_USER` (15-minute lockout period expires)
+

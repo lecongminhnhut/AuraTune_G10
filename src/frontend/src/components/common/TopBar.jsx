@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BarChart3, Heart, LayoutDashboard, Library, LogOut, Mic2, Sparkles, Users } from 'lucide-react'
+import { BarChart3, Heart, LayoutDashboard, Library, LogOut, Mic2, Settings, Sparkles, Users } from 'lucide-react'
 import Icon from './Icon.jsx'
 import Logo from './Logo.jsx'
 import SemanticSearch from '../search/SemanticSearch.jsx'
@@ -60,6 +60,7 @@ function UserMenu() {
     { label: 'Bài hát đã thích', icon: Heart, href: '/playlist/liked' },
     { label: 'Nghệ sĩ đang theo dõi', icon: Users, href: '/following' },
     { label: 'Lịch sử & thống kê', icon: BarChart3, href: '/history' },
+    { label: 'Cài đặt tài khoản', icon: Settings, href: '/settings/account' },
     user.role === 'artist' && { label: 'Artist Studio', icon: Mic2, href: '/studio' },
     user.role === 'admin' && { label: 'Quản trị', icon: LayoutDashboard, href: '/admin' },
   ].filter(Boolean)

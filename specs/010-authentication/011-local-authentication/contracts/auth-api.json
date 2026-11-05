@@ -11,7 +11,7 @@
       },
       "response_201": {
         "success": true,
-        "message": "Đăng ký tài khoản thành công",
+        "message": "User registered successfully",
         "data": { "user_id": "uuid", "email": "user@example.com", "role": "user" },
         "error": null
       }
@@ -23,7 +23,7 @@
       },
       "response_200": {
         "success": true,
-        "message": "Đăng nhập thành công",
+        "message": "Login successful",
         "data": {
           "user": { "user_id": "uuid", "email": "user@example.com", "role": "user" },
           "session": { "access_token": "jwt_token", "refresh_token": "refresh_token" }
@@ -33,3 +33,4 @@
     }
   }
 }
+

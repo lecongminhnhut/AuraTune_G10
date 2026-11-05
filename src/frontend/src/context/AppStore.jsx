@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { processOAuthUser, checkCanUnlinkProvider } from '../../database/services/oauthService.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 
@@ -212,6 +213,45 @@ export function AppStoreProvider({ children }) {
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
   }, [])
 
+  const loginWithOAuth = useCallback((oauthPayload) => {
+    try {
+      const { users, currentUser: targetUser, isNewAccount } = processOAuthUser(stateRef.current.users, oauthPayload)
+      if (targetUser.banned) {
+        return { ok: false, error: 'Tài khoản này đã bị quản trị viên khóa do vi phạm quy định.' }
+      }
+      setState((previous) => ({
+        ...previous,
+        users,
+        libraries: previous.libraries[targetUser.id]
+          ? previous.libraries
+          : { ...previous.libraries, [targetUser.id]: emptyLibrary() },
+        session: {
+          userId: targetUser.id,
+          token: uid('oauth-token'),
+          expiresAt: new Date(Date.now() + SESSION_HOURS * 3600 * 1000).toISOString(),
+        },
+      }))
+      return { ok: true, user: targetUser, isNewAccount }
+    } catch (err) {
+      return { ok: false, error: err.message || 'Đăng nhập OAuth thất bại.' }
+    }
+  }, [])
+
+  const unlinkOAuthProvider = useCallback((provider) => {
+    const user = currentUser
+    if (!user) return { ok: false, error: 'Chưa đăng nhập.' }
+    const check = checkCanUnlinkProvider(user, provider)
+    if (!check.canUnlink) {
+      return { ok: false, error: check.reason }
+    }
+    const updatedLinked = check.remainingProviders
+    setState((previous) => ({
+      ...previous,
+      users: previous.users.map((u) => u.id === user.id ? { ...u, linkedProviders: updatedLinked } : u),
+    }))
+    return { ok: true, message: `Đã hủy liên kết tài khoản ${provider} thành công.` }
+  }, [currentUser])
+
   // ---------- Thư viện cá nhân ----------
   const isLiked = (trackId) => library.likedIds.includes(trackId)
   const toggleLike = useCallback((trackId) => {
@@ -379,7 +419,7 @@ export function AppStoreProvider({ children }) {
     state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
-    register, login, logout,
+    register, login, logout, loginWithOAuth, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
     setFollow, isFollowing,

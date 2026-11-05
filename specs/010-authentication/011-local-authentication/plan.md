@@ -4,18 +4,18 @@
 
 ## Summary
 
-Triển khai hệ thống Xác thực cục bộ (Local Authentication) cho AuraTune bao gồm Đăng ký, Đăng nhập, Khôi phục mật khẩu, Kiểm soát số lần nhập sai (Account Lockout 15 phút), Phân quyền 3 vai trò (User, Artist, Admin) và chấp nhận Điều khoản dịch vụ.
+Implement Local Authentication for AuraTune, including Registration, Login, Password Reset, Account Lockout after 5 failed attempts (15-minute duration), 3-role Access Control (User, Artist, Admin), and Terms of Service consent.
 
 ## Technical Context
 
 - **Language/Version**: JavaScript (ES6+, React 18, Node.js)
 - **Primary Dependencies**: React 18, Vite, Supabase JS Client (`@supabase/supabase-js`), Tailwind CSS
-- **Storage**: PostgreSQL (Supabase Auth `auth.users` + Bảng public `users`)
+- **Storage**: PostgreSQL (Supabase Auth `auth.users` + public table `users`)
 - **Testing**: Manual & Component/Integration verification
 - **Target Platform**: Web Browsers (Desktop & Mobile)
 - **Project Type**: Web Application (Frontend React + Backend Supabase Service)
-- **Performance Goals**: Response time API < 300ms
-- **Constraints**: Tuân thủ Schema PostgreSQL và API Conventions (`/api/v1`)
+- **Performance Goals**: API response time < 300ms
+- **Constraints**: Adhere to PostgreSQL Schema and API Conventions (`/api/v1`)
 
 ## Constitution Check
 
@@ -31,13 +31,13 @@ Triển khai hệ thống Xác thực cục bộ (Local Authentication) cho Aura
 specs/010-authentication/011-local-authentication/
 ├── spec.md
 ├── checklists/requirements.md
-├── plan.md              # File này
-├── research.md          # Kết quả nghiên cứu kỹ thuật
-├── data-model.md        # Thiết kế thực thể DB & Trạng thái
-├── quickstart.md        # Hướng dẫn kiểm thử và chạy thử
-├── contracts/           # Định nghĩa API Contract
+├── plan.md              # This file
+├── research.md          # Technical research findings
+├── data-model.md        # DB Entity design & State transitions
+├── quickstart.md        # Quickstart & Verification guide
+├── contracts/           # API Contract definitions
 │   └── auth-api.json
-└── tasks.md             # Danh sách task triển khai
+└── tasks.md             # Implementation tasks list
 ```
 
 ### Source Code Layout
@@ -45,10 +45,10 @@ specs/010-authentication/011-local-authentication/
 ```text
 src/
 ├── database/
-│   ├── supabaseClient.js          # Kết nối Supabase API
+│   ├── supabaseClient.js          # Supabase API connection
 │   └── services/authService.js    # Auth Business Logic & API calls
 └── frontend/src/
-    ├── pages/Auth/AuthPage.jsx    # Form Login / Register / Reset Password
+    ├── pages/Auth/AuthPage.jsx    # Login / Register / Reset Password Forms
     ├── context/AppStore.jsx       # Auth State Provider
     └── routes/AppRouter.jsx       # Route Guard & Role Access
 ```
@@ -58,3 +58,4 @@ src/
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | None | N/A | N/A |
+

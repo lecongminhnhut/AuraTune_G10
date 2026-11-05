@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OAuth Authentication API",
+  "description": "API contracts for OAuth authentication, callback handling, and provider account unlinking in AuraTune.",
+  "endpoints": [
+    {
+      "path": "/api/v1/auth/oauth/login",
+      "method": "POST",
+      "summary": "Initiate OAuth Login Flow",
+      "request": {
+        "body": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "type": "string",
+              "enum": ["google", "facebook"],
+              "description": "OAuth identity provider name"
+            },
+            "redirect_url": {
+              "type": "string",
+              "description": "URL to redirect user after authorization"
+            }
+          },
+          "required": ["provider"]
+        }
+      },
+      "response": {
+        "200": {
+          "description": "Authorization URL generated successfully",
+          "body": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string" },
+              "provider": { "type": "string" }
+            },
+            "required": ["url", "provider"]
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/v1/auth/oauth/callback",
+      "method": "POST",
+      "summary": "Handle OAuth Callback & Issue JWT",
+      "request": {
+        "body": {
+          "type": "object",
+          "properties": {
+            "provider": { "type": "string", "enum": ["google", "facebook"] },
+            "code": { "type": "string", "description": "OAuth authorization code" },
+            "access_token": { "type": "string", "description": "Implicit / direct access token if provided" }
+          },
+          "required": ["provider"]
+        }
+      },
+      "response": {
+        "200": {
+          "description": "OAuth authentication successful",
+          "body": {
+            "type": "object",
+            "properties": {
+              "token": { "type": "string", "description": "JWT Access Token for AuraTune" },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "email": { "type": "string" },
+                  "display_name": { "type": "string" },
+                  "avatar_url": { "type": "string" },
+                  "role": { "type": "string" },
+                  "linked_providers": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                },
+                "required": ["id", "email", "display_name", "role"]
+              }
+            },
+            "required": ["token", "user"]
+          }
+        },
+        "400": {
+          "description": "OAuth Authorization Failed or Cancelled",
+          "body": {
+            "type": "object",
+            "properties": {
+              "error": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/v1/auth/oauth/unlink",
+      "method": "POST",
+      "summary": "Unlink OAuth Provider from User Account",
+      "request": {
+        "headers": {
+          "Authorization": "Bearer <JWT_TOKEN>"
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "provider": { "type": "string", "enum": ["google", "facebook"] }
+          },
+          "required": ["provider"]
+        }
+      },
+      "response": {
+        "200": {
+          "description": "Provider unlinked successfully",
+          "body": {
+            "type": "object",
+            "properties": {
+              "success": { "type": "boolean" },
+              "message": { "type": "string" }
+            }
+          }
+        },
+        "400": {
+          "description": "Cannot unlink because no other auth method exists",
+          "body": {
+            "type": "object",
+            "properties": {
+              "error": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

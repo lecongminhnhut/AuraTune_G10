@@ -4,6 +4,7 @@ import Icon from '../../components/common/Icon.jsx'
 import Logo from '../../components/common/Logo.jsx'
 import { EMAIL_PATTERN, isStrongPassword, useStore } from '../../context/AppStore.jsx'
 import { Link, getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
+import { initiateOAuthLogin } from '../../database/services/oauthService.js'
 
 const inputBase = 'mt-2 h-12 w-full rounded-lg border bg-black/20 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:ring-2'
 const inputClass = (invalid) => `${inputBase} ${invalid ? 'border-rose-400/60 focus:border-rose-300 focus:ring-rose-300/10' : 'border-white/10 focus:border-violet-300/70 focus:ring-violet-300/10'}`
@@ -86,6 +87,19 @@ export default function AuthPage({ mode }) {
     navigate(next, { replace: true })
   }
 
+  const handleOAuthClick = async (provider) => {
+    try {
+      const res = await initiateOAuthLogin(provider, `${window.location.origin}/auth/callback`)
+      if (res.mode === 'redirect' && res.url) {
+        window.location.href = res.url
+      } else {
+        navigate(`/auth/callback?provider=${provider}&next=${encodeURIComponent(next)}`)
+      }
+    } catch (err) {
+      setFormError(err.message || 'Không thể khởi chạy đăng nhập OAuth.')
+    }
+  }
+
   return (
     <div className="relative flex min-h-full items-center justify-center overflow-hidden px-5 py-10 sm:px-8">
       <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-violet-600/15 blur-[100px]" />
@@ -100,11 +114,11 @@ export default function AuthPage({ mode }) {
         </div>
 
         <div className="mt-7 grid grid-cols-2 gap-3">
-          <button type="button" onClick={() => setNotice('Đăng nhập Google cần backend OAuth; nút này đang ở chế độ demo.')} className="flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] sm:text-sm">
+          <button type="button" onClick={() => handleOAuthClick('google')} className="flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] sm:text-sm">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-xs font-bold text-zinc-900">G</span>
             Google
           </button>
-          <button type="button" onClick={() => setNotice('Đăng nhập Facebook cần backend OAuth; nút này đang ở chế độ demo.')} className="flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] sm:text-sm">
+          <button type="button" onClick={() => handleOAuthClick('facebook')} className="flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] sm:text-sm">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1877f2] text-sm font-bold text-white">f</span>
             Facebook
           </button>
