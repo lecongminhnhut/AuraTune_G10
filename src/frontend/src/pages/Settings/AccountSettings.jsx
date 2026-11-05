@@ -37,11 +37,19 @@ export default function AccountSettings() {
     }
   }
 
+  const handleLogoutAll = async () => {
+    setErrorMsg('')
+    setSuccessMsg('')
+    await store.logoutFromAllDevices()
+    store.toast('Đã đăng xuất khỏi tất cả thiết bị thành công.', 'info')
+    navigate('/login')
+  }
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white sm:text-3xl">Cài đặt tài khoản</h1>
-        <p className="mt-1 text-xs text-zinc-400 sm:text-sm">Quản lý các phương thức đăng nhập và nhà cung cấp liên kết.</p>
+        <p className="mt-1 text-xs text-zinc-400 sm:text-sm">Quản lý phương thức đăng nhập và phiên làm việc đa thiết bị.</p>
       </div>
 
       <div className="mb-6 rounded-2xl border border-white/[0.08] bg-[#17171b]/80 p-6 backdrop-blur-md">
@@ -67,7 +75,7 @@ export default function AccountSettings() {
       {errorMsg && <div role="alert" className="mb-4 rounded-xl border border-rose-400/30 bg-rose-500/10 p-4 text-xs leading-5 text-rose-200">✕ {errorMsg}</div>}
       {successMsg && <div role="status" className="mb-4 rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-4 text-xs leading-5 text-emerald-200">✓ {successMsg}</div>}
 
-      <div className="rounded-2xl border border-white/[0.08] bg-[#17171b]/80 p-6 backdrop-blur-md">
+      <div className="mb-6 rounded-2xl border border-white/[0.08] bg-[#17171b]/80 p-6 backdrop-blur-md">
         <h2 className="text-lg font-semibold text-white">Tài khoản liên kết</h2>
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/20 p-4">
@@ -105,6 +113,22 @@ export default function AccountSettings() {
               <span className="text-xs text-zinc-500">Chưa kết nối</span>
             )}
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/[0.08] bg-[#17171b]/80 p-6 backdrop-blur-md">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-white">Quản lý phiên đăng nhập</h2>
+            <p className="text-xs text-zinc-400 mt-0.5">Đăng xuất khỏi tất cả các trình duyệt và thiết bị khác đang kết nối.</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleLogoutAll}
+            className="rounded-xl border border-rose-500/40 bg-rose-500/15 px-4 py-2 text-xs font-semibold text-rose-200 transition hover:bg-rose-500/30"
+          >
+            Đăng xuất khỏi tất cả thiết bị
+          </button>
         </div>
       </div>
     </div>

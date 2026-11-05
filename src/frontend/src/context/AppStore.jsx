@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { processOAuthUser, checkCanUnlinkProvider } from '../../database/services/oauthService.js'
+import { defaultSessionManager } from '../../database/services/sessionService.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 
@@ -208,9 +209,27 @@ export function AppStoreProvider({ children }) {
     return { ok: true, user }
   }, [])
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    if (stateRef.current.session?.refreshToken) {
+      await defaultSessionManager.logoutSession(stateRef.current.session.refreshToken)
+    }
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
+  }, [])
+
+  const logoutFromAllDevices = useCallback(async () => {
+    const userId = stateRef.current.session?.userId
+    if (userId) {
+      await defaultSessionManager.logoutAllUserSessions(userId)
+    }
+    setState((previous) => ({ ...previous, session: null }))
+    setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
+  }, [])
+
+  const getActiveSessions = useCallback(() => {
+    const userId = stateRef.current.session?.userId
+    if (!userId) return []
+    return defaultSessionManager.getActiveUserSessions(userId, stateRef.current.session?.refreshToken)
   }, [])
 
   const loginWithOAuth = useCallback((oauthPayload) => {
@@ -419,7 +438,7 @@ export function AppStoreProvider({ children }) {
     state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
-    register, login, logout, loginWithOAuth, unlinkOAuthProvider,
+    register, login, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
     setFollow, isFollowing,
