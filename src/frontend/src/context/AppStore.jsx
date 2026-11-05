@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { processOAuthUser, checkCanUnlinkProvider } from '../../database/services/oauthService.js'
-import { defaultSessionManager } from '../../database/services/sessionService.js'
+import { processOAuthUser, checkCanUnlinkProvider } from '../../../database/services/oauthService.js'
+import { defaultSessionManager } from '../../../database/services/sessionService.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 

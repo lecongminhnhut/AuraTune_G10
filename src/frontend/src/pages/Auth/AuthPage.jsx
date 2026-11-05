@@ -4,7 +4,7 @@ import Icon from '../../components/common/Icon.jsx'
 import Logo from '../../components/common/Logo.jsx'
 import { EMAIL_PATTERN, isStrongPassword, useStore } from '../../context/AppStore.jsx'
 import { Link, getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
-import { initiateOAuthLogin } from '../../database/services/oauthService.js'
+import { initiateOAuthLogin } from '../../../../database/services/oauthService.js'
 
 const inputBase = 'mt-2 h-12 w-full rounded-lg border bg-black/20 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:ring-2'
 const inputClass = (invalid) => `${inputBase} ${invalid ? 'border-rose-400/60 focus:border-rose-300 focus:ring-rose-300/10' : 'border-white/10 focus:border-violet-300/70 focus:ring-violet-300/10'}`
