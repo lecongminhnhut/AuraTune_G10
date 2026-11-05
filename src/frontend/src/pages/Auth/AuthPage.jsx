@@ -10,8 +10,10 @@ const inputClass = (invalid) => `${inputBase} ${invalid ? 'border-rose-400/60 fo
 
 const passwordChecks = (value) => [
   { label: 'Ít nhất 8 ký tự', ok: value.length >= 8 },
-  { label: 'Có chữ cái', ok: /[A-Za-z]/.test(value) },
-  { label: 'Có chữ số', ok: /\d/.test(value) },
+  { label: 'Chữ hoa (A-Z)', ok: /[A-Z]/.test(value) },
+  { label: 'Chữ thường (a-z)', ok: /[a-z]/.test(value) },
+  { label: 'Chữ số (0-9)', ok: /\d/.test(value) },
+  { label: 'Ký tự đặc biệt', ok: /[^A-Za-z0-9]/.test(value) },
 ]
 
 const safeNext = (value) => (value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/login') && !value.startsWith('/register') ? value : '/')

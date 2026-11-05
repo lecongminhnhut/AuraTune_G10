@@ -7,7 +7,7 @@ import { getDurationSeconds } from '../utils/playback.js'
 const STORAGE_KEY = 'auratune-demo-state-v1'
 const SESSION_HOURS = 24
 const MAX_FAILED_LOGINS = 5
-const LOCK_MINUTES = 5
+const LOCK_MINUTES = 15
 export const LIKED_PLAYLIST_ID = 'liked'
 
 // Hàm băm minh họa để không lưu mật khẩu dạng chữ thường trong localStorage.
@@ -68,7 +68,14 @@ const loadState = () => {
 const uid = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
 const normalizeEmail = (value) => value.trim().toLowerCase()
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-export const isStrongPassword = (value) => value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value)
+export const isStrongPassword = (value) => {
+  if (!value || value.length < 8) return false
+  const hasUpper = /[A-Z]/.test(value)
+  const hasLower = /[a-z]/.test(value)
+  const hasDigit = /\d/.test(value)
+  const hasSpecial = /[^A-Za-z0-9]/.test(value)
+  return hasUpper && hasLower && hasDigit && hasSpecial
+}
 
 export const formatTotalDuration = (seconds) => {
   const totalMinutes = Math.round(seconds / 60)

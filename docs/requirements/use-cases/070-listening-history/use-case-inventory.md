@@ -42,17 +42,17 @@ Coverage is mapped to the requirements in the three linked `spec.md` files. Note
 | 071-FR-009 | Paginate history results. | UC-070-002 | Covered | |
 | 071-FR-010 | Have the Music Player trigger event recording. | UC-070-001 | Covered | |
 | 071-FR-011 | Show an empty state and a path to Home. | UC-070-002 | Covered | |
-| 071-FR-012 | Retain history for 365 days and purge older records. | UC-070-007 | Covered | Scheduler and operational ownership are implementation/operations details, not specified by the FR. |
+| 071-FR-012 | Retain history for 365 days and purge older records. | UC-070-007 | Covered | UC-070-007 models the background purge; the exact schedule and operational owner remain design/operations details. |
 | 071-FR-013 | Exclude cleared history from recommendation inputs and personal statistics. | UC-070-004, UC-070-005, UC-070-006 | Covered | Verify effects in the detailed UC specifications. |
 | 072-FR-001 | Aggregate qualifying duration for 7-day, 30-day, and all-time windows. | UC-070-005 | Covered | |
-| 072-FR-002 | Rank top five artists by listening duration. | UC-070-005 | Covered | FR is authoritative; the missing artist-ranking screen is recorded as a prototype coverage gap in UC-070-005. |
+| 072-FR-002 | Rank top five artists by listening duration. | UC-070-005 | Covered | |
 | 072-FR-003 | Provide daily totals for the previous seven days. | UC-070-005 | Covered | |
 | 072-FR-004 | Exclude hidden history from statistics. | UC-070-005, UC-070-006 | Covered | |
 | 072-FR-005 | Restrict analytics to the authenticated history owner. | UC-070-005 | Covered | |
 | 072-FR-006 | Integrate analytics into History with load/manual refresh. | UC-070-005 | Covered | |
 | 072-FR-007 | Aggregate on the backend with a fixed seven-day trend window. | UC-070-005 | Covered | |
 | 072-FR-008 | Exclude sessions shorter than 30 seconds from aggregates. | UC-070-005 | Covered | |
-| 073-FR-001 | Rank top ten artists by duration, then play count. | UC-070-006 | Covered | Explicit FR takes precedence over conflicting narrative/user-story wording. |
+| 073-FR-001 | Rank top ten artists by duration, then play count. | UC-070-006 | Covered | Follow the explicit FR; the source conflict is recorded as resolved in the group README and UC. |
 | 073-FR-002 | Rank genres by qualifying play count, counting every associated genre. | UC-070-006 | Covered | |
 | 073-FR-003 | Provide 7-day, 30-day, and 365-day ranges. | UC-070-006 | Covered | |
 | 073-FR-004 | Immediately exclude hidden history from calculations. | UC-070-006 | Covered | |
@@ -67,6 +67,7 @@ Coverage is mapped to the requirements in the three linked `spec.md` files. Note
 - [x] Every UC in the diagram is listed in this inventory.
 - [x] Every inventory entry has a corresponding specification file.
 - [x] UC IDs and names are consistent across the model, inventory and specification files.
+- [x] Every in-scope FR is mapped to one or more UCs, or has a documented reason for not being represented as a UC.
 - [x] Feature IDs and Spec Kit paths are valid.
 - [ ] Reviewer names are still placeholders and must be assigned.
 - [ ] Reconcile Draft statuses with the actual specification/prototype review state.
