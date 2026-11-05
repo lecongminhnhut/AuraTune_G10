@@ -13,8 +13,8 @@
 ### Session 2026-10-31
 
 - Q: How should the system handle songs associated with multiple genres when calculating the top genres chart? → A: Increment count for every genre tag associated with the song (Double-counting allowed)
-- Q: What is the specific data retention policy for "soft-deleted" or "hidden" history items regarding their impact on statistics? → A: Immediate: Stats are re-aggregated on every request, excluding hidden items in real-time
 - Q: How should the "Top Genres" chart handle a large number of long-tail genres (e.g., 50+ unique genres with 1 play each)? → A: Show top 5-10 genres and group all remaining into an "Other" category
+
 
 ## User Scenarios & Testing *(mandatory)*
 

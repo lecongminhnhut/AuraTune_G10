@@ -102,7 +102,7 @@ As a listener, I want to clear my listening history so that I can maintain my pr
 
 - **SC-001**: 100% of playback sessions meeting the 30s threshold result in a successful database entry when the user is online.
 - **SC-002**: The History page loads and displays the first page of results in under 1 second for a user with up to 5,000 history records.
-- **SC-003**: All "Delete" or "Clear" operations are reflected in the UI and database within 500ms of the request.
+- **SC-003**: "Clear All History" is reflected in the UI and database within 500ms of the request.
 
 ## Assumptions
 
