@@ -1,18 +1,20 @@
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config(); // Load biến môi trường từ file .env
+// Supabase Client for DB & OAuth integration
+// Safe fallback to null in local demo mode or browser environment without breaking app startup
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+let supabase = null
 
-if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Thiếu SUPABASE_URL hoặc SUPABASE_ANON_KEY trong file .env");
-}
+const envUrl = typeof process !== 'undefined' && process.env?.SUPABASE_URL 
+  ? process.env.SUPABASE_URL 
+  : (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL ? import.meta.env.VITE_SUPABASE_URL : null)
 
-// Khởi tạo client kết nối với Supabase
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const envKey = typeof process !== 'undefined' && process.env?.SUPABASE_ANON_KEY 
+  ? process.env.SUPABASE_ANON_KEY 
+  : (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY ? import.meta.env.VITE_SUPABASE_ANON_KEY : null)
 
-// Xuất client ra để các file khác trong Node.js có thể sử dụng
-module.exports = { supabase };
+export { supabase }
+export default supabase
+
+
 
 
 //==========VÍ DỤ SỬ DỤNG===========
