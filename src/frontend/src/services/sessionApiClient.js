@@ -50,6 +50,35 @@ export async function apiFetch(url, options = {}, authContext = {}) {
 }
 
 export const authApi = {
+  async firebaseExchange(firebaseIdToken, termsAccepted = false) {
+    if (!firebaseIdToken) {
+      throw new Error('Firebase ID Token is required');
+    }
+
+    const response = await apiFetch('/auth/firebase/exchange', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${firebaseIdToken}`
+      },
+      body: JSON.stringify({
+        terms_accepted: termsAccepted === true
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        result.message || 'Firebase Token Exchange failed'
+      );
+      error.status = response.status;
+      error.code = result.code;
+      throw error;
+    }
+
+    return result;
+  },
+
   async register(data) {
     const res = await apiFetch('/auth/register', {
       method: 'POST',

@@ -88,22 +88,110 @@ export const formatTotalDuration = (seconds) => {
   return `${hours} giờ ${String(minutes).padStart(2, '0')} phút`
 }
 
-const StoreContext = createContext(null)
+  const StoreContext = createContext(null)
 
-export function AppStoreProvider({ children }) {
-  const [state, setState] = useState(loadState)
-  const [toasts, setToasts] = useState([])
-  const [ui, setUi] = useState({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
-  const stateRef = useRef(state)
-  stateRef.current = state
+  export function AppStoreProvider({ children }) {
+    const [state, setState] = useState(loadState)
+    const [sessionRestoring, setSessionRestoring] = useState(true)
+    const [toasts, setToasts] = useState([])
+    const [ui, setUi] = useState({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
+    const stateRef = useRef(state)
+    stateRef.current = state
 
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    useEffect(() => {
+      try {
+        const persistedState = {
+    ...state,
+    session: state.session?.source === 'backend'
+      ? null
+      : state.session
+  }
+
+  window.localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(persistedState)
+  )
     } catch {
       // localStorage có thể bị chặn ở chế độ riêng tư; ứng dụng vẫn chạy trong bộ nhớ.
     }
   }, [state])
+
+  // Restore an authenticated backend session via HttpOnly cookie.
+  useEffect(() => {
+    let cancelled = false
+
+    const restoreSession = async () => {
+      try {
+        const response = await authApi.refresh()
+
+        if (cancelled) return
+
+        if (
+          response.status !== 'success' ||
+          !response.data?.access_token ||
+          !response.data?.user
+        ) {
+          return
+        }
+
+        const apiUser = response.data.user
+
+        const user = {
+          id: apiUser.id || apiUser.user_id,
+          email: apiUser.email,
+          displayName: apiUser.display_name,
+          role: apiUser.role || 'user',
+          avatarUrl: apiUser.avatar_url || null,
+          linkedProviders: apiUser.linked_providers || [],
+          createdAt: apiUser.created_at,
+          banned: false
+        }
+
+        setState((previous) => ({
+          ...previous,
+          users: [
+            ...previous.users.filter((u) => u.id !== user.id),
+            user
+          ],
+          libraries: previous.libraries[user.id]
+            ? previous.libraries
+            : {
+                ...previous.libraries,
+                [user.id]: emptyLibrary()
+              },
+          session: {
+            source: 'backend',
+            userId: user.id,
+            token: response.data.access_token,
+            expiresAt: new Date(
+              Date.now() +
+              (response.data.expires_in || 900) * 1000
+            ).toISOString()
+          }
+        }))
+      } catch {
+        // No valid backend session, or backend unavailable.
+        // Do not create a demo session as a fallback.
+        if (!cancelled) {
+          setState((previous) =>
+            previous.session?.source === 'backend'
+              ? { ...previous, session: null }
+              : previous
+          )
+        }
+      } finally {
+        if (!cancelled) {
+          setSessionRestoring(false)
+        }
+      }
+    }
+
+    restoreSession()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const toast = useCallback((message, tone = 'info') => {
     const id = uid('toast')
@@ -114,21 +202,51 @@ export function AppStoreProvider({ children }) {
   const sessionValid = state.session && new Date(state.session.expiresAt).getTime() > Date.now()
   const currentUser = sessionValid ? state.users.find((user) => user.id === state.session.userId && !user.banned) ?? null : null
 
+  // Clear invalid sessions after restoration finishes.
   useEffect(() => {
-    if (state.session && !currentUser) setState((previous) => ({ ...previous, session: null }))
-  }, [state.session, currentUser])
+    if (sessionRestoring) return
 
-  const library = (currentUser && state.libraries[currentUser.id]) || emptyLibrary()
+    if (state.session && !currentUser) {
+      setState((previous) => {
+        if (
+          previous.session &&
+          (
+            new Date(previous.session.expiresAt).getTime() <= Date.now() ||
+            !previous.users.some(
+              (user) =>
+                user.id === previous.session.userId &&
+                !user.banned
+            )
+          )
+        ) {
+          return { ...previous, session: null }
+        }
+
+        return previous
+      })
+    }
+  }, [sessionRestoring, state.session, currentUser])
+
+  const library =
+    (currentUser && state.libraries[currentUser.id]) ||
+    emptyLibrary()
 
   const updateLibrary = useCallback((updater) => {
     setState((previous) => {
       const userId = previous.session?.userId
       if (!userId) return previous
+
       const current = previous.libraries[userId] ?? emptyLibrary()
-      return { ...previous, libraries: { ...previous.libraries, [userId]: updater(current) } }
+
+      return {
+        ...previous,
+        libraries: {
+          ...previous.libraries,
+          [userId]: updater(current)
+        }
+      }
     })
   }, [])
-
   // ---------- Danh mục bài hát (gồm bài nghệ sĩ tải lên trong Studio) ----------
   const allTracks = useMemo(() => [...seedTracks, ...state.studioTracks], [state.studioTracks])
   const trackStatus = (trackId) => state.trackStatus[trackId] ?? 'active'
@@ -200,9 +318,13 @@ export function AppStoreProvider({ children }) {
           users: [...previous.users.filter((u) => u.id !== user.id), user],
           libraries: previous.libraries[user.id] ? previous.libraries : { ...previous.libraries, [user.id]: emptyLibrary() },
           session: {
+            source: 'backend',
             userId: user.id,
             token: res.data.session.access_token,
-            expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+            expiresAt: new Date(
+              Date.now() +
+              (res.data.session.expires_in || 900) * 1000
+            ).toISOString()
           },
         }))
         return { ok: true, user }
@@ -245,6 +367,7 @@ export function AppStoreProvider({ children }) {
           users: [...previous.users.filter((u) => u.id !== user.id), user],
           libraries: previous.libraries[user.id] ? previous.libraries : { ...previous.libraries, [user.id]: emptyLibrary() },
           session: {
+            source: 'backend',
             userId: user.id,
             token: res.data.session.access_token,
             expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
@@ -317,6 +440,79 @@ export function AppStoreProvider({ children }) {
     if (!userId) return []
     return defaultSessionManager.getActiveUserSessions(userId, stateRef.current.session?.refreshToken)
   }, [])
+
+  // Firebase Authentication -> AuraTune Session
+  const loginWithFirebase = useCallback(
+    async ({ firebaseUser, termsAccepted = false }) => {
+      try {
+        if (!firebaseUser) {
+          return {
+            ok: false,
+            error: 'Firebase user is required.'
+          }
+        }
+
+        const firebaseIdToken = await firebaseUser.getIdToken()
+
+        const response = await authApi.firebaseExchange(
+          firebaseIdToken,
+          termsAccepted
+        )
+
+        if (!response.success || !response.data?.session?.access_token) {
+          return {
+            ok: false,
+            error: response.message || 'Firebase login failed.'
+          }
+        }
+
+        const apiUser = response.data.user
+
+        const user = {
+          id: apiUser.id || apiUser.user_id,
+          email: apiUser.email,
+          displayName: apiUser.display_name,
+          role: apiUser.role || 'user',
+          avatarUrl: apiUser.avatar_url || null,
+          linkedProviders: apiUser.linked_providers || [],
+          createdAt: apiUser.created_at || new Date().toISOString(),
+          banned: false
+        }
+
+        setState((previous) => ({
+          ...previous,
+          users: [
+            ...previous.users.filter((u) => u.id !== user.id),
+            user
+          ],
+          libraries: previous.libraries[user.id]
+            ? previous.libraries
+            : {
+                ...previous.libraries,
+                [user.id]: emptyLibrary()
+              },
+          session: {
+            source: 'backend',
+            userId: user.id,
+            token: response.data.session.access_token,
+            expiresAt: new Date(
+              Date.now() +
+                (response.data.session.expires_in || 900) * 1000
+            ).toISOString()
+          }
+        }))
+
+        return { ok: true, user }
+      } catch (error) {
+        return {
+          ok: false,
+          code: error.code || null,
+          error: error.message || 'Firebase Authentication failed.'
+        }
+      }
+    },
+    []
+  )
 
   const loginWithOAuth = useCallback(async (oauthPayload) => {
     try {
@@ -572,7 +768,7 @@ export function AppStoreProvider({ children }) {
     state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
-    register, login, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, unlinkOAuthProvider,
+    register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
     setFollow, isFollowing,

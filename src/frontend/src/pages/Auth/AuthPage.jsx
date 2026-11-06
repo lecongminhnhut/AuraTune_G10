@@ -5,6 +5,13 @@ import Logo from '../../components/common/Logo.jsx'
 import { EMAIL_PATTERN, isStrongPassword, useStore } from '../../context/AppStore.jsx'
 import { Link, getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
 import { initiateOAuthLogin } from '../../../../database/services/oauthService.js'
+import {
+  loginWithGoogle,
+  loginWithEmail,
+  registerWithEmail,
+  sendVerificationEmail,
+  logoutFirebase
+} from '../../services/firebaseAuth.js'
 
 const inputBase = 'mt-2 h-12 w-full rounded-lg border bg-black/20 px-4 text-sm font-normal text-white outline-none transition placeholder:text-zinc-600 focus:ring-2'
 const inputClass = (invalid) => `${inputBase} ${invalid ? 'border-rose-400/60 focus:border-rose-300 focus:ring-rose-300/10' : 'border-white/10 focus:border-violet-300/70 focus:ring-violet-300/10'}`
@@ -24,7 +31,14 @@ export default function AuthPage({ mode }) {
   const { search } = useLocation()
   const next = safeNext(getQueryParam(search, 'next'))
   const isRegister = mode === 'register'
-  const [form, setForm] = useState({ email: '', password: '', displayName: '', remember: true, consent: false })
+  const [form, setForm] = useState({
+  email: '',
+  password: '',
+  displayName: '',
+  remember: true,
+  consent: false,
+  termsConsent: false
+  })
   const [errors, setErrors] = useState({})
   const [formError, setFormError] = useState('')
   const [notice, setNotice] = useState('')
@@ -67,38 +81,183 @@ export default function AuthPage({ mode }) {
     return Object.keys(nextErrors).length === 0
   }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    if (!validate()) return
-    if (isRegister) {
-      const result = await store.register(form)
-      if (!result.ok) { setErrors({ [result.field]: result.error }); return }
-      store.toast(`Chào mừng ${result.user.displayName} đến với AuraTune!`)
-      navigate(next, { replace: true })
-      return
-    }
-    const result = await store.login(form)
-    if (!result.ok) {
-      const lockedText = result.lockedUntil ? ` Có thể thử lại lúc ${new Date(result.lockedUntil).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}.` : ''
-      setFormError(`${result.error}${lockedText}${result.remaining && result.remaining <= 3 ? ` Còn ${result.remaining} lần thử trước khi tài khoản bị tạm khóa.` : ''}`)
-      return
-    }
-    store.toast(`Đăng nhập thành công. Xin chào ${result.user.displayName}!`)
-    navigate(next, { replace: true })
-  }
+    const handleSubmit = async (event) => {
+      event.preventDefault()
 
-  const handleOAuthClick = async (provider) => {
-    try {
-      const res = await initiateOAuthLogin(provider, `${window.location.origin}/auth/callback`)
-      if (res.mode === 'redirect' && res.url) {
-        window.location.href = res.url
-      } else {
-        navigate(`/auth/callback?provider=${provider}&next=${encodeURIComponent(next)}`)
+      setFormError('')
+      setNotice('')
+
+      if (!validate()) return
+
+      // REGISTER WITH FIREBASE
+      if (isRegister) {
+        try {
+          const firebaseUser = await registerWithEmail(
+            form.email.trim(),
+            form.password
+          )
+
+          await sendVerificationEmail(firebaseUser)
+
+          // Avoid leaving an unverified user signed in.
+          await logoutFirebase()
+
+          setNotice(
+            'Đăng ký Firebase thành công! Vui lòng mở email và nhấn ' +
+            'liên kết xác minh. Sau đó quay lại trang đăng nhập AuraTune.'
+          )
+
+          setForm((previous) => ({
+            ...previous,
+            password: ''
+          }))
+
+          return
+        } catch (error) {
+          if (error.code === 'auth/email-already-in-use') {
+            setErrors({
+              email: 'Email này đã được đăng ký trên Firebase.'
+            })
+            return
+          }
+
+          if (error.code === 'auth/weak-password') {
+            setErrors({
+              password: 'Mật khẩu không đáp ứng yêu cầu của Firebase.'
+            })
+            return
+          }
+
+          setFormError(
+            error.message || 'Không thể đăng ký tài khoản Firebase.'
+          )
+          return
+        }
       }
-    } catch (err) {
-      setFormError(err.message || 'Không thể khởi chạy đăng nhập OAuth.')
+
+      // LOGIN WITH FIREBASE
+      try {
+        const firebaseUser = await loginWithEmail(
+          form.email.trim(),
+          form.password
+        )
+
+        // Refresh account metadata, including emailVerified.
+        await firebaseUser.reload()
+
+        if (!firebaseUser.emailVerified) {
+          setFormError(
+            'Email chưa được xác minh. Vui lòng kiểm tra hộp thư ' +
+            'và xác minh tài khoản trước khi đăng nhập.'
+          )
+          return
+        }
+
+        const result = await store.loginWithFirebase({
+          firebaseUser,
+          termsAccepted: false
+        })
+
+        if (!result.ok) {
+          if (result.code === 'TERMS_ACCEPTANCE_REQUIRED') {
+            setFormError(
+              'Bạn cần hoàn tất bước chấp nhận điều khoản ' +
+              'đăng ký AuraTune trước khi tạo tài khoản.'
+            )
+          } else if (result.code === 'ACCOUNT_LINK_REQUIRED') {
+            setFormError(
+              'Email này đã thuộc một tài khoản AuraTune khác. ' +
+              'Cần xác minh quyền sở hữu trước khi liên kết.'
+            )
+          } else {
+            setFormError(
+              result.error || 'Không thể tạo phiên đăng nhập AuraTune.'
+            )
+          }
+          return
+        }
+
+        store.toast(
+          `Đăng nhập thành công. Xin chào ${result.user.displayName}!`
+        )
+
+        navigate(next, { replace: true })
+      } catch (error) {
+        if (
+          error.code === 'auth/invalid-credential' ||
+          error.code === 'auth/wrong-password' ||
+          error.code === 'auth/user-not-found'
+        ) {
+          setFormError('Email hoặc mật khẩu không chính xác.')
+          return
+        }
+
+        setFormError(
+          error.message || 'Đăng nhập Firebase thất bại.'
+        )
+      }
     }
-  }
+
+
+    const handleOAuthClick = async (provider) => {
+      setFormError('')
+
+      try {
+        // Google Authentication through Firebase
+        if (provider === 'google') {
+          if (isRegister && !form.termsConsent) {
+            setErrors((previous) => ({
+              ...previous,
+              termsConsent: 'Bạn cần đồng ý với điều khoản đăng ký AuraTune.'
+            }))
+            return
+          }
+          const firebaseUser = await loginWithGoogle()
+
+          const result = await store.loginWithFirebase({
+            firebaseUser,
+            termsAccepted: isRegister ? form.termsConsent : false
+          })
+
+          if (!result.ok) {
+            setFormError(
+              result.error || 'Đăng nhập Google thất bại.'
+            )
+            return
+          }
+
+          store.toast(
+            `Đăng nhập thành công. Xin chào ${result.user.displayName}!`
+          )
+
+          navigate(next, { replace: true })
+          return
+        }
+
+        // Preserve existing OAuth flow for other providers
+        const res = await initiateOAuthLogin(
+          provider,
+          `${window.location.origin}/auth/callback`
+        )
+
+        if (res.mode === 'redirect' && res.url) {
+          window.location.href = res.url
+        } else {
+          navigate(
+            `/auth/callback?provider=${provider}&next=${encodeURIComponent(next)}`
+          )
+        }
+      } catch (error) {
+        if (error.code === 'auth/popup-closed-by-user') {
+          return
+        }
+
+        setFormError(
+          error.message || 'Không thể đăng nhập bằng Google.'
+        )
+      }
+    }
+
 
   return (
     <div className="relative flex min-h-full items-center justify-center overflow-hidden px-5 py-10 sm:px-8">
@@ -155,12 +314,43 @@ export default function AuthPage({ mode }) {
             )}
           </label>
 
+
           {isRegister ? (
-            <label className="flex items-start gap-2 pt-1 text-xs leading-5 text-zinc-400">
-              <input type="checkbox" checked={form.consent} onChange={update('consent')} className="mt-0.5 h-4 w-4 shrink-0 accent-violet-300" />
-              <span>Tôi đồng ý để AuraTune lưu lịch sử nghe nhằm cá nhân hóa gợi ý, theo <button type="button" onClick={() => setNotice('Chính sách quyền riêng tư: AuraTune chỉ dùng lịch sử nghe của bạn để gợi ý nhạc, không chia sẻ thông tin định danh cho bên thứ ba và mã hóa dữ liệu khi truyền tải.')} className="font-medium text-violet-300 underline underline-offset-2">chính sách quyền riêng tư</button>.</span>
-            </label>
+            <>
+              <label className="flex items-start gap-2 pt-1 text-xs leading-5 text-zinc-400">
+                <input
+                  type="checkbox"
+                  checked={form.consent}
+                  onChange={update('consent')}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-violet-300"
+                />
+                <span>
+                  Tôi đồng ý cho AuraTune lưu lịch sử nghe
+                  nhằm cá nhân hóa gợi ý theo chính sách quyền riêng tư.
+                </span>
+              </label>
+
+              <label className="flex items-start gap-2 pt-1 text-xs leading-5 text-zinc-400">
+                <input
+                  type="checkbox"
+                  checked={form.termsConsent}
+                  onChange={update('termsConsent')}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-violet-300"
+                />
+                <span>
+                  Tôi đã đọc và đồng ý với điều khoản sử dụng
+                  và điều kiện đăng ký tài khoản AuraTune.
+                </span>
+              </label>
+
+              {errors.termsConsent && (
+                <p className="text-[11px] text-rose-300">
+                  {errors.termsConsent}
+                </p>
+              )}
+            </>
           ) : (
+
             <div className="flex items-center justify-between gap-3 pt-1 text-xs">
               <label className="flex items-center gap-2 text-zinc-400"><input type="checkbox" checked={form.remember} onChange={update('remember')} className="h-4 w-4 accent-violet-300" /> Ghi nhớ đăng nhập</label>
               <button type="button" onClick={() => setNotice('Khôi phục mật khẩu nằm ngoài phạm vi spec 011 và sẽ được bổ sung ở tính năng riêng.')} className="font-medium text-violet-300 transition hover:text-violet-200">Quên mật khẩu?</button>

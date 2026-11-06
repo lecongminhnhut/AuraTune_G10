@@ -73,6 +73,52 @@ class Database {
     return this.users.find((u) => u.id === userId || u.user_id === userId) || null;
   }
 
+  // Find an AuraTune user by verified Firebase UID
+  findUserByFirebaseUid(firebaseUid) {
+    if (!firebaseUid) return null;
+
+    const link = this.findOAuthLink('firebase', firebaseUid);
+
+    if (!link) return null;
+
+    return this.findUserById(link.user_id);
+  }
+
+  // Link a Firebase UID to an AuraTune user
+  linkFirebaseUid(userId, firebaseUid) {
+    if (!userId || !firebaseUid) {
+      throw new Error('Missing user ID or Firebase UID');
+    }
+
+    const user = this.findUserById(userId);
+
+    if (!user) {
+      throw new Error('AuraTune user not found');
+    }
+
+    const existingUidLink = this.findOAuthLink(
+      'firebase',
+      firebaseUid
+    );
+
+    if (existingUidLink) {
+      if (existingUidLink.user_id !== userId) {
+        throw new Error('Firebase UID already linked to another user');
+      }
+
+      return existingUidLink;
+    }
+
+    const existingUserLink = this.getOAuthLinksForUser(userId)
+      .find((link) => link.provider === 'firebase');
+
+    if (existingUserLink) {
+      throw new Error('AuraTune user already linked to Firebase');
+    }
+
+    return this.addOAuthLink(userId, 'firebase', firebaseUid);
+  }
+
   createUser(userData) {
     const newUser = {
       id: userData.id || `u-${Date.now()}`,

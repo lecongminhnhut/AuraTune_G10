@@ -1,3 +1,5 @@
+import { firebaseExchange } from './controllers/firebaseExchangeController.js';
+import { verifyFirebaseToken } from './controllers/firebaseController.js';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -43,7 +45,18 @@ app.get('/api/health', (req, res) => {
 
 // Mount Feature 010 Auth Routes
 app.use('/api/v1/auth', authRoutes);
-
+// Firebase Authentication -> AuraTune Session
+app.post(
+  '/api/v1/auth/firebase/exchange',
+  firebaseExchange
+);
+// Temporary Firebase verification endpoint for development only
+if (process.env.NODE_ENV !== 'production') {
+  app.post(
+    '/api/v1/auth/firebase/verify-test',
+    verifyFirebaseToken
+  );
+}
 // Fallback 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'not_found', message: `Route ${req.method} ${req.url} not found` });
