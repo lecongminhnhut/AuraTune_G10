@@ -3,7 +3,10 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { db } from '../db.js';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'auratune-super-secret-jwt-key-2026';
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET must be configured in production');
+}
+export const JWT_SECRET = process.env.JWT_SECRET || 'local-development-only-change-me';
 export const MAX_FAILED_ATTEMPTS = 5;
 export const LOCKOUT_MINUTES = 15;
 export const MAX_CONCURRENT_SESSIONS = 5;
@@ -37,8 +40,8 @@ export function setRefreshTokenCookie(res, refreshToken, days = INACTIVITY_DAYS)
   const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
   res.cookie('auratune_refresh_token', refreshToken, {
     httpOnly: true,
-    secure: false, // Set to false for local HTTP dev
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
     path: '/api/v1/auth',
     expires
   });
@@ -47,8 +50,8 @@ export function setRefreshTokenCookie(res, refreshToken, days = INACTIVITY_DAYS)
 export function clearRefreshTokenCookie(res) {
   res.clearCookie('auratune_refresh_token', {
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
     path: '/api/v1/auth'
   });
 }

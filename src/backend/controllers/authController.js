@@ -71,7 +71,7 @@ export async function register(req, res) {
         user: formatUserResponse(newUser),
         session: {
           access_token: accessToken,
-          refresh_token: refreshToken
+          expires_in: 900
         }
       }
     });
@@ -167,7 +167,7 @@ export async function login(req, res) {
         user: formatUserResponse(user),
         session: {
           access_token: accessToken,
-          refresh_token: refreshToken
+          expires_in: 900
         }
       }
     });
@@ -180,15 +180,15 @@ export async function login(req, res) {
 // POST /api/v1/auth/oauth/login (Spec 012)
 export async function oauthLogin(req, res) {
   try {
-    const { provider, redirect_url } = req.body;
+    const { provider } = req.body;
     if (!['google', 'facebook'].includes(provider)) {
       return res.status(400).json({ success: false, message: 'Nhà cung cấp OAuth không được hỗ trợ.' });
     }
 
-    const callbackUrl = redirect_url || `${req.protocol}://${req.get('host')}/auth/callback`;
-    return res.status(200).json({
-      url: `${callbackUrl}?provider=${provider}&simulate=true`,
-      provider
+    return res.status(503).json({
+      success: false,
+      code: 'OAUTH_PROVIDER_FLOW_UNAVAILABLE',
+      message: 'Use the configured Firebase Google or Facebook sign-in flow.'
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'OAuth login initiation failed.' });
@@ -197,53 +197,11 @@ export async function oauthLogin(req, res) {
 
 // POST /api/v1/auth/oauth/callback (Spec 012)
 export async function oauthCallback(req, res) {
-  try {
-    const { provider, email: payloadEmail, display_name: payloadName, avatar_url: payloadAvatar } = req.body;
-
-    if (!['google', 'facebook'].includes(provider)) {
-      return res.status(400).json({ error: 'invalid_provider', message: 'Nhà cung cấp OAuth không hợp lệ.' });
-    }
-
-    const isGoogle = provider === 'google';
-    const oauthEmail = payloadEmail || (isGoogle ? 'alex.google@auratune.vn' : 'alex.fb@auratune.vn');
-    const oauthDisplayName = payloadName || (isGoogle ? 'Alex (Google User)' : 'Alex (Facebook User)');
-    const oauthAvatar = payloadAvatar || (isGoogle
-      ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80');
-    const providerUserId = `${provider}-uid-${Date.now()}`;
-
-    let user = db.findUserByEmail(oauthEmail);
-
-    if (user) {
-      db.updateUser(user.id, {
-        display_name: oauthDisplayName || user.display_name,
-        avatar_url: oauthAvatar || user.avatar_url
-      });
-      user = db.findUserById(user.id);
-      db.addOAuthLink(user.id, provider, providerUserId);
-    } else {
-      user = db.createUser({
-        email: oauthEmail,
-        display_name: oauthDisplayName,
-        avatar_url: oauthAvatar,
-        role: 'user',
-        has_local_password: false
-      });
-      db.addOAuthLink(user.id, provider, providerUserId);
-    }
-
-    const { sessionObj, refreshToken } = createNewSession(user.id, req, true);
-    const jwtAccessToken = generateAccessToken(user, sessionObj.session_id);
-    setRefreshTokenCookie(res, refreshToken, REMEMBER_ME_DAYS);
-
-    return res.status(200).json({
-      token: jwtAccessToken,
-      user: formatUserResponse(user)
-    });
-  } catch (error) {
-    console.error('OAuth Callback error:', error);
-    return res.status(400).json({ error: 'oauth_failed', message: 'Đăng nhập OAuth thất bại.' });
-  }
+  return res.status(410).json({
+    success: false,
+    code: 'SIGNED_PROVIDER_TOKEN_REQUIRED',
+    message: 'Sign in with Google or Facebook and exchange the signed Firebase identity token.'
+  });
 }
 
 // POST /api/v1/auth/oauth/unlink (Spec 012)
@@ -251,6 +209,10 @@ export async function oauthUnlink(req, res) {
   try {
     const userId = req.user?.user_id || req.user?.id;
     const { provider } = req.body;
+
+    if (!['google', 'facebook', 'firebase'].includes(provider)) {
+      return res.status(400).json({ error: 'invalid_provider', message: 'Unsupported identity provider.' });
+    }
 
     if (!userId) {
       return res.status(401).json({ error: 'unauthorized', message: 'Yêu cầu xác thực.' });
@@ -262,6 +224,9 @@ export async function oauthUnlink(req, res) {
     }
 
     const linkedProviders = db.getOAuthLinksForUser(user.id).map((l) => l.provider);
+    if (!linkedProviders.includes(provider)) {
+      return res.status(404).json({ error: 'provider_not_linked', message: 'This provider is not linked to the account.' });
+    }
     const hasLocalPassword = Boolean(user.has_local_password || user.password_hash);
     const remainingOAuth = linkedProviders.filter((p) => p !== provider);
 
@@ -286,7 +251,7 @@ export async function oauthUnlink(req, res) {
 // POST /api/v1/auth/refresh (Spec 013)
 export async function refreshSession(req, res) {
   try {
-    const refreshToken = req.cookies?.auratune_refresh_token || req.body?.refresh_token;
+    const refreshToken = req.cookies?.auratune_refresh_token;
 
     if (!refreshToken) {
       return res.status(401).json({
@@ -327,6 +292,12 @@ export async function refreshSession(req, res) {
       });
     }
 
+    if (session.device_info && req.headers['user-agent'] !== session.device_info) {
+      session.is_revoked = true;
+      clearRefreshTokenCookie(res);
+      return res.status(401).json({ status: 'error', message: 'Thiết bị đăng nhập đã thay đổi. Vui lòng đăng nhập lại.' });
+    }
+
     if (new Date(session.expires_at) <= now || new Date(session.inactive_at) <= now) {
       session.is_revoked = true;
       clearRefreshTokenCookie(res);
@@ -358,7 +329,8 @@ export async function refreshSession(req, res) {
 
     const newAccessToken = generateAccessToken(user, session.session_id);
     const durationDays = session.remember_me ? REMEMBER_ME_DAYS : INACTIVITY_DAYS;
-    setRefreshTokenCookie(res, newRefreshToken, durationDays);
+    if (!isGraceUse) setRefreshTokenCookie(res, newRefreshToken, durationDays);
+    session.ip_address = req.ip || req.socket?.remoteAddress || session.ip_address;
 
     return res.status(200).json({
       status: 'success',
@@ -377,7 +349,7 @@ export async function refreshSession(req, res) {
 // POST /api/v1/auth/logout (Spec 013)
 export async function logout(req, res) {
   try {
-    const refreshToken = req.cookies?.auratune_refresh_token || req.body?.refresh_token;
+    const refreshToken = req.cookies?.auratune_refresh_token;
     if (refreshToken) {
       const tokenHash = hashToken(refreshToken);
       const session = db.findSessionByTokenHash(tokenHash) || db.findSessionByPreviousTokenHash(tokenHash);
@@ -475,23 +447,20 @@ export async function getMe(req, res) {
 
 // POST /api/v1/auth/forgot-password (Spec 011)
 export async function forgotPassword(req, res) {
-  const { email } = req.body;
-  const user = db.findUserByEmail(email);
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'Email không tồn tại trong hệ thống.' });
-  }
-  return res.status(200).json({
-    success: true,
-    message: 'Mã khôi phục mật khẩu đã được gửi đến email của bạn.'
+  return res.status(503).json({
+    success: false,
+    code: 'PASSWORD_RECOVERY_UNAVAILABLE',
+    message: 'Password recovery is unavailable until a verified email delivery provider is configured.'
   });
 }
 
 // POST /api/v1/auth/reset-password (Spec 011)
 export async function resetPassword(req, res) {
-  const { email, new_password } = req.body;
-  const user = db.findUserByEmail(email);
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'Email không tồn tại.' });
+  const userId = req.user?.user_id || req.user?.id;
+  const user = userId ? db.findUserById(userId) : null;
+  const { current_password, new_password } = req.body;
+  if (!user || !user.password_hash || !current_password || !bcrypt.compareSync(current_password, user.password_hash)) {
+    return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
   }
 
   const { isStrong } = checkPasswordStrength(new_password);
@@ -504,6 +473,7 @@ export async function resetPassword(req, res) {
 
   const passwordHash = bcrypt.hashSync(new_password, 10);
   db.updateUser(user.id, { password_hash: passwordHash, has_local_password: true });
+  db.getActiveUserSessions(user.id).forEach((session) => { session.is_revoked = true; });
 
   return res.status(200).json({
     success: true,

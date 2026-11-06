@@ -43,6 +43,7 @@ export function authenticateToken(req, res, next) {
     !session ||
     session.user_id !== userId ||
     session.is_revoked ||
+    session.device_info !== req.headers['user-agent'] ||
     Date.now() >= Date.parse(session.expires_at) ||
     Date.now() >= Date.parse(session.inactive_at)
   ) {

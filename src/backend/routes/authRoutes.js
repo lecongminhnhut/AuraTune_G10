@@ -14,6 +14,7 @@ import {
   resetPassword
 } from '../controllers/authController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
+import { linkFacebook } from '../controllers/firebaseExchangeController.js';
 
 const router = Router();
 
@@ -21,12 +22,13 @@ const router = Router();
 router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
+router.post('/reset-password', authenticateToken, resetPassword);
 
 // OAuth Auth Endpoints (012)
 router.post('/oauth/login', oauthLogin);
 router.post('/oauth/callback', oauthCallback);
 router.post('/oauth/unlink', authenticateToken, oauthUnlink);
+router.post('/oauth/link-facebook', authenticateToken, linkFacebook);
 
 // Session Management Endpoints (013)
 router.post('/refresh', refreshSession);

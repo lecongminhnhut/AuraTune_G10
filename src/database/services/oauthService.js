@@ -14,8 +14,7 @@ export const OAUTH_PROVIDERS = {
 };
 
 /**
- * Initiates OAuth login/signup flow with Supabase Auth or returns redirect URL.
- * Fallbacks to simulation payload if Supabase client is operating in local demo mode.
+ * Initiates OAuth login/signup flow with the configured Supabase provider.
  */
 export async function initiateOAuthLogin(provider, redirectTo = `${window.location.origin}/auth/callback`) {
   if (![OAUTH_PROVIDERS.GOOGLE, OAUTH_PROVIDERS.FACEBOOK].includes(provider)) {
@@ -43,23 +42,7 @@ export async function initiateOAuthLogin(provider, redirectTo = `${window.locati
     }
   }
 
-  // Simulation mode: Generate demo OAuth profile data for fast testing
-  const isGoogle = provider === OAUTH_PROVIDERS.GOOGLE;
-  const mockOAuthUser = {
-    provider,
-    providerUserId: isGoogle ? 'google-uid-88239' : 'facebook-uid-44102',
-    email: isGoogle ? 'alex.google@auratune.vn' : 'alex.fb@auratune.vn',
-    displayName: isGoogle ? 'Alex (Google User)' : 'Alex (Facebook User)',
-    avatarUrl: isGoogle
-      ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  };
-
-  return {
-    success: true,
-    mode: 'simulation',
-    mockOAuthUser,
-  };
+  throw new Error(`${provider} OAuth is not configured. Configure the identity provider before using this flow.`);
 }
 
 /**

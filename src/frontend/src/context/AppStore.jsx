@@ -1,7 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { processOAuthUser, checkCanUnlinkProvider } from '../../../database/services/oauthService.js'
-import { defaultSessionManager } from '../../../database/services/sessionService.js'
-import { authApi } from '../services/sessionApiClient.js'
+import { authApi, configureAuthContext } from '../services/sessionApiClient.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 
@@ -116,6 +114,42 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [state])
 
+    useEffect(() => {
+      configureAuthContext({
+        getAccessToken: () => stateRef.current.session?.token || null,
+        refreshSession: async () => {
+          try {
+            const response = await authApi.refresh()
+            const accessToken = response.data?.access_token
+            if (response.status !== 'success' || !accessToken) {
+              return { ok: false, message: response.message }
+            }
+
+            const expiresIn = response.data.expires_in || 900
+            setState((previous) => previous.session?.source === 'backend'
+              ? {
+                  ...previous,
+                  session: {
+                    ...previous.session,
+                    token: accessToken,
+                    expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
+                  },
+                }
+              : previous)
+
+            return { ok: true, accessToken }
+          } catch (error) {
+            return { ok: false, message: error.message }
+          }
+        },
+        onSessionRevoked: () => {
+          setState((previous) => ({ ...previous, session: null }))
+        },
+      })
+
+      return () => configureAuthContext({})
+    }, [])
+
   // Restore an authenticated backend session via HttpOnly cookie.
   useEffect(() => {
     let cancelled = false
@@ -143,6 +177,7 @@ export const formatTotalDuration = (seconds) => {
           role: apiUser.role || 'user',
           avatarUrl: apiUser.avatar_url || null,
           linkedProviders: apiUser.linked_providers || [],
+          hasLocalPassword: Boolean(apiUser.has_local_password),
           createdAt: apiUser.created_at,
           banned: false
         }
@@ -292,123 +327,74 @@ export const formatTotalDuration = (seconds) => {
   const register = useCallback(async ({ email, password, displayName, termsAccepted = true }) => {
     const normalized = normalizeEmail(email)
     if (!EMAIL_PATTERN.test(normalized)) return { ok: false, field: 'email', error: 'Email không đúng định dạng.' }
-    if (!isStrongPassword(password)) return { ok: false, field: 'password', error: 'Mật khẩu chưa đủ mạnh: cần ít nhất 8 ký tự, gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.' }
-    if (!displayName.trim()) return { ok: false, field: 'displayName', error: 'Vui lòng nhập tên hiển thị.' }
+    if (!isStrongPassword(password)) return { ok: false, field: 'password', error: 'Mật khẩu chưa đủ mạnh.' }
+    if (!displayName?.trim()) return { ok: false, field: 'displayName', error: 'Vui lòng nhập tên hiển thị.' }
 
     try {
-      const res = await authApi.register({
-        email: normalized,
-        password,
-        display_name: displayName.trim(),
-        terms_accepted: termsAccepted,
-      })
-
-      if (res.success && res.data) {
-        const user = {
-          id: res.data.user.id || res.data.user.user_id,
-          email: res.data.user.email,
-          displayName: res.data.user.display_name,
-          role: res.data.user.role || 'user',
-          avatarUrl: res.data.user.avatar_url,
-          createdAt: res.data.user.created_at || new Date().toISOString(),
-          banned: false,
-        }
-        setState((previous) => ({
-          ...previous,
-          users: [...previous.users.filter((u) => u.id !== user.id), user],
-          libraries: previous.libraries[user.id] ? previous.libraries : { ...previous.libraries, [user.id]: emptyLibrary() },
-          session: {
-            source: 'backend',
-            userId: user.id,
-            token: res.data.session.access_token,
-            expiresAt: new Date(
-              Date.now() +
-              (res.data.session.expires_in || 900) * 1000
-            ).toISOString()
-          },
-        }))
-        return { ok: true, user }
+      const response = await authApi.register({ email: normalized, password, display_name: displayName.trim(), terms_accepted: termsAccepted })
+      if (!response.success || !response.data?.user || !response.data?.session?.access_token) {
+        return { ok: false, field: 'email', error: response.message || 'Đăng ký không thành công.' }
       }
-      return { ok: false, field: 'email', error: res.message || 'Đăng ký không thành công.' }
-    } catch (err) {
-      if (stateRef.current.users.some((u) => u.email === normalized)) return { ok: false, field: 'email', error: 'Email đã được sử dụng.' }
-      const user = { id: uid('u'), email: normalized, displayName: displayName.trim(), passwordHash: demoHash(password), role: 'user', createdAt: new Date().toISOString(), banned: false }
+      const apiUser = response.data.user
+      const user = {
+        id: apiUser.id || apiUser.user_id,
+        email: apiUser.email,
+        displayName: apiUser.display_name,
+        role: apiUser.role || 'user',
+        avatarUrl: apiUser.avatar_url,
+        linkedProviders: apiUser.linked_providers || [],
+        hasLocalPassword: Boolean(apiUser.has_local_password),
+        createdAt: apiUser.created_at || new Date().toISOString(),
+        banned: false,
+      }
       setState((previous) => ({
         ...previous,
-        users: [...previous.users, user],
-        libraries: { ...previous.libraries, [user.id]: emptyLibrary() },
-        session: { userId: user.id, token: uid('demo-token'), expiresAt: new Date(Date.now() + SESSION_HOURS * 3600 * 1000).toISOString() },
+        users: [...previous.users.filter((item) => item.id !== user.id), user],
+        libraries: previous.libraries[user.id] ? previous.libraries : { ...previous.libraries, [user.id]: emptyLibrary() },
+        session: { source: 'backend', userId: user.id, token: response.data.session.access_token, expiresAt: new Date(Date.now() + (response.data.session.expires_in || 900) * 1000).toISOString() },
       }))
       return { ok: true, user }
+    } catch (error) {
+      return { ok: false, field: error.field, error: error.message || 'Không thể kết nối dịch vụ xác thực.' }
     }
   }, [])
-
   const login = useCallback(async ({ email, password, rememberMe = false }) => {
     const normalized = normalizeEmail(email)
     if (!EMAIL_PATTERN.test(normalized)) return { ok: false, error: 'Email không đúng định dạng.' }
 
     try {
-      const res = await authApi.login({ email: normalized, password, remember_me: rememberMe })
-
-      if (res.success && res.data) {
-        const apiUser = res.data.user
-        const user = {
-          id: apiUser.id || apiUser.user_id,
-          email: apiUser.email,
-          displayName: apiUser.display_name,
-          role: apiUser.role || 'user',
-          avatarUrl: apiUser.avatar_url,
-          linkedProviders: apiUser.linked_providers || [],
-          createdAt: apiUser.created_at || new Date().toISOString(),
-          banned: false,
-        }
-        setState((previous) => ({
-          ...previous,
-          users: [...previous.users.filter((u) => u.id !== user.id), user],
-          libraries: previous.libraries[user.id] ? previous.libraries : { ...previous.libraries, [user.id]: emptyLibrary() },
-          session: {
-            source: 'backend',
-            userId: user.id,
-            token: res.data.session.access_token,
-            expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
-          },
-        }))
-        return { ok: true, user }
+      const response = await authApi.login({ email: normalized, password, remember_me: rememberMe })
+      if (!response.success || !response.data?.user || !response.data?.session?.access_token) {
+        return { ok: false, locked: response.remainingMinutes > 0, error: response.message || 'Email hoặc mật khẩu không chính xác.', remaining: response.remainingAttempts }
       }
-
-      if (res.remainingMinutes) {
-        return { ok: false, locked: true, error: res.message, remainingMinutes: res.remainingMinutes }
+      const apiUser = response.data.user
+      const user = {
+        id: apiUser.id || apiUser.user_id,
+        email: apiUser.email,
+        displayName: apiUser.display_name,
+        role: apiUser.role || 'user',
+        avatarUrl: apiUser.avatar_url,
+        linkedProviders: apiUser.linked_providers || [],
+        hasLocalPassword: Boolean(apiUser.has_local_password),
+        createdAt: apiUser.created_at || new Date().toISOString(),
+        banned: false,
       }
-      return { ok: false, error: res.message || 'Email hoặc mật khẩu không chính xác.', remaining: res.remainingAttempts }
-    } catch (err) {
-      const attempts = stateRef.current.loginAttempts[normalized] ?? { count: 0, lockedUntil: null }
-      if (attempts.lockedUntil && new Date(attempts.lockedUntil).getTime() > Date.now()) {
-        return { ok: false, locked: true, error: 'Tài khoản tạm thời bị khóa. Vui lòng thử lại sau.', lockedUntil: attempts.lockedUntil }
-      }
-      const user = stateRef.current.users.find((item) => item.email === normalized)
-      if (!user || (user.passwordHash && user.passwordHash !== demoHash(password))) {
-        const count = (attempts.lockedUntil ? 0 : attempts.count) + 1
-        const lockedUntil = count >= MAX_FAILED_LOGINS ? new Date(Date.now() + LOCK_MINUTES * 60 * 1000).toISOString() : null
-        setState((previous) => ({ ...previous, loginAttempts: { ...previous.loginAttempts, [normalized]: { count: lockedUntil ? 0 : count, lockedUntil } } }))
-        if (lockedUntil) return { ok: false, locked: true, error: 'Tài khoản tạm thời bị khóa. Vui lòng thử lại sau.', lockedUntil }
-        return { ok: false, error: 'Email hoặc mật khẩu không đúng.', remaining: MAX_FAILED_LOGINS - count }
-      }
-      if (user.banned) return { ok: false, error: 'Tài khoản này đã bị quản trị viên khóa do vi phạm quy định.' }
-      setState((previous) => {
-        const { [normalized]: _removed, ...rest } = previous.loginAttempts
-        return { ...previous, loginAttempts: rest, session: { userId: user.id, token: uid('demo-token'), expiresAt: new Date(Date.now() + SESSION_HOURS * 3600 * 1000).toISOString() } }
-      })
+      setState((previous) => ({
+        ...previous,
+        users: [...previous.users.filter((item) => item.id !== user.id), user],
+        libraries: previous.libraries[user.id] ? previous.libraries : { ...previous.libraries, [user.id]: emptyLibrary() },
+        session: { source: 'backend', userId: user.id, token: response.data.session.access_token, expiresAt: new Date(Date.now() + (response.data.session.expires_in || 900) * 1000).toISOString() },
+      }))
       return { ok: true, user }
+    } catch (error) {
+      return { ok: false, locked: error.status === 423, error: error.message || 'Không thể kết nối dịch vụ xác thực.' }
     }
   }, [])
-
   const logout = useCallback(async () => {
     try {
       await authApi.logout()
     } catch {
-      if (stateRef.current.session?.refreshToken) {
-        await defaultSessionManager.logoutSession(stateRef.current.session.refreshToken)
-      }
+      // Clear the in-memory session even if the server is unreachable.
     }
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
@@ -419,8 +405,7 @@ export const formatTotalDuration = (seconds) => {
       const token = stateRef.current.session?.token
       if (token) await authApi.logoutAll(token)
     } catch {
-      const userId = stateRef.current.session?.userId
-      if (userId) await defaultSessionManager.logoutAllUserSessions(userId)
+      // Clear the in-memory session even if the server is unreachable.
     }
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
@@ -434,11 +419,9 @@ export const formatTotalDuration = (seconds) => {
         if (res.status === 'success' && res.data) return res.data
       }
     } catch {
-      // Fallback local sessions
+      return []
     }
-    const userId = stateRef.current.session?.userId
-    if (!userId) return []
-    return defaultSessionManager.getActiveUserSessions(userId, stateRef.current.session?.refreshToken)
+    return []
   }, [])
 
   // Firebase Authentication -> AuraTune Session
@@ -462,6 +445,7 @@ export const formatTotalDuration = (seconds) => {
         if (!response.success || !response.data?.session?.access_token) {
           return {
             ok: false,
+            code: response.code,
             error: response.message || 'Firebase login failed.'
           }
         }
@@ -475,6 +459,7 @@ export const formatTotalDuration = (seconds) => {
           role: apiUser.role || 'user',
           avatarUrl: apiUser.avatar_url || null,
           linkedProviders: apiUser.linked_providers || [],
+          hasLocalPassword: Boolean(apiUser.has_local_password),
           createdAt: apiUser.created_at || new Date().toISOString(),
           banned: false
         }
@@ -514,93 +499,55 @@ export const formatTotalDuration = (seconds) => {
     []
   )
 
-  const loginWithOAuth = useCallback(async (oauthPayload) => {
-    try {
-      const res = await authApi.oauthCallback(oauthPayload)
-      if (res.token && res.user) {
-        const targetUser = {
-          id: res.user.id || res.user.user_id,
-          email: res.user.email,
-          displayName: res.user.display_name,
-          role: res.user.role || 'user',
-          avatarUrl: res.user.avatar_url,
-          linkedProviders: res.user.linked_providers || [],
-          createdAt: res.user.created_at || new Date().toISOString(),
-          banned: false,
-        }
-        setState((previous) => ({
-          ...previous,
-          users: [...previous.users.filter((u) => u.id !== targetUser.id), targetUser],
-          libraries: previous.libraries[targetUser.id] ? previous.libraries : { ...previous.libraries, [targetUser.id]: emptyLibrary() },
-          session: {
-            userId: targetUser.id,
-            token: res.token,
-            expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
-          },
-        }))
-        return { ok: true, user: targetUser }
-      }
-    } catch {
-      // Local fallback
-    }
+  const loginWithOAuth = useCallback(async () => ({
+    ok: false,
+    error: 'Unverified OAuth profile callbacks are not accepted. Use Google or Facebook sign-in from the authentication page.',
+  }), [])
+
+  const linkFacebook = useCallback(async (firebaseUser) => {
+    const user = stateRef.current.users.find((item) => item.id === stateRef.current.session?.userId)
+    const accessToken = stateRef.current.session?.token
+    if (!user || !accessToken) return { ok: false, error: 'Please sign in to AuraTune before linking Facebook.' }
+    if (!firebaseUser) return { ok: false, error: 'Facebook authentication did not return a user.' }
 
     try {
-      const { users, currentUser: targetUser, isNewAccount } = processOAuthUser(stateRef.current.users, oauthPayload)
-      if (targetUser.banned) {
-        return { ok: false, error: 'Tài khoản này đã bị quản trị viên khóa do vi phạm quy định.' }
-      }
+      const firebaseIdToken = await firebaseUser.getIdToken(true)
+      const response = await authApi.linkFacebook(firebaseIdToken, accessToken)
+      if (!response.success) return { ok: false, error: response.message || 'Could not link Facebook.' }
+
       setState((previous) => ({
         ...previous,
-        users,
-        libraries: previous.libraries[targetUser.id]
-          ? previous.libraries
-          : { ...previous.libraries, [targetUser.id]: emptyLibrary() },
-        session: {
-          userId: targetUser.id,
-          token: uid('oauth-token'),
-          expiresAt: new Date(Date.now() + SESSION_HOURS * 3600 * 1000).toISOString(),
-        },
+        users: previous.users.map((item) => item.id === user.id
+          ? { ...item, linkedProviders: Array.from(new Set([...(item.linkedProviders || []), 'facebook'])) }
+          : item),
       }))
-      return { ok: true, user: targetUser, isNewAccount }
-    } catch (err) {
-      return { ok: false, error: err.message || 'Đăng nhập OAuth thất bại.' }
+      return { ok: true, message: response.message }
+    } catch (error) {
+      return { ok: false, error: error.message || 'Could not link Facebook.' }
     }
   }, [])
 
   const unlinkOAuthProvider = useCallback(async (provider) => {
     const user = currentUser
-    if (!user) return { ok: false, error: 'Chưa đăng nhập.' }
+    if (!user) return { ok: false, error: 'Not signed in.' }
 
     try {
       const token = stateRef.current.session?.token
-      if (token) {
-        const res = await authApi.oauthUnlink(provider, token)
-        if (res.success) {
-          setState((previous) => ({
-            ...previous,
-            users: previous.users.map((u) => u.id === user.id ? { ...u, linkedProviders: (u.linkedProviders || []).filter((p) => p !== provider) } : u),
-          }))
-          return { ok: true, message: res.message }
-        } else if (res.error === 'cannot_unlink') {
-          return { ok: false, error: res.message }
-        }
-      }
-    } catch {
-      // Local fallback
-    }
+      if (!token) return { ok: false, error: 'Your session has expired. Sign in again.' }
+      const response = await authApi.oauthUnlink(provider, token)
+      if (!response.success) return { ok: false, error: response.message || 'Could not unlink this provider.' }
 
-    const check = checkCanUnlinkProvider(user, provider)
-    if (!check.canUnlink) {
-      return { ok: false, error: check.reason }
+      setState((previous) => ({
+        ...previous,
+        users: previous.users.map((item) => item.id === user.id
+          ? { ...item, linkedProviders: (item.linkedProviders || []).filter((itemProvider) => itemProvider !== provider) }
+          : item),
+      }))
+      return { ok: true, message: response.message }
+    } catch (error) {
+      return { ok: false, error: error.message || 'Could not connect to the authentication service.' }
     }
-    const updatedLinked = check.remainingProviders
-    setState((previous) => ({
-      ...previous,
-      users: previous.users.map((u) => u.id === user.id ? { ...u, linkedProviders: updatedLinked } : u),
-    }))
-    return { ok: true, message: `Đã hủy liên kết tài khoản ${provider} thành công.` }
   }, [currentUser])
-
   // ---------- Thư viện cá nhân ----------
   const isLiked = (trackId) => library.likedIds.includes(trackId)
   const toggleLike = useCallback((trackId) => {
@@ -768,7 +715,7 @@ export const formatTotalDuration = (seconds) => {
     state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
-    register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, unlinkOAuthProvider,
+    register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
     setFollow, isFollowing,

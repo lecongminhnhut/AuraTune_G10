@@ -77,7 +77,9 @@ class Database {
   findUserByFirebaseUid(firebaseUid) {
     if (!firebaseUid) return null;
 
-    const link = this.findOAuthLink('firebase', firebaseUid);
+    const link = ['firebase', 'google', 'facebook']
+      .map((provider) => this.findOAuthLink(provider, firebaseUid))
+      .find(Boolean);
 
     if (!link) return null;
 
@@ -163,10 +165,18 @@ class Database {
   }
 
   addOAuthLink(userId, provider, providerUserId) {
+    const identityOwner = this.findOAuthLink(provider, providerUserId);
+    if (identityOwner && identityOwner.user_id !== userId) {
+      throw new Error('Provider identity is already linked to another user');
+    }
+
     const existing = this.oauthLinks.find(
       (l) => l.user_id === userId && l.provider === provider
     );
     if (existing) {
+      if (existing.provider_user_id !== providerUserId) {
+        throw new Error('User already has a different identity linked for this provider');
+      }
       existing.last_login_at = new Date().toISOString();
       return existing;
     }
