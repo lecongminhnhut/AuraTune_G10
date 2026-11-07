@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { db } from '../db.js';
+import crypto from 'node:crypto';
+import { db } from '../repositories/authRepository.js';
 import {
   checkPasswordStrength,
   clearRefreshTokenCookie,
@@ -15,6 +16,7 @@ import {
   REMEMBER_ME_DAYS,
   setRefreshTokenCookie
 } from '../utils/authHelpers.js';
+
 
 // POST /api/v1/auth/register (Spec 011)
 export async function register(req, res) {
@@ -35,7 +37,7 @@ export async function register(req, res) {
       });
     }
 
-    const existingUser = db.findUserByEmail(email);
+    const existingUser = await db.findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -52,7 +54,7 @@ export async function register(req, res) {
     }
 
     const passwordHash = bcrypt.hashSync(password, 10);
-    const newUser = db.createUser({
+    const newUser = await db.createUser({
       email,
       display_name: display_name || email.split('@')[0],
       password_hash: passwordHash,
@@ -60,7 +62,7 @@ export async function register(req, res) {
       terms_accepted_at: new Date().toISOString()
     });
 
-    const { sessionObj, refreshToken } = createNewSession(newUser.id, req, false);
+    const { sessionObj, refreshToken } = await createNewSession(newUser.id, req, false);
     const accessToken = generateAccessToken(newUser, sessionObj.session_id);
     setRefreshTokenCookie(res, refreshToken, INACTIVITY_DAYS);
 
@@ -68,7 +70,7 @@ export async function register(req, res) {
       success: true,
       message: 'User registered successfully',
       data: {
-        user: formatUserResponse(newUser),
+        user: await formatUserResponse(newUser),
         session: {
           access_token: accessToken,
           expires_in: 900
@@ -93,7 +95,7 @@ export async function login(req, res) {
       });
     }
 
-    const user = db.findUserByEmail(email);
+    const user = await db.findUserByEmail(email);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -112,7 +114,7 @@ export async function login(req, res) {
           remainingMinutes: remainingMin
         });
       } else {
-        db.updateUser(user.id, { failed_login_attempts: 0, lockout_until: null });
+        await db.updateUser(user.id, { failed_login_attempts: 0, lockout_until: null });
         user.failed_login_attempts = 0;
         user.lockout_until = null;
       }
@@ -133,7 +135,7 @@ export async function login(req, res) {
         lockoutUntil = new Date(Date.now() + LOCKOUT_MINUTES * 60 * 1000).toISOString();
       }
 
-      db.updateUser(user.id, {
+      await db.updateUser(user.id, {
         failed_login_attempts: lockoutUntil ? 0 : failedCount,
         lockout_until: lockoutUntil
       });
@@ -154,9 +156,9 @@ export async function login(req, res) {
       });
     }
 
-    db.updateUser(user.id, { failed_login_attempts: 0, lockout_until: null });
+    await db.updateUser(user.id, { failed_login_attempts: 0, lockout_until: null });
 
-    const { sessionObj, refreshToken } = createNewSession(user.id, req, Boolean(remember_me));
+    const { sessionObj, refreshToken } = await createNewSession(user.id, req, Boolean(remember_me));
     const accessToken = generateAccessToken(user, sessionObj.session_id);
     setRefreshTokenCookie(res, refreshToken, remember_me ? REMEMBER_ME_DAYS : INACTIVITY_DAYS);
 
@@ -164,7 +166,7 @@ export async function login(req, res) {
       success: true,
       message: 'Login successful',
       data: {
-        user: formatUserResponse(user),
+        user: await formatUserResponse(user),
         session: {
           access_token: accessToken,
           expires_in: 900
@@ -218,12 +220,12 @@ export async function oauthUnlink(req, res) {
       return res.status(401).json({ error: 'unauthorized', message: 'Yêu cầu xác thực.' });
     }
 
-    const user = db.findUserById(userId);
+    const user = await db.findUserById(userId);
     if (!user) {
       return res.status(404).json({ error: 'not_found', message: 'Không tìm thấy người dùng.' });
     }
 
-    const linkedProviders = db.getOAuthLinksForUser(user.id).map((l) => l.provider);
+    const linkedProviders = (await db.getOAuthLinksForUser(user.id)).map((l) => l.provider);
     if (!linkedProviders.includes(provider)) {
       return res.status(404).json({ error: 'provider_not_linked', message: 'This provider is not linked to the account.' });
     }
@@ -238,7 +240,7 @@ export async function oauthUnlink(req, res) {
       });
     }
 
-    db.removeOAuthLink(user.id, provider);
+    await db.removeOAuthLink(user.id, provider);
     return res.status(200).json({
       success: true,
       message: `Đã hủy liên kết nhà cung cấp ${provider} thành công.`
@@ -263,18 +265,18 @@ export async function refreshSession(req, res) {
     const currentHash = hashToken(refreshToken);
     const now = new Date();
 
-    let session = db.findSessionByTokenHash(currentHash);
+    let session = await db.findSessionByTokenHash(currentHash);
     let isGraceUse = false;
 
     if (!session) {
-      const graceSession = db.findSessionByPreviousTokenHash(currentHash);
+      const graceSession = await db.findSessionByPreviousTokenHash(currentHash);
       if (graceSession) {
         const graceExpires = graceSession.grace_expires_at ? new Date(graceSession.grace_expires_at) : null;
         if (graceExpires && graceExpires > now) {
           session = graceSession;
           isGraceUse = true;
         } else {
-          graceSession.is_revoked = true;
+          await db.updateSession(graceSession.session_id, { is_revoked: true });
           clearRefreshTokenCookie(res);
           return res.status(401).json({
             status: 'error',
@@ -293,13 +295,13 @@ export async function refreshSession(req, res) {
     }
 
     if (session.device_info && req.headers['user-agent'] !== session.device_info) {
-      session.is_revoked = true;
+      await db.updateSession(session.session_id, { is_revoked: true });
       clearRefreshTokenCookie(res);
       return res.status(401).json({ status: 'error', message: 'Thiết bị đăng nhập đã thay đổi. Vui lòng đăng nhập lại.' });
     }
 
     if (new Date(session.expires_at) <= now || new Date(session.inactive_at) <= now) {
-      session.is_revoked = true;
+      await db.updateSession(session.session_id, { is_revoked: true });
       clearRefreshTokenCookie(res);
       return res.status(401).json({
         status: 'error',
@@ -307,9 +309,9 @@ export async function refreshSession(req, res) {
       });
     }
 
-    const user = db.findUserById(session.user_id);
+    const user = await db.findUserById(session.user_id);
     if (!user || user.is_banned) {
-      session.is_revoked = true;
+      await db.updateSession(session.session_id, { is_revoked: true });
       clearRefreshTokenCookie(res);
       return res.status(401).json({ status: 'error', message: 'Tài khoản không tồn tại hoặc đã bị khóa.' });
     }
@@ -319,25 +321,26 @@ export async function refreshSession(req, res) {
       newRefreshToken = generateRefreshToken();
       const newHash = hashToken(newRefreshToken);
 
-      session.previous_token_hash = session.refresh_token_hash;
-      session.grace_expires_at = new Date(now.getTime() + GRACE_PERIOD_SECONDS * 1000).toISOString();
-      session.refresh_token_hash = newHash;
-
-      session.last_active_at = now.toISOString();
-      session.inactive_at = new Date(now.getTime() + INACTIVITY_DAYS * 24 * 60 * 60 * 1000).toISOString();
+      const updatedSession = await db.updateSession(session.session_id, {
+        previous_token_hash: session.refresh_token_hash,
+        grace_expires_at: new Date(now.getTime() + GRACE_PERIOD_SECONDS * 1000).toISOString(),
+        refresh_token_hash: newHash,
+        last_active_at: now.toISOString(),
+        inactive_at: new Date(now.getTime() + INACTIVITY_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+        ip_address: req.ip || req.socket?.remoteAddress || session.ip_address
+      });
+      if (updatedSession) Object.assign(session, updatedSession);
     }
 
     const newAccessToken = generateAccessToken(user, session.session_id);
     const durationDays = session.remember_me ? REMEMBER_ME_DAYS : INACTIVITY_DAYS;
     if (!isGraceUse) setRefreshTokenCookie(res, newRefreshToken, durationDays);
-    session.ip_address = req.ip || req.socket?.remoteAddress || session.ip_address;
-
     return res.status(200).json({
       status: 'success',
       data: {
         access_token: newAccessToken,
         expires_in: 900,
-        user: formatUserResponse(user)
+        user: await formatUserResponse(user)
       }
     });
   } catch (error) {
@@ -352,9 +355,9 @@ export async function logout(req, res) {
     const refreshToken = req.cookies?.auratune_refresh_token;
     if (refreshToken) {
       const tokenHash = hashToken(refreshToken);
-      const session = db.findSessionByTokenHash(tokenHash) || db.findSessionByPreviousTokenHash(tokenHash);
+      const session = await db.findSessionByTokenHash(tokenHash) || await db.findSessionByPreviousTokenHash(tokenHash);
       if (session) {
-        session.is_revoked = true;
+        await db.updateSession(session.session_id, { is_revoked: true });
       }
     }
     clearRefreshTokenCookie(res);
@@ -376,12 +379,12 @@ export async function logoutAll(req, res) {
       return res.status(401).json({ status: 'error', message: 'Unauthorized' });
     }
 
-    const activeSessions = db.getActiveUserSessions(userId);
+    const activeSessions = await db.getActiveUserSessions(userId);
     let count = 0;
-    activeSessions.forEach((s) => {
-      s.is_revoked = true;
+    for (const s of activeSessions) {
+      await db.updateSession(s.session_id, { is_revoked: true });
       count++;
-    });
+    }
 
     clearRefreshTokenCookie(res);
 
@@ -406,7 +409,7 @@ export async function getSessions(req, res) {
       return res.status(401).json({ status: 'error', message: 'Unauthorized' });
     }
 
-    const sessions = db.getActiveUserSessions(userId).map((s) => ({
+    const sessions = (await db.getActiveUserSessions(userId)).map((s) => ({
       session_id: s.session_id,
       device_info: s.device_info,
       ip_address: s.ip_address,
@@ -431,14 +434,14 @@ export async function getMe(req, res) {
     if (!userId) {
       return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
-    const user = db.findUserById(userId);
+    const user = await db.findUserById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     return res.status(200).json({
       success: true,
-      data: formatUserResponse(user)
+      data: await formatUserResponse(user)
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Error retrieving user' });
@@ -447,38 +450,57 @@ export async function getMe(req, res) {
 
 // POST /api/v1/auth/forgot-password (Spec 011)
 export async function forgotPassword(req, res) {
-  return res.status(503).json({
-    success: false,
-    code: 'PASSWORD_RECOVERY_UNAVAILABLE',
-    message: 'Password recovery is unavailable until a verified email delivery provider is configured.'
-  });
+  const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ success: false, message: 'Vui lòng nhập địa chỉ email hợp lệ.' });
+  }
+  // Keep the response identical for known and unknown addresses to prevent account discovery.
+  const accepted = { success: true, message: 'Nếu email đã đăng ký, hướng dẫn đặt lại mật khẩu sẽ được gửi đến hộp thư của bạn.' };
+  try {
+    const user = await db.findUserByEmail(email);
+    if (!user?.password_hash || !process.env.RESEND_API_KEY || !process.env.MAIL_FROM) return res.status(200).json(accepted);
+    const token = crypto.randomBytes(32).toString('base64url');
+    const tokenHash = hashToken(token);
+    await db.deletePasswordResetTokensForUser(user.id);
+    await db.createPasswordResetToken({ user_id: user.id, token_hash: tokenHash, expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString() });
+    const appUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+    const resetUrl = `${appUrl}/reset-password?token=${encodeURIComponent(token)}`;
+    const delivery = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: process.env.MAIL_FROM, to: [email], subject: 'Đặt lại mật khẩu AuraTune', html: `<p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu AuraTune.</p><p><a href="${resetUrl}">Đặt lại mật khẩu</a></p><p>Liên kết hết hạn sau 30 phút. Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>` })
+    });
+    if (!delivery.ok) {
+      await db.consumePasswordResetToken(tokenHash);
+      console.error('Password reset email delivery failed:', delivery.status);
+    }
+  } catch (error) {
+    console.error('Password recovery request failed:', error.message);
+  }
+  return res.status(200).json(accepted);
 }
 
 // POST /api/v1/auth/reset-password (Spec 011)
 export async function resetPassword(req, res) {
-  const userId = req.user?.user_id || req.user?.id;
-  const user = userId ? db.findUserById(userId) : null;
-  const { current_password, new_password } = req.body;
-  if (!user || !user.password_hash || !current_password || !bcrypt.compareSync(current_password, user.password_hash)) {
-    return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+  try {
+    const { token, new_password } = req.body || {};
+    if (typeof token !== 'string' || !token || typeof new_password !== 'string') return res.status(400).json({ success: false, message: 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.' });
+    const { isStrong } = checkPasswordStrength(new_password);
+    if (!isStrong) return res.status(400).json({ success: false, message: 'Mật khẩu cần tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.' });
+    const tokenHash = hashToken(token);
+    const reset = await db.findPasswordResetToken(tokenHash);
+    if (!reset || new Date(reset.expires_at).getTime() <= Date.now()) {
+      if (reset) await db.consumePasswordResetToken(tokenHash);
+      return res.status(400).json({ success: false, message: 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.' });
+    }
+    const consumed = await db.consumePasswordResetToken(tokenHash);
+    if (!consumed) return res.status(400).json({ success: false, message: 'Liên kết đặt lại mật khẩu đã được sử dụng.' });
+    await db.updateUser(reset.user_id, { password_hash: bcrypt.hashSync(new_password, 10), has_local_password: true });
+    for (const session of await db.getActiveUserSessions(reset.user_id)) await db.updateSession(session.session_id, { is_revoked: true });
+    await db.deletePasswordResetTokensForUser(reset.user_id);
+    return res.status(200).json({ success: true, message: 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.' });
+  } catch (error) {
+    console.error('Password reset failed:', error.message);
+    return res.status(500).json({ success: false, message: 'Không thể đặt lại mật khẩu lúc này.' });
   }
-
-  const { isStrong } = checkPasswordStrength(new_password);
-  if (!isStrong) {
-    return res.status(400).json({
-      success: false,
-      message: 'Mật khẩu mới không đủ độ mạnh.'
-    });
-  }
-
-  const passwordHash = bcrypt.hashSync(new_password, 10);
-  db.updateUser(user.id, { password_hash: passwordHash, has_local_password: true });
-  db.getActiveUserSessions(user.id).forEach((session) => { session.is_revoked = true; });
-
-  return res.status(200).json({
-    success: true,
-    message: 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.'
-  });
 }
-
-

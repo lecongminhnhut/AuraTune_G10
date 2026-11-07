@@ -1,7 +1,7 @@
 
 import crypto from 'node:crypto';
 import { adminAuth } from '../config/firebaseAdmin.js';
-import { db } from '../db.js';
+import { db } from '../repositories/authRepository.js';
 import {
   createNewSession,
   generateAccessToken,
@@ -79,10 +79,10 @@ export async function firebaseExchange(req, res) {
         : 'firebase';
 
     // Facebook sign-in is accepted only for an explicitly linked Facebook identity.
-    const facebookLink = provider === 'facebook' ? db.findOAuthLink('facebook', firebaseUid) : null;
+    const facebookLink = provider === 'facebook' ? await db.findOAuthLink('facebook', firebaseUid) : null;
     let user = provider === 'facebook'
-      ? (facebookLink ? db.findUserById(facebookLink.user_id) : null)
-      : db.findUserByFirebaseUid(firebaseUid);
+      ? (facebookLink ? await db.findUserById(facebookLink.user_id) : null)
+      : await db.findUserByFirebaseUid(firebaseUid);
     let isNewUser = false;
 
     if (!user) {
@@ -102,11 +102,11 @@ export async function firebaseExchange(req, res) {
         });
       }
 
-      const existingUserByEmail = db.findUserByEmail(email);
+      const existingUserByEmail = await db.findUserByEmail(email);
 
       // If an AuraTune account with this verified email already exists, link Google UID to it
       if (existingUserByEmail) {
-        db.addOAuthLink(existingUserByEmail.id, provider, firebaseUid);
+        await db.addOAuthLink(existingUserByEmail.id, provider, firebaseUid);
         user = existingUserByEmail;
       } else {
         // Firebase sign-in alone does not imply consent for new accounts
@@ -124,7 +124,7 @@ export async function firebaseExchange(req, res) {
             : email.split('@')[0];
 
         // 4. Create AuraTune user with minimum privilege
-        user = db.createUser({
+        user = await db.createUser({
           id: `u-${crypto.randomUUID()}`,
           email,
           display_name: displayName,
@@ -133,7 +133,7 @@ export async function firebaseExchange(req, res) {
           terms_accepted_at: new Date().toISOString()
         });
 
-        db.addOAuthLink(user.id, provider, firebaseUid);
+        await db.addOAuthLink(user.id, provider, firebaseUid);
         isNewUser = true;
       }
     }
@@ -164,12 +164,11 @@ export async function firebaseExchange(req, res) {
       profileUpdates.avatar_url = decoded.picture.trim();
     }
     if (Object.keys(profileUpdates).length) {
-      db.updateUser(user.id, profileUpdates);
-      user = db.findUserById(user.id);
+      user = await db.updateUser(user.id, profileUpdates);
     }
 
     // 6. Reuse existing AuraTune session system
-    const { sessionObj, refreshToken } = createNewSession(
+    const { sessionObj, refreshToken } = await createNewSession(
       user.id,
       req,
       false
@@ -192,7 +191,7 @@ export async function firebaseExchange(req, res) {
         ? 'Firebase account registered successfully'
         : 'Firebase login successful',
       data: {
-        user: formatUserResponse(user),
+        user: await formatUserResponse(user),
         session: {
           access_token: accessToken,
           expires_in: 900
@@ -219,7 +218,7 @@ export async function firebaseExchange(req, res) {
 
 export async function linkFacebook(req, res) {
   const userId = req.user?.user_id || req.user?.id;
-  if (!userId || !db.findUserById(userId)) {
+  if (!userId || !await db.findUserById(userId)) {
     return res.status(401).json({ success: false, message: 'An authenticated AuraTune account is required.' });
   }
 
@@ -236,12 +235,12 @@ export async function linkFacebook(req, res) {
       return res.status(403).json({ success: false, code: 'FACEBOOK_IDENTITY_REQUIRED', message: 'Authenticate with Facebook before linking it.' });
     }
 
-    const identityOwner = db.findOAuthLink('facebook', decoded.uid);
+    const identityOwner = await db.findOAuthLink('facebook', decoded.uid);
     if (identityOwner && identityOwner.user_id !== userId) {
       return res.status(409).json({ success: false, code: 'FACEBOOK_ALREADY_LINKED', message: 'This Facebook identity is already linked to another AuraTune account.' });
     }
 
-    db.addOAuthLink(userId, 'facebook', decoded.uid);
+    await db.addOAuthLink(userId, 'facebook', decoded.uid);
     return res.status(200).json({ success: true, provider: 'facebook', message: 'Facebook account linked successfully.' });
   } catch (error) {
     if (error.message?.includes('different identity')) {

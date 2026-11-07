@@ -66,6 +66,16 @@ export async function apiFetch(url, options = {}, authContext = sharedAuthContex
 }
 
 export const authApi = {
+  async forgotPassword(email) {
+    const res = await apiFetch('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
+    return res.json();
+  },
+
+  async resetPassword(token, new_password) {
+    const res = await apiFetch('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, new_password }) });
+    return res.json();
+  },
+
   async firebaseExchange(firebaseIdToken, termsAccepted = false) {
     if (!firebaseIdToken) {
       throw new Error('Firebase ID Token is required');

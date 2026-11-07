@@ -1,18 +1,28 @@
 // Supabase Client for DB & OAuth integration
 // Safe fallback to null in local demo mode or browser environment without breaking app startup
 
-let supabase = null
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const envUrl = typeof process !== 'undefined' && process.env?.SUPABASE_URL 
-  ? process.env.SUPABASE_URL 
-  : (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL ? import.meta.env.VITE_SUPABASE_URL : null)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const envKey = typeof process !== 'undefined' && process.env?.SUPABASE_ANON_KEY 
-  ? process.env.SUPABASE_ANON_KEY 
-  : (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY ? import.meta.env.VITE_SUPABASE_ANON_KEY : null)
+// .env nằm ở thư mục gốc dự án (cha của thư mục database)
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-export { supabase }
-export default supabase
+
+
+const envUrl = process.env.SUPABASE_URL;
+// This client is backend-only. Auth tables contain password hashes and session
+// tokens, so never use the public anon key for server-side writes.
+const envKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+
+export const supabase = (envUrl && envKey) ? createClient(envUrl, envKey) : null;
+
+if (!supabase) {
+  console.warn('Supabase is disabled. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in src/.env.');
+}
 
 
 

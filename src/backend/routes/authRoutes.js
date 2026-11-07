@@ -22,7 +22,7 @@ const router = Router();
 router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', authenticateToken, resetPassword);
+router.post('/reset-password', resetPassword);
 
 // OAuth Auth Endpoints (012)
 router.post('/oauth/login', oauthLogin);
