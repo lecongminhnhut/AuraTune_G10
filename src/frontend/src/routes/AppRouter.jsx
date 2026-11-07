@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import AuthPage from '../pages/Auth/AuthPage.jsx'
 import OAuthCallback from '../pages/Auth/OAuthCallback.jsx'
+import PasswordRecoveryPage from '../pages/Auth/PasswordRecoveryPage.jsx'
 import AccountSettings from '../pages/Settings/AccountSettings.jsx'
 import HomePage from '../pages/Home/HomePage.jsx'
 import PlaylistDetailPage from '../pages/PlaylistDetail/PlaylistDetailPage.jsx'
@@ -22,6 +23,8 @@ const routes = [
   { pattern: /^\/$/, render: () => <HomePage /> },
   { pattern: /^\/login$/, render: () => <AuthPage mode="login" /> },
   { pattern: /^\/register$/, render: () => <AuthPage mode="register" /> },
+  { pattern: /^\/forgot-password$/, render: () => <PasswordRecoveryPage mode="forgot" /> },
+  { pattern: /^\/reset-password$/, render: () => <PasswordRecoveryPage mode="reset" /> },
   { pattern: /^\/auth\/callback$/, render: () => <OAuthCallback /> },
   { pattern: /^\/settings\/account$/, render: () => <AccountSettings /> },
   { pattern: /^\/search$/, render: () => <SearchPage /> },

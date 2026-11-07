@@ -26,6 +26,9 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 20  | 2026-10-31 | Làm rõ spec 072 – chart types, filtering, export functionality                                              | 07   |
 | 21  | 2026-10-31 | Viết spec 073 – Top Artists and Genres bằng `$speckit-specify`                                              | 07   |
 | 22  | 2026-10-31 | Làm rõ spec 073 – time ranges (4 weeks, 6 months, all time), ranking algorithm                              | 07   |
+| 23  | 2026-11-03 | Lập implementation plan cho Feature 010 – Authentication bằng `$speckit-plan` (011, 012, 013)              | 01   |
+| 24  | 2026-11-05 | Thực thi implementation cho Feature 010 bằng `$speckit-implement`                                           | 01   |
+| 25  | 2026-11-07 | Dùng AI rà soát và sửa lỗi sau implement Authentication: repository bất đồng bộ, session và password recovery | 01   |
 
 ---
 
@@ -81,6 +84,10 @@ Tập trung vào mô tả hành vi, yêu cầu bảo mật cơ bản và trải 
 - Kiểm tra checklist chất lượng tại `specs/010-authentication/011-local-authentication/checklists/requirements.md`.
 
 **Kết quả kiểm chứng:** Đạt.
+
+---
+
+
 
 ---
 
@@ -913,3 +920,125 @@ Specify the feature 073-top-artists-and-genres for AuraTune. This feature belong
 - Kiểm tra mục `## Clarifications` trong spec.
 
 **Kết quả kiểm chứng:** Đạt.
+
+---
+
+## Mục 23: Lập implementation plan cho Feature 010 – Authentication
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-03 |
+| Người thực hiện          | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 01 – Authentication, Feature 010: Authentication (011 Local Authentication, 012 OAuth Authentication, 013 Session Management) |
+| Công cụ AI               | Gemini 3.5, `$speckit-plan` |
+| Mục đích                 | Tạo kế hoạch triển khai thống nhất cho ba feature con, dựa trên spec và các quyết định đã chốt. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan
+
+Lập implementation plan cho Feature 010 – Authentication. Đọc các spec 011 Local Authentication, 012 OAuth Authentication và 013 Session Management cùng tài liệu liên quan; giữ đúng ranh giới từng feature và thiết kế hiện có của AuraTune. Tạo/cập nhật plan, research, data model, API contracts và quickstart cần thiết theo workflow Spec Kit. Không tự ý thay đổi yêu cầu đã chốt trong spec.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Tạo các implementation plan cho 011, 012 và 013, xác định stack React/Node.js/Supabase và các thành phần frontend/backend liên quan.
+- Chuyển các yêu cầu đăng ký/đăng nhập, OAuth, quản lý phiên, token rotation, lockout và phục hồi mật khẩu thành hướng triển khai và tài liệu thiết kế.
+- Ghi nhận ngày 2026-11-03 trong ba `plan.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Phân chia thiết kế theo 011/012/013 | Dùng | Giữ phạm vi và tài liệu của từng feature con rõ ràng trong Group 01. |
+| Cấu trúc source và các dịch vụ auth/session | Dùng làm định hướng | Dùng làm đầu vào cho giai đoạn implement, đồng thời đối chiếu với cấu trúc source thực tế khi triển khai. |
+
+### Cách kiểm chứng
+
+- Đối chiếu `plan.md` của cả ba feature với `spec.md`, `research.md`, `data-model.md`, `contracts/` và `quickstart.md` tương ứng.
+- Xác nhận các plan cùng nằm trong `specs/010-authentication/` và có ngày 2026-11-05.
+
+**Kết quả kiểm chứng:** Có đủ plan cho ba feature con; nội dung kỹ thuật tiếp tục được đối chiếu với source trong lúc implement.
+
+---
+
+## Mục 24: Implement Feature 010 – Authentication
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-05 |
+| Người thực hiện          | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 01 – Authentication, Feature 010: Authentication (011 Local Authentication, 012 OAuth Authentication, 013 Session Management) |
+| Công cụ AI               | Gemini 3.5, `$speckit-implement` |
+| Mục đích                 | Thực thi các task đã sinh trong Spec Kit cho luồng xác thực cục bộ, OAuth và quản lý phiên. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement
+
+Implement Feature 010 – Authentication theo tasks.md của các feature 011, 012 và 013. Đọc plan/spec/contracts trước khi sửa code; hoàn thành các task trong phạm vi, cập nhật trạng thái task theo kết quả thực tế và giữ nhất quán giữa frontend, backend và database. Không đánh dấu hoàn tất phần chưa được triển khai.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Triển khai và kết nối các luồng đăng ký/đăng nhập, OAuth, route guard, session, refresh/logout và password recovery theo các task của Group 01.
+- Cập nhật các thành phần frontend, backend và database phục vụ xác thực; các task trong `011-local-authentication/tasks.md` hiện được đánh dấu hoàn tất.
+- Trong quá trình tích hợp, cần điều chỉnh phần lưu trữ dữ liệu để các thao tác auth/session dùng repository Supabase bất đồng bộ.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Luồng local authentication và session dùng chung | Dùng | Đáp ứng các luồng đăng nhập cục bộ và duy trì phiên theo thiết kế. |
+| Các lời gọi database đồng bộ cũ | Chuyển sang lời gọi bất đồng bộ qua repository | Phù hợp với I/O Supabase và tránh dùng kết quả Promise như dữ liệu đã có. |
+
+### Cách kiểm chứng
+
+- Đối chiếu trạng thái task với các file triển khai trong `src/backend/`, `src/database/` và `src/frontend/`.
+- Kiểm tra diff sau implement; các lỗi tích hợp được tiếp tục xử lý ở Mục 25.
+
+**Kết quả kiểm chứng:** Đã triển khai các phần chính; cần lượt rà soát/sửa lỗi sau implement trước khi kết luận hoàn tất toàn bộ Feature 010.
+
+---
+
+## Mục 25: Dùng AI sửa lỗi sau implement Feature 010 – Authentication
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-07 |
+| Người thực hiện          | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 01 – Authentication, Feature 010: Authentication (011 Local Authentication, 012 OAuth Authentication, 013 Session Management) |
+| Công cụ AI               | Codex (GPT-6) |
+| Mục đích                 | Rà soát lỗi phát sinh khi ghép code sau implement và sửa các thao tác database/session chưa tương thích với repository bất đồng bộ. |
+
+### Prompt đã dùng
+
+```text
+Rà soát và sửa các lỗi trong Feature 010 – Authentication sau khi implement. Đặc biệt kiểm tra các controller, middleware và helper còn gọi database theo kiểu đồng bộ trong khi authRepository dùng Supabase bất đồng bộ; kiểm tra cập nhật/revoke session có được persist hay chỉ sửa object trong bộ nhớ. Rà soát thêm luồng forgot/reset password, route/API và cấu hình Supabase. Chỉ sửa trong phạm vi Authentication, giữ nguyên các yêu cầu trong spec và cập nhật code cần thiết.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Chuyển các thao tác đọc/ghi user, OAuth link và session trong controller/helper/middleware sang `await` với `authRepository`; xử lý lỗi khi truy vấn dữ liệu xác thực thất bại.
+- Thay đổi revoke/rotation session từ sửa object cục bộ sang cập nhật persistence, bao gồm logout, logout all, hết hạn và refresh token.
+- Hoàn thiện forgot/reset password bằng token hash có hạn dùng, phản hồi thống nhất để tránh dò email, kiểm tra độ mạnh mật khẩu và thu hồi session sau khi đổi mật khẩu.
+- Điều chỉnh frontend gọi API recovery, cấu hình backend-only Supabase client dùng service role key, và cập nhật route/middleware liên quan.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Chuyển các thao tác xác thực sang repository bất đồng bộ | Dùng | Tránh lỗi do xử lý Promise như giá trị đồng bộ và thống nhất với Supabase. |
+| Persist thay đổi trạng thái session | Dùng | Đảm bảo rotation/revocation có hiệu lực trong database, không chỉ trong bộ nhớ của request. |
+| Token reset mật khẩu dùng một lần và có thời hạn | Dùng | Hạn chế tái sử dụng token và bảo vệ luồng phục hồi tài khoản. |
+| Dùng public anon key cho thao tác backend | Bỏ | Client backend chuyển sang service role key theo cấu hình máy chủ. |
+
+### Cách kiểm chứng
+
+- Rà soát diff các controller, middleware, helper, repository, migration, route và frontend liên quan.
+- Đối chiếu luồng recovery/session với `specs/010-authentication/011-local-authentication/` và `013-session-management/`.
+- Chưa ghi nhận kết quả chạy test trong mục này; việc xác nhận runtime cần được thực hiện riêng.
+
+**Kết quả kiểm chứng:** Các sửa đổi đã được áp dụng trong source hiện tại; chưa xác nhận bằng kết quả chạy test.

@@ -4,7 +4,6 @@ import Icon from '../../components/common/Icon.jsx'
 import Logo from '../../components/common/Logo.jsx'
 import { EMAIL_PATTERN, isStrongPassword, useStore } from '../../context/AppStore.jsx'
 import { Link, getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
-import { initiateOAuthLogin } from '../../../../database/services/oauthService.js'
 import {
   loginWithGoogle,
   loginWithFacebook,
@@ -88,26 +87,6 @@ export default function AuthPage({ mode }) {
     return Object.keys(nextErrors).length === 0
   }
 
-    const saveUserToDatabase = async (firebaseUser, providerName) => {
-      try {
-        const response = await fetch('http://localhost:3000/api/v1/auth/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName,
-            photoURL: firebaseUser.photoURL,
-            provider: providerName
-          })
-        });
-        const data = await response.json();
-        console.log("Đã đồng bộ với Backend:", data);
-      } catch (error) {
-        console.error("Lỗi gọi API đồng bộ:", error);
-      }
-    };
-
     const handleSubmit = async (event) => {
       event.preventDefault()
 
@@ -117,7 +96,6 @@ export default function AuthPage({ mode }) {
       if (!validate()) return
 
       if (isRegister && isGoogleFirebaseUser(auth.currentUser) && auth.currentUser.email?.toLowerCase() === form.email.trim().toLowerCase()) {
-        await saveUserToDatabase(auth.currentUser, 'google')
         const result = await store.loginWithFirebase({ firebaseUser: auth.currentUser, termsAccepted: form.consent && form.termsConsent })
         if (!result.ok) {
           setFormError(result.error || 'Không thể hoàn tất đăng ký.')
@@ -136,10 +114,6 @@ export default function AuthPage({ mode }) {
         if (result.field) setErrors((previous) => ({ ...previous, [result.field]: result.error }))
         else setFormError(result.error || 'Không thể xác thực tài khoản.')
         return
-      }
-
-      if (auth.currentUser) {
-        await saveUserToDatabase(auth.currentUser, 'email')
       }
 
       store.toast(isRegister ? `Tạo tài khoản thành công. Xin chào ${result.user.displayName}!` : `Đăng nhập thành công. Xin chào ${result.user.displayName}!`)
@@ -171,8 +145,6 @@ export default function AuthPage({ mode }) {
             )
             return
           }
-
-          await saveUserToDatabase(firebaseUser, 'google')
 
           const result = await store.loginWithFirebase({
             firebaseUser,
@@ -207,8 +179,6 @@ export default function AuthPage({ mode }) {
 
           const firebaseUser = await loginWithFacebook()
 
-          await saveUserToDatabase(firebaseUser, 'facebook')
-
           const result = await store.loginWithFirebase({
             firebaseUser,
             termsAccepted: false
@@ -237,19 +207,7 @@ export default function AuthPage({ mode }) {
           return
         }
 
-        // Preserve existing OAuth flow for other providers
-        const res = await initiateOAuthLogin(
-          provider,
-          `${window.location.origin}/auth/callback`
-        )
-
-        if (res.mode === 'redirect' && res.url) {
-          window.location.href = res.url
-        } else {
-          navigate(
-            `/auth/callback?provider=${provider}&next=${encodeURIComponent(next)}`
-          )
-        }
+        setFormError('Nhà cung cấp đăng nhập này chưa được hỗ trợ.')
       } catch (error) {
         if (error.code === 'auth/popup-closed-by-user') {
           return
@@ -411,7 +369,7 @@ export default function AuthPage({ mode }) {
 
             <div className="flex items-center justify-between gap-3 pt-1 text-xs">
               <label className="flex items-center gap-2 text-zinc-400"><input type="checkbox" checked={form.remember} onChange={update('remember')} className="h-4 w-4 accent-violet-300" /> Ghi nhớ đăng nhập</label>
-              <button type="button" onClick={() => setNotice('Khôi phục mật khẩu hiện chưa sẵn sàng vì dịch vụ gửi email chưa được cấu hình.')} className="font-medium text-violet-300 transition hover:text-violet-200">Quên mật khẩu?</button>
+              <button type="button" onClick={() => navigate('/forgot-password')} className="font-medium text-violet-300 transition hover:text-violet-200">Quên mật khẩu?</button>
             </div>
           )}
           {errors.consent && <p className="text-[11px] text-rose-300">{errors.consent}</p>}

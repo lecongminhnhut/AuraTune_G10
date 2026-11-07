@@ -1,9 +1,9 @@
 
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../utils/authHelpers.js';
-import { db } from '../db.js';
+import { db } from '../repositories/authRepository.js';
 
-export function authenticateToken(req, res, next) {
+export async function authenticateToken(req, res, next) {
   const authorization = req.headers.authorization || '';
   const match = /^Bearer\s+(\S+)$/i.exec(authorization);
 
@@ -37,7 +37,15 @@ export function authenticateToken(req, res, next) {
     });
   }
 
-  const session = db.findSessionById(sessionId);
+  let session;
+  let user;
+  try {
+    session = await db.findSessionById(sessionId);
+    user = await db.findUserById(userId);
+  } catch (error) {
+    console.error('Authentication database lookup failed:', error.message);
+    return res.status(503).json({ status: 'error', message: 'Authentication storage is unavailable.' });
+  }
 
   if (
     !session ||
@@ -52,8 +60,6 @@ export function authenticateToken(req, res, next) {
       message: 'Session is invalid, expired or revoked'
     });
   }
-
-  const user = db.findUserById(userId);
 
   if (!user || user.is_banned) {
     return res.status(401).json({

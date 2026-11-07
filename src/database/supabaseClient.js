@@ -14,12 +14,14 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 
 const envUrl = process.env.SUPABASE_URL;
-const envKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY; 
+// This client is backend-only. Auth tables contain password hashes and session
+// tokens, so never use the public anon key for server-side writes.
+const envKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
 
 export const supabase = (envUrl && envKey) ? createClient(envUrl, envKey) : null;
 
 if (!supabase) {
-  console.warn("⚠️ CẢNH BÁO: Thiếu biến môi trường SUPABASE.");
+  console.warn('Supabase is disabled. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in src/.env.');
 }
 
 

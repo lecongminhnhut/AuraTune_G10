@@ -46,6 +46,7 @@ export async function loginWithEmail(email, password) {
 // Đăng nhập bằng Google OAuth
 export async function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
 
   const result = await signInWithPopup(auth, provider);
 
