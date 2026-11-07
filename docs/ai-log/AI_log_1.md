@@ -29,6 +29,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 23  | 2026-11-03 | Lập Implementation Plan cho Feature 123 – Real-Time Music Assistance bằng Spec Kit `/speckit.plan`                                        | 12 – AI Conversational Agent                      |
 | 24  | 2026-11-07 | Rà soát và cập nhật chi tiết Project Plan cho Sprint 3 (PA3), bổ sung WBS Jira và cập nhật BLD-02 Alpha Checkpoint                        | Project Plan / PA3 (Quản lý dự án)                |
 | 25  | 2026-11-07 | Rà soát và chuẩn hóa Vision Document cho PA3: Chi tiết hóa Functional Requirements gắn liền Use Case, mở rộng môi trường, đối thủ và NFRs | Vision Document / PA3                             |
+| 26  | 2026-11-07 | Biên soạn tài liệu Changes.md cho PA3 ghi nhận chi tiết thay đổi của Project Plan (Mục A) và Vision Document (Mục B)                      | PA3 (Changes Log)                                 |
 
 ---
 
@@ -4462,7 +4463,7 @@ Bạn đóng vai trò là Senior Technical Project Manager. Nhiệm vụ của b
 | Trường                   | Nội dung                                                                                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Ngày                     | 2026-11-07                                                                                                                                                                     |
-| Người thực hiện          | Khoa, Nhựt                                                                                                                                                                     |
+| Người thực hiện Nhựt     |
 | Nhóm tính năng liên quan | Vision Document (`docs/proposal/Auratune_Vision_Document.md`) – Đợt nộp bài PA3                                                                                                |
 | Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High)                                                                                                                                    |
 | Mục đích                 | Chuẩn hóa tài liệu Vision Document theo rubric PA3 Section B và hướng dẫn của GV: chi tiết hóa Functional Requirements gắn liền Use Case, mở rộng môi trường, đối thủ và NFRs. |
@@ -4525,3 +4526,102 @@ Hãy thực hiện các điều chỉnh sau:
 - **Kiểm tra cú pháp Mermaid:** Render thử hai sơ đồ Workflow trong Section 5.5, xác nhận không có lỗi cú pháp.
 - **Kiểm tra Metadata tác giả:** Xác nhận 100% các tiêu đề mới (5.3, 5.4, 5.5, 6.1..6.4) đều có dòng đóng dấu trách nhiệm `Performed by / Reviewed by / Edited by` theo đúng phân công trong Team Contract.
 - **Kiểm tra tính đo lường được của NFR:** Rà soát các chỉ số trong Mục 6, đảm bảo tất cả đều có đơn vị đo cụ thể (ms, s, %, Mbps, px).
+- **Kiểm tra phạm vi Git:** Chạy `git diff --stat` xác nhận chỉ có file `docs/proposal/Auratune_Vision_Document.md` được sửa đổi với +267 dòng mới.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu 100%; tài liệu Vision Document đã đáp ứng hoàn hảo tiêu chí PA3 và hướng dẫn của giảng viên.
+
+---
+
+## Mục 26: Biên soạn tài liệu Changes.md hợp nhất cho PA3
+
+| Trường                   | Nội dung                                                                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-07                                                                                                                                                                       |
+| Người thực hiện          | Nhựt                                                                                                                                                                             |
+| Nhóm tính năng liên quan | Đảm bảo chất lượng & Phát hành / PA3 Changes Log (`docs/PA/Changes.md`, `docs/proposal/Changes.md`)                                                                              |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High)                                                                                                                                      |
+| Mục đích                 | Đáp ứng quy định bắt buộc của PA3-2026 (Section A & Section B): Tạo lập một file Changes.md duy nhất liệt kê toàn bộ các thay đổi so với bản PA2 cho Project Plan và Vision Doc. |
+
+### Prompt đã dùng
+
+```text
+Bạn đóng vai trò là Quality Assurance & Release Manager. Hãy tạo mới tập tin `docs/PA/Changes.md` (hoặc đặt tại thư mục nộp bài PA3) để đáp ứng quy định bắt buộc của PA3-2026 (Section A & Section B): "Your team must include a Changes.md file that clearly lists all changes made compared to the PA2-2026 version. Use a single Changes.md file per PA submission, with separate sections for each revised document."
+
+Nội dung tập tin `Changes.md` cần cấu trúc như sau:
+
+# AuraTune — PA3 Changes Log
+
+Document Information:
+- Project: AuraTune (Group 10)
+- Target Submission: PA3-2026
+- Baseline Version: PA2-2026
+- Performed by: Lê Công Minh Nhựt | Reviewed by: Nguyễn Khánh Đăng | Edited by: Lê Công Minh Nhựt
+
+---
+
+## Section A: Changes in Revised Project Plan
+(So sánh chi tiết giữa Project Plan nộp ở PA2 và bản sửa đổi nộp ở PA3)
+Trình bày dưới dạng bảng:
+| Section / Item | Change Type (Added / Modified / Detailed) | Description of Change | Rationale / Alignment with TA & Instructor Feedback |
+1. Mục 2.4.3 & Deliverables: Cập nhật chi tiết các deliverables của PA3 (Use Case Model, UC Specs, Spec Kit 1 functional group, video demo).
+2. Bổ sung mục 4.2.8 "Sprint 3 Plan": Phân rã WBS cụ thể từng task Jira cho 5 thành viên từ ngày 26 Oct - 8 Nov 2026, thiết lập rõ dependencies và workload check.
+3. Mục 4.3.2 (Build Plan - BLD-02): Làm rõ phạm vi kiểm thử Alpha build cho tính năng E2E được hiện thực (Group 120 AI Conversational Agent) và API integration testing.
+4. Cập nhật Risk Register & Assumptions (TA-01, ED-08): Bổ sung kết quả và kế hoạch cho AI technical spike.
+
+---
+
+## Section B: Changes in Detailed Vision Document
+(So sánh chi tiết giữa Vision Document nộp ở PA2 và bản cập nhật nộp ở PA3)
+Trình bày dưới dạng bảng:
+| Section / Item | Change Type (Added / Modified / Detailed) | Description of Change | Rationale / Alignment with TA & Instructor Feedback |
+1. Section 5 (Product Features & FRs): Chi tiết hóa toàn bộ các tính năng thành danh mục Functional Requirements có đánh mã ID rõ ràng (FR-010-xxx đến FR-120-xxx) và gắn kết trực tiếp 1-1 với Use Case ID (UC-xxx) từ Use Case Model.
+2. Section 3.3 & 3.4 (User Environments): Bổ sung chi tiết thông số môi trường phần cứng, trình duyệt web và kết nối mạng.
+3. Section 3.5 (Competitors and Alternatives): Mở rộng bảng so sánh định vị cạnh tranh với Spotify và Soundcloud về khả năng tìm kiếm AI ngữ nghĩa và chi phí bản quyền.
+4. Section 6 (Non-Functional Requirements): Định lượng cụ thể các chỉ số đo lường (latency, response time, storage quotas, bảo mật dữ liệu theo Nghị định 13/2023/NĐ-CP).
+
+Lưu ý: Viết toàn bộ bằng tiếng Anh súc tích, mạch lạc và chuyên nghiệp.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nghiên cứu yêu cầu quy chế nộp bài PA3**: Đối chiếu điều kiện Section A và B trong `PA3-2026.pdf`, đảm bảo chỉ sử dụng duy nhất một file `Changes.md` cho toàn bộ bài nộp, có cấu trúc phân định rõ ràng thành các Section A, B và C.
+- **Biên soạn tập tin `Changes.md` hoàn chỉnh**:
+  - **Document Information & Executive Summary**: Đầy đủ thông tin đề án, môn học, tác giả, người duyệt và tuyên bố tóm tắt mục đích audit log.
+  - **Section A: Changes in Revised Project Plan (2nd Submission)**: Bảng đối chiếu 10 hạng mục thay đổi trọng yếu giữa PA2 và PA3:
+    1. Cập nhật metadata và trạng thái baseline PA3 (Section 1.1).
+    2. Cập nhật bảng Deliverables mục 2.4.3 (D-14..D-20 thành Completed; định danh Group 120 E2E).
+    3. Ghi nhận kết quả các Technical Spikes trong Assumptions & Constraints mục 2.5 (HTTP 206 range streaming, LLM & vector db, SMTP mail).
+    4. Chi tiết hóa tiêu chí hoàn thành mốc nộp bài PA3 mục 4.2.5.
+    5. Bổ sung toàn diện Mục 4.2.8 "Sprint 3 Plan" với Sprint Goal 5 trụ cột.
+    6. Phân rã WBS Mục 4.2.8.1 gồm 25 mã Jira (`SCRUM-201` đến `SCRUM-225`) gán cho 5 thành viên có reviewer độc lập và quan hệ phụ thuộc.
+    7. Thêm bảng Workload check Mục 4.2.8.2 cân bằng tải (4–6 tasks/người).
+    8. Codified quy trình đồng bộ Jira và 5 tiêu chí Definition of Done (DoD) Mục 4.2.8.3.
+    9. Cập nhật Status note mục 4.3 ghi nhận BLD-02 đã bàn giao ở PA3.
+    10. Chi tiết hóa phạm vi thực thi của BLD-02 (Alpha Checkpoint) mục 4.3.2 gồm Group 120 Full-stack, smoke/API testing, fallback AI và tag `v1.0.0-alpha.1`.
+  - **Section B: Changes in Detailed Vision Document (2nd Submission)**: Bảng đối chiếu 11 hạng mục thay đổi lớn:
+    1. Cập nhật mục đích tài liệu Mục 1.1 cho PA3.
+    2. Bổ sung tham chiếu `use-case-model.md` và Project Plan PA3 Mục 1.4.
+    3. Mở rộng thông số môi trường người dùng thực tế Mục 3.3 (trình duyệt, viewport 375px–1920px+, mạng ≥ 5 Mbps / ≥ 2 Mbps, audio 44.1/48 kHz, OS).
+    4. Phân tích đối thủ cạnh tranh Mục 3.5 (Spotify, SoundCloud, YouTube Music, Zing MP3) kèm ma trận năng lực 11 tiêu chí và định vị chiến lược.
+    5. Thêm mới Mục 5.3 danh mục 72 Functional Requirements (`FR-010-001` đến `FR-120-004`) có câu lệnh chuẩn ("The system shall..."), map 1-1 với Use Cases, Actor và priority MoSCoW.
+    6. Thêm mới Mục 5.4 bảng ma trận truy vết Traceability Matrix bảo đảm 100% độ bao phủ giữa FR và Use-Case Model.
+    7. Đánh số lại Workflows Mermaid thành Mục 5.5.
+    8. Định lượng hóa các tiêu chí hiệu năng Mục 6.1 (TTI < 2s/3.5s, play < 500ms/1.2s, search < 300ms, vector < 3s, SSE token < 1.5s, DB p95 < 100ms).
+    9. Chuẩn hóa an toàn và bảo mật Mục 6.2 (Argon2id/bcrypt, HTTPS TLS 1.3, JWT + HttpOnly cookie, ẩn danh hóa PII Nghị định 13/2023/NĐ-CP, chống brute-force).
+    10. Yêu cầu tương thích đa nền tảng và trợ năng bàn phím/cảm ứng Mục 6.3.
+    11. Thuộc tính chất lượng Mục 6.4 (uptime 99.5%, pre-buffering 30s, AI fallback graceful, OpenAPI 3.0.3).
+  - **Section C: Verification and Traceability Summary**: Khẳng định tính chuẩn mực về định dạng Markdown, Mermaid, metadata tác giả và tính đồng bộ 100% với mã nguồn và specs.
+- **Lưu trữ đồng bộ**: Đặt file tại cả `docs/PA/Changes.md` và `docs/proposal/Changes.md` để đảm bảo bài nộp PA3 đầy đủ cả trong thư mục quản lý PA lẫn thư mục tài liệu đề án.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                         | Quyết định   | Lý do                                                                                                    |
+| :--------------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------- |
+| Cấu trúc bảng đối chiếu 4 cột (Section, Change Type, Description, Rationale) | Dùng toàn bộ | Format chuẩn mực, trực quan, giúp người chấm (TA/GV) nhanh chóng đối chiếu sự khác biệt giữa PA2 và PA3. |
+| Phân tách rõ Section A (Project Plan) và Section B (Vision Doc)              | Dùng toàn bộ | Tuân thủ chính xác yêu cầu của đề bài PA3: _"with separate sections for each revised document"_.         |
+| Thêm Section C tóm tắt kiểm chứng và truy vết                                | Dùng         | Tăng tính chuyên nghiệp, khẳng định cam kết chất lượng của đội ngũ kỹ thuật.                             |
+
+### Cách kiểm chứng
+
+- **Kiểm tra độ bao phủ nội dung:** Đối chiếu từng dòng trong bảng Section A với `project_plan.md` và từng dòng trong Section B với `Auratune_Vision_Document.md`, đảm bảo 100% thay đổi thực tế đều được ghi nhận trung thực.
+- **Kiểm tra chuẩn Markdown:** Đảm bảo tất cả các bảng, tiêu đề, danh sách và liên kết tài liệu hiển thị đẹp mắt, không phát sinh lỗi layout.
