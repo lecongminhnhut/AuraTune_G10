@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useStore } from '../../context/AppStore.jsx'
 import { navigate } from '../../utils/navigation.jsx'
+import { linkFacebookForAccount } from '../../services/firebaseAuth.js'
 
 export default function AccountSettings() {
   const store = useStore()
   const user = store.currentUser
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [providerBusy, setProviderBusy] = useState(false)
 
   if (!user) {
     return (
@@ -24,16 +26,43 @@ export default function AccountSettings() {
   const hasFacebook = linkedProviders.includes('facebook')
   const hasLocalPassword = !!user.hasLocalPassword || !!user.passwordHash
 
-  const handleUnlink = (provider) => {
+  const handleUnlink = async (provider) => {
     setErrorMsg('')
     setSuccessMsg('')
-    const res = store.unlinkOAuthProvider(provider)
+    setProviderBusy(true)
+    const res = await store.unlinkOAuthProvider(provider)
+    setProviderBusy(false)
     if (res.ok) {
       setSuccessMsg(res.message)
       store.toast(res.message, 'success')
     } else {
       setErrorMsg(res.error)
       store.toast(res.error, 'error')
+    }
+  }
+
+  const handleLinkFacebook = async () => {
+    setErrorMsg('')
+    setSuccessMsg('')
+    setProviderBusy(true)
+    try {
+      const firebaseUser = await linkFacebookForAccount()
+      const result = await store.linkFacebook(firebaseUser)
+      if (!result.ok) {
+        setErrorMsg(result.error)
+        store.toast(result.error, 'error')
+        return
+      }
+      setSuccessMsg(result.message)
+      store.toast(result.message, 'success')
+    } catch (error) {
+      if (error.code !== 'auth/popup-closed-by-user') {
+        const message = error.message || 'Không thể xác thực Facebook.'
+        setErrorMsg(message)
+        store.toast(message, 'error')
+      }
+    } finally {
+      setProviderBusy(false)
     }
   }
 
@@ -106,11 +135,13 @@ export default function AccountSettings() {
               <p className="text-xs text-zinc-400">{hasFacebook ? 'Đã liên kết' : 'Chưa liên kết'}</p>
             </div>
             {hasFacebook ? (
-              <button type="button" onClick={() => handleUnlink('facebook')} className="rounded-full border border-rose-400/30 bg-rose-500/10 px-3.5 py-1 text-xs font-semibold text-rose-300 hover:bg-rose-500/20">
+              <button type="button" disabled={providerBusy} onClick={() => handleUnlink('facebook')} className="rounded-full border border-rose-400/30 bg-rose-500/10 px-3.5 py-1 text-xs font-semibold text-rose-300 hover:bg-rose-500/20 disabled:opacity-50">
                 Hủy liên kết
               </button>
             ) : (
-              <span className="text-xs text-zinc-500">Chưa kết nối</span>
+              <button type="button" disabled={providerBusy} onClick={handleLinkFacebook} className="rounded-full border border-[#1877f2]/40 bg-[#1877f2]/15 px-3.5 py-1 text-xs font-semibold text-blue-200 hover:bg-[#1877f2]/25 disabled:opacity-50">
+                {providerBusy ? 'Đang xử lý…' : 'Liên kết Facebook'}
+              </button>
             )}
           </div>
         </div>

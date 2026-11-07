@@ -7,7 +7,14 @@ export const API_BASE_URL = typeof import.meta !== 'undefined' && import.meta.en
   ? import.meta.env.VITE_API_BASE_URL
   : 'http://localhost:5000/api/v1';
 
-export async function apiFetch(url, options = {}, authContext = {}) {
+let sharedAuthContext = {};
+let refreshInFlight = null;
+
+export function configureAuthContext(authContext = {}) {
+  sharedAuthContext = authContext;
+}
+
+export async function apiFetch(url, options = {}, authContext = sharedAuthContext) {
   const { getAccessToken, refreshSession, onSessionRevoked } = authContext;
 
   const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
@@ -31,8 +38,17 @@ export async function apiFetch(url, options = {}, authContext = {}) {
   try {
     let response = await fetch(fullUrl, fetchOptions);
 
-    if (response.status === 401 && refreshSession && !fullUrl.includes('/auth/refresh')) {
-      const refreshResult = await refreshSession();
+    const isCredentialRequest = /\/auth\/(?:login|register|forgot-password|reset-password|refresh|firebase\/exchange|oauth\/(?:login|callback))(?:$|\?)/.test(fullUrl);
+    if (
+      response.status === 401 &&
+      refreshSession &&
+      !isCredentialRequest &&
+      (currentToken || headers.has('Authorization'))
+    ) {
+      refreshInFlight ??= Promise.resolve()
+        .then(() => refreshSession())
+        .finally(() => { refreshInFlight = null; });
+      const refreshResult = await refreshInFlight;
       if (refreshResult && refreshResult.ok && refreshResult.accessToken) {
         headers.set('Authorization', `Bearer ${refreshResult.accessToken}`);
         response = await fetch(fullUrl, { ...fetchOptions, headers });
@@ -50,6 +66,35 @@ export async function apiFetch(url, options = {}, authContext = {}) {
 }
 
 export const authApi = {
+  async firebaseExchange(firebaseIdToken, termsAccepted = false) {
+    if (!firebaseIdToken) {
+      throw new Error('Firebase ID Token is required');
+    }
+
+    const response = await apiFetch('/auth/firebase/exchange', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${firebaseIdToken}`
+      },
+      body: JSON.stringify({
+        terms_accepted: termsAccepted === true
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        result.message || 'Firebase Token Exchange failed'
+      );
+      error.status = response.status;
+      error.code = result.code;
+      throw error;
+    }
+
+    return result;
+  },
+
   async register(data) {
     const res = await apiFetch('/auth/register', {
       method: 'POST',
@@ -87,6 +132,17 @@ export const authApi = {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: JSON.stringify({ provider }),
+    });
+    return res.json();
+  },
+
+  async linkFacebook(firebaseIdToken, accessToken) {
+    const res = await apiFetch('/auth/oauth/link-facebook', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'X-Firebase-ID-Token': firebaseIdToken,
+      },
     });
     return res.json();
   },
