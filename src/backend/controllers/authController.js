@@ -16,6 +16,8 @@ import {
   setRefreshTokenCookie
 } from '../utils/authHelpers.js';
 
+import { supabase } from '../../database/supabaseClient.js';
+
 // POST /api/v1/auth/register (Spec 011)
 export async function register(req, res) {
   try {
@@ -481,4 +483,33 @@ export async function resetPassword(req, res) {
   });
 }
 
+export const syncUser = async (req, res) => {
+  try {
+    const { uid, email, displayName, photoURL, provider } = req.body;
 
+    if (!uid || !email) {
+      return res.status(400).json({ error: 'Thiếu thông tin uid hoặc email' });
+    }
+
+    const { data, error } = await supabase
+      .from('users')
+      .upsert([
+        {
+          user_id: uid,
+          email: email,
+          name: displayName || email.split('@')[0],
+          role: 'user'
+        }
+      ], {
+        onConflict: 'user_id' 
+      })
+      .select();
+
+    if (error) throw error;
+
+    return res.status(200).json({ success: true, user: data[0] });
+  } catch (error) {
+    console.error('Lỗi lưu user vào Supabase:', error.message);
+    return res.status(500).json({ error: 'Lỗi server khi đồng bộ dữ liệu' });
+  }
+};

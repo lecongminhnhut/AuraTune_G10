@@ -11,7 +11,8 @@ import {
   oauthUnlink,
   refreshSession,
   register,
-  resetPassword
+  resetPassword,
+  syncUser
 } from '../controllers/authController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
 import { linkFacebook } from '../controllers/firebaseExchangeController.js';
@@ -36,5 +37,7 @@ router.post('/logout', logout);
 router.post('/logout-all', authenticateToken, logoutAll);
 router.get('/sessions', authenticateToken, getSessions);
 router.get('/me', authenticateToken, getMe);
+
+router.post('/sync', syncUser);
 
 export default router;

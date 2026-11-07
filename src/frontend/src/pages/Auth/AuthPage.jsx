@@ -88,6 +88,26 @@ export default function AuthPage({ mode }) {
     return Object.keys(nextErrors).length === 0
   }
 
+    const saveUserToDatabase = async (firebaseUser, providerName) => {
+      try {
+        const response = await fetch('http://localhost:3000/api/v1/auth/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            displayName: firebaseUser.displayName,
+            photoURL: firebaseUser.photoURL,
+            provider: providerName
+          })
+        });
+        const data = await response.json();
+        console.log("Đã đồng bộ với Backend:", data);
+      } catch (error) {
+        console.error("Lỗi gọi API đồng bộ:", error);
+      }
+    };
+
     const handleSubmit = async (event) => {
       event.preventDefault()
 
@@ -97,6 +117,7 @@ export default function AuthPage({ mode }) {
       if (!validate()) return
 
       if (isRegister && isGoogleFirebaseUser(auth.currentUser) && auth.currentUser.email?.toLowerCase() === form.email.trim().toLowerCase()) {
+        await saveUserToDatabase(auth.currentUser, 'google')
         const result = await store.loginWithFirebase({ firebaseUser: auth.currentUser, termsAccepted: form.consent && form.termsConsent })
         if (!result.ok) {
           setFormError(result.error || 'Không thể hoàn tất đăng ký.')
@@ -115,6 +136,10 @@ export default function AuthPage({ mode }) {
         if (result.field) setErrors((previous) => ({ ...previous, [result.field]: result.error }))
         else setFormError(result.error || 'Không thể xác thực tài khoản.')
         return
+      }
+
+      if (auth.currentUser) {
+        await saveUserToDatabase(auth.currentUser, 'email')
       }
 
       store.toast(isRegister ? `Tạo tài khoản thành công. Xin chào ${result.user.displayName}!` : `Đăng nhập thành công. Xin chào ${result.user.displayName}!`)
@@ -146,6 +171,8 @@ export default function AuthPage({ mode }) {
             )
             return
           }
+
+          await saveUserToDatabase(firebaseUser, 'google')
 
           const result = await store.loginWithFirebase({
             firebaseUser,
@@ -179,6 +206,8 @@ export default function AuthPage({ mode }) {
           }
 
           const firebaseUser = await loginWithFacebook()
+
+          await saveUserToDatabase(firebaseUser, 'facebook')
 
           const result = await store.loginWithFirebase({
             firebaseUser,
