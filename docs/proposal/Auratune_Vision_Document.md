@@ -8,7 +8,7 @@
 
 The Vision Document is developed to identify and describe the main user needs, product goals, and key features that AuraTune aims to provide. It helps the development team understand the problems the product intends to solve, its target users, and the value the system delivers.
 In addition, the Vision Document provides an overview of AuraTune’s development direction, including the product’s positioning, stakeholders, user needs, key features, and non-functional requirements. It serves as a basis for establishing a shared understanding of the product scope and supports requirements analysis, design, implementation, and testing activities in subsequent stages of the project.
-This initial version of the document is prepared as part of PA2-2026. It will be reviewed and updated in PA3-2026 based on feedback from the teaching assistants (TAs), further research, and agreement among the development team.
+This second revision of the document is prepared as part of PA3-2026. It formalizes detailed Functional Requirements mapped directly to the System-Level Use-Case Model, establishes measurable Non-Functional Requirements, details realistic user environments, and expands competitor analysis based on feedback from the teaching assistants (TAs) and course requirements. All changes from the PA2 baseline are tracked in `docs/PA/Changes.md`.
 
 ## 1.2. Scope of the Document
 
@@ -43,12 +43,14 @@ This section lists the documents and information sources used to develop the Vis
 |  |  |  |
 | :- | :- | :- |
 | **No.** | **Document** | **Purpose** |
-| 1 | **PA2-2026 - Project Assignment 2**, Introduction to Software Engineering | Defines the required sections and evaluation criteria for the Vision Document in PA2. |
-| 2 | **Project Proposal - PA1**, AuraTune | Provides background information about the project idea, goals, scope, and planned features. |
-| 3 | **Existing Application Survey - PA1**, AuraTune | Supports the analysis of alternative solutions, competing applications, and the user needs that AuraTune aims to address. |
-| 4 | **Project Plan (SPMP) - PA2**, AuraTune | Defines the agreed project scope, functional groups (G01–G12), sprint schedule, and the Assumptions and Constraints register. |
-| 5 | **Team Contract - PA1**, AuraTune | Establishes team roles, workflow agreements, and feature ownership referenced across project artifacts. |
-| 6 | **Vision Template - rup_vision_sp.docx** | Provides the structure and guidance for preparing the Vision Document. |
+| 1 | **PA3-2026 - Project Assignment 3**, Introduction to Software Engineering | Defines the required sections, detailed functional/non-functional requirements, and evaluation criteria for the Vision Document (2nd submission). |
+| 2 | **Project Assignment 2 (PA2-2026)**, Introduction to Software Engineering | Baseline document for initial requirements, vision scope, and deliverables. |
+| 3 | **Project Proposal - PA1**, AuraTune | Provides background information about the project idea, goals, scope, and planned features. |
+| 4 | **System-Level Use-Case Model - PA3**, AuraTune (`docs/requirements/use-case-model.md`) | Authoritative source of actors, system boundaries, and 12-group use-case specifications directly mapped to Section 5 FRs. |
+| 5 | **Existing Application Survey - PA1**, AuraTune | Supports the analysis of alternative solutions, competing applications, and the user needs that AuraTune aims to address. |
+| 6 | **Project Plan (SPMP) - PA3**, AuraTune | Defines the agreed project scope, functional groups (G01–G12), sprint schedule, and the Assumptions and Constraints register. |
+| 7 | **Team Contract - PA1**, AuraTune | Establishes team roles, workflow agreements, and feature ownership referenced across project artifacts. |
+| 8 | **Vision Template - rup_vision_sp.docx** | Provides the structure and guidance for preparing the Vision Document. |
 
 
 # **2. Positioning**
@@ -107,11 +109,26 @@ Users are the individuals who directly interact with AuraTune's core features. T
 
 *Performed by: Nguyễn Khánh Đăng, Reviewed by: Thái Hoàng, Edited by: Nguyễn Khánh Đăng*
 
-The AuraTune application will be accessed and operated under the following environmental conditions:
-  - **Platform Constraints**: AuraTune is developed as a responsive Web Application. It is accessed through recent versions of modern desktop browsers (Chrome, Edge, Firefox, Safari) and mobile browsers (Chrome on Android, Safari on iOS).
-  - **No Native Applications**: The project focuses solely on the web platform; no native mobile applications for iOS or Android will be developed, and legacy web browsers are not supported.
-  - **Playback Technology**: The environment relies on standard HTML5 audio playback capabilities (\<audio\> element) without requiring Digital Rights Management (DRM) or custom streaming protocols.
-  - **Connectivity Requirements**: Users are assumed to have a stable internet connection to stream audio, fetch AI recommendations, and interact with the database. Offline playback functionality is strictly out of scope.
+The AuraTune application operates as a cloud-hosted, responsive single-page web application (SPA). It is accessed and operated under the following realistic hardware, software, network, and peripheral conditions:
+
+- **Browser Compatibility**: AuraTune supports modern evergreen web browsers on desktop, laptop, tablet, and mobile platforms. The minimum supported browser versions are:
+  - Google Chrome: Version 110 or later (Windows, macOS, Linux, Android)
+  - Microsoft Edge: Version 110 or later (Windows, macOS)
+  - Mozilla Firefox: Version 115 ESR or later (Windows, macOS, Linux)
+  - Apple Safari: Version 16 or later (macOS, iOS, iPadOS)
+  Legacy browsers (e.g., Internet Explorer, pre-Chromium Edge) are explicitly unsupported.
+- **Display Resolutions and Responsive Breakpoints**: The web client provides an adaptive layout tailored to diverse form factors:
+  - *Desktop / Laptop (Wide Viewport)*: 1920×1080 (FHD), 1440×900, 1366×768, with a minimum desktop width of 1024px displaying the full 3-column layout (collapsible navigation sidebar, main content area, persistent now-playing bar, and optional right drawer).
+  - *Tablet (Medium Viewport)*: 768px to 1023px, featuring a collapsed icon sidebar and slide-over panels for the queue and conversational agent.
+  - *Mobile Phone (Compact Viewport)*: 375px to 767px (e.g., iPhone 13/14/15, Samsung Galaxy S21/S22/S23), replacing the desktop sidebar with a bottom tab bar, full-screen overlay for the full player, and responsive drawer sheets.
+- **Network Bandwidth and Latency**:
+  - *Broadband / Wi-Fi*: Recommended download bandwidth of ≥ 5 Mbps and latency < 100ms to ensure instant audio playback, smooth seeking, and fast vector search responses.
+  - *Mobile Data (4G / 5G)*: Minimum download bandwidth of ≥ 2 Mbps. Under intermittent or constrained connections, the player prioritizes audio streaming over high-resolution cover art loading.
+  - Offline playback is strictly out of scope; an active internet connection is required to authenticate, fetch audio streams, and interact with backend AI services.
+- **Audio Output and Peripherals**:
+  - Operates using the standard HTML5 `<audio>` engine without custom browser plugins or proprietary Digital Rights Management (DRM) software.
+  - Audio output is routed to any system-default stereo output device (built-in speakers, 3.5mm wired headphones, USB DACs, Bluetooth headsets/speakers) supporting 44.1 kHz / 48 kHz 16-bit PCM playback.
+- **Client Operating Systems**: Windows 10/11, macOS 12 Monterey or later, Ubuntu 20.04/22.04 LTS, Android 11 or later, and iOS 15 or later.
 
 ## 3.4. Summary of Key Stakeholder or User Needs
 
@@ -141,48 +158,45 @@ Related features follow the Project Proposal (Section 5) and the Team Contract; 
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
-Listeners who want to stream music today have three alternatives: use Spotify, use Zing MP3, or keep the habits they already have. Spotify and Zing MP3 are the two applications examined in the PA1 UI/UX survey. Spotify is also a possible source of song metadata for AuraTune, which is described in the Product Overview.
+Listeners seeking digital music streaming and discovery today interact with established mainstream commercial platforms including Spotify, SoundCloud, YouTube Music, and regional Vietnamese services such as Zing MP3. While these platforms provide extensive commercial libraries, they impose significant subscription paywalls for advanced AI capabilities and lack direct channels for open-copyright streaming and indie collaboration.
 
-### 3.5.1. Alternatives
-
-*Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
-
-|  |  |  |  |
-| :- | :- | :- | :- |
-| **Alternative** | **Strengths** | **Weaknesses and limits** | **What AuraTune takes from it** |
-| Spotify | A familiar layout with a sidebar, content sections and cards. A dark theme that highlights cover art. A clear playlist page with a prominent Play button. A bottom player that stays available. AI features such as the AI DJ and Prompted Playlists | The AI DJ is for Premium subscribers only. Prompted Playlists were rolled out to Premium subscribers in the U.S. and Canada in January 2026, so the team has not verified that they are available to Vietnamese listeners. Actions that appear only on hover need another form on touch devices (survey, Section 2.2) | The dark theme, the Card component, the song row layout and a player fixed in the main layout |
-| Zing MP3 | Familiar to Vietnamese listeners. A lyrics view that follows the song and highlights the current line. Free to use, with paid subscription tiers for extra features | No AI-assisted discovery was observed in the PA1 survey, which covered layout, playback controls and lyrics. Some features are in paid tiers. Lyrics can be hard to read over cover-art backgrounds (survey, Section 3.1) | Smooth lyric scrolling, a highlighted current line, and enough contrast for the text |
-| Keeping the current habits | No effort to switch and no new account | Listeners must use several services to combine large catalogues, AI search and direct access to independent artists | None |
-
-### 3.5.2. Comparison of capabilities
+### 3.5.1. Detailed Competitor Analysis
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
-"Not assessed" means that the PA1 survey did not cover the point. The team extends the survey for these points if its understanding of the project requires it.
-|  |  |  |  |
-| :- | :- | :- | :- |
-| **Capability** | **Spotify** | **Zing MP3** | **AuraTune (planned)** |
-| Sidebar navigation | Yes | Yes | Yes |
-| Content sections with cards | Yes | Yes | Yes |
-| Player fixed at the bottom | Yes | Yes | Yes, in the main layout |
-| Lyrics view | Yes | Yes, with the current line highlighted | Synchronized lyrics, when lyrics data is available |
-| AI features driven by natural language | AI DJ and Prompted Playlists, for Premium subscribers | Not observed | AI semantic search, AI-assisted playlists and an AI conversational host |
-| Open-copyright catalogue with direct upload by independent artists | Not assessed | Not assessed | Yes (Proposal, Sections 1 and 5) |
-| Personal listening analytics | Not assessed | Not assessed | Yes |
+| Competitor Platform | Key Strengths | Major Weaknesses & Bottlenecks | AuraTune Architectural Differentiation |
+| :--- | :--- | :--- | :--- |
+| **Spotify** | Market leader with 100M+ commercial tracks, sophisticated collaborative filtering, polished multi-device UI, dark theme, and generative features (AI DJ, Prompted Playlists). | Generative AI features (AI DJ) require recurring monthly Premium subscriptions ($10.99/mo). Direct music publishing requires third-party aggregators (DistroKid, TuneCore). Semantic lyric-concept search is restricted. | Provides free, open AI semantic search and conversational agent access. Direct artist publishing without distributor intermediaries. Clean open-copyright model. |
+| **SoundCloud** | Premier platform for grassroots indie artists, open uploads, direct commenting on audio waveforms, and underground remix culture. | Lacks semantic AI vector search (limited to basic metadata keywords/tags). No native LLM conversational companion. Interface cluttered with intrusive advertisements on free tiers. | Implements vector embedding search for lyric fragments and vague mood descriptions. Integrates context-aware AI music host with direct queue controls. |
+| **YouTube Music** | Vast catalogue including live performances, covers, video-audio integration, and strong Google search recommendation graph. | Discovery relies primarily on past YouTube watch history rather than nuanced conversational guidance. No open prompt-driven playlist generation for free users. Heavy video data overhead. | Lightweight, audio-first responsive web client with dedicated AI conversational chat interface and transparent personal listening analytics. |
+| **Zing MP3** | Deep localization for Vietnamese listeners, synchronized karaoke lyrics display, high domestic brand awareness. | Discovery is strictly limited to exact keyword metadata matches; completely lacks AI semantic comprehension, vector search, or conversational DJ capabilities. | Adds LLM-driven intent parsing, mood vector retrieval, and collaborative playlist creation tailored for students and focused workers. |
 
-### 3.5.3. Position of AuraTune
+### 3.5.2. Systematic Capability Matrix
 
 *Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
 
-AuraTune does not aim to match the catalogue or the scale of commercial services. It is an academic, non-commercial project (Proposal, Section 4.1). Since Spotify already offers AI features, AuraTune does not claim that AI itself is new. Its position rests on four points taken from the Project Proposal:
-  - an open-copyright music model that gives independent artists a place to publish;
-  - semantic search by description, mood or lyric fragment, built on a vector database;
-  - an AI conversational host that acts as a DJ;
-  - a small social network with shared playlists, followed artists and personal listening statistics.
-**Sources checked on 20 October 2026.**
-  - Spotify AI announcements timeline: <https://www.annielytics.com/tools/ai-timeline/topic/spotify-announcement/>
-  - Zing MP3 application description: <https://apkmirror.com/apk/zalo-group/zing-mp3-2/zing-mp3-2-24-12-02-release/zing-mp3-24-12-02-android-apk-download>
-  - Zing MP3 subscription tiers: <https://dienmaycholon.com/kinh-nghiem-mua-sam/trai-nghiem-zing-mp3-phien-ban-moi-giao-dien-thu-hut-kho-nhac-phong-phu>
+| Product Capability / Feature | Spotify | SoundCloud | YouTube Music | Zing MP3 | AuraTune (Group 10) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Responsive Persistent Bottom Player** | Yes | Yes | Yes | Yes | **Yes** (HTML5, mini & full player) |
+| **Synchronized Lyrics Display** | Yes | No | Yes | Yes | **Yes** (Auto-scroll & highlight) |
+| **Exact Metadata Search (Title/Artist/Album)** | Yes | Yes | Yes | Yes | **Yes** (Diacritic-insensitive) |
+| **AI Semantic Search (Lyrics Fragment & Mood Vector)** | Limited | No | No | No | **Yes** (Vector database embeddings) |
+| **Interactive AI Conversational Host / DJ** | Premium only | No | No | No | **Yes** (Integrated text chat agent) |
+| **Prompt-Driven AI Playlist Synthesis** | Premium only | No | No | No | **Yes** (One-sentence prompt to playlist) |
+| **Collaborative Playlist Co-Curation** | Yes | No | Yes | No | **Yes** (Multi-user playlist editing) |
+| **Independent Artist Self-Publishing Studio** | Via Aggregator | Yes | Via Distributor | Via Label | **Yes** (AuraTune Studio upload & manage) |
+| **Detailed Listening Duration Analytics** | Wrapped (Annual) | Stats (Pro only)| Recap (Seasonal) | Limited | **Yes** (Real-time 7-day, 30-day, all-time) |
+| **Free-Tier Access to AI Features** | No | No | No | No | **Yes** (100% free academic prototype) |
+| **Strict Open-Copyright & Non-Commercial Safety** | No | No | No | No | **Yes** (CC0, public domain & licensed) |
+
+### 3.5.3. Strategic Positioning of AuraTune
+
+*Performed by: Thái Hoàng, Reviewed by: Nguyễn Thanh Huy, Edited by: Thái Hoàng*
+
+AuraTune operates within an academic, non-commercial research scope (Proposal Section 4.1). Rather than competing with commercial services on catalog volume, AuraTune differentiates itself by unifying three technological pillars:
+1. **Semantic and Conversational Music Discovery**: Democratizing AI-powered search by allowing listeners to find tracks through vague lyrical memories ("that song talking about raining in autumn") and natural mood prompts, guided by an interactive conversational host.
+2. **Open-Copyright & Independent Artist Launchpad**: Fostering an ethical, legally compliant music ecosystem where independent musicians directly publish, manage, and distribute original works without distributor fees or rights litigation risks.
+3. **Transparent Personal Analytics & Collaboration**: Offering listeners real-time ownership over their listening habits and facilitating collaborative playlist curation without subscription paywalls.
 
 # **4. Product Overview**
 
@@ -338,14 +352,185 @@ AuraTune serves three user roles:
 | G10 AI Recommendations | Personalized suggestions | Popular tracks on AuraTune and tracks from the listener's most-played artists and genres |
 | G12 AI Conversational Agent / Real-time Host | Conversation with the AI host | A message that the host is unavailable; all other features keep working |
 
-## 5.3. Key User Workflows
+## 5.3. Detailed Functional Requirements
+
+*Performed by: Lê Công Minh Nhựt, Nguyễn Khánh Đăng; Reviewed by: Mai Đăng Khoa; Edited by: Lê Công Minh Nhựt*
+
+To establish unambiguous traceability with the Use-Case Model (`docs/requirements/use-case-model.md`) and technical feature specifications (`specs/`), the system capabilities across all twelve functional groups (G01–G12) are formalized into explicit Functional Requirements (FR). Each requirement specifies precise system behavior ("The system shall..."), inputs, triggers, expected outcomes, participating actors, and MoSCoW prioritization.
+
+### 5.3.1. Group 010 (G01) — Account Registration and Sign-In
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-010-001** | The system shall register a new user account when a guest provides an email address, display name, and password meeting complexity rules (minimum 8 characters, letters and numbers), hashing the password with Argon2/bcrypt prior to database persistence. | `UC-010-001` | Guest | Must Have |
+| **FR-010-002** | The system shall authenticate user credentials and issue a dual-token session (15-minute JWT Access Token and 7-day rotating Refresh Token in a secure HttpOnly cookie) upon valid email and password submission. | `UC-010-002` | Guest / Listener | Must Have |
+| **FR-010-003** | The system shall authenticate users via Google OAuth 2.0 authorization code flow, automatically linking or provisioning the user profile and returning valid session credentials. | `UC-010-003` | Guest / Listener | Must Have |
+| **FR-010-004** | The system shall authenticate users via Facebook Login OAuth flow and provision active session credentials upon receiving verified profile claims. | `UC-010-004` | Guest / Listener | Should Have |
+| **FR-010-005** | The system shall exchange a valid, unrevoked Refresh Token cookie for a newly minted JWT Access Token when the active access token expires. | `UC-010-005` | Listener | Must Have |
+| **FR-010-006** | The system shall generate a cryptographically random, 15-minute time-limited reset token and dispatch a recovery email when a user requests password reset. | `UC-010-006` | Guest / Listener | Should Have |
+| **FR-010-007** | The system shall invalidate the active session record in the database and purge the client HttpOnly Refresh Token cookie upon user logout. | `UC-010-007` | Listener | Must Have |
+| **FR-010-008** | The system shall revoke all active session records across all devices associated with the user account upon a global logout request. | `UC-010-008` | Listener | Could Have |
+| **FR-010-009** | The system shall allow a user to unlink third-party OAuth providers (Google or Facebook) provided that a valid local email password has been established. | `UC-010-009` | Listener | Could Have |
+
+### 5.3.2. Group 020 (G02) — Home Dashboard
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-020-001** | The system shall dynamically aggregate and render modular content sections on the home screen (Hero Banner, Personalized Recommendations, Recently Played, Trending Charts, New Album Releases, Featured Artists, Suggested Public Playlists, and Genre Grid). | `UC-020-001` | Guest / Listener | Must Have |
+| **FR-020-002** | The system shall immediately initialize playback and populate the playback queue when a listener clicks the primary play action on any home recommendation card. | `UC-020-002` | Guest / Listener | Must Have |
+| **FR-020-003** | The system shall display the authenticated listener's recently streamed tracks ordered by last played timestamp with direct resume capability. | `UC-020-003` | Listener | Must Have |
+| **FR-020-004** | The system shall calculate platform-wide stream counts and render the Top 50 Trending Charts with dynamic period filters (Today, This Week, All Time) and genre selectors. | `UC-020-004` | Guest / Listener | Must Have |
+| **FR-020-005** | The system shall display newly uploaded and approved albums and tracks ordered by release date with release-type badges ("Single", "EP", "Album"). | `UC-020-005` | Guest / Listener | Should Have |
+
+### 5.3.3. Group 030 (G03) — Search and AI Semantic Search
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-030-001** | The system shall execute diacritic-insensitive, prefix-matching text search across song titles, artist names, album titles, and playlist names, returning categorized results within 1.0 second. | `UC-030-001` | Guest / Listener | Must Have |
+| **FR-030-002** | The system shall analyze natural-language lyric fragments and retrieve matching songs from the licensed catalog with matched text snippets highlighted. | `UC-030-002` | Guest / Listener | Must Have |
+| **FR-030-003** | The system shall convert abstract emotional prompts (e.g., "gentle acoustic melodies for late night study") into text embeddings and perform vector cosine similarity search to retrieve contextual tracks. | `UC-030-003` | Guest / Listener | Must Have |
+| **FR-030-004** | The system shall store the last 10 search queries in browser LocalStorage, supporting query re-execution and individual or full deletion. | `UC-030-004` | Guest / Listener | Should Have |
+
+### 5.3.4. Group 040 (G04) — Music Player (Full and Mini)
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-040-001** | The system shall control audio playback (play, pause, next track, and previous track with a 3-second restart threshold) using standard HTML5 audio APIs. | `UC-040-001` | Guest / Listener | Must Have |
+| **FR-040-002** | The system shall adjust audio volume smoothly between 0% and 100%, provide instantaneous mute toggling, and persist volume preference across page navigations. | `UC-040-002` | Guest / Listener | Must Have |
+| **FR-040-003** | The system shall seek to any arbitrary time position in the track via HTTP 206 Partial Content byte-range requests without requiring full audio buffer download. | `UC-040-003` | Guest / Listener | Must Have |
+| **FR-040-004** | The system shall toggle Shuffle playback (randomized queue order) and Repeat modes (Off, Repeat All, Repeat One). | `UC-040-004` | Guest / Listener | Must Have |
+| **FR-040-005** | The system shall synchronize lyrics display with current playback time, highlighting the active vocal line and auto-scrolling smoothly. | `UC-040-005` | Guest / Listener | Should Have |
+| **FR-040-006** | The system shall maintain an uninterrupted bottom mini-player during application routing and support one-click expansion to a modal/full-page player. | `UC-040-006` | Guest / Listener | Must Have |
+| **FR-040-007** | The system shall generate track sharing links using Web Share API or system clipboard copy. | `UC-040-007` | Guest / Listener | Should Have |
+| **FR-040-008** | The system shall render public user comments on track full view ordered chronologically with author avatars. | `UC-040-008` | Guest / Listener | Should Have |
+| **FR-040-009** | The system shall validate and persist public comments submitted by authenticated listeners on track pages. | `UC-040-009` | Listener | Should Have |
+| **FR-040-010** | The system shall allow comment authors and platform administrators to delete comments. | `UC-040-010` | Listener / Administrator | Should Have |
+
+### 5.3.5. Group 050 (G05) — Queue Management
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-050-001** | The system shall render an accessible queue drawer displaying the currently playing track and upcoming queue list (up to 50 tracks). | `UC-050-001` | Guest / Listener | Must Have |
+| **FR-050-002** | The system shall append selected songs to the end of the upcoming queue without interrupting active playback. | `UC-050-002` | Guest / Listener | Must Have |
+| **FR-050-003** | The system shall prioritize selected tracks using Play Next (LIFO), inserting them at index 0 of the upcoming queue to play immediately after the current song. | `UC-050-003` | Guest / Listener | Must Have |
+| **FR-050-004** | The system shall support drag-and-drop manual reordering of tracks within the upcoming playback queue. | `UC-050-004` | Guest / Listener | Should Have |
+| **FR-050-005** | The system shall allow listeners to remove individual tracks from the upcoming queue. | `UC-050-005` | Guest / Listener | Must Have |
+| **FR-050-006** | The system shall clear all upcoming tracks in the queue with a single action while preserving the current playing song. | `UC-050-006` | Guest / Listener | Must Have |
+| **FR-050-007** | The system shall export the current queue sequence into a newly created personal playlist. | `UC-050-007` | Listener | Could Have |
+
+### 5.3.6. Group 060 (G06) — Playlist Management and AI Playlist
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-060-001** | The system shall create custom playlists with title, description, and cover image, defaulting to Private visibility. | `UC-060-001` | Listener | Must Have |
+| **FR-060-002** | The system shall display playlist metadata, track count, total duration, and tracklist for any authorized playlist. | `UC-060-002` | Guest / Listener | Must Have |
+| **FR-060-003** | The system shall allow playlist owners to edit title, description, and Public/Private visibility. | `UC-060-003` | Listener | Must Have |
+| **FR-060-004** | The system shall allow owners to delete playlists with automatic cleanup of song mappings. | `UC-060-004` | Listener | Must Have |
+| **FR-060-005** | The system shall add tracks to playlists and prevent duplicate song additions. | `UC-060-005` | Listener / Collaborator | Must Have |
+| **FR-060-006** | The system shall remove tracks from playlists and re-index the sequence. | `UC-060-006` | Listener / Collaborator | Must Have |
+| **FR-060-007** | The system shall persist manual song reordering within a playlist. | `UC-060-007` | Listener / Collaborator | Should Have |
+| **FR-060-008** | The system shall load an entire playlist into the playback queue and start playback in sequential or shuffled order. | `UC-060-008` | Guest / Listener | Must Have |
+| **FR-060-009** | The system shall toggle track favorite status and maintain the dedicated "Liked Songs" collection. | `UC-060-009` | Listener | Must Have |
+| **FR-060-010** | The system shall synthesize a curated 10–20 song playlist from a single-sentence natural language prompt via LLM and vector search, allowing review and editing before saving. | `UC-060-010` | Listener | Must Have |
+| **FR-060-011** | The system shall enable invited collaborators to add, reorder, and remove tracks in shared collaborative playlists with contributor attribution. | `UC-060-011` | Listener / Collaborator | Should Have |
+| **FR-060-012** | The system shall allow listeners to bookmark public playlists into their personal library. | `UC-060-012` | Listener | Should Have |
+
+### 5.3.7. Group 070 (G07) — Listening History and Statistics
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-070-001** | The system shall log a playback history event in the database whenever a user listens to a song for at least 30 continuous seconds. | `UC-070-001` | System | Must Have |
+| **FR-070-002** | The system shall display a reverse-chronological list of recently played tracks for authenticated users. | `UC-070-002` | Listener | Must Have |
+| **FR-070-003** | The system shall allow listeners to remove individual song entries from their listening history. | `UC-070-003` | Listener | Should Have |
+| **FR-070-004** | The system shall permanently purge all listening history records and exclude them from future AI personalization profiles upon user confirmation. | `UC-070-004` | Listener | Should Have |
+| **FR-070-005** | The system shall calculate and render cumulative listening duration trends across daily (last 7 days), weekly, and monthly intervals. | `UC-070-005` | Listener | Should Have |
+| **FR-070-006** | The system shall compute and rank the listener's Top 10 artists and most-streamed genres over 4-week, 6-month, and all-time horizons. | `UC-070-006` | Listener | Should Have |
+
+### 5.3.8. Group 080 (G08) — Album Interaction
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-080-001** | The system shall display album metadata (cover art, title, artist, release year, total duration, track play counts) and tracklist. | `UC-080-001` | Guest / Listener | Must Have |
+| **FR-080-002** | The system shall load all album tracks into the playback queue in chronological sequence and commence playback upon clicking "Play Album". | `UC-080-002` | Guest / Listener | Must Have |
+| **FR-080-003** | The system shall play a selected album track directly and queue the remaining album tracks after it. | `UC-080-003` | Guest / Listener | Must Have |
+| **FR-080-004** | The system shall bookmark albums into the user's personal library for quick retrieval. | `UC-080-004` | Listener | Should Have |
+| **FR-080-005** | The system shall generate shareable permalinks to album detail pages. | `UC-080-005` | Guest / Listener | Should Have |
+
+### 5.3.9. Group 090 (G09) — Artist Profile and Studio
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-090-001** | The system shall render an artist's public profile including biography, avatar, top 5 streamed tracks, complete discography, and related playlists. | `UC-090-001` | Guest / Listener | Must Have |
+| **FR-090-002** | The system shall allow authenticated listeners to follow or unfollow artists and update follower counts in real time. | `UC-090-002` | Listener | Must Have |
+| **FR-090-003** | The system shall list all followed artists within the user's personal library. | `UC-090-003` | Listener | Should Have |
+| **FR-090-004** | The system shall provide a dedicated AuraTune Studio (`/studio`) dashboard restricted to artist accounts, displaying metrics on tracks, total plays, and listener trends. | `UC-090-004` | Artist | Must Have |
+| **FR-090-005** | The system shall upload original audio files (MP3/FLAC) and cover images to cloud media storage with mandatory rights confirmation. | `UC-090-005` | Artist | Must Have |
+| **FR-090-006** | The system shall allow artists to edit song metadata (title, genre, lyrics, release date, and album associations). | `UC-090-006` | Artist | Must Have |
+| **FR-090-007** | The system shall support soft-hiding published tracks from public discovery without deleting data. | `UC-090-007` | Artist | Should Have |
+| **FR-090-008** | The system shall permanently delete tracks uploaded by the artist and purge references from active queues. | `UC-090-008` | Artist | Should Have |
+
+### 5.3.10. Group 100 (G10) — AI Recommendations
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-100-001** | The system shall analyze user listening history, liked tracks, and skip rates to synthesize a multidimensional taste profile embedding vector. | `UC-100-001` | System | Must Have |
+| **FR-100-002** | The system shall generate a personalized recommended song feed on the home dashboard based on the user's taste profile. | `UC-100-002` | Listener | Must Have |
+| **FR-100-003** | The system shall provide curated mood and activity presets (Chill, Focus, Workout, Study, Sleep) dynamically filtering recommended tracks. | `UC-100-003` | Listener | Should Have |
+
+### 5.3.11. Group 110 (G11) — Administration
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-110-001** | The system shall provide administrators with a searchable, filterable list of all registered platform users, roles, and account statuses. | `UC-110-001` | Administrator | Must Have |
+| **FR-110-002** | The system shall suspend violating user accounts, record mandatory ban justification, and invalidate active sessions immediately. | `UC-110-002` | Administrator | Must Have |
+| **FR-110-003** | The system shall restore suspended user accounts upon administrative review. | `UC-110-003` | Administrator | Must Have |
+| **FR-110-004** | The system shall update user permission roles (`user`, `artist`, `admin`) while preventing administrators from demoting themselves. | `UC-110-004` | Administrator | Must Have |
+| **FR-110-005** | The system shall permit administrators to edit track metadata, hide infringing tracks, or permanently purge unauthorized content. | `UC-110-005` | Administrator | Must Have |
+| **FR-110-006** | The system shall allow administrators to delete toxic, offensive, or infringing comments platform-wide. | `UC-110-006` | Administrator | Must Have |
+| **FR-110-007** | The system shall render platform-wide metrics (total users, active sessions, audio streams, catalog size, and AI service latency). | `UC-110-007` | Administrator | Should Have |
+| **FR-110-008** | The system shall provide master toggles for AI services and an automated database reset/seeding tool for evaluation demos. | `UC-110-008` | Administrator | Should Have |
+
+### 5.3.12. Group 120 (G12) — AI Conversational Agent / Real-time Host
+
+| FR ID | Functional Requirement Statement | Mapped Use Case | Primary Actor | Priority |
+| :--- | :--- | :--- | :--- | :--- |
+| **FR-120-001** | The system shall render an interactive chat drawer with message history, typing indicators, auto-scroll, and quick-prompt chips. | `UC-120-001` | Listener | Must Have |
+| **FR-120-002** | The system shall parse user natural-language queries into structured intents (`play_music`, `queue_song`, `recommend_mood`, `ask_track_info`, `control_player`). | `UC-120-002` | Listener | Must Have |
+| **FR-120-003** | The system shall dispatch client-side actions to the music player and queue (e.g., adding recommended songs to queue) directly from conversation turns. | `UC-120-003` | Listener | Must Have |
+| **FR-120-004** | The system shall allow users to purge chat conversation history locally and reset conversation session context via `/clear` command or UI button. | `UC-120-004` | Listener | Should Have |
+
+---
+
+## 5.4. Functional Requirements to Use-Case Traceability Matrix
+
+*Performed by: Lê Công Minh Nhựt; Reviewed by: Nguyễn Thanh Huy; Edited by: Lê Công Minh Nhựt*
+
+The matrix below establishes 100% bidirectional traceability between the Functional Requirements defined in Section 5.3 and the System-Level Use-Case Model (`docs/requirements/use-case-model.md`).
+
+| Functional Group | Verified FR IDs | Mapped System Use Cases | Implementation Specification Reference | Verification Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **010 Authentication** | `FR-010-001` to `FR-010-009` | `UC-010-001` through `UC-010-009` | `specs/010-authentication/` (011, 012, 013) | Confirmed (100%) |
+| **020 Home Dashboard** | `FR-020-001` to `FR-020-005` | `UC-020-001` through `UC-020-005` | `specs/020-home-dashboard/` (021 to 025) | Confirmed (100%) |
+| **030 Search** | `FR-030-001` to `FR-030-004` | `UC-030-001` through `UC-030-004` | `specs/030-search/` (031, 032, 033) | Confirmed (100%) |
+| **040 Music Player** | `FR-040-001` to `FR-040-010` | `UC-040-001` through `UC-040-010` | `specs/040-music-player/` (041 to 046) | Confirmed (100%) |
+| **050 Queue Management** | `FR-050-001` to `FR-050-007` | `UC-050-001` through `UC-050-007` | `specs/050-queue-management/` (051 to 054) | Confirmed (100%) |
+| **060 Playlist Management** | `FR-060-001` to `FR-060-012` | `UC-060-001` through `UC-060-012` | `specs/060-playlist-management/` (061 to 065) | Confirmed (100%) |
+| **070 Listening History** | `FR-070-001` to `FR-070-006` | `UC-070-001` through `UC-070-006` | `specs/070-listening-history/` (071, 072, 073) | Confirmed (100%) |
+| **080 Album Interaction** | `FR-080-001` to `FR-080-005` | `UC-080-001` through `UC-080-005` | `specs/080-album-interaction/` (081, 082, 083) | Confirmed (100%) |
+| **090 Artist Profile & Studio**| `FR-090-001` to `FR-090-008` | `UC-090-001` through `UC-090-008` | `specs/090-artist-profile-studio/` (091, 092, 093) | Confirmed (100%) |
+| **100 AI Recommendations** | `FR-100-001` to `FR-100-003` | `UC-100-001` through `UC-100-003` | `specs/100-ai-recommendations/` (101, 102, 103) | Confirmed (100%) |
+| **110 Admin Functions** | `FR-110-001` to `FR-110-008` | `UC-110-001` through `UC-110-008` | `specs/110-admin-functions/` (111, 112, 113) | Confirmed (100%) |
+| **120 AI Conversational Agent**| `FR-120-001` to `FR-120-004` | `UC-120-001` through `UC-120-004` | `specs/120-ai-conversational-agent/` (121, 122, 123)| Confirmed (100%) |
+
+---
+
+## 5.5. Key User Workflows
 
 *Performed by: Nguyễn Thanh Huy, Reviewed by: Lê Công Minh Nhựt, Edited by: Nguyễn Thanh Huy*
 
 The two workflows below illustrate the most important journeys in AuraTune. The first is finding and playing music, which every listener performs. The second is building a listening session with an AI playlist, which combines AuraTune's AI features with its core player, queue, and playlist features.
 
 **Workflow 1 — Discover and play music (G01, G02, G03, G04, G05, G07, G10).** A listener signs in, finds a track by browsing the Home page or by searching, and plays it. While the track plays, the listener can use the player's functions or keep browsing with the mini player. Each completed play is recorded in the listening history, which updates future recommendations.
-
 
 ```mermaid
 flowchart TD
@@ -381,7 +566,7 @@ flowchart TD
     B -- Manually --> C[Name the playlist and add tracks<br/>from search, albums, or artist pages]
     B -- With AI Playlist --> D[Describe an occasion<br/>or a mood in one sentence]
     D --> E{AI service<br/>available?}
-    E -- No --> F\[Notice shown\] --> C
+    E -- No --> F[Notice shown] --> C
     E -- Yes --> G[AuraTune proposes a track list<br/>from the playable catalogue]
     G --> H{Is the listener<br/>satisfied?}
     H -- No, refine the description --> D
@@ -406,31 +591,52 @@ flowchart TD
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
-*Note: The following targets are proposed and subject to verification during testing.*
-  - The application aims to load the initial home dashboard within 2 seconds under standard network conditions.
-  - AI semantic search results are targeted to return within 3 seconds.
-  - Audio playback is intended to start within 500ms of the user clicking the play button for a buffered track.
+The system performance criteria are quantified and verifiable through automated lighthouse benchmarks, network throttle tests, and backend APM monitoring:
 
-## 6.2. Security
+- **Initial Page Load & Dashboard Hydration**: Under broadband network conditions (≥ 5 Mbps download), the initial Single Page Application payload and Home Dashboard must achieve Time to Interactive (TTI) within **2.0 seconds** and First Contentful Paint (FCP) within **1.0 second**. Under simulated 4G mobile conditions, total dashboard load must not exceed **3.5 seconds**.
+- **Audio Playback Latency**:
+  - For a buffered or cached audio track, playback must commence within **500 ms** of the listener clicking the play button.
+  - For cold audio streams, the initial byte playback must initiate within **1,200 ms** via HTTP 206 Partial Content byte-range streaming from cloud media storage.
+- **Search and Vector Retrieval Speed**:
+  - Exact text metadata search queries (title, artist, album) must return ranked results within **300 ms** (95th percentile).
+  - AI semantic vector search queries (lyrics and mood similarity) must complete inference and return results within **3.0 seconds** under normal AI service load.
+- **AI Conversational Host Response Latency**:
+  - Initial conversational Server-Sent Events (SSE) token must render in the chat drawer within **1,500 ms** of query submission.
+  - Full natural language response and associated action payload dispatch must complete within **4.0 seconds**.
+- **Database Query Latency**: Core PostgreSQL queries for metadata, user profiles, and playlists must execute with a p95 response time under **100 ms**.
+
+## 6.2. Security and Regulatory Compliance
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa, Nguyễn Khánh Đăng*
 
-  - User passwords must be hashed using industry-standard algorithms (e.g., Argon2 or bcrypt) before storage.
-  - All data transmission between the client and server must be encrypted via HTTPS/TLS 1.3.
-  - Personal data access (OAuth tokens, listening history) must be strictly restricted to the authorized user and the system's personalization engine.
-  - No direct personal identifiers (such as full names or email addresses) may be transmitted to external third-party AI services.
+- **Password Hashing & Storage**: Passwords must never be stored in plaintext. Passwords must be hashed using industry-standard **Argon2id** (or **bcrypt** with a minimum work factor of 12) with unique cryptographic salts.
+- **In-Transit Encryption**: All communication between web browser clients, backend application servers, database instances, and cloud media storage must be strictly encrypted using **HTTPS / TLS 1.3**. Plain HTTP requests must be automatically redirected via HTTP 301.
+- **Session Authentication Security**: The system must enforce a secure dual-token authentication model:
+  - Short-lived JWT Access Tokens (15-minute expiration) transmitted in `Authorization: Bearer` headers.
+  - Long-lived Refresh Tokens (7-day expiration) stored exclusively in `HttpOnly`, `Secure`, and `SameSite=Strict` cookies to mitigate Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF) attack vectors.
+- **Personal Data Protection & AI Anonymization (Decree 13/2023/ND-CP)**:
+  - Personal identifiable information (such as full legal names, email addresses, and client IP addresses) must be completely stripped from queries before dispatching requests to external third-party AI foundation models.
+  - Users retain the right to inspect, export, or permanently purge their personal listening history and listening analytics.
+- **Brute-Force & Abuse Mitigation**:
+  - The authentication API must enforce rate limiting: maximum of **5 failed consecutive login attempts** within a 15-minute rolling window before a temporary account/IP lockout.
+  - Administrative endpoints (`/api/v1/admin/*`) and artist studio endpoints (`/api/v1/studio/*`) must enforce strict Role-Based Access Control (RBAC) token claims.
 
-## 6.3. Platform Requirements
+## 6.3. Platform & Accessibility Requirements
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
-  - The web application must support the latest stable versions of Google Chrome, Safari, Mozilla Firefox, and Microsoft Edge on both desktop and mobile devices.
-  - The UI must be responsive, adapting to different screen sizes on PCs, laptops, tablets, and mobile phones.
-  - The application must provide a consistent user experience across devices, with interfaces optimized for mouse, keyboard, and touch interactions.
+- **Cross-Browser Parity**: The web application must render consistently and pass automated end-to-end tests across the latest two major releases of Google Chrome, Microsoft Edge, Mozilla Firefox, and Apple Safari.
+- **Responsive Layout Integrity**: The user interface must adapt without visual breaking, text truncation, or horizontal scrolling across viewport widths ranging from **375px to 2560px**.
+- **Input Accessibility & Multi-Modal Navigation**:
+  - The UI must be fully navigable via keyboard: `Tab` / `Shift+Tab` focus indicators, `Enter` / `Space` playback toggling, and `Arrow` keys for volume adjustment and slider seeking.
+  - Touch interactions on mobile and tablet devices must support standard gestures: tap, long-press, swipe-to-dismiss drawer sheets, and touch drag-and-drop for playlist and queue reordering.
 
 ## 6.4. Quality Attributes
 
 *Performed by: Mai Đăng Khoa, Reviewed by: Nguyễn Khánh Đăng, Edited by: Mai Đăng Khoa*
 
-  - **Availability**: The platform aims for 99.5% uptime during the project demonstration phase (subject to free-tier hosting limitations).
-  - **Reliability**: The music player should automatically handle temporary network drops by pre-buffering at least 30 seconds of audio.
+- **Availability**: The application aims for **99.5% uptime** during the academic semester evaluation window, subject to the service-level agreements (SLAs) of free-tier cloud hosting providers.
+- **Reliability & Network Resilience**:
+  - The HTML5 player audio buffer must pre-buffer at least **30 seconds** of audio ahead of the playback position to absorb transient network drops without playback interruption.
+  - When an external AI service becomes slow (> 3.0s), throttled, or unreachable, the system must trigger graceful degradation to local database fallbacks without crashing the frontend application.
+- **Maintainability & API Contract Adherence**: All backend endpoints must conform strictly to documented OpenAPI 3.0.3 contract specifications (`contracts/*.json`) and maintain clear architectural modularity across frontend, backend, and database persistence layers.
