@@ -18,6 +18,12 @@
 | 14 | 2026-10-30 | Làm rõ spec 083 (bổ sung) bằng `/speckit-clarify` – Hành vi bỏ lưu trong thư viện | 080 |
 | 15 | 2026-11-04 | Kiểm tra và đề xuất chỉnh sửa tài liệu Use-Case Group 030 | 03 Search |
 | 16 | 2026-11-04 | Kiểm tra và đề xuất chỉnh sửa tài liệu Use-Case Group 080 | 08 Album Interaction |
+| 20 | 2026-11-07 | Lập Implementation Plan cho spec 081 bằng Spec Kit | 08 Album Interaction |
+| 21 | 2026-11-07 | Lập Implementation Plan cho spec 082 bằng Spec Kit | 08 Album Interaction |
+| 22 | 2026-11-07 | Lập Implementation Plan cho spec 083 bằng Spec Kit | 08 Album Interaction |
+| 23 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 081) | 08 Album Interaction |
+| 24 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 082) | 08 Album Interaction |
+| 25 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 083) | 08 Album Interaction |
 
 ---
 
@@ -1087,3 +1093,779 @@ Hãy đưa ra các câu hỏi để chỉnh sửa các yêu cầu bạn nêu lê
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt sau khi chỉnh sửa.
+
+## Mục 20: Lập Implementation Plan cho spec 081 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-07 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details | 
+| Công cụ AI | GPT-6-Luna | 
+| Mục đích | Tạo Implementation Plan (`plan.md`) cho tính năng xem chi tiết Album (Feature 081), tuân thủ đúng quy trình Spec Kit, đảm bảo không vượt quyền thiết kế kiến trúc và chỉ giới hạn thao tác trong phạm vi thư mục feature. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 081 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `081` thuộc Group 080 – Album Interaction.
+
+**Chỉ lập Plan cho feature 081. Không xử lý feature khác.**
+
+## 1. Xác định Feature 081
+Kiểm tra:
+- `specs/080-album-interaction/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 081.
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+Nếu không tìm thấy feature 081 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu cần thiết:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 081.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 081.
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+Sau khi xác định đúng feature context:
+1. Chọn feature 081 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
+Không tự viết Plan thủ công thay cho Spec Kit command.
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 4. Yêu cầu đối với Plan
+Plan cần:
+- Bám sát requirements của feature 081 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+Không tự ý:
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 081.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI algorithm hoặc scoring formula.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group khác vào Group 080.
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+Chỉ được tạo hoặc cập nhật Plan của feature 081 theo Spec Kit workflow.
+Không được:
+- Lập Plan cho feature 081 trở đi.
+- Lập Plan cho toàn bộ Group 080.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi `/speckit.plan`:
+- Kiểm tra Plan thuộc đúng feature 081.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 081 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Validation results.
+7. Những vấn đề cần clarification.
+8. Danh sách file đã thay đổi.
+Completion criteria: Chỉ tạo Implementation Plan cho feature 081 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+* AI đã phát hiện ra môi trường không hỗ trợ lệnh CLI `speckit.plan` hoặc bash shell, nên đã áp dụng quy trình (workflow) tương đương dựa trên template và hướng dẫn của dự án để tạo thủ công file `plan.md` cho feature `081-album-details`.
+* Bản kế hoạch bám sát các luồng nghiệp vụ của Feature 081: bảo lưu contract `GET /albums/:id`, tính toán thời lượng dựa trên toàn bộ track và xử lý đúng các trạng thái giao diện (loading, not-found, error, cache).
+* AI đã rà soát source code hiện tại (frontend và backend) và ghi nhận vào phần "Open Clarifications" một số rủi ro tích hợp:
+  * Hiện tại route album ở backend chưa được implement (`server.js` chỉ mới có route health/auth).
+  * Trang `AlbumPage.jsx` phía frontend đang đọc dữ liệu mock đồng bộ thay vì gọi API thực tế.
+* AI đã bảo toàn không gian làm việc (working tree): không sửa file `.specify/feature.json`, không chỉnh sửa các file thuộc tính năng khác hay tài liệu cốt lõi, không sinh thêm các bản nháp (design artifact) dư thừa như hướng dẫn gốc của skill.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Sử dụng workflow tương đương để tạo `plan.md` | Dùng | Đáp ứng đúng yêu cầu sinh file Plan khi công cụ CLI không khả dụng do lỗi môi trường. | 
+| Giữ nguyên API Contract `GET /albums/:id` | Dùng | Tuân thủ nghiêm ngặt ranh giới scope, không tự ý thêm endpoint hay schema khi chưa được System Architect phê duyệt. | 
+| Đưa việc tích hợp backend thiếu route vào Open Clarifications | Dùng | Phản ánh trung thực tình trạng source code thực tế để team Backend và Frontend có thể chốt giao thức trước khi tạo tasks. | 
+| Bỏ qua các design artifacts bổ sung (research.md, data-model.md) | Dùng | Đảm bảo tuân thủ giới hạn cực kỳ khắt khe của prompt: "Chỉ lập Plan cho feature 081". | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt.
+
+**Ghi chú:** Implementation Plan đã được tạo thành công tại `specs/080-album-interaction/081-album-details/plan.md`. Sẵn sàng để chuyển sang bước tạo task (`/speckit.tasks`) sau khi các điểm clarification về backend được team xác nhận.
+
+## Mục 21: Lập Implementation Plan cho spec 082 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-07 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist Playback |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Tạo Implementation Plan (`plan.md`) cho tính năng phát danh sách bài hát trong Album (Feature 082), tuân thủ đúng quy trình Spec Kit, tích hợp với Player/Queue và ghi nhận các mâu thuẫn trong tài liệu đặc tả. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 082 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `082` thuộc Group 080 – Album Interaction.
+
+**Chỉ lập Plan cho feature 082. Không xử lý feature khác.**
+
+## 1. Xác định Feature 082
+Kiểm tra:
+- `specs/080-album-interaction/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 082.
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+Nếu không tìm thấy feature 082 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu cần thiết:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 082.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 082.
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+Sau khi xác định đúng feature context:
+1. Chọn feature 082 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
+Không tự viết Plan thủ công thay cho Spec Kit command.
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 4. Yêu cầu đối với Plan
+Plan cần:
+- Bám sát requirements của feature 082 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+Không tự ý:
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 082.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI algorithm hoặc scoring formula.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group khác vào Group 080.
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+Chỉ được tạo hoặc cập nhật Plan của feature 082 theo Spec Kit workflow.
+Không được:
+- Lập Plan cho feature 082 trở đi.
+- Lập Plan cho toàn bộ Group 080.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi `/speckit.plan`:
+- Kiểm tra Plan thuộc đúng feature 082.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 082 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Validation results.
+7. Những vấn đề cần clarification.
+8. Danh sách file đã thay đổi.
+Completion criteria: Chỉ tạo Implementation Plan cho feature 082 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- AI tiếp tục áp dụng quy trình tương đương để tạo thủ công file `plan.md` cho feature `082-album-tracklist` do lỗi permission của script bash trong môi trường.
+- Kế hoạch triển khai bám sát việc sử dụng tracklist đầy đủ, tích hợp hành động Play Album và phát track cụ thể với player/queue hiện có, đồng thời xử lý các trường hợp track không khả dụng, album dài và duy trì trạng thái player khi chuyển trang.
+- AI đã đối chiếu kỹ lưỡng tài liệu và phát hiện hai mâu thuẫn lớn cần đưa vào Open Clarifications:
+  - **Mâu thuẫn Queue Handling:** Bản thân file đặc tả (`FR-004` và một acceptance scenario) yêu cầu thao tác Play Album sẽ "thay thế queue", trong khi phần clarification lại chốt là "chèn phần còn lại sau track hiện tại" (giữ queue cũ). Plan đã chọn giữ hành vi clarification làm căn cứ chính nhưng ghi chú rõ sự mâu thuẫn này.
+  - **Mâu thuẫn giới hạn hệ thống:** Spec yêu cầu hỗ trợ album dài hơn 100 bài, nhưng tài liệu của Group 050 lại quy định giới hạn queue chỉ chứa tối đa 50 bài.
+- AI đã bảo toàn tuyệt đối các file ngoài phạm vi, bao gồm `AI_log_3.md` (đang sửa) và `plan.md` của feature 081.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sử dụng workflow tương đương để tạo `plan.md` | Dùng | Vượt qua hạn chế của môi trường CLI để đáp ứng yêu cầu tạo Plan. |
+| Chọn hành vi "chèn queue" làm Technical Approach | Dùng | Ưu tiên quyết định cuối cùng ở phần Clarification, nhưng vẫn đảm bảo tính minh bạch bằng cách báo cáo lại mâu thuẫn với FR gốc. |
+| Ghi nhận xung đột độ dài Queue | Dùng | Rất quan trọng để chặn lỗi tích hợp hệ thống (System Integration) trước khi code thực tế giữa Group 080 và Group 050. |
+| Không tự ý sửa `spec.md` hay `tasks.md` | Dùng | Tuân thủ tuyệt đối quy tắc của Spec Kit, chỉ đóng vai trò phân tích và lên kế hoạch chứ không tự tiện thay đổi đặc tả. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. 
+
+**Ghi chú:** Implementation Plan đã được tạo thành công tại `specs/080-album-interaction/082-album-tracklist/plan.md`. Sẵn sàng để chuyển sang bước tạo task (`/speckit.tasks`) sau khi Product/Design chốt phương án xử lý mâu thuẫn hàng đợi.
+
+## Mục 22: Lập Implementation Plan cho spec 083 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-07 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | GPT-6-Luna | 
+| Mục đích | Tạo Implementation Plan (`plan.md`) cho tính năng Lưu và Chia sẻ Album (Feature 083), tuân thủ Spec Kit, bảo đảm tính đồng bộ với trạng thái tài khoản và chỉ rõ các route backend còn thiếu. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` for Feature 083 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `083` thuộc Group 080 – Album Interaction.
+
+**Chỉ lập Plan cho feature 083. Không xử lý feature khác.**
+
+## 1. Xác định Feature 083
+Kiểm tra:
+- `specs/080-album-interaction/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 083.
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+Nếu không tìm thấy feature 083 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu cần thiết:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 083.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 083.
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+Sau khi xác định đúng feature context:
+1. Chọn feature 083 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
+Không tự viết Plan thủ công thay cho Spec Kit command.
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+
+## 4. Yêu cầu đối với Plan
+Plan cần:
+- Bám sát requirements của feature 083 trong `spec.md`.
+- Phản ánh kiến trúc hiện tại của AuraTune.
+- Xác định technical approach.
+- Xác định các component và service liên quan.
+- Xác định dependencies.
+- Mô tả data flow và integration nếu cần.
+- Xác định testing strategy.
+- Xác định risks và technical considerations.
+- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
+Không tự ý:
+- Thêm Functional Requirements.
+- Thêm chức năng ngoài phạm vi feature 083.
+- Tạo API hoặc database schema không có căn cứ.
+- Tự đặt AI algorithm hoặc scoring formula.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Đưa chức năng của Group khác vào Group 080.
+Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+Chỉ được tạo hoặc cập nhật Plan của feature 083 theo Spec Kit workflow.
+Không được:
+- Lập Plan cho feature 083 trở đi.
+- Lập Plan cho toàn bộ Group 080.
+- Chỉnh sửa group khác.
+- Chỉnh sửa `spec.md`.
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Thay đổi frontend, backend, AI service hoặc database.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi `/speckit.plan`:
+- Kiểm tra Plan thuộc đúng feature 083.
+- Kiểm tra tính nhất quán với `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Kiểm tra dependencies và testing strategy.
+- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 083 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. File Plan đã tạo hoặc cập nhật.
+4. Nội dung chính của Plan.
+5. Các technical decisions đáng chú ý.
+6. Validation results.
+7. Những vấn đề cần clarification.
+8. Danh sách file đã thay đổi.
+Completion criteria: Chỉ tạo Implementation Plan cho feature 083 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+* AI tiếp tục phát hiện lỗi môi trường không cho phép chạy bash script (`setup-plan.sh`) nên đã chủ động áp dụng workflow tương đương để tạo thủ công file `plan.md` cho feature `083-save-and-share-album`.
+* Kế hoạch triển khai định hình các phương pháp kỹ thuật (technical approach) bám sát tài liệu đặc tả: quản lý API `PUT` và `DELETE` để lưu/bỏ lưu, xử lý UI state (loading/pending, error feedback) và các logic chia sẻ tới mạng xã hội (Facebook, Instagram, X, Zalo).
+* AI đã tiến hành rà soát codebase và phát hiện các rủi ro/thiếu sót cần đưa vào **Open Clarifications**:
+  * Backend hiện chưa có bất kỳ route nào phục vụ việc save/remove album.
+  * Tài liệu chưa cung cấp Response Contract cho các API này.
+  * Cơ chế chia sẻ mạng xã hội chi tiết chưa được đặc tả rõ.
+* AI đảm bảo bảo toàn vùng làm việc (Git workspace), không sửa đổi `feature.json`, `AI_log_3.md` hay các bản Plan của feature 081, 082.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Sử dụng workflow tương đương để tạo `plan.md` | Dùng | Vượt qua hạn chế của môi trường CLI để hoàn thành xuất sắc yêu cầu tạo Plan. | 
+| Bám sát 2 API Contract (PUT, DELETE) | Dùng | Không tự ý vẽ ra API schema hay quota giới hạn chưa được duyệt nhằm tuân thủ ranh giới hệ thống. | 
+| Đưa việc thiếu backend API vào Open Clarifications | Dùng | Ghi nhận thực tế khách quan codebase để đội ngũ Backend nắm bắt và triển khai trước khi làm tasks chi tiết. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt.
+
+**Ghi chú:** Implementation Plan đã được tạo thành công tại `specs/080-album-interaction/083-save-and-share-album/plan.md`. Giai đoạn lập Plan cho Group 080 (081, 082, 083) đã hoàn thành và sẵn sàng cho các bước tạo task (`/speckit.tasks`).
+
+## Mục 23: Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 081)
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-07 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Thực thi quy trình Technical Clarification cho file `plan.md` của tính năng xem chi tiết Album (Feature 081), rà soát các lỗ hổng kỹ thuật (API owner, cache, error handling) và vạch rõ các Blocker trước khi chuyển sang bước chia Task. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify-plan # TASK: Execute `/speckit.clarify` for Implementation Plan of Feature 081 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.clarify`** (hoặc luồng tư duy phân tích tương đương) để tiến hành làm rõ các rủi ro kỹ thuật (technical clarification) cho file `plan.md` của feature `081` thuộc Group `080`.
+
+**Chỉ thực hiện Clarify cho file `plan.md` của feature 081. Không xử lý feature khác.**
+
+## 1. Xác định Feature 081
+Kiểm tra:
+- `specs/080-album-interaction/081-album-details/`
+- Các thư mục và file con bên trong (đặc biệt là file `plan.md` và `spec.md`).
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và tình trạng hiện tại của bản Implementation Plan.
+Nếu không tìm thấy feature 081 hoặc file `plan.md` chưa tồn tại, hãy dừng lại và báo cáo. Không tự tạo file thay thế (đây là bước làm rõ, không phải bước tạo mới).
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu để làm hệ quy chiếu (Source of Truth):
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- Nội dung nghiệp vụ gốc tại `spec.md` của feature 081.
+- Toàn bộ nội dung hiện tại của `plan.md` thuộc feature 081.
+- Các tài liệu kiến trúc, database schema, và source code (`src/`) liên quan trực tiếp đến các component/service được nhắc đến trong Plan.
+Kiểm tra kỹ ranh giới hệ thống, các dependency hiện có để chuẩn bị cho việc đối chiếu và bắt lỗi logic kỹ thuật.
+
+## 3. Thực thi Technical Clarification
+Sau khi xác định đúng feature context:
+1. Chọn feature 081 làm context hiện hành.
+2. Quét toàn bộ `plan.md` để tìm ra các "điểm mù kỹ thuật" (technical blind spots) như: 
+   - Lỗ hổng trong Data Flow hoặc API integration (thiếu params, sai HTTP method).
+   - Chưa rõ cơ chế xử lý lỗi ở Frontend/Backend (Error Handling, Caching, Retry logic).
+   - Xung đột component/dependencies với kiến trúc hiện tại.
+   - Thiếu sót trong Testing Strategy hoặc rủi ro hiệu năng (Performance risks).
+   - Các điểm **Needs confirmation.**
+3. Đưa ra các câu hỏi làm rõ HOẶC tự động cập nhật các quyết định kỹ thuật vào `plan.md` nếu chúng có thể suy ra chắc chắn từ `spec.md` và source code hiện tại.
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi luồng phân tích tương đương và báo cáo trung thực.
+
+## 4. Yêu cầu đối với quá trình Clarify
+Khi tiến hành làm rõ Plan, bạn cần:
+- Đưa ra tối đa 5 câu hỏi trọng tâm nhất dưới dạng trắc nghiệm (Option A, B, C) kèm theo đề xuất (Recommended) liên quan đến các quyết định kỹ thuật (Design decisions, State management, API payloads, v.v.).
+- Đảm bảo các giải pháp kỹ thuật đề xuất phản ánh đúng kiến trúc hiện tại của AuraTune (React/Express/PostgreSQL...).
+- **CRITICAL REQUIREMENT:** Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, BẤT KỲ sự cập nhật nào vào file `plan.md` ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+Không tự ý:
+- Thêm các Functional Requirements mới không có trong `spec.md`.
+- Đề xuất các thư viện/công nghệ mới, hoặc thay đổi kiến trúc core mà chưa có sự đồng thuận.
+- Tự chế ra API endpoints hoặc Database tables không có căn cứ từ thiết kế tổng thể.
+
+## 5. Scope giới hạn
+Chỉ được phép phân tích, đặt câu hỏi và cập nhật `plan.md` của feature 081.
+Không được:
+- Làm rõ cho feature khác.
+- Tạo hay chỉnh sửa ngược lại file `spec.md` hoặc `requirements.md` (nếu phát hiện mâu thuẫn nghiệp vụ, chỉ ghi nhận vào phần "Risks and Clarifications" của `plan.md`).
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi làm rõ:
+- Đảm bảo các cập nhật trong `plan.md` khớp hoàn toàn với requirements của `spec.md`.
+- Đảm bảo các technical decisions đề xuất là khả thi và có căn cứ từ source code.
+- Đảm bảo file `plan.md` vẫn giữ đúng format chuẩn, không bị vỡ Markdown và hoàn toàn bằng tiếng Anh.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 081 đã xác định.
+2. Quá trình Technical Clarification có thực sự được thực thi hay không.
+3. Danh sách các "điểm mù kỹ thuật" lớn nhất đã phát hiện trong Plan hiện tại.
+4. Danh sách các câu hỏi trắc nghiệm kỹ thuật (để tôi trả lời) HOẶC danh sách các quyết định đã được tự động cập nhật vào `plan.md`.
+5. Đánh giá mức độ sẵn sàng của Plan để chuyển sang bước chia task (`/speckit.tasks`).
+6. Danh sách file đã thay đổi (nếu có).
+Completion criteria: Chỉ thực hiện đánh giá và làm rõ kỹ thuật (Clarify) cho file `plan.md` của feature 081. Dừng lại sau khi xuất báo cáo và danh sách câu hỏi để chờ tôi phản hồi, tuyệt đối không tự động chuyển sang bước tạo Tasks hay feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+*   Thực thi thành công luồng làm rõ kỹ thuật (Technical Clarification) trực tiếp trên file `plan.md` của feature `081-album-details` bằng tiếng Anh.
+*   Phát hiện các điểm mù và tự động cập nhật cách xử lý vào Plan:
+    *   **Cache:** Chốt phương án sử dụng `AppStore` lưu trong bộ nhớ theo Album ID; không đặt TTL hay lưu bền. Nếu refresh lỗi, sẽ giữ dữ liệu cache cũ, báo lỗi rõ ràng và cho phép retry.
+    *   **More from Artist:** Tiếp tục lấy từ danh sách catalog hiện có trong `AppStore` (lọc theo `artistId`), không thêm field mới vào API chi tiết album.
+    *   **API Owner/Contract:** Ghi nhận thực tế source code hiện tại chưa rõ API Owner, route base path (`/api/v1`) chưa khớp hoàn toàn với thiết kế.
+    *   **UI Gaps:** Giao diện chưa xử lý đầy đủ các kịch bản về cover ảnh trống, play count không khả dụng, và cách tính tổng thời lượng khi danh sách track rỗng.
+*   Bảo toàn nguyên vẹn thư mục làm việc, không chỉnh sửa tài liệu gốc `spec.md` hay làm ảnh hưởng đến thay đổi đang có của các tính năng khác (như `AI_log_3.md` hay feature 082/083).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cập nhật cơ chế Caching và Retry vào Plan | Dùng | Đảm bảo kỹ thuật xử lý UI mượt mà, chống gián đoạn trải nghiệm người dùng khi mạng chậm/lỗi. |
+| Lọc "More from Artist" qua AppStore | Dùng | Tối ưu hóa việc tái sử dụng dữ liệu cục bộ thay vì bắt Backend phải chế thêm trường dư thừa vào API detail. |
+| Ghi nhận API Blocker vào mục Risks | Dùng | Cung cấp cái nhìn trung thực về giới hạn source code hiện hành. Không tự bịa API schema để tôn trọng ranh giới System Architect. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. 
+
+**Đánh giá mức độ sẵn sàng:** Plan của Feature 081 đã đủ điều kiện để chia Task (`/speckit.tasks`) cho các hạng mục UI/UX, Cache và Error Handling.
+
+## Mục 24: Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 082)
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-07 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist Playback | 
+| Công cụ AI | GPT-6-Luna | 
+| Mục đích | Thực thi quy trình Technical Clarification cho file `plan.md` của tính năng Phát danh sách bài hát (Feature 082), rà soát mâu thuẫn hệ thống (queue limit, trạng thái track) và vạch rõ các Blocker (sự phụ thuộc vào Group 040 & 050) trước khi tạo Task. | 
+
+### Prompt đã dùng
+
+```
+/speckit-clarify-plan # TASK: Execute `/speckit.clarify` for Implementation Plan of Feature 082 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.clarify`** để tiến hành làm rõ các rủi ro kỹ thuật cho file `plan.md` của feature 082 thuộc Group 080 - Album Interaction.
+
+**Chỉ thực hiện Clarify cho file `plan.md` của feature 082. Không xử lý feature khác.**
+
+## 1. Xác định Feature 082
+Kiểm tra:
+- `specs/080-album-interaction/082-album-tracklist/`
+- Các thư mục và file con bên trong (đặc biệt là file `plan.md` và `spec.md`).
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và tình trạng hiện tại của bản Implementation Plan.
+Nếu không tìm thấy feature 082 hoặc file `plan.md` chưa tồn tại, hãy dừng lại và báo cáo. Không tự tạo file thay thế (đây là bước làm rõ, không phải bước tạo mới).
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu để làm hệ quy chiếu:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- Nội dung nghiệp vụ gốc tại `spec.md` của feature 082.
+- Toàn bộ nội dung hiện tại của `plan.md` thuộc feature 082.
+- Các tài liệu kiến trúc, database schema, và source code (`src/`) liên quan trực tiếp đến các component/service được nhắc đến trong Plan.
+Kiểm tra kỹ ranh giới hệ thống, các dependency hiện có để chuẩn bị cho việc đối chiếu và bắt lỗi logic kỹ thuật.
+
+## 3. Thực thi Technical Clarification
+Sau khi xác định đúng feature context:
+1. Chọn feature 082 làm context hiện hành.
+2. Quét toàn bộ `plan.md` để tìm ra các "điểm mù kỹ thuật" như: 
+   - Lỗ hổng trong Data Flow hoặc API integration (thiếu params, sai HTTP method).
+   - Chưa rõ cơ chế xử lý lỗi ở Frontend/Backend (Error Handling, Caching, Retry logic).
+   - Xung đột component/dependencies với kiến trúc hiện tại.
+   - Thiếu sót trong Testing Strategy hoặc rủi ro hiệu năng.
+   - Các điểm **Needs confirmation.**
+3. Đưa ra các câu hỏi làm rõ HOẶC tự động cập nhật các quyết định kỹ thuật vào `plan.md` nếu chúng có thể suy ra chắc chắn từ `spec.md` và source code hiện tại.
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi luồng phân tích tương đương và báo cáo trung thực.
+
+## 4. Yêu cầu đối với quá trình Clarify
+Khi tiến hành làm rõ Plan, bạn cần:
+- Đưa ra tối đa 5 câu hỏi trọng tâm nhất dưới dạng trắc nghiệm (Option A, B, C) kèm theo đề xuất (Recommended) liên quan đến các quyết định kỹ thuật (Design decisions, State management, API payloads, v.v.).
+- Đảm bảo các giải pháp kỹ thuật đề xuất phản ánh đúng kiến trúc hiện tại của AuraTune (React/Express/PostgreSQL...).
+- **CRITICAL REQUIREMENT:** Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, BẤT KỲ sự cập nhật nào vào file `plan.md` ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+Không tự ý:
+- Thêm các Functional Requirements mới không có trong `spec.md`.
+- Đề xuất các thư viện/công nghệ mới, hoặc thay đổi kiến trúc core mà chưa có sự đồng thuận.
+- Tự chế ra API endpoints hoặc Database tables không có căn cứ từ thiết kế tổng thể.
+
+## 5. Scope giới hạn
+Chỉ được phép phân tích, đặt câu hỏi và cập nhật `plan.md` của feature 082.
+Không được:
+- Làm rõ cho feature khác.
+- Tạo hay chỉnh sửa ngược lại file `spec.md` hoặc `requirements.md` (nếu phát hiện mâu thuẫn nghiệp vụ, chỉ ghi nhận vào phần "Risks and Clarifications" của `plan.md`).
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi làm rõ:
+- Đảm bảo các cập nhật trong `plan.md` khớp hoàn toàn với requirements của `spec.md`.
+- Đảm bảo các technical decisions đề xuất là khả thi và có căn cứ từ source code.
+- Đảm bảo file `plan.md` vẫn giữ đúng format chuẩn, không bị vỡ Markdown và hoàn toàn bằng tiếng Anh.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 082 đã xác định.
+2. Quá trình Technical Clarification có thực sự được thực thi hay không.
+3. Danh sách các "điểm mù kỹ thuật" lớn nhất đã phát hiện trong Plan hiện tại.
+4. Danh sách các câu hỏi trắc nghiệm kỹ thuật (để tôi trả lời) HOẶC danh sách các quyết định đã được tự động cập nhật vào `plan.md`.
+5. Đánh giá mức độ sẵn sàng của Plan để chuyển sang bước chia task (`/speckit.tasks`).
+6. Danh sách file đã thay đổi (nếu có).
+Completion criteria: Chỉ thực hiện đánh giá và làm rõ kỹ thuật (Clarify) cho file `plan.md` của feature 082. Dừng lại sau khi xuất báo cáo và danh sách câu hỏi để chờ tôi phản hồi, tuyệt đối không tự động chuyển sang bước tạo Tasks hay feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+* **Quy trình:** Slash command không khả dụng. AI đã thực hiện quy trình phân tích tương đương và cập nhật thủ công file `plan.md` của feature `082-album-tracklist` (toàn bộ nội dung cập nhật bằng tiếng Anh).
+* **Các điểm mù kỹ thuật & Xung đột hệ thống đã phát hiện:**
+  * **Mâu thuẫn Logic Queue:** Spec nội bộ mâu thuẫn (FR-004 yêu cầu "thay thế queue", phần clarification lại chốt "chèn album trước queue hiện có").
+  * **Giới hạn Queue (Group 050):** Group 050 giới hạn hàng đợi 50 bài, nhưng Feature 082 yêu cầu phát *toàn bộ* track của album (có thể > 100 bài).
+  * **Trạng thái UI (AlbumPage vs AppStore):** Trang Album đang fetch `publicTracks` (đã lọc bỏ track không active), khiến track không khả dụng bị ẩn hoàn toàn thay vì mờ đi như yêu cầu.
+  * **Playback Recovery (Group 040):** Component player hiện tại (`useMockPlayer.js`) chưa có logic kiểm tra tính khả dụng khi chuyển bài và thiếu callback phục hồi lỗi.
+* **Các giải pháp kỹ thuật đã cập nhật vào Plan:**
+  * Sử dụng `AppStore.allTracks` thay vì `publicTracks` để giữ lại các bài hát không khả dụng trên UI, sau đó tự map trạng thái disabled.
+  * Dùng thông báo lỗi chung hiện có thay vì thiết kế UI mới cho track lỗi.
+  * Giữ mâu thuẫn "Thay thế vs Chèn Queue" và "Limit 50 bài" làm **Blocker** chờ Product Owner quyết định.
+  * Giữ phần Playback Recovery làm **Blocker** chờ Group 040 thống nhất contract xử lý lỗi.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Dùng `AppStore.allTracks` thay cho `publicTracks` | Dùng | Giúp UI render đúng theo thiết kế (hiển thị đủ danh sách, track nào lỗi thì làm mờ) thay vì ẩn mất track. | 
+| Giữ giới hạn queue 50 bài và đánh dấu Blocker | Dùng | Tránh việc tự ý chế thêm cơ chế "chia đoạn load lazy" phức tạp khi chưa được duyệt, ép team hệ thống phải giải quyết xung đột giới hạn. | 
+| Treo Task tích hợp Player | Dùng | Tránh việc tự ý sửa code của Group 040 (`useMockPlayer.js`) khi đó không thuộc phạm vi Feature 082. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt.
+
+**Đánh giá mức độ sẵn sàng:** Mới sẵn sàng một phần. Có thể chia task (`/speckit.tasks`) cho việc lấy dữ liệu, render danh sách và hiển thị UI trạng thái track. Phần tích hợp với hàng đợi (Queue) và chuyển bài (Player) BẮT BUỘC phải chờ các quyết định từ Product Owner và Group 040/050 trước khi làm.
+
+## Mục 25: Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 083)
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-07 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Thực thi quy trình Technical Clarification cho file `plan.md` của tính năng Lưu và Chia sẻ Album (Feature 083), rà soát các lỗ hổng kỹ thuật liên quan đến API State, UI Feedback và cơ chế mạng xã hội, vạch rõ các Blocker trước khi chuyển sang bước chia Task. |
+
+### Prompt đã dùng
+
+```text
+/speckit-clarify-plan # TASK: Execute `/speckit.clarify` for Implementation Plan of Feature 083 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.clarify`** để tiến hành làm rõ các rủi ro kỹ thuật cho file `plan.md` của feature 083 thuộc Group 080 - Album Interaction.
+
+**Chỉ thực hiện Clarify cho file `plan.md` của feature 083. Không xử lý feature khác.**
+
+## 1. Xác định Feature 083
+Kiểm tra:
+- `specs/080-album-interaction/083-save-and-share-album/`
+- Các thư mục và file con bên trong (đặc biệt là file `plan.md` và `spec.md`).
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và tình trạng hiện tại của bản Implementation Plan.
+Nếu không tìm thấy feature 083 hoặc file `plan.md` chưa tồn tại, hãy dừng lại và báo cáo. Không tự tạo file thay thế (đây là bước làm rõ, không phải bước tạo mới).
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu để làm hệ quy chiếu:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- Nội dung nghiệp vụ gốc tại `spec.md` của feature 083.
+- Toàn bộ nội dung hiện tại của `plan.md` thuộc feature 083.
+- Các tài liệu kiến trúc, database schema, và source code (`src/`) liên quan trực tiếp đến các component/service được nhắc đến trong Plan.
+Kiểm tra kỹ ranh giới hệ thống, các dependency hiện có để chuẩn bị cho việc đối chiếu và bắt lỗi logic kỹ thuật.
+
+## 3. Thực thi Technical Clarification
+Sau khi xác định đúng feature context:
+1. Chọn feature 083 làm context hiện hành.
+2. Quét toàn bộ `plan.md` để tìm ra các "điểm mù kỹ thuật" như: 
+   - Lỗ hổng trong Data Flow hoặc API integration (thiếu params, sai HTTP method).
+   - Chưa rõ cơ chế xử lý lỗi ở Frontend/Backend (Error Handling, Caching, Retry logic).
+   - Xung đột component/dependencies với kiến trúc hiện tại.
+   - Thiếu sót trong Testing Strategy hoặc rủi ro hiệu năng.
+   - Các điểm **Needs confirmation.**
+3. Đưa ra các câu hỏi làm rõ HOẶC tự động cập nhật các quyết định kỹ thuật vào `plan.md` nếu chúng có thể suy ra chắc chắn từ `spec.md` và source code hiện tại.
+Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi luồng phân tích tương đương và báo cáo trung thực.
+
+## 4. Yêu cầu đối với quá trình Clarify
+Khi tiến hành làm rõ Plan, bạn cần:
+- Đưa ra tối đa 5 câu hỏi trọng tâm nhất dưới dạng trắc nghiệm (Option A, B, C) kèm theo đề xuất (Recommended) liên quan đến các quyết định kỹ thuật (Design decisions, State management, API payloads, v.v.).
+- Đảm bảo các giải pháp kỹ thuật đề xuất phản ánh đúng kiến trúc hiện tại của AuraTune (React/Express/PostgreSQL...).
+- **CRITICAL REQUIREMENT:** Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, BẤT KỲ sự cập nhật nào vào file `plan.md` ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+Không tự ý:
+- Thêm các Functional Requirements mới không có trong `spec.md`.
+- Đề xuất các thư viện/công nghệ mới, hoặc thay đổi kiến trúc core mà chưa có sự đồng thuận.
+- Tự chế ra API endpoints hoặc Database tables không có căn cứ từ thiết kế tổng thể.
+
+## 5. Scope giới hạn
+Chỉ được phép phân tích, đặt câu hỏi và cập nhật `plan.md` của feature 083.
+Không được:
+- Làm rõ cho feature khác.
+- Tạo hay chỉnh sửa ngược lại file `spec.md` hoặc `requirements.md` (nếu phát hiện mâu thuẫn nghiệp vụ, chỉ ghi nhận vào phần "Risks and Clarifications" của `plan.md`).
+- Chỉnh sửa `tasks.md`.
+- Implement source code.
+- Chỉnh sửa tài liệu project-level.
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi làm rõ:
+- Đảm bảo các cập nhật trong `plan.md` khớp hoàn toàn với requirements của `spec.md`.
+- Đảm bảo các technical decisions đề xuất là khả thi và có căn cứ từ source code.
+- Đảm bảo file `plan.md` vẫn giữ đúng format chuẩn, không bị vỡ Markdown và hoàn toàn bằng tiếng Anh.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 083 đã xác định.
+2. Quá trình Technical Clarification có thực sự được thực thi hay không.
+3. Danh sách các "điểm mù kỹ thuật" lớn nhất đã phát hiện trong Plan hiện tại.
+4. Danh sách các câu hỏi trắc nghiệm kỹ thuật (để tôi trả lời) HOẶC danh sách các quyết định đã được tự động cập nhật vào `plan.md`.
+5. Đánh giá mức độ sẵn sàng của Plan để chuyển sang bước chia task (`/speckit.tasks`).
+6. Danh sách file đã thay đổi (nếu có).
+Completion criteria: Chỉ thực hiện đánh giá và làm rõ kỹ thuật (Clarify) cho file `plan.md` của feature 083. Dừng lại sau khi xuất báo cáo và danh sách câu hỏi để chờ tôi phản hồi, tuyệt đối không tự động chuyển sang bước tạo Tasks hay feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+*   **Quy trình:** Lệnh slash command không khả dụng. AI đã sử dụng luồng phân tích tương đương để kiểm tra source code (UI component, context, API client) và tự động cập nhật các quyết định kỹ thuật trực tiếp vào file `plan.md` của Feature 083 (hoàn toàn bằng tiếng Anh).
+*   **Các "điểm mù kỹ thuật" đã phát hiện:**
+    *   **Backend API Blocker:** Base URL `/api/v1` hiện có nhưng route xử lý lưu/xóa album hoàn toàn trống, response contract chưa được phê duyệt.
+    *   **State Management Gap:** `AppStore.jsx` đang lưu trạng thái cục bộ, thiếu một contract đọc từ server để duy trì trạng thái khi refresh hoặc đổi tài khoản.
+    *   **UI Gap:** `LibraryPage.jsx` chưa có cơ chế UI cho thao tác bỏ lưu và thiếu luồng inline feedback cho pending/success/error.
+    *   **Mâu thuẫn Social Share:** Module hiện tại (`share.js`) chỉ dùng Web Share API hoặc copy link, chưa có cơ chế riêng biệt cho từng đích đến MXH như FR-011 yêu cầu.
+*   **Các quyết định đã ghi nhận vào Plan:**
+    *   Sử dụng module API client hiện tại (`sessionApiClient`) cho 2 mutation `PUT`/`DELETE`.
+    *   Giữ lại yêu cầu tạo 4 nút control chia sẻ MXH riêng biệt theo đúng spec thay vì gộp chung vào Web Share API.
+    *   Đánh dấu việc đọc "Saved State" từ server-backed library là Blocker chờ API Owner phê duyệt.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Khởi chạy qua API client hiện có | Dùng | Tái sử dụng base URL `/api/v1` và cơ chế gọi API chuẩn (`sessionApiClient`) của dự án, giữ tính nhất quán hệ thống. |
+| Giữ nguyên 4 control chia sẻ riêng (FR-011) | Dùng | Tôn trọng tài liệu gốc. Không để Web Share API đè lên yêu cầu đặc thù của chức năng chia sẻ. |
+| Đưa các rủi ro API và Hydrate State vào Blocker | Dùng | Phản ánh chính xác thực tế codebase đang thiếu schema, ngăn cản việc viết code kết nối sớm dẫn đến lỗi tích hợp hệ thống. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. 
