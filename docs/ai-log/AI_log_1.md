@@ -33,6 +33,9 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 27  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 101 – Listening History Analysis bằng `/speckit.tasks`                             | 10 – AI Recommendations                           |
 | 28  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 102 – Personalized Recommendations bằng `/speckit.tasks`                           | 10 – AI Recommendations                           |
 | 29  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 103 – Mood and Context Recommendations bằng `/speckit.tasks`                       | 10 – AI Recommendations                           |
+| 30  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 121 – Conversational Interface bằng `/speckit.tasks`                               | 12 – AI Conversational Agent                      |
+| 31  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 122 – Music Intent Understanding bằng `/speckit.tasks`                             | 12 – AI Conversational Agent                      |
+| 32  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 123 – Real-Time Music Assistance bằng `/speckit.tasks`                             | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -5057,3 +5060,437 @@ Lưu ý: Viết toàn bộ bằng tiếng Anh súc tích, mạch lạc và chuy�
 - **Kiểm tra độ bao phủ yêu cầu qua `/speckit-analyze`:** Xác nhận 100% 15 FRs và 5 SCs đều được map vào tasks.md, không có unmapped task.
 - **Kiểm tra ranh giới phạm vi:** Không có task nào vi phạm quy tắc entity scope (không albums, không artists), không đụng chạm lịch sử nghe (Feature 101), cá nhân hóa dài hạn (Feature 102), ô tìm kiếm tự do (Group 030) hay chatbot (Feature 120).
 - **Kiểm tra khả năng chịu lỗi và chống race condition:** Có task kiểm thử cụ thể mô phỏng timeout 3000ms (T025), bắt lỗi an toàn (T026), và cài đặt `AbortController` phía client (T009, T034).
+
+
+---
+
+## Mục 30: Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 121 – Conversational Interface bằng `/speckit.tasks` và đối chiếu bằng `/speckit.analyze`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-08                                                                                                                                                                                                                                                                                                                                     |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                           |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface/`)                                                                                                                                                                                                       |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.tasks`, `/speckit.analyze`                                                                                                                                                                                                                                                              |
+| Mục đích                 | Phân rã toàn diện tài liệu thiết kế (plan.md, spec.md, data-model.md, research.md, quickstart.md, contracts) thành hệ thống 41 nhiệm vụ kỹ thuật (tasks.md) tuần tự, cài đặt giao diện terminal CLI nổi, luồng streaming SSE, xử lý thinking states, Markdown an toàn, in-memory session, và cách ly âm thanh tuyệt đối với Music Player.     |
+
+### Prompt đã dùng
+
+```text
+/speckit-tasks Hãy tạo file tasks.md cho Tính năng 121: Giao diện hội thoại với AI Host (Conversational Interface) tại thư mục
+    specs/120-ai-conversational-agent/121-conversational-interface/ dựa trên toàn bộ tài liệu thiết kế có sẵn: plan.md, spec.md,
+    data-model.md, research.md, quickstart.md và contracts/conversational-interface-api.json.
+    
+    Yêu cầu chi tiết và các ràng buộc kỹ thuật:
+    
+    1. Thông tin tính năng mục tiêu:
+       - Thư mục: specs/120-ai-conversational-agent/121-conversational-interface/ (Branch: feat/121-conversational-interface).
+       - Nhóm: 120 – AI Conversational Agent (Chủ sở hữu: Lê Công Minh Nhựt).
+       - Endpoints chính:
+         + POST /api/v1/agent/chat (Server-Sent Events streaming nhận prompt + playback context, trả về thinking states và Markdown
+         text deltas).
+         + GET /api/v1/agent/health (Kiểm tra trạng thái sẵn sàng của AI service).
+    
+    2. Phân chia User Story và Thứ tự ưu tiên (Tổ chức theo từng Phase):
+       - Phase 3: User Story 1 (P1 - MVP): Mở và xem giao diện hội thoại. Khởi tạo bảng terminal CLI nổi, hiển thị banner chào mừng, hỗ
+       trợ phím tắt đóng mở (Esc), focus trap trợ năng và kiểm tra trạng thái đăng nhập.
+       - Phase 4: User Story 2 (P1 - MVP): Gửi tin nhắn và nhận phản hồi AI kèm trạng thái xử lý trực quan. Xử lý input text (1-500 ký
+       tự, chặn rỗng), hiển thị spinner braille '⠋', timer đếm giây elapsed time, khối reasoning trace mở rộng, và render phản hồi
+       Markdown an toàn (in đậm, nghiêng, list, link) từ luồng SSE stream.
+       - Phase 5: User Story 3 (P2): Xử lý chịu lỗi và trạng thái AI tạm ngưng. Khi mất kết nối hoặc server timeout, hiển thị trạng
+       thái lỗi inline trên tin nhắn kèm nút "Thử lại". Khi aiAvailable = false, hiển thị status "● tạm ngưng", vô hiệu hóa input và
+       đảm bảo nhạc nền tiếp tục phát bình thường không bị ngắt quãng.
+       - Phase 6: User Story 4 (P1): Cô lập dữ liệu tài khoản và quyền riêng tư hội thoại. Xác thực JWT Bearer, xóa sạch toàn bộ log
+       hội thoại và buffer lịch sử phím mũi tên khi người dùng đăng xuất, đảm bảo không rò rỉ dữ liệu giữa các tài khoản (Nghị định
+       13/2023/NĐ-CP).
+    
+    3. Kiến trúc mã nguồn và đường dẫn file cụ thể:
+       - Backend (Node.js / Express):
+         - Middleware Xác thực: src/backend/middlewares/authMiddleware.js (Bảo vệ endpoint bằng JWT Bearer).
+         - Streaming Controller: src/backend/controllers/agentController.js (Thiết lập header SSE text/event-stream, xử lý request
+         body, validate prompt 1-500 ký tự).
+         - Conversation Service: src/backend/services/agentConversationService.js (Điều phối streaming chunked tokens, kết nối tới
+         LLM/AI provider adapter hoặc mock generator).
+         - Routes & Server: src/backend/routes/agentRoutes.js và gắn route /api/v1/agent vào src/backend/server.js.
+       - Frontend (React / Vite):
+         - SSE Client Adapter: src/frontend/src/utils/agentService.js (Hỗ trợ fetch streaming với ReadableStream, fallback generator
+         khi VITE_USE_MOCKS=true).
+         - Thành phần Markdown: src/frontend/src/components/chat/MarkdownRenderer.jsx (Render cú pháp Markdown an toàn cho câu trả lời
+         của AI).
+         - Giao diện Terminal Chat: src/frontend/src/components/chat/AIHostChat.jsx (Hoàn thiện bảng CLI nổi, quản lý entries trong bộ
+         nhớ, lệnh /clear, /help, bộ đệm 30 lệnh Up/Down arrow, timer đếm giây và auto-scroll log).
+         - Store Global: src/frontend/src/context/AppStore.jsx (Đồng bộ cờ trạng thái aiAvailable và thông tin currentUser).
+    
+    4. Ranh giới phạm vi nghiêm ngặt (Out-of-Scope / Prohibitions):
+       - KHÔNG phân tích ý định âm nhạc từ tin nhắn tự nhiên (thuộc phạm vi Feature 122).
+       - KHÔNG trực tiếp thực hiện hành động điều khiển hàng chờ, đổi âm lượng hay phát nhạc từ chat (thuộc phạm vi Feature 123).
+       - KHÔNG tạo bảng cơ sở dữ liệu PostgreSQL để lưu tin nhắn trong v1 (vòng đời hội thoại chạy thuần túy in-memory theo quyết định
+       đặc tả).
+       - Tách biệt tuyệt đối với PlayerContext (Group 040); lỗi chat hay AI ngưng hoạt động KHÔNG ĐƯỢC ngắt nhạc đang phát.
+    
+    5. Định dạng đầu ra bắt buộc của tasks.md:
+       - Tuân thủ nghiêm ngặt cú pháp checklist chuẩn của Spec Kit:
+         - [ ] [TaskID] [P?] [Story?] Mô tả hành động kèm đường dẫn file chính xác
+       - Cấu trúc các giai đoạn rõ ràng:
+         - Phase 1: Setup (Cấu hình shared infrastructure, markdown parser utility)
+         - Phase 2: Foundational (Các thành phần chặn luồng - SSE streaming middleware, auth guard)
+         - Phase 3: User Story 1 (P1 - MVP: Bảng điều khiển hội thoại terminal)
+         - Phase 4: User Story 2 (P1 - MVP: Luồng gửi/nhận SSE, thinking state, Markdown)
+         - Phase 5: User Story 3 (P2: Xử lý lỗi inline, chế độ tạm ngưng, bảo vệ audio playback)
+         - Phase 6: User Story 4 (P1: Bảo mật, xóa session bộ nhớ khi logout)
+         - Final Phase: Polish & Cross-Cutting Concerns (Lệnh /clear, /help, lịch sử phím Up/Down, chạy kiểm thử quickstart.md)
+       - Bổ sung đầy đủ các phần: Sơ đồ phụ thuộc (Dependencies), Ví dụ thực thi song song (Parallel execution examples), và Tiêu chí
+       nghiệm thu độc lập (Independent test criteria) cho từng User Story.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nạp và rà soát toàn diện tài liệu thiết kế Feature 121**: Phân tích kỹ lưỡng `plan.md`, `spec.md`, `data-model.md`, `research.md`, `quickstart.md`, `contracts/conversational-interface-api.json` và cấu trúc mã nguồn `src/backend/`, `src/frontend/`.
+- **Thiết lập danh mục 41 nhiệm vụ kỹ thuật chi tiết trong `tasks.md` theo chuẩn Spec Kit**:
+  - **Phase 1: Setup (T001 – T004)**:
+    - T001: Cấu hình thông số microservice AI Agent (`AI_AGENT_SERVICE_URL`, `AGENT_TIMEOUT_MS=15000`) trong `src/backend/config/agentConfig.js`.
+    - T002 [P]: Xây dựng helper và formatter luồng Server-Sent Events (`event: thinking`, `event: text`, `event: error`, `event: done`) trong `src/backend/utils/sseResponse.js` khớp với OpenAPI contract.
+    - T003 [P]: Xây dựng component `src/frontend/src/components/chat/MarkdownRenderer.jsx` parse an toàn cú pháp Markdown (bold, italic, list, code block, links) kèm thuộc tính an toàn `target="_blank"` và `rel="noopener noreferrer"` (FR-007).
+    - T004 [P]: Xây dựng async generator mock adapter trong `src/frontend/src/utils/aiMockData.js` cho chế độ demo độc lập (`VITE_USE_MOCKS=true`).
+  - **Phase 2: Foundational (T005 – T008 - Chặn luồng thực thi)**:
+    - T005: Khởi tạo module routing `src/backend/routes/agentRoutes.js` và gắn route `/api/v1/agent` vào `src/backend/server.js`.
+    - T006 [P]: Điều chỉnh middleware xác thực JWT `src/backend/middleware/authMiddleware.js` bảo vệ endpoint `/api/v1/agent/chat`, từ chối request không có token với HTTP 401 (`UNAUTHORIZED`) theo FR-001.
+    - T007 [P]: Xây dựng coordinator service `src/backend/services/agentConversationService.js` điều phối kết nối streaming và phát tán token từ mô hình AI.
+    - T008 [P]: Xây dựng client adapter `src/frontend/src/utils/agentService.js` đọc `ReadableStream` từ `POST /api/v1/agent/chat` với `AbortController` và fallback sang `aiMockData.js`.
+  - **Phase 3: User Story 1 - Khởi tạo và xem giao diện hội thoại (P1 - MVP) (T009 – T014)**:
+    - T009 [P] [US1] & T010 [P] [US1]: Viết trước component test kiểm tra mở bảng terminal, render badge `● online`, banner chào mừng, focus trap và contract test cho endpoint `GET /api/v1/agent/health`.
+    - T011 [US1]: Hiện thực controller handler `getAgentHealth` trong `src/backend/controllers/agentController.js` và đăng ký route `GET /health`.
+    - T012 [US1]: Tái cấu trúc layout container và header trong `src/frontend/src/components/chat/AIHostChat.jsx` neo cố định góc phải màn hình (`bottom-[96px] right-2 top-2`, max-width 460px), giao diện dark CLI và badge `~/auratune · ● online` (emerald).
+    - T013 [P] [US1]: Xây dựng renderer cho `BannerEntry` và thanh cuộn chip gợi ý nhanh trong `AIHostChat.jsx`.
+    - T014 [US1]: Cài đặt focus trap trợ năng và kết nối trigger đóng mở với `chatOpen` trong `src/frontend/src/context/AppStore.jsx`.
+  - **Phase 4: User Story 2 - Gửi tin nhắn và nhận phản hồi AI kèm trạng thái xử lý trực quan (P1 - MVP) (T015 – T024)**:
+    - T015 [P] [US2], T016 [P] [US2] & T017 [P] [US2]: Viết trước Unit Test kiểm tra độ dài prompt (1-500 ký tự, chặn rỗng), Contract Test kiểm tra luồng SSE stream đầy đủ 4 loại sự kiện và Component Test kiểm tra Markdown renderer chống XSS.
+    - T018 [US2]: Hiện thực handler `streamAgentChat` trong `src/backend/controllers/agentController.js` validate input, trích xuất context phát nhạc (`currentTrack`, `isPlaying`, `volume`), và thiết lập headers `text/event-stream`.
+    - T019 [US2]: Hiện thực pipeline streaming trong `src/backend/services/agentConversationService.js` phát các sự kiện SSE (`thinking`, `text`, `done`).
+    - T020 [US2]: Đăng ký route `POST /chat` có middleware bảo vệ trong `src/backend/routes/agentRoutes.js`.
+    - T021 [P] [US2]: Hiện thực hàm submit, khóa input chống gửi trùng lặp, thêm `UserMessageEntry` kèm chevron `❯` và xóa textarea (FR-005, FR-006).
+    - T022 [P] [US2]: Cài đặt animated processing indicator gồm braille spinner `⠋⠙⠹...`, cycling verbs và timer đếm giây elapsed time phản hồi dưới 300ms (SC-002).
+    - T023 [US2]: Xây dựng khối accordion suy nghĩ thu phóng (`AgentRunEntry`) với nút bấm `✻ Đã suy nghĩ [N]s >` hiển thị các dòng trace nội bộ.
+    - T024 [US2]: Tích hợp `MarkdownRenderer.jsx`, stream nối chuỗi delta, con trỏ nhấp nháy `█` và hàm auto-scroll cuộn xuống đáy log khi có token mới (FR-007, FR-012).
+  - **Phase 5: User Story 3 - Xử lý lỗi inline, chế độ tạm ngưng & bảo vệ Audio Player (P2) (T025 – T030)**:
+    - T025 [P] [US3] & T026 [P] [US3]: Viết integration test xác thực lỗi chat / sự cố mạng KHÔNG làm dừng phát nhạc trong `PlayerContext` (FR-011, SC-005) và test chức năng nút "Thử lại".
+    - T027 [US3]: Hiện thực xử lý lỗi HTTP 503 (`AI_SERVICE_UNAVAILABLE`) và phát sự kiện `event: error` khi AI provider timeout (> 15s) hoặc offline.
+    - T028 [US3]: Hiện thực thông báo lỗi inline `✗ Lỗi kết nối đến AI Host` và nút "Thử lại" lưu giữ prompt gốc trong `AIHostChat.jsx` để gửi lại trong 1-click (FR-009).
+    - T029 [P] [US3]: Cài đặt xử lý trạng thái tạm ngưng khi `aiAvailable = false`: hiển thị badge `~/auratune · ● tạm ngưng` (amber), render thông báo giải thích và khóa input mà không ngắt nhạc (FR-009, FR-011).
+    - T030 [US3]: Bọc component `AIHostChat` bằng React `ErrorBoundary` chuyên biệt, bảo vệ tuyệt đối luồng phát nhạc và vỏ ngoài ứng dụng.
+  - **Phase 6: User Story 4 - Quyền riêng tư và cô lập dữ liệu theo tài khoản (P1) (T031 – T035)**:
+    - T031 [P] [US4] & T032 [P] [US4]: Viết security test từ chối HTTP 401 khi thiếu JWT và integration test xác thực đăng xuất xóa sạch session và buffer lịch sử.
+    - T033 [US4]: Gắn middleware `authenticateToken` trích xuất `req.user.id`, trả về HTTP 401 chuẩn envelope.
+    - T034 [US4]: Hiển thị challenge modal nhắc đăng nhập cho khách vãng lai và chặn dispatch tin nhắn (FR-001).
+    - T035 [US4]: Cài đặt hook theo dõi thay đổi `currentUser` trong `AppStore.jsx`, tự động xóa sạch mảng `entries` và `historyRef` khi logout (FR-010).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T036 – T041)**:
+    - T036 [P]: Cài đặt lệnh `/clear` reset visual log về `BannerEntry` cục bộ với zero network call (FR-008).
+    - T037 [P]: Cài đặt lệnh `/help` hiển thị bảng cheat sheet phím tắt offline.
+    - T038 [P]: Cài đặt bộ đệm 30 lệnh gần nhất trong `historyRef`, duyệt bằng phím `ArrowUp`/`ArrowDown` (FR-008).
+    - T039 [P]: Cài đặt phím `Esc` ngắt lượt stream đang chạy qua `AbortController`, chuyển status thành `■ Đã dừng` và mở khóa input.
+    - T040 [P]: Cập nhật tài liệu hợp đồng `specs/120-ai-conversational-agent/121-conversational-interface/contracts/README.md`.
+    - T041: Thực thi kiểm thử nghiệm thu 8 kịch bản trong `quickstart.md`.
+- **Thực thi phân tích đối chiếu `/speckit-analyze`**:
+  - Đạt tỷ lệ bao phủ yêu cầu **100%** (12/12 FRs và 5/5 SCs đều có task tương ứng).
+  - Không có vi phạm Hiến pháp, không có lỗi CRITICAL, HIGH hay MEDIUM; phát hiện 3 quan sát nhỏ (I1, C1, A1) đều đã được xử lý và xác nhận nhất quán hoàn toàn.
+  - Xác nhận độc lập: Mô hình In-Memory Session hoạt động chuẩn xác (không tạo bảng CSDL lưu tin nhắn), cách ly tuyệt đối với `PlayerContext` (lỗi chat không ngắt nhạc), và hợp đồng SSE streaming đồng bộ 100% giữa backend và frontend.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                  | Quyết định   | Lý do                                                                                                                            |
+| :-------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| Cú pháp checklist Spec Kit (`- [ ] [TaskID] [P?] [Story?]`)           | Dùng toàn bộ | Tuân thủ tuyệt đối quy định định dạng Spec Kit, hỗ trợ thực thi tự động và đánh dấu song song chính xác cho 23 task.             |
+| Phân chia 7 giai đoạn (Setup, Foundation, US1, US2, US3, US4, Polish) | Dùng toàn bộ | Tổ chức ưu tiên chuẩn mực theo 4 User Stories, đưa 2 stories MVP lên đầu và phân tách rạch ròi các pha chịu lỗi, bảo mật.        |
+| Mô hình hội thoại In-Memory Session & Lệnh CLI (`/clear`, `/help`, ↑↓)| Dùng toàn bộ | Tuân thủ nghiêm ngặt FR-008 và phiên Clarification: không tạo bảng PostgreSQL lưu tin nhắn v1, reset tức thì và lưu 30 lệnh phím mũi tên. |
+| Luồng streaming Server-Sent Events (SSE) với 4 loại event             | Dùng toàn bộ | Đáp ứng truyền nhận real-time thinking states và token chunks mượt mà, hỗ trợ AbortController qua phím Esc.                      |
+| Cách ly hoàn toàn với Trình phát nhạc (`PlayerContext`)                | Dùng toàn bộ | Tuân thủ FR-011 và SC-005: bọc ErrorBoundary, mọi lỗi chat hay trạng thái `● tạm ngưng` không làm ngắt nhạc nền đang phát.        |
+| Render Markdown an toàn kèm link `rel="noopener noreferrer"`          | Dùng toàn bộ | Tuân thủ FR-007: AI trả về Markdown phong phú, tin nhắn người dùng hiển thị plain text để miễn nhiễm hoàn toàn với XSS.          |
+| Nhận diện ý định âm nhạc tự nhiên (Music Intent)                      | Loại trừ     | Thuộc thẩm quyền sở hữu độc quyền của Feature 122.                                                                               |
+| Trực tiếp điều khiển hàng chờ / âm lượng / phát nhạc từ chat          | Loại trừ     | Thuộc thẩm quyền sở hữu độc quyền của Feature 123.                                                                               |
+| Tạo bảng cơ sở dữ liệu PostgreSQL lưu tin nhắn chat                   | Bỏ tuyệt đối | Đặc tả và Clarification đã chốt vòng đời in-memory session; tránh lưu trữ dữ liệu PII thừa thãi theo Nghị định 13/2023/NĐ-CP.    |
+
+### Cách kiểm chứng
+
+- **Kiểm tra cú pháp định dạng Spec Kit:** Toàn bộ 41 tasks đều có checkbox markdown `- [ ]`, mã Task ID duy nhất (`T001` - `T041`), nhãn parallel `[P]` đúng nơi, nhãn User Story (`[US1]`, `[US2]`, `[US3]`, `[US4]`) chỉ xuất hiện trong story phase và có đường dẫn file cụ thể (kiểm tra bằng script node cho kết quả 41 tasks hợp lệ, 0 invalid, 0 thiếu file path).
+- **Kiểm tra độ bao phủ yêu cầu qua `/speckit-analyze`:** Xác nhận 100% 12 FRs và 5 SCs đều được map vào tasks.md, không có unmapped task.
+- **Kiểm tra ranh giới phạm vi:** Không có task nào đụng chạm nhận diện intent (Feature 122), điều khiển hàng chờ (Feature 123) hay tạo bảng CSDL cho chat.
+- **Kiểm tra tính độc lập audio và hợp đồng SSE:** Có test case tích hợp chuyên biệt `agentAudioIsolation.test.jsx` (T025) và kiểm thử hợp đồng SSE đầy đủ 4 event schemas (T016).
+
+
+---
+
+## Mục 31: Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 122 – Music Intent Understanding bằng `/speckit.tasks` và đối chiếu bằng `/speckit.analyze`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-08                                                                                                                                                                                                                                                                                                                                     |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                           |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding/`)                                                                                                                                                                                                   |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.tasks`, `/speckit.analyze`                                                                                                                                                                                                                                                              |
+| Mục đích                 | Phân rã toàn diện tài liệu thiết kế (plan.md, spec.md, data-model.md, research.md, quickstart.md, contracts) thành hệ thống 40 nhiệm vụ kỹ thuật (tasks.md) tuần tự, cài đặt kiến trúc Hybrid 2 tầng, bộ lọc regex PII sanitizer 2 lớp, phân rã câu ghép `clauses`, giải quyết ngữ cảnh `currentTrack`, và phân loại 5 nhóm intent chính xác $\ge 90\%$. |
+
+### Prompt đã dùng
+
+```text
+Hãy tạo file tasks.md cho Tính năng 122: Nhận diện ý định âm nhạc (Music Intent Understanding) tại thư mục
+    specs/120-ai-conversational-agent/122-music-intent-understanding/ dựa trên toàn bộ tài liệu thiết kế có sẵn: plan.md, spec.md,
+    data-model.md, research.md, quickstart.md và contracts/music-intent-understanding-api.json.
+    
+    Yêu cầu chi tiết và các ràng buộc kỹ thuật:
+    
+    1. Thông tin tính năng mục tiêu:
+       - Thư mục: specs/120-ai-conversational-agent/122-music-intent-understanding/ (Branch: feat/122-music-intent-understanding).
+       - Nhóm: 120 – AI Conversational Agent (Chủ sở hữu: Lê Công Minh Nhựt).
+       - Endpoint chính: POST /api/v1/agent/intent/analyze (Nhận rawPrompt + PlaybackContextSnapshot, trả về MusicIntentResult có cấu
+       trúc cho Centralized AI Agent Orchestrator).
+    
+    2. Phân chia User Story và Thứ tự ưu tiên (Tổ chức theo từng Phase):
+       - Phase 3: User Story 1 (P1 - MVP): Hiểu yêu cầu phát nhạc và điều khiển phát nhạc. Phân loại intent 'play_music', trích xuất
+       songTitle, artistName, controlAction (play, pause, next, set_volume) và volumeLevel.
+       - Phase 4: User Story 2 (P1 - MVP): Hiểu yêu cầu tìm kiếm và khám phá âm nhạc. Phân loại intent 'search_music', trích xuất mood,
+       activity, genre, hoặc trích đoạn lời bài hát lyricsSnippet.
+       - Phase 5: User Story 3 (P2): Hiểu câu hỏi tra cứu thông tin âm nhạc và bài hát đang phát. Phân loại intent 'query_music_info',
+       kết hợp ngữ cảnh currentTrack để giải quyết các đại từ "bài này", "ca sĩ này", hoặc tra cứu thông tin nghệ sĩ.
+       - Phase 6: User Story 4 (P2): Xử lý yêu cầu mơ hồ, câu ghép và trò chuyện ngoài phạm vi. Tự động áp dụng smart heuristic
+       defaults cho câu lệnh thiếu slot ("bật nhạc đi"), phân rã câu ghép chứa liên từ ("rồi", "sau đó") thành mảng các mệnh đề
+       IntentClause tuần tự, và phân loại an toàn các câu hỏi phi âm nhạc sang 'general_chitchat' mà không làm kích hoạt hành động phát
+       nhạc.
+       - Phase 7: User Story 5 (P1): Bảo vệ quyền riêng tư người dùng trong phân tích tin nhắn. Tích hợp bộ lọc regex PII sanitizer để
+       loại bỏ email, số điện thoại và mật khẩu trước khi gửi đến dịch vụ AI (tuân thủ Nghị định 13/2023/NĐ-CP).
+    
+    3. Kiến trúc mã nguồn và đường dẫn file cụ thể:
+       - Backend (Node.js / Express):
+         - Middleware Bảo mật: src/backend/middlewares/authMiddleware.js (Xác thực JWT token).
+         - Dịch vụ Lọc PII: src/backend/services/piiSanitizerService.js (Bộ lọc regex phát hiện và che giấu email, phone, password).
+         - Dịch vụ Phân rã Mệnh đề: src/backend/services/clauseDecompositionService.js (Tách các mệnh đề hành động tuần tự theo liên từ
+         "rồi", "sau đó", dấu phẩy).
+         - Dịch vụ Phân tích Ý định: src/backend/services/intentUnderstandingService.js (Điều phối kiến trúc Hybrid 2 tầng: gọi Tier 1
+         LLM parser với timeout 1,200ms, tự động chuyển đổi sang Tier 2 Rule-based fallback khi timeout hoặc lỗi mạng; giải quyết đại
+         từ chỉ định theo playback context).
+         - Controller: src/backend/controllers/intentController.js (Tiếp nhận POST /api/v1/agent/intent/analyze, validate prompt 1-500
+         ký tự, trả về MusicIntentResult Envelope).
+         - Routes & Server: src/backend/routes/intentRoutes.js và gắn route vào src/backend/server.js.
+       - Frontend (React / Vite):
+         - Client PII Sanitizer: src/frontend/src/utils/piiSanitizer.js (Lọc thông tin nhạy cảm ngay tại client trước khi gửi qua
+         mạng).
+         - Bộ phân tích Tier-2 Fallback: src/frontend/src/utils/agentService.js (Nâng cấp hàm planClause thành bộ nhận diện quy tắc
+         regex deterministic cho các lệnh phát nhạc, âm lượng, mood và tìm kiếm).
+         - Mock Data: src/frontend/src/utils/aiMockData.js (Dữ liệu giả lập intent cho chế độ kiểm thử standalone).
+    
+    4. Ranh giới phạm vi nghiêm ngặt (Out-of-Scope / Prohibitions):
+       - TUYỆT ĐỐI KHÔNG trực tiếp thực hiện hành động phát nhạc, chỉnh âm lượng hay can thiệp vào player state (FR-012) -> Toàn bộ
+       việc thực thi ủy quyền cho Feature 123 (Real-time Music Assistance) và PlayerContext (Group 040).
+       - KHÔNG render giao diện trò chuyện hay quản lý tin nhắn chat (thuộc phạm vi Feature 121).
+       - KHÔNG thực thi truy vấn tìm kiếm vector ngữ nghĩa (thuộc phạm vi Group 030).
+       - Giữ độ trễ phân tích ý định <= 1,200ms (SC-002), không bao giờ làm gián đoạn bài nhạc đang phát ngầm (SC-005).
+
+    5. Định dạng đầu ra bắt buộc của tasks.md:
+       - Tuân thủ nghiêm ngặt cú pháp checklist chuẩn của Spec Kit:
+         - [ ] [TaskID] [P?] [Story?] Mô tả hành động kèm đường dẫn file chính xác
+       - Cấu trúc các giai đoạn rõ ràng:
+         - Phase 1: Setup (Cấu hình shared infrastructure, regex patterns, PII rules)
+         - Phase 2: Foundational (Các thành phần chặn luồng - auth guard, PII sanitizer, context resolver)
+         - Phase 3: User Story 1 (P1 - MVP: Ý định phát nhạc & điều khiển)
+         - Phase 4: User Story 2 (P1 - MVP: Ý định tìm kiếm & khám phá theo mood/lyrics)
+         - Phase 5: User Story 3 (P2: Tra cứu thông tin âm nhạc & giải quyết ngữ cảnh "bài này")
+         - Phase 6: User Story 4 (P2: Câu ghép, smart defaults, chitchat an toàn)
+         - Phase 7: User Story 5 (P1: Bảo mật PII & cô lập tài khoản)
+         - Final Phase: Polish & Cross-Cutting Concerns (Độ trễ < 1,200ms, Tier-2 fallback resilience, chạy benchmark kiểm thử
+         quickstart.md)
+       - Bổ sung đầy đủ các phần: Sơ đồ phụ thuộc (Dependencies), Ví dụ thực thi song song (Parallel execution examples), và Tiêu chí
+       nghiệm thu độc lập (Independent test criteria) cho từng User Story.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nạp và rà soát toàn diện tài liệu thiết kế Feature 122**: Phân tích sâu `plan.md`, `spec.md`, `data-model.md`, `research.md`, `quickstart.md`, `contracts/music-intent-understanding-api.json` và cấu trúc mã nguồn `src/backend/`, `src/frontend/`.
+- **Thiết lập danh mục 40 nhiệm vụ kỹ thuật chi tiết trong `tasks.md` theo chuẩn Spec Kit**:
+  - **Phase 1: Setup (T001 – T004)**:
+    - T001: Cấu hình thông số phân tích ý định (`AI_INTENT_SERVICE_URL`, `INTENT_TIMEOUT_MS=1200`, `INTENT_CONFIDENCE_THRESHOLD=0.7`) trong `src/backend/config/intentConfig.js`.
+    - T002 [P]: Định nghĩa enum 5 danh mục intent (`play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`, `unknown`) và từ điển regex trong `src/backend/constants/intentConstants.js`.
+    - T003 [P]: Xây dựng helper định dạng response envelope chuẩn `MusicIntentResult` trong `src/backend/utils/intentResponse.js`.
+    - T004 [P]: Tạo mock intent fixtures trong `src/frontend/src/utils/aiMockData.js` cho chế độ standalone demo (`VITE_USE_MOCKS=true`).
+  - **Phase 2: Foundational (T005 – T009 - Chặn luồng thực thi)**:
+    - T005: Khởi tạo module routing `src/backend/routes/intentRoutes.js` và gắn route `/api/v1/agent/intent` vào `src/backend/server.js`.
+    - T006 [P]: Điều chỉnh middleware xác thực JWT `src/backend/middleware/authMiddleware.js` bảo vệ endpoint `/api/v1/agent/intent/analyze`, từ chối truy cập không có token với HTTP 401 (`UNAUTHORIZED`) theo FR-009.
+    - T007 [P]: Xây dựng dịch vụ lọc PII phía backend `src/backend/services/piiSanitizerService.js` che giấu email (`[EMAIL_REDACTED]`), số điện thoại (`[PHONE_REDACTED]`) và mật khẩu trước khi gửi đến AI ngoài (FR-008).
+    - T008 [P]: Xây dựng tiện ích lọc PII phía client edge `src/frontend/src/utils/piiSanitizer.js` để che giấu dữ liệu nhạy cảm ngay trên thiết bị trước khi gửi qua mạng.
+    - T009 [P]: Xây dựng dịch vụ tách mệnh đề câu ghép `src/backend/services/clauseDecompositionService.js` phân rã câu lệnh chứa liên từ ("rồi", "sau đó", dấu phẩy) thành mảng `IntentClause[]` tuần tự (FR-005).
+  - **Phase 3: User Story 1 - Hiểu yêu cầu phát nhạc và điều khiển phát nhạc (P1 - MVP) (T010 – T015)**:
+    - T010 [P] [US1] & T011 [P] [US1]: Viết trước Unit Test kiểm tra độ chính xác phân loại `play_music`, trích xuất tên bài, nghệ sĩ, controlAction (play, pause, next, volume) và Contract Test cho `POST /api/v1/agent/intent/analyze`.
+    - T012 [US1]: Hiện thực phân loại intent phát nhạc và trích xuất slot thực thể (`songTitle`, `artistName`, `controlAction`, `volumeLevel`) trong `src/backend/services/intentUnderstandingService.js`.
+    - T013 [US1]: Hiện thực controller handler `analyzeMusicIntent` trong `src/backend/controllers/intentController.js` validate độ dài prompt (1-500 ký tự) và đóng gói envelope chuẩn.
+    - T014 [US1]: Đăng ký route handler `POST /analyze` kèm middleware xác thực trong `src/backend/routes/intentRoutes.js`.
+    - T015 [P] [US1]: Nâng cấp hàm `planClause` trong `src/frontend/src/utils/agentService.js` thành bộ nhận diện regex Tier-2 deterministic cho các lệnh phát nhạc và điều khiển âm lượng.
+  - **Phase 4: User Story 2 - Hiểu yêu cầu tìm kiếm và khám phá âm nhạc (P1 - MVP) (T016 – T019)**:
+    - T016 [P] [US2] & T017 [P] [US2]: Viết trước Unit Test kiểm tra trích xuất mood, activity, genre, albumTitle và lyricsSnippet từ câu lệnh tìm kiếm tự nhiên.
+    - T018 [US2]: Hiện thực bộ trích xuất ý định `search_music` trong `src/backend/services/intentUnderstandingService.js`, ánh xạ tới `suggestedAction: "search_service"` hoặc `"recommendation_service"`.
+    - T019 [US2]: Mở rộng bộ quy tắc Tier-2 client trong `src/frontend/src/utils/agentService.js` nhận diện từ khóa mood (chill, lofi, tập trung) và trích đoạn lời bài hát (FR-003).
+  - **Phase 5: User Story 3 - Hiểu câu hỏi tra cứu thông tin âm nhạc & bài hát đang phát (P2) (T020 – T024)**:
+    - T020 [P] [US3] & T021 [P] [US3]: Viết Unit Test và Contract Test kiểm tra giải quyết đại từ chỉ định ("bài này", "ca sĩ này") theo snapshot `currentTrack` và tính toán relative volume ("nhỏ lại" / "to lên").
+    - T022 [US3]: Hiện thực bộ giải quyết ngữ cảnh trong `src/backend/services/intentUnderstandingService.js` liên kết đại từ chỉ định với `context.currentTrack.id` và `artist` (FR-004).
+    - T023 [US3]: Hiện thực tính toán relative volume trong `src/backend/services/intentUnderstandingService.js` điều chỉnh $\pm 20$ dựa trên `context.volume` (FR-004).
+    - T024 [P] [US3]: Tích hợp giải quyết đại từ và relative volume vào `planClause` trong `src/frontend/src/utils/agentService.js`.
+  - **Phase 6: User Story 4 - Xử lý yêu cầu mơ hồ, câu ghép và trò chuyện ngoài phạm vi (P2) (T025 – T030)**:
+    - T025 [P] [US4] & T026 [P] [US4]: Viết Unit Test kiểm tra smart defaults trên câu lệnh thiếu slot, mảng câu ghép `clauses` và phân loại an toàn câu hỏi phi âm nhạc sang `general_chitchat`.
+    - T027 [US4]: Hiện thực gán smart heuristic defaults trong `src/backend/services/intentUnderstandingService.js`: tự động gán `inferredDefaults.default_source = "personalized_or_trending"` khi người dùng nói cộc lốc "bật nhạc lên" (FR-005).
+    - T028 [US4]: Tích hợp `clauseDecompositionService` vào `intentUnderstandingService.js` ánh xạ từng mệnh đề thành một `IntentClause` theo thứ tự thực thi trái qua phải (FR-005).
+    - T029 [US4]: Hiện thực phân loại trò chuyện phi âm nhạc sang `general_chitchat` với `suggestedAction: "dialogue_response"`, ngăn chặn tuyệt đối lệnh phát nhạc sai lầm (SC-004).
+    - T030 [P] [US4]: Cập nhật xử lý câu ghép và smart defaults trong `src/frontend/src/utils/agentService.js`.
+  - **Phase 7: User Story 5 - Bảo vệ quyền riêng tư người dùng trong phân tích tin nhắn (P1) (T031 – T035)**:
+    - T031 [P] [US5] & T032 [P] [US5]: Viết test suite bảo mật xác thực 100% email, số điện thoại Việt Nam/quốc tế và mật khẩu bị che giấu trước khi truyền qua mạng.
+    - T033 [US5]: Tích hợp `piiSanitizerService` thành bước tiền xử lý bắt buộc đầu tiên trong `intentUnderstandingService.js` trước khi gọi AI service ngoài (FR-008, SC-003).
+    - T034 [US5]: Kích hoạt `piiSanitizer.js` tại client edge trong `src/frontend/src/utils/agentService.js`.
+    - T035 [US5]: Khóa chặt phạm vi session theo `req.user.id` trong `src/backend/controllers/intentController.js`, không ghi log PII chưa che giấu (FR-009).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T036 – T040)**:
+    - T036 [P]: Cài đặt bộ đếm giờ `AbortController` 1,200ms bọc cuộc gọi Tier 1 trong `intentUnderstandingService.js`, tự động hạ cấp sang Tier-2 deterministic regex parser khi timeout/5xx mà không báo lỗi hay ngắt nhạc (FR-010, SC-002, SC-005).
+    - T037 [P]: Viết script benchmark tự động 50+ ca kiểm thử kiểm tra độ chính xác phân loại $\ge 90\%$ trên toàn bộ 5 danh mục intent (SC-001).
+    - T038 [P]: Viết bài test benchmark độ trễ xác thực thời gian xử lý $\le 1,200$ms (SC-002).
+    - T039 [P]: Cập nhật tài liệu hợp đồng `specs/120-ai-conversational-agent/122-music-intent-understanding/contracts/README.md`.
+    - T040: Thực thi nghiệm thu toàn diện 8 kịch bản trong `quickstart.md`.
+- **Thực thi phân tích đối chiếu `/speckit-analyze`**:
+  - Đạt tỷ lệ bao phủ yêu cầu **100%** (12/12 FRs và 5/5 SCs đều có task tương ứng).
+  - Không có vi phạm Hiến pháp, không có lỗi CRITICAL, HIGH hay MEDIUM; phát hiện 3 quan sát nhỏ (I1, C1, P1) đều đã được xử lý và xác nhận nhất quán hoàn toàn.
+  - Xác nhận độc lập: Bao quát trọn vẹn 5 nhóm intent (kể cả `manage_library`), tuân thủ ranh giới không gọi player APIs (FR-012), lọc PII 2 lớp an toàn (FR-008), và cơ chế Tier-2 fallback timeout 1,200ms bảo vệ nhạc nền phát liên tục.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                  | Quyết định   | Lý do                                                                                                                            |
+| :-------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| Cú pháp checklist Spec Kit (`- [ ] [TaskID] [P?] [Story?]`)           | Dùng toàn bộ | Tuân thủ tuyệt đối quy định định dạng Spec Kit, hỗ trợ thực thi tự động và đánh dấu song song chính xác cho 22 task.             |
+| Phân chia 8 giai đoạn (Setup, Foundation, US1 -> US5, Polish)         | Dùng toàn bộ | Tổ chức ưu tiên chuẩn mực theo 5 User Stories, đưa US1/US2 (MVP) và US5 (Privacy P1) lên đầu, tách rạch ròi câu ghép và tra cứu. |
+| Phân loại toàn diện 5 nhóm intent (play, search, query, library, chat)| Dùng toàn bộ | Tuân thủ nghiêm ngặt FR-002 và phiên Clarification: bao quát cả lệnh quản lý thư viện (`like_track`) và chit-chat an toàn.       |
+| Bộ lọc regex PII Sanitizer 2 lớp (client edge + backend)              | Dùng toàn bộ | Tuân thủ FR-008, SC-003 và Nghị định 13/2023/NĐ-CP: che giấu 100% email, số điện thoại, mật khẩu trước khi gửi tới AI service ngoài. |
+| Tách câu ghép chứa liên từ ("rồi", "sau đó") thành mảng clauses       | Dùng toàn bộ | Tuân thủ FR-005 và phiên Clarification 2026-11-01: chuyển đổi câu lệnh phức thành mảng hành động tuần tự cho Orchestrator.        |
+| Kiến trúc Hybrid 2 tầng với Tier-2 fallback timeout 1,200ms           | Dùng toàn bộ | Tuân thủ FR-010, SC-002 và SC-005: ngắt sau 1,200ms, hạ cấp mượt mà sang `planClause` regex cục bộ, không làm ngắt nhạc nền.    |
+| Giải quyết đại từ chỉ định ("bài này") và relative volume             | Dùng toàn bộ | Tuân thủ FR-004: neo trực tiếp vào snapshot `currentTrack` và tính toán delta volume mà không cần quét lại lịch sử chat.         |
+| Trực tiếp gọi hàm phát nhạc hoặc điều khiển player                     | Bỏ tuyệt đối | Vi phạm nghiêm ngặt FR-012; toàn bộ việc thực thi ủy quyền cho Feature 123 (Real-time Music Assistance) và PlayerContext (040).  |
+| Render giao diện tin nhắn chat hoặc quản lý chat log                   | Loại trừ     | Thuộc thẩm quyền độc quyền của Feature 121 (Conversational Interface).                                                          |
+| Thực thi tìm kiếm vector ngữ nghĩa trực tiếp                          | Loại trừ     | Thuộc thẩm quyền của Group 030 (Semantic Vector Search); F122 chỉ trích xuất slots và đề xuất suggestedAction.                   |
+| Tạo bảng cơ sở dữ liệu PostgreSQL lưu intent log                      | Bỏ tuyệt đối | Vòng đời phân tích ý định là computational in-memory per request; không lưu trữ dữ liệu PII thừa thãi theo quy định bảo mật.     |
+
+### Cách kiểm chứng
+
+- **Kiểm tra cú pháp định dạng Spec Kit:** Toàn bộ 40 tasks đều có checkbox markdown `- [ ]`, mã Task ID duy nhất (`T001` - `T040`), nhãn parallel `[P]` đúng nơi, nhãn User Story (`[US1]`, `[US2]`, `[US3]`, `[US4]`, `[US5]`) chỉ xuất hiện trong story phase và có đường dẫn file cụ thể (kiểm tra bằng script node cho kết quả 40 tasks hợp lệ, 0 invalid, 0 thiếu file path).
+- **Kiểm tra độ bao phủ yêu cầu qua `/speckit-analyze`:** Xác nhận 100% 12 FRs và 5 SCs đều được map vào tasks.md, không có unmapped task.
+- **Kiểm tra ranh giới phạm vi:** Không có task nào gọi player APIs, can thiệp chat DOM hay tạo bảng CSDL cho intent logs.
+- **Kiểm tra bảo mật và chịu lỗi:** Có test suite bảo mật riêng `piiSanitizerService.test.js` (T031) khẳng định 100% PII bị che giấu, test suite benchmark độ chính xác $\ge 90\%$ (T037) và benchmark thời gian phản hồi $\le 1,200$ms (T038).
+
+---
+
+## Mục 32: Tạo tasks.md cho Feature 123 – Real-Time Music Assistance
+
+| Trường                   | Nội dung                                                                                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-08                                                                                                                                               |
+| Người thực hiện          | Nhựt                                                                                                                                                     |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance`)               |
+| Công cụ AI               | Codex (GPT-6), `/speckit-tasks`, `/speckit-analyze`                                                                                                      |
+| Mục đích                 | Tạo danh sách nhiệm vụ thực thi chi tiết (`tasks.md`) theo chuẩn Spec Kit từ toàn bộ tài liệu thiết kế có sẵn và thực hiện phân tích đối chiếu phi phá hủy (non-destructive cross-artifact analysis) đảm bảo 100% độ phủ yêu cầu, bảo vệ nguyên tắc bất biến Zero Audio Disruption và tuân thủ phân quyền an toàn. |
+
+### Prompt đã dùng
+
+```text
+/speckit-tasks Hãy tạo file tasks.md cho Tính năng 123: Hỗ trợ âm nhạc theo thời gian thực (Real-Time Music Assistance) tại thư mục specs/120-ai-conversational-agent/123-real-time-music-assistance/ dựa trên toàn bộ tài liệu thiết kế có sẵn: plan.md, spec.md, data-model.md, research.md, quickstart.md và contracts/real-time-music-assistance-api.json.
+
+Yêu cầu chi tiết và các ràng buộc kỹ thuật:
+
+1. Thông tin tính năng mục tiêu:
+   - Thư mục: specs/120-ai-conversational-agent/123-real-time-music-assistance/ (Branch: feat/123-real-time-music-assistance).
+   - Nhóm: 120 – AI Conversational Agent (Chủ sở hữu: Lê Công Minh Nhựt).
+   - Endpoint chính: POST /api/v1/agent/assistance/execute (Tiếp nhận MusicIntentResult đã thẩm định từ Feature 122, trả về kế hoạch điều phối hành động client_actions, yêu cầu xác nhận và widget nhúng).
+
+2. Phân chia User Story và Thứ tự ưu tiên (Tổ chức theo từng Phase):
+   - Phase 3: User Story 1 (P1 - MVP): Hỗ trợ điều khiển phát nhạc và âm thanh theo thời gian thực. Thực thi các lệnh play_tracks, play_playlist, playback (pause, resume, next, previous) và set_volume trực tiếp thông qua PlayerContext mà không cần rời khỏi khung chat.
+   - Phase 4: User Story 2 (P1 - MVP): Quản lý hàng đợi và luồng gợi ý khám phá. Thực thi thêm bài vào hàng đợi queue_add, ưu tiên phát kế tiếp play_next, và nạp danh sách gợi ý nhạc vào player queue mà không làm ngắt bài đang phát.
+   - Phase 5: User Story 3 (P2): Tương tác thư viện cá nhân qua đàm thoại. Thực thi like_track, lưu bài vào danh sách phát cá nhân, và theo dõi nghệ sĩ trong phạm vi phân quyền người dùng.
+   - Phase 6: User Story 4 (P2): Chịu lỗi, thông báo thiếu thông tin và phục hồi khi dịch vụ gián đoạn. Đảm bảo nguyên lý "Zero Audio Disruption" (FR-008, SC-003) - các lỗi 503, timeout, hoặc bài hát không tồn tại KHÔNG ĐƯỢC ngắt bài hát hiện đang phát.
+   - Phase 7: User Story 5 (P1): Xác thực phiên người dùng và cô lập trạng thái phát nhạc (Decree 13/2023/NĐ-CP). Đảm bảo hành vi của User A không tác động đến User B.
+   - Final Phase: Polish & Cross-Cutting Concerns:
+     + Cơ chế Destructive-Only Confirmation ([y/N]) cho clear_queue (FR-013).
+     + Nhúng interactive widget PlaylistCard vào luồng chat (FR-004).
+     + Ghi nhận lịch sử nghe nhạc qua hook POST /api/v1/users/me/history (FR-010, SC-005).
+     + Chạy và xác thực toàn bộ các kịch bản trong quickstart.md.
+
+3. Ràng buộc bất biến và nguyên tắc hệ thống:
+   - Zero Audio Disruption Invariant: 100% kịch bản lỗi, catalog miss, service 503 không được ngắt nhạc đang phát (FR-008, SC-003).
+   - Destructive-Only Confirmation: Duy nhất clear_queue yêu cầu xác nhận [y/N], các hành động khác thực thi tức thì (FR-013).
+   - Tôn trọng ranh giới trách nhiệm: KHÔNG xử lý NLP hay trích xuất ý định (thuộc Feature 122), KHÔNG render khung chat từ đầu (thuộc Feature 121), KHÔNG truy vấn vector database trực tiếp (thuộc Group 030).
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nạp và rà soát toàn diện tài liệu thiết kế Feature 123**: Khảo sát chi tiết `spec.md`, `plan.md`, `data-model.md`, `research.md`, `quickstart.md`, `contracts/real-time-music-assistance-api.json` và mã nguồn prototype tại `src/frontend/src/components/chat/agentTools.js` cùng `src/backend/`.
+- **Thiết lập danh mục 41 nhiệm vụ kỹ thuật chi tiết trong `tasks.md` theo chuẩn Spec Kit**:
+  - **Phase 1: Setup (T001 – T004)**:
+    - T001: Cấu hình ngưỡng thời gian phản hồi hỗ trợ (`ASSISTANCE_DISPATCH_TIMEOUT_MS=1000`, `DOWNSTREAM_TIMEOUT_MS=3000`) trong `src/backend/config/assistanceConfig.js`.
+    - T002 [P]: Định nghĩa enum danh mục các công cụ điều phối client (`play_playlist`, `play_tracks`, `playback`, `set_volume`, `queue_add`, `clear_queue`, `like_track`, `navigate`) và trạng thái trong `src/backend/constants/assistanceConstants.js`.
+    - T003 [P]: Xây dựng helper định dạng envelope response chuẩn `AssistancePlanData` trong `src/backend/utils/assistanceResponse.js` per contract OpenAPI.
+    - T004 [P]: Tạo fixtures giả lập lệnh điều khiển và widget nhúng trong `src/frontend/src/utils/assistanceMockData.js` phục vụ chế độ offline demo và UI testing.
+  - **Phase 2: Foundational (T005 – T009 - Chặn luồng thực thi)**:
+    - T005: Khởi tạo module routing `src/backend/routes/assistanceRoutes.js` và gắn route `/api/v1/agent/assistance` vào `src/backend/server.js`.
+    - T006 [P]: Điều chỉnh middleware JWT `src/backend/middleware/authMiddleware.js` bảo vệ endpoint `/execute`, chặn truy cập trái phép với HTTP 401 (`UNAUTHORIZED`) (FR-005, FR-011).
+    - T007 [P]: Xây dựng dịch vụ kiểm tra thực thể danh mục `src/backend/services/catalogValidationService.js` thẩm định sự tồn tại và khả năng phát của songId, playlistId, albumId, artistId trước khi sinh lệnh thực thi (FR-006).
+    - T008 [P]: Xây dựng giao diện bridge an toàn cho `PlayerContext.jsx` (`playCollection`, `togglePlayback`, `nextTrack`, `previousTrack`, `setVolume`, `addManyToQueue`, `clearUpcoming`, `playNext`) không bao giờ mutate audio element khi input null.
+    - T009 [P]: Xây dựng bộ điều phối thực thi tool client `executeTool` trong `src/frontend/src/components/chat/agentTools.js` bọc try/catch toàn cục để bảo vệ luồng âm thanh không bị crash.
+  - **Phase 3: User Story 1 - Hỗ trợ điều khiển phát nhạc & âm thanh thời gian thực (P1 - MVP) (T010 – T016)**:
+    - T010 [P] [US1] & T011 [P] [US1]: Viết trước Unit Test kiểm tra ánh xạ intent `play_music` thành các actions (`play_tracks`, `play_playlist`, `playback`) và Contract Test kiểm tra schema `POST /api/v1/agent/assistance/execute`.
+    - T012 [P] [US1]: Viết Client Unit Test trong `agentToolsPlayback.test.js` kiểm tra các hàm `play_tracks`, `play_playlist`, `playback`, `set_volume`.
+    - T013 [US1]: Hiện thực generator sinh action phát nhạc trong `src/backend/services/musicAssistanceService.js` tạo các `ToolCallDirective` (tiền tố `call_`, enum name, label trực quan).
+    - T014 [US1]: Hiện thực controller handler `executeAssistancePlan` trong `src/backend/controllers/assistanceController.js` thẩm định `AssistanceRequestPayload` và trả về kết quả dưới 1.000ms (SC-001).
+    - T015 [US1]: Đăng ký route handler `POST /execute` kèm middleware xác thực token trong `src/backend/routes/assistanceRoutes.js`.
+    - T016 [P] [US1]: Hoàn thiện các hàm điều khiển cốt lõi trong `src/frontend/src/components/chat/agentTools.js` (unmute trước khi gán volume 0–100, bảo vệ tham số).
+  - **Phase 4: User Story 2 - Quản lý hàng đợi và luồng gợi ý khám phá (P1 - MVP) (T017 – T022)**:
+    - T017 [P] [US2] & T018 [P] [US2]: Viết Unit Test phía backend và client kiểm tra thao tác `queue_add` và `play_next` mà không ngắt bài hát hiện đang phát.
+    - T019 [US2]: Hiện thực generator sinh action hàng đợi trong `src/backend/services/musicAssistanceService.js` xử lý intent `search_music` và discovery stream.
+    - T020 [US2]: Hiện thực hàm chèn bài hát ưu tiên phát kế tiếp `playNext` (index 0 ngay sau bài đang phát) trong `src/frontend/src/context/PlayerContext.jsx`.
+    - T021 [US2]: Hoàn thiện hàm `queue_add` trong `src/frontend/src/components/chat/agentTools.js` lọc trùng bài hát và phản hồi số lượng thêm chính xác.
+    - T022 [P] [US2]: Hiện thực runner điều phối chuỗi công cụ nối tiếp (sequential tool chaining) trong `src/frontend/src/components/chat/AIHostChat.jsx` cập nhật trạng thái thời gian thực (`running` -> `ok`/`error`) (FR-014).
+  - **Phase 5: User Story 3 - Tương tác thư viện cá nhân qua đàm thoại (P2) (T023 – T028)**:
+    - T023 [P] [US3] & T024 [P] [US3]: Viết Unit Test kiểm tra phân quyền và hành động `like_track`, lưu playlist, follow nghệ sĩ trên backend và frontend store.
+    - T025 [US3]: Hiện thực kiểm tra quyền sở hữu playlist (`is_collaborative` hoặc `owner_id === req.user.id`) trong `src/backend/services/musicAssistanceService.js` (FR-005).
+    - T026 [US3]: Hoàn thiện hàm `like_track` trong `src/frontend/src/components/chat/agentTools.js` kiểm tra `store.currentUser`, đồng bộ `AppStore.jsx` và gọi `PUT /api/v1/songs/:id/like`.
+    - T027 [US3]: Hiện thực tool `save_to_playlist` gọi `POST /api/v1/playlists/:id/songs` và cập nhật thông báo người dùng.
+    - T028 [P] [US3]: Hiện thực tool `follow_artist` gọi `PUT /api/v1/artists/:id/follow` và đồng bộ store.
+  - **Phase 6: User Story 4 - Chịu lỗi & Nguyên tắc Bất biến Bảo vệ Âm thanh (P2) (T029 – T033)**:
+    - T029 [P] [US4]: Viết bài test kiểm thử áp lực âm thanh liên tục trong `src/frontend/tests/audio/audioContinuityStress.test.js` khẳng định `player.isPlaying === true` và bài hát không dừng khi gặp catalog miss hoặc 503 (SC-003).
+    - T030 [P] [US4]: Viết bài test backend kiểm tra smart defaults và phản hồi catalog miss.
+    - T031 [US4]: Hiện thực engine giải quyết yêu cầu mơ hồ bằng smart heuristic defaults (nhạc trending / top bài hát) với tỷ lệ thành công ≥ 95% (FR-007, SC-004).
+    - T032 [US4]: Hiện thực error wrapper phòng thủ trong `src/frontend/src/components/chat/agentTools.js` trả về `{ ok: false, output: '...' }` mà không gọi `player.stop()` hay làm mute âm thanh (FR-008).
+    - T033 [US4]: Hiện thực giao diện thông báo lỗi nhẹ nhàng kèm nút Retry và đề xuất bài hát thay thế trong `src/frontend/src/components/chat/AIHostChat.jsx` (FR-004).
+  - **Phase 7: User Story 5 - Xác thực phiên & Cô lập trạng thái phát nhạc (P1) (T034 – T037)**:
+    - T034 [P] [US5] & T035 [P] [US5]: Viết test suite bảo mật kiểm tra cô lập token giữa các phiên người dùng, khẳng định 0 can thiệp chéo tài khoản theo Nghị định 13/2023/NĐ-CP (SC-002).
+    - T036 [US5]: Kiểm tra chặt chẽ token và quyền hạn trong `src/backend/controllers/assistanceController.js`, từ chối thao tác chéo với HTTP 403 (`FORBIDDEN`) (FR-011, SC-002).
+    - T037 [US5]: Neo ngữ cảnh tool client trong `src/frontend/src/components/chat/AIHostChat.jsx` vào danh tính người dùng đăng nhập trong `AppStore.jsx`.
+  - **Final Phase: Polish & Cross-Cutting Concerns (T038 – T041)**:
+    - T038: Cài đặt vòng đời xác nhận Destructive-Only Confirmation trong `src/frontend/src/components/chat/AIHostChat.jsx` với Promise bridge `askConfirm`, phím tắt (`y`, `n`, `Enter`, `Esc`), focus trap và cờ amber độc quyền cho `clear_queue` (FR-013).
+    - T039 [P]: Chuẩn hóa widget nhúng xem trước tương tác `PlaylistCard.jsx` hiển thị ảnh bìa, danh sách bài, nút phát/dừng trực tiếp trong dòng chat khi có `embeddedWidget.type === 'playlist'` (FR-004).
+    - T040 [P]: Cài đặt hook ghi nhận lịch sử nghe nhạc tự động trong `src/frontend/src/context/PlayerContext.jsx` kích hoạt `POST /api/v1/users/me/history` khi bài hát bắt đầu phát qua hỗ trợ AI (FR-010, SC-005).
+    - T041: Thực thi nghiệm thu toàn diện 8 kịch bản trong `specs/120-ai-conversational-agent/123-real-time-music-assistance/quickstart.md`.
+- **Thực thi phân tích đối chiếu `/speckit-analyze`**:
+  - Đạt độ bao phủ yêu cầu **100%** (14/14 FRs, 5/5 SCs và 5/5 USs đều có task tương ứng).
+  - Không có vi phạm Hiến pháp, không có vấn đề CRITICAL hoặc HIGH; 3 ghi chú LOW (C1, U1, D1) đã được làm rõ và xử lý nhất quán.
+  - Khẳng định tính tương thích hoàn hảo giữa backend payload `client_actions` và frontend `agentTools.js`, nguyên tắc Zero Audio Disruption Invariant (FR-008, SC-003) và Destructive Confirmation Policy cho `clear_queue` (FR-013).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                   | Quyết định   | Lý do                                                                                                                             |
+| :--------------------------------------------------------------------- | :----------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| Cú pháp checklist Spec Kit (`- [ ] [TaskID] [P?] [Story?]`)            | Dùng toàn bộ | Tuân thủ tuyệt đối quy định định dạng Spec Kit, hỗ trợ thực thi tự động và đánh dấu song song chính xác cho 20 task.              |
+| Phân chia 8 giai đoạn (Setup, Foundation, US1 -> US5, Polish)          | Dùng toàn bộ | Tổ chức ưu tiên chuẩn mực theo 5 User Stories, đưa US1/US2 (MVP) và US5 (Privacy P1) lên đầu, tách rạch ròi lỗi và thư viện.      |
+| Nguyên tắc Bất biến Bảo vệ Âm thanh (Zero Audio Disruption Invariant)  | Dùng toàn bộ | Tuân thủ FR-008 và SC-003: 100% lỗi catalog miss hoặc AI 503 không được ngắt, mute hay tạm dừng nhạc đang phát nền.               |
+| Chính sách Xác nhận Phá hủy (Destructive-Only Confirmation Policy)     | Dùng toàn bộ | Tuân thủ FR-013 và Clarification 2026-11-01: prompt `[y/N]` chỉ dành riêng cho `clear_queue`; các lệnh khác thực thi tức thì.     |
+| Kiến trúc Điều phối Công cụ Client (Client Tool Dispatching)           | Dùng toàn bộ | Tuân thủ FR-003: backend trả về mảng `client_actions`, client thực thi cục bộ trên PlayerContext/AppStore và chạy tuần tự (FR-014).|
+| Hook ghi nhận lịch sử nghe nhạc tự động (`POST /api/v1/users/me/history`)| Dùng toàn bộ | Tuân thủ FR-010 và SC-005: tự động lưu lại sự kiện nghe khi nhạc bắt đầu phát qua trợ lý AI.                                       |
+| Nhúng interactive widget PlaylistCard trong dòng chat                  | Dùng toàn bộ | Tuân thủ FR-004: hiển thị thẻ tương tác xem trước playlist kèm nút phát/dừng trực tiếp mà không cần rời khỏi cuộc trò chuyện.     |
+| Xử lý NLP ngôn ngữ tự nhiên hoặc trích xuất ý định                     | Bỏ tuyệt đối | Vi phạm nghiêm ngặt FR-012; toàn bộ việc nhận diện ý định thuộc thẩm quyền độc quyền của Feature 122 (Music Intent Understanding).|
+| Tự render chat shell hoặc message bubbles từ đầu                       | Loại trừ     | Thuộc thẩm quyền độc quyền của Feature 121 (Conversational Interface).                                                           |
+| Truy vấn tìm kiếm vector database trực tiếp                            | Loại trừ     | Thuộc thẩm quyền của Group 030 (Semantic Vector Search); F123 chỉ tiếp nhận kết quả và phát lệnh nạp vào hàng chờ.                |
+| Lưu trữ logs hành động vào bảng mới trong PostgreSQL                   | Bỏ tuyệt đối | Không tạo bảng thừa; lịch sử nghe được quản lý tập trung qua `listening_history` theo chuẩn chung của hệ thống.                     |
+
+### Cách kiểm chứng
+
+- **Kiểm tra cú pháp định dạng Spec Kit:** Toàn bộ 41 tasks đều có checkbox markdown `- [ ]`, mã Task ID duy nhất (`T001` - `T041`), nhãn parallel `[P]` đúng nơi, nhãn User Story (`[US1]`, `[US2]`, `[US3]`, `[US4]`, `[US5]`) chỉ xuất hiện trong story phase và có đường dẫn file cụ thể (kiểm tra bằng script node cho kết quả 41 tasks hợp lệ, 0 invalid, 0 thiếu file path).
+- **Kiểm tra độ bao phủ yêu cầu qua `/speckit-analyze`:** Xác nhận 100% 14 FRs, 5 SCs và 5 USs đều được map vào tasks.md, không có unmapped task.
+- **Kiểm tra Zero Audio Disruption Invariant:** Có test suite chuyên biệt `audioContinuityStress.test.js` (T029) và wrapper phòng thủ (T032) khẳng định 100% lỗi catalog miss và 503 không làm gián đoạn nhạc đang phát.
+- **Kiểm tra bảo mật và cô lập tài khoản:** Có test suite bảo mật riêng `assistanceSessionIsolation.test.js` (T034) khẳng định 0 can thiệp chéo tài khoản theo Nghị định 13/2023/NĐ-CP.
