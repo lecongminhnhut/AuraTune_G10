@@ -7,7 +7,9 @@ export default function BottomPlayer({ player, liked, onToggleLike, onDownloadTr
   const { track, isPlaying, elapsed, shuffle, repeatMode, volume, muted } = player
 
   return (
-    <footer aria-label="Trình phát nhạc demo" className="fixed inset-x-0 bottom-0 z-40 h-[88px] border-t border-white/[0.08] bg-[#09090b]/95 px-3 backdrop-blur-2xl sm:px-5">
+    <>
+    <CompactPlayer track={track} isPlaying={isPlaying} onExpand={onExpand} fullScreenOpen={fullScreenOpen} onTogglePlayback={player.togglePlayback} onNext={player.nextTrack} />
+    <footer aria-label="Trình phát nhạc demo" className="fixed inset-x-0 bottom-14 z-40 hidden h-[88px] border-t border-white/[0.08] bg-[#09090b]/95 px-3 backdrop-blur-2xl sm:px-5 md:block lg:bottom-0">
       <div className="grid h-full grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(180px,1.2fr)_minmax(0,1fr)] md:gap-6">
         <div className="flex min-w-0 items-center gap-3">
           <button type="button" onClick={onExpand} aria-label={`Mở trình phát toàn màn hình: ${track.title}`} aria-expanded={fullScreenOpen} aria-controls="full-screen-player" title="Mở giao diện đang phát" className="group flex min-w-0 flex-1 items-center gap-3 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
@@ -49,5 +51,29 @@ export default function BottomPlayer({ player, liked, onToggleLike, onDownloadTr
         </div>
       </div>
     </footer>
+    </>
+  )
+}
+
+// Trình phát thu gọn cho điện thoại (dưới md): nằm ngay trên thanh điều hướng, chạm vào để mở trình phát toàn màn hình.
+function CompactPlayer({ track, isPlaying, onExpand, fullScreenOpen, onTogglePlayback, onNext }) {
+  return (
+    <section aria-label="Trình phát thu gọn" className="fixed inset-x-2 bottom-[60px] z-40 flex h-14 items-center gap-1 rounded-xl border border-white/[0.08] bg-[#1b1b22]/95 pl-2 pr-1 shadow-xl shadow-black/50 backdrop-blur-2xl md:hidden">
+      <button type="button" onClick={onExpand} aria-label={`Mở trình phát toàn màn hình: ${track.title}`} aria-expanded={fullScreenOpen} aria-controls="full-screen-player" className="flex min-w-0 flex-1 items-center gap-3 self-stretch rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
+        <span className="shrink-0 overflow-hidden rounded-md">
+          {track.artwork ? <img src={track.artwork} alt={`Bìa ${track.album}`} className="h-10 w-10 object-cover" /> : <CoverArt variant={track.cover} className="h-10 w-10 [&_span]:text-2xl" />}
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate text-[13px] font-semibold text-white">{track.title}</span>
+          <span className="mt-0.5 block truncate text-[11px] text-zinc-400">{track.artist}</span>
+        </span>
+      </button>
+      <button type="button" onClick={onTogglePlayback} aria-label={isPlaying ? 'Tạm dừng' : 'Phát'} className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-white transition active:scale-95">
+        <Icon name={isPlaying ? 'pause' : 'play'} size={24} />
+      </button>
+      <button type="button" onClick={onNext} aria-label="Bài tiếp theo" className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-zinc-300 transition hover:text-white active:scale-95">
+        <Icon name="next" size={22} />
+      </button>
+    </section>
   )
 }

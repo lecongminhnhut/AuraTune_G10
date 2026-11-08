@@ -44,7 +44,7 @@ export default function Sidebar() {
   ].filter(Boolean)
 
   return (
-    <aside className="hidden w-[248px] shrink-0 flex-col gap-2 md:flex">
+    <aside className="hidden w-[248px] shrink-0 flex-col gap-2 lg:flex">
       <div className="rounded-lg bg-[#111113] px-5 py-5">
         <Link to="/" className="flex justify-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
           <Logo />

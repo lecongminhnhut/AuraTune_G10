@@ -8,7 +8,7 @@ import { usePlayer } from '../../context/PlayerContext.jsx'
 import { genres, getArtist, getGenre, playlists } from '../../utils/mockData.js'
 import { Link, getQueryParam, useLocation } from '../../utils/navigation.jsx'
 
-const grid = 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+const grid = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
 export default function ExplorePage() {
   const store = useStore()
@@ -37,7 +37,7 @@ export default function ExplorePage() {
 
         {!genre ? (
           <>
-            <section className="mt-8"><SectionHeading title="Thể loại" /><div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">{genres.map((item) => <GenreTile key={item.id} genre={item} />)}</div></section>
+            <section className="mt-8"><SectionHeading title="Thể loại" /><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">{genres.map((item) => <GenreTile key={item.id} genre={item} />)}</div></section>
             <section className="mt-10"><SectionHeading title="Tất cả tuyển tập" /><div className={grid}>{playlists.map((playlist) => <PlaylistCard key={playlist.id} playlist={playlist} onPlayPlaylist={player.playPlaylist} />)}</div></section>
             <section className="mt-10"><SectionHeading title="Tất cả album" /><div className={grid}>{[...store.albums].sort((a, b) => b.releaseDate.localeCompare(a.releaseDate)).map((album) => <AlbumCard key={album.id} album={album} artistName={getArtist(album.artistId)?.name} onPlay={playAlbum} />)}</div></section>
           </>

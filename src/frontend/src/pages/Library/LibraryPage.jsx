@@ -9,7 +9,7 @@ import { getArtist } from '../../utils/mockData.js'
 import { Link } from '../../utils/navigation.jsx'
 import { normalizeText } from '../../utils/aiMockData.js'
 
-const grid = 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+const grid = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
 export default function LibraryPage() {
   const store = useStore()

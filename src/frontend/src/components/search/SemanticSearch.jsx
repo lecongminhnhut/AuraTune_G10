@@ -7,7 +7,7 @@ import { searchCatalog } from '../../utils/searchEngine.js'
 import { useStore } from '../../context/AppStore.jsx'
 import { navigate } from '../../utils/navigation.jsx'
 
-export default function SemanticSearch({ onPlayTrack, onPlayPlaylist }) {
+export default function SemanticSearch({ onPlayTrack, onPlayPlaylist, autoFocus = false, onDone }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
@@ -34,7 +34,12 @@ export default function SemanticSearch({ onPlayTrack, onPlayPlaylist }) {
     setOpen(false)
     setActiveIndex(-1)
     inputRef.current?.blur()
+    onDone?.()
   }
+
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus()
+  }, [autoFocus])
 
   useEffect(() => {
     const onPointerDown = (event) => {
@@ -60,12 +65,14 @@ export default function SemanticSearch({ onPlayTrack, onPlayPlaylist }) {
     else onPlayTrack(result.item)
     setOpen(false)
     setActiveIndex(-1)
+    onDone?.()
   }
 
   const onKeyDown = (event) => {
     if (event.key === 'Escape') {
       setOpen(false)
       setActiveIndex(-1)
+      onDone?.()
     }
     if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && results.length) {
       event.preventDefault()
@@ -101,7 +108,7 @@ export default function SemanticSearch({ onPlayTrack, onPlayPlaylist }) {
           onChange={(event) => { setQuery(event.target.value); setOpen(true); setActiveIndex(-1) }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          className="min-w-0 flex-1 bg-transparent text-xs text-white outline-none placeholder:text-zinc-500 sm:text-[13px]"
+          className="min-w-0 flex-1 bg-transparent text-base text-white outline-none placeholder:text-zinc-500 md:text-[13px]"
         />
         {query ? (
           <button type="button" aria-label="Xóa tìm kiếm" onClick={() => { setQuery(''); setActiveIndex(-1); inputRef.current?.focus() }} className="rounded-md p-1 text-zinc-500 hover:bg-white/10 hover:text-white"><X size={15} /></button>

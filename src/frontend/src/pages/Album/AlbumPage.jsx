@@ -67,7 +67,7 @@ export default function AlbumPage({ albumId }) {
         {moreAlbums.length > 0 && (
           <section className="mt-10">
             <SectionHeading title={`Thêm từ ${artist?.name}`} />
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">{moreAlbums.map((item) => <AlbumCard key={item.id} album={item} artistName={artist?.name} />)}</div>
+            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">{moreAlbums.map((item) => <AlbumCard key={item.id} album={item} artistName={artist?.name} />)}</div>
           </section>
         )}
       </section>

@@ -146,7 +146,7 @@ function AppShell() {
     <PlayerContext.Provider value={playerValue}>
       <div className="h-dvh overflow-hidden bg-zinc-950 text-white">
         <div className="h-full" inert={modalOpen ? '' : undefined}>
-          <div className="flex h-[calc(100%-9rem)] gap-2 p-2 pb-0 md:h-[calc(100%-5.5rem)]">
+          <div className="flex h-[calc(100%-7.75rem)] gap-2 p-2 pb-0 md:h-[calc(100%-9rem)] lg:h-[calc(100%-5.5rem)]">
             <Sidebar />
             <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg bg-[#111113]">
               <TopBar onOpenChat={openChat} chatOpen={chatOpen} onPlayTrack={(track) => playTrack(track)} onPlayPlaylist={playPlaylist} />
@@ -155,7 +155,7 @@ function AppShell() {
               </div>
             </main>
           </div>
-          <MobileNav />
+          <MobileNav onOpenChat={openChat} chatOpen={chatOpen} />
           <BottomPlayer
             player={player}
             liked={store.isLiked(player.track.id)}

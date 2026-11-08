@@ -9,7 +9,7 @@ import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import { getArtist, playlists } from '../../utils/mockData.js'
 
-const grid = 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+const grid = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
 // Thứ tự bài nổi bật theo spec 091 FR-010A/B: lượt nghe AuraTune giảm dần, ngày phát hành giảm dần, ID tăng dần.
 const byFeatured = (a, b) => b.playCount - a.playCount || b.releaseDate.localeCompare(a.releaseDate) || a.id.localeCompare(b.id)

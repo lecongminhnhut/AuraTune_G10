@@ -15,7 +15,7 @@ export default function SongTable({ songs, onPlayTrack, onDownloadTrack, showPla
 
   return (
     <div className="mt-8">
-      <div className="grid grid-cols-[28px_minmax(0,1fr)_132px] items-center gap-3 border-b border-white/10 px-3 pb-3 text-[11px] uppercase tracking-wider text-zinc-500 md:grid-cols-[28px_minmax(0,1.8fr)_minmax(120px,1fr)_minmax(90px,.8fr)_132px]">
+      <div className="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 border-b border-white/10 px-3 pb-3 text-[11px] uppercase tracking-wider text-zinc-500 md:grid-cols-[28px_minmax(0,1.8fr)_minmax(120px,1fr)_minmax(90px,.8fr)_132px]">
         <span>#</span><span>Tiêu đề</span><span className="hidden md:block">Album</span><span className="hidden md:block">{showPlays ? 'Lượt nghe' : 'Ngày thêm'}</span><span className="flex justify-end pr-9"><Icon name="clock" size={15} /></span>
       </div>
       <div className="mt-2">
