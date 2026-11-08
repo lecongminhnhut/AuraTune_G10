@@ -31,6 +31,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 25  | 2026-11-07 | Rà soát và chuẩn hóa Vision Document cho PA3: Chi tiết hóa Functional Requirements gắn liền Use Case, mở rộng môi trường, đối thủ và NFRs | Vision Document / PA3                             |
 | 26  | 2026-11-07 | Biên soạn tài liệu Changes.md cho PA3 ghi nhận chi tiết thay đổi của Project Plan (Mục A) và Vision Document (Mục B)                      | PA3 (Changes Log)                                 |
 | 27  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 101 – Listening History Analysis bằng `/speckit.tasks`                             | 10 – AI Recommendations                           |
+| 28  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 102 – Personalized Recommendations bằng `/speckit.tasks`                           | 10 – AI Recommendations                           |
 
 ---
 
@@ -4756,3 +4757,155 @@ Lưu ý: Viết toàn bộ bằng tiếng Anh súc tích, mạch lạc và chuy�
 - **Kiểm tra cú pháp định dạng Spec Kit:** Toàn bộ 29 tasks đều có checkbox markdown `- [ ]`, mã Task ID duy nhất (`T001` - `T029`), nhãn parallel `[P]` đúng nơi, nhãn User Story (`[US1]`, `[US2]`, `[US3]`) chỉ xuất hiện trong story phase và có đường dẫn file cụ thể.
 - **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu toàn diện với `spec.md` (FR-001..FR-014, 3 User Stories), `data-model.md`, `contracts/listening-analysis-api.json` và `quickstart.md` (đủ 4 kịch bản test).
 - **Kiểm tra ranh giới phạm vi:** Không có task nào đụng chạm tới `user_listening_stats`, recommendation engine hay Group 070 statistics.
+
+---
+
+## Mục 28: Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 102 – Personalized Recommendations bằng `/speckit.tasks`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-08                                                                                                                                                                                                                                                                                                                                     |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                           |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations/`)                                                                                                                                                                                                          |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.tasks`, `/speckit.analyze`                                                                                                                                                                                                                                                              |
+| Mục đích                 | Phân rã toàn diện tài liệu thiết kế (plan.md, spec.md, data-model.md, research.md, quickstart.md, contracts) thành hệ thống 34 nhiệm vụ kỹ thuật (tasks.md) tuần tự, cài đặt cơ chế chịu lỗi AI timeout 2.5s, cold-start fallback và bảo mật cô lập tài khoản theo Nghị định 13/2023/NĐ-CP, chuẩn bị trực tiếp cho giai đoạn cài đặt mã nguồn. |
+
+### Prompt đã dùng
+
+```text
+/speckit-tasks Hãy tạo file tasks.md cho Tính năng 102: Gợi ý bài hát cá nhân hóa (Personalized Recommendations) tại thư mục
+    specs/100-ai-recommendations/102-personalized-recommendations/ dựa trên toàn bộ tài liệu thiết kế có sẵn: plan.md, spec.md,
+    data-model.md, research.md, quickstart.md và contracts/personalized-recommendations-api.json.
+
+    Yêu cầu chi tiết và các ràng buộc kỹ thuật:
+
+    1. Thông tin tính năng mục tiêu:
+       - Thư mục: specs/100-ai-recommendations/102-personalized-recommendations/ (Branch: 102-personalized-recommendations).
+       - Nhóm: 100 – AI Recommendations (Chủ sở hữu: Lê Công Minh Nhựt).
+       - Endpoint chính: GET /api/v1/recommendations/personalized (và alias GET /api/v1/recommendations/songs), hỗ trợ query param
+       'type' (all, song, album, artist, playlist) và 'limit' (1-50, default 20).
+
+    2. Phân chia User Story và Thứ tự ưu tiên (Tổ chức theo từng Phase):
+       - Phase 3: User Story 1 (P1 - MVP): Duyệt và tương tác với gợi ý cá nhân hóa đa thực thể (Songs, Albums, Artists, Playlists).
+       Hiển thị danh sách thẻ polymorphic card, hỗ trợ tương tác 1-click: click bài hát sẽ phát ngay qua PlayerContext, click
+       album/artist/playlist sẽ điều hướng đến trang chi tiết tương ứng.
+       - Phase 4: User Story 2 (P2): Trải nghiệm Cold-Start cho người dùng mới hoặc ít dữ liệu nghe (< 3 lượt nghe hợp lệ >= 30s, 0
+       likes, 0 follows, hoặc vừa xóa lịch sử nghe). Trả về danh sách bài hát phổ biến và playlist chính thức kèm nhãn badge "Phổ
+       biến"/"Thịnh hành" (is_fallback: true, fallback_reason: "COLD_START"), không để màn hình trắng hay lỗi rỗng.
+       - Phase 5: User Story 3 (P2): Xử lý chịu lỗi khi AI microservice gặp sự cố hoặc timeout (> 2.5s). Tích hợp AbortController
+       timeout 2.5s khi gọi internal AI service. Khi có sự cố, bắt lỗi an toàn (catch), hạ cấp mượt mà sang danh sách phổ biến kèm
+       banner thông báo ("Hiển thị nội dung thịnh hành do hệ thống gợi ý đang bảo trì"), trả về HTTP 200 OK với fallback_reason:
+       "AI_SERVICE_UNAVAILABLE", tuyệt đối không để lỗi 5xx làm gián đoạn Home Dashboard.
+       - Phase 6: User Story 4 (P1): Đảm bảo quyền riêng tư và cô lập dữ liệu theo tài khoản. Áp dụng xác thực JWT Bearer, trả về HTTP
+       401 nếu chưa đăng nhập, lọc tín hiệu sở thích strictly theo WHERE user_id = :authenticated_user_id nhằm tuân thủ Nghị định
+       13/2023/NĐ-CP.
+
+    3. Kiến trúc mã nguồn và đường dẫn file cụ thể:
+       - Backend (Node.js / Express):
+         - AI Client: src/backend/clients/aiServiceClient.js (Gọi HTTP POST tới Python AI service với timeout 2.5s dùng
+         AbortController).
+         - Repository Tín hiệu: src/backend/repositories/preferenceSignalRepository.js (Truy vấn listening_history >= 30s,
+         user_liked_songs, user_follows_artist theo authenticated user).
+         - Repository Danh mục: src/backend/repositories/catalogRepository.js (Truy vấn songs, albums, artists, playlists; lọc bỏ các
+         thực thể inactive/is_deleted = true; truy vấn top popular songs/official playlists theo total_plays cho fallback).
+         - Hydration Service: src/backend/services/catalogHydrationService.js (Hydrate thông tin hiển thị title, subtitle, cover_url,
+         audio_url, và lọc bỏ entity inactive theo FR-008).
+         - Recommendation Service: src/backend/services/recommendationService.js (Kiểm tra điều kiện cold-start, gọi AI service client
+         hoặc fallback popular, deduplicate các item trùng lặp theo type:id theo FR-015).
+         - Controller: src/backend/controllers/recommendationController.js (Xử lý GET /api/v1/recommendations/personalized, validate
+         query params type và limit).
+         - Routes & Server: src/backend/routes/recommendationRoutes.js và gắn route vào src/backend/server.js.
+       - Frontend (React / Vite):
+         - Service Client: src/frontend/src/services/recommendationService.js (Gọi HTTP GET /api/v1/recommendations/personalized).
+         - Mock Adapter: src/frontend/src/services/mock/mockRecommendationService.js (Adapter dữ liệu giả lập cho chế độ standalone
+         VITE_USE_MOCKS=true).
+         - UI Card Đa thực thể: src/frontend/src/components/recommendation/RecommendedItemCard.jsx (Thẻ hiển thị đa hình cho song,
+         album, artist, playlist kèm badge "Gợi ý" hoặc "Phổ biến").
+         - Banner thông báo hạ cấp: src/frontend/src/components/recommendation/FallbackNoticeBanner.jsx (Banner thông báo nhẹ nhàng khi
+         AI service đang bảo trì).
+         - Feed Container: src/frontend/src/components/recommendation/RecommendationFeed.jsx (Container bọc lưới các thẻ gợi ý, xử lý
+         loading skeleton, error state và click actions).
+         - Tích hợp trang chủ: src/frontend/src/pages/Home/HomePage.jsx (Gắn RecommendationFeed vào section "Có thể bạn sẽ thích" /
+         "Gợi ý cho bạn").
+
+    4. Ranh giới phạm vi nghiêm ngặt (Out-of-Scope / Prohibitions):
+       - KHÔNG tính toán hoặc hiển thị số liệu phân tích lịch sử nghe, tổng thời lượng nghe, hay top thể loại (thuộc phạm vi của
+       Feature 101).
+       - KHÔNG đưa vào bộ lọc tâm trạng hoặc ngữ cảnh môi trường (thuộc phạm vi của Feature 103).
+       - KHÔNG tích hợp tính năng trò chuyện AI (thuộc phạm vi của Feature 120).
+       - Không tự ý định nghĩa cơ chế phát nhạc riêng mà phải ủy quyền phát bài hát cho PlayerContext (Group 040).
+
+    5. Định dạng đầu ra bắt buộc của tasks.md:
+       - Tuân thủ nghiêm ngặt cú pháp checklist chuẩn của Spec Kit:
+         - [ ] [TaskID] [P?] [Story?] Mô tả hành động kèm đường dẫn file chính xác
+       - Cấu trúc các giai đoạn rõ ràng:
+         - Phase 1: Setup (Cấu hình shared infrastructure, HTTP client với timeout)
+         - Phase 2: Foundational (Các thành phần chặn luồng - JWT auth middleware, catalog hydration, repositories)
+         - Phase 3: User Story 1 (P1 - MVP: Duyệt & tương tác gợi ý cá nhân hóa)
+         - Phase 4: User Story 2 (P2: Cold-Start fallback)
+         - Phase 5: User Story 3 (P2: Chịu lỗi AI downtime & graceful degradation)
+         - Phase 6: User Story 4 (P1: Bảo mật và cô lập tài khoản)
+         - Final Phase: Polish & Cross-Cutting Concerns (Deduplication, tích hợp HomePage, chạy kiểm thử quickstart.md)
+       - Bổ sung đầy đủ các phần: Sơ đồ phụ thuộc (Dependencies), Ví dụ thực thi song song (Parallel execution examples), và Tiêu chí
+       nghiệm thu độc lập (Independent test criteria) cho từng User Story.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nạp và đối chiếu toàn diện tài liệu thiết kế Feature 102**: Phân tích sâu `plan.md`, `spec.md`, `data-model.md`, `research.md`, `quickstart.md`, `contracts/personalized-recommendations-api.json` và cấu trúc mã nguồn `src/backend/`, `src/frontend/`.
+- **Thiết lập danh mục 34 nhiệm vụ kỹ thuật chi tiết trong `tasks.md` theo chuẩn Spec Kit**:
+  - **Phase 1: Setup (T001 – T004)**: Cấu hình thông số microservice AI (`AI_SERVICE_URL`, `AI_SERVICE_TIMEOUT_MS=2500`); xây dựng HTTP client với `AbortController` timeout 2.5s (`aiServiceClient.js`); khung mock recommendation service (`mockRecommendationService.js`); helper đóng gói standard JSON envelope (`recommendationResponse.js`).
+  - **Phase 2: Foundational (T005 – T009 - Chặn luồng thực thi)**:
+    - T005: Xây dựng `preferenceSignalRepository.js` trích xuất `listening_history` ($\ge 30$s, loại trừ null), `user_liked_songs`, `user_follows_artist` theo caller đã xác thực.
+    - T006 [P]: Xây dựng `catalogRepository.js` truy vấn thực thể active (`songs`, `albums`, `artists`, `playlists`) và danh sách bài hát/playlist phổ biến xếp theo `total_plays`.
+    - T007 [P]: Xây dựng `catalogHydrationService.js` hydrate metadata hiển thị (`title`, `subtitle`, `image_url`, `badge`, `target_id`, `extra`) và lọc bỏ thực thể inactive theo FR-008.
+    - T008 [P]: Đăng ký router module `recommendationRoutes.js` và gắn route `/api/v1/recommendations` vào `server.js`.
+    - T009 [P]: Tạo client adapter `recommendationService.js` hỗ trợ cờ `VITE_USE_MOCKS`.
+  - **Phase 3: User Story 1 - Duyệt và tương tác gợi ý cá nhân hóa (P1 - MVP) (T010 – T018)**:
+    - T010 [P] [US1] & T011 [P] [US1]: Viết trước Unit Test kiểm tra hydration / khử trùng lặp và Contract Test xác thực OpenAPI schema cho cả route chính `/personalized` lẫn alias `/songs`.
+    - T012 [US1]: Hiện thực luồng gợi ý chính trong `recommendationService.js`: chuyển tín hiệu sang AI service client, kiểm tra thực thể active qua hydration service và khử trùng lặp theo cặp `type:id` (FR-015).
+    - T013 [US1]: Hiện thực controller handler `getPersonalizedRecommendations` và `getRecommendedSongs` trong `recommendationController.js` xác thực query `type` (`all`, `song`, `album`, `artist`, `playlist`) và `limit` (1-50, default 20).
+    - T014 [US1]: Gắn router handler với middleware xác thực token.
+    - T015 [P] [US1]: Hiện thực hàm gọi HTTP client `getPersonalizedRecommendations` kèm token Bearer.
+    - T016 [P] [US1]: Xây dựng thẻ polymorphic card `RecommendedItemCard.jsx` hiển thị badge "Gợi ý" và xử lý 1-click: phát ngay bài hát qua `player.playTrack(song)` (`PlayerContext`), điều hướng album/artist/playlist tới trang chi tiết tương ứng (SC-004).
+    - T017 [US1] & T018 [US1]: Xây dựng feed container `RecommendationFeed.jsx` và tích hợp vào section _"Có thể bạn sẽ thích"_ trong `HomePage.jsx`.
+  - **Phase 4: User Story 2 - Trải nghiệm Cold-Start cho người dùng mới (P2) (T019 – T023)**:
+    - T019 [P] [US2]: Unit test đánh giá điều kiện cold-start khi lịch sử < 3 bài hát, 0 likes, 0 follows hoặc sau khi xóa lịch sử nghe.
+    - T020 [US2]: Bổ sung logic cold-start trong `recommendationService.js`: tự động chuyển sang danh sách popular songs và starter playlists khi thiếu tín hiệu (FR-005, FR-009).
+    - T021 [US2]: Gán nhãn badge `"Phổ biến"` hoặc `"Thịnh hành"`, thiết lập `is_fallback: true` và `fallback_reason: "COLD_START"`.
+    - T022 [P] [US2] & T023 [US2]: Hiện thực mock fallback data và đảm bảo UI hiển thị mượt mà không bị container rỗng hay màn hình trắng (SC-002).
+  - **Phase 5: User Story 3 - Chịu lỗi AI downtime & hạ cấp mượt mà (P2) (T024 – T027)**:
+    - T024 [P] [US3]: Kiểm thử chịu lỗi mô phỏng AI service sập mạng, lỗi 500 hoặc timeout > 2.5s, xác nhận hệ thống trả về HTTP 200 trong 2.6s.
+    - T025 [US3]: Cài đặt khối `try...catch` bọc cuộc gọi AI microservice trong `recommendationService.js`: bắt lỗi `AbortError` timeout hoặc 5xx, tự động hạ cấp sang danh sách phổ biến, trả về HTTP 200 OK với `fallback_reason: "AI_SERVICE_UNAVAILABLE"` và thông điệp: _"Hiển thị nội dung thịnh hành do hệ thống gợi ý đang bảo trì"_ (EF-01).
+    - T026 [P] [US3] & T027 [US3]: Xây dựng component banner thông báo nhẹ nhàng `FallbackNoticeBanner.jsx` và nhúng vào `RecommendationFeed.jsx` mà không làm khóa giao diện (SC-003).
+  - **Phase 6: User Story 4 - Quyền riêng tư và cô lập dữ liệu theo tài khoản (P1) (T028 – T031)**:
+    - T028 [P] [US4]: Viết integration test xác nhận từ chối truy cập HTTP 401 khi thiếu token và cô lập dữ liệu tuyệt đối giữa User A và User B.
+    - T029 [US4]: Khóa chặt tham số SQL trong `preferenceSignalRepository.js` strictly theo `req.user.user_id`, từ chối nhận `user_id` từ client (FR-003, FR-004).
+    - T030 [US4]: Gắn middleware `authenticateToken` bảo vệ router trả về HTTP 401 chuẩn envelope OpenAPI.
+    - T031 [P] [US4]: Xử lý tại frontend `RecommendationFeed.jsx` hiển thị nội dung thịnh hành công khai hoặc nhắc đăng nhập đối với khách vãng lai.
+  - **Final Phase: Polish & Cross-Cutting Concerns (T032 – T034)**:
+    - T032 [P]: Cập nhật tài liệu hợp đồng `specs/100-ai-recommendations/102-personalized-recommendations/contracts/README.md`.
+    - T033 [P]: Kiểm thử component frontend `RecommendationFeed.test.jsx`.
+    - T034: Thực thi xác thực toàn diện 5 kịch bản nghiệm thu trong `quickstart.md`.
+- **Thực thi phân tích đối chiếu `/speckit-analyze`**:
+  - Đạt tỷ lệ bao phủ yêu cầu **100%** (15 FRs + 5 SCs đều có task tương ứng).
+  - Không có vi phạm Hiến pháp, không có rủi ro CRITICAL/HIGH/MEDIUM. Phát hiện 1 điểm cải tiến LOW (thay thế cờ tĩnh `aiAvailable` trong `HomePage.jsx` bằng component feed).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                  | Quyết định   | Lý do                                                                                                                            |
+| :-------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------- |
+| Cú pháp checklist Spec Kit (`- [ ] [TaskID] [P?] [Story?]`)           | Dùng toàn bộ | Tuân thủ tuyệt đối quy định định dạng Spec Kit, hỗ trợ thực thi tự động và đánh dấu song song chính xác cho 17 task.             |
+| Phân chia 7 giai đoạn (Setup, Foundation, US1, US2, US3, US4, Polish) | Dùng toàn bộ | Tổ chức ưu tiên hợp lý theo 4 User Stories, đưa US1 (MVP) lên đầu và phân tách rạch ròi các pha chịu lỗi, cold-start, bảo mật.   |
+| Bắt lỗi an toàn (catch) trả về HTTP 200 khi AI microservice sập       | Dùng toàn bộ | Tuân thủ nghiêm ngặt quy tắc kiên cường (Resilience Rule EF-01, FR-006): không bao giờ ném lỗi 5xx làm gián đoạn Home Dashboard. |
+| Khử trùng lặp thực thể (Deduplication theo `type:id`)                 | Dùng toàn bộ | Tuân thủ FR-015, ngăn chặn việc một bài hát/playlist xuất hiện nhiều lần trong feed gợi ý.                                       |
+| Thống kê lịch sử nghe & Top thể loại                                  | Loại trừ     | Thuộc thẩm quyền sở hữu độc quyền của Feature 101; DTO của Feature 102 không chứa số liệu phân tích lịch sử.                     |
+| Bộ lọc tâm trạng / ngữ cảnh môi trường                                | Loại trừ     | Thuộc phạm vi của Feature 103; controller của Feature 102 chỉ nhận filter `type` và `limit`.                                     |
+| AI Conversational Host / Chatbot                                      | Loại trừ     | Thuộc phạm vi của Feature 120; Feature 102 chỉ phụ trách feed hiển thị thẻ đa hình trên Home Dashboard.                          |
+| Tự viết cơ chế phát nhạc riêng                                        | Bỏ tuyệt đối | Ủy quyền hoàn toàn hành động phát nhạc cho `PlayerContext` của Group 040 (Music Player).                                         |
+
+### Cách kiểm chứng
+
+- **Kiểm tra cú pháp định dạng Spec Kit:** Toàn bộ 34 tasks đều có checkbox markdown `- [ ]`, mã Task ID duy nhất (`T001` - `T034`), nhãn parallel `[P]` đúng nơi, nhãn User Story (`[US1]`, `[US2]`, `[US3]`, `[US4]`) chỉ xuất hiện trong story phase và có đường dẫn file cụ thể.
+- **Kiểm tra độ bao phủ yêu cầu qua `/speckit-analyze`:** Xác nhận 100% 15 FRs và 5 SCs đều được map vào tasks.md, không có unmapped task.
+- **Kiểm tra ranh giới phạm vi:** Không có task nào đụng chạm tới số liệu thống kê thời lượng của Feature 101, bộ lọc tâm trạng của Feature 103 hay chatbot của Feature 120.
