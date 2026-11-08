@@ -1,185 +1,189 @@
 # Implementation Plan: Semantic Vector Music Search
 
-**Branch**: `033-semantic-vector-search` | **Date**: 2026-11-07 | **Spec**: [spec.md](./spec.md)
+**Branch**: `033-semantic-vector-search` | **Date**: 2026-11-08 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `/specs/030-search/033-semantic-vector-search/spec.md`
+**Status**: Draft pending approval of the semantic API, AI/vector technology, catalog/index, privacy-detection, and response-field decisions listed below.
+
+**Input**: Feature specification from `specs/030-search/033-semantic-vector-search/spec.md`
 
 ## Summary
 
-Implement the Semantic Search mode of AuraTune's existing `/search` experience. A Listener can submit a natural-language mood, emotion, or context query; the system sanitizes it locally, sends only safe content to the approved semantic-search boundary, combines available metadata, lyric, and audio-characteristic similarities using the specified 30%/40%/30% weighted ensemble with availability re-normalization, removes duplicate songs, and returns ranked playable results. When semantic processing is unavailable, unsafe to process, invalid, or times out, the system falls back to keyword search and clearly identifies the fallback mode.
+Implement the Semantic Search mode in AuraTune's existing search experience. A Listener can enter a natural-language mood, emotion, or context query. The system validates and sanitizes the query locally before any third-party processing, searches available song metadata, lyrics, and audio characteristics, deduplicates results, and ranks them using the spec-defined weighted ensemble: metadata 30%, lyrics 40%, and audio characteristics 30%, re-normalized over dimensions available for both the query and song. When processing is unavailable, invalid, times out, or cannot safely proceed, keyword fallback returns usable results or a clear no-results/unavailable state and identifies the fallback mode.
 
-The repository already contains a `/search` route, a `SemanticSearch` top-navigation component, `SearchPage`, `searchEngine`, demo AI/mock data, shared result/player components, and local app state. The backend exposes Express health/auth infrastructure but no semantic-search route, while `src/ai-service` has no implementation. This plan treats the current AI behavior as a demo baseline and keeps provider/vector-database selection behind an approved service contract; it does not invent an AI algorithm beyond the weighted ensemble explicitly required by `spec.md`.
+The existing `/search` page and top-navigation semantic dropdown provide demo UI and mock behavior. Express currently exposes auth/health endpoints only, `src/ai-service` is a placeholder, and mock/localStorage data does not establish a production semantic index. The project API contract describes a public API layer with internal Backend-to-Python AI calls; applying that boundary to this feature is the planning direction, while the semantic route, payload, provider, and production data/index remain unapproved. This plan reuses existing UI and playback integration and marks those open decisions explicitly.
 
 ## Technical Context
 
-**Language/Version**: JavaScript ES modules; React 18.3.1/Vite 5.4.11 frontend; Node.js/Express 4.21.2 backend. The AI/vector-search runtime and provider are not selected in the repository and remain **NEEDS CLARIFICATION**.
+**Language/Version**: Frontend JavaScript ES modules with React 18.3.1 and Vite 5.4.11; backend JavaScript ES modules with Node.js and Express 4.21.2. The shared API design describes an internal Backend-to-Python AI Service boundary, but no implementation exists in `src/ai-service`.
 
-**Primary Dependencies**: React, React DOM, Vite, Tailwind CSS, lucide-react, existing Express/CORS middleware, the approved semantic-search service contract, and whichever embedding/vector components are approved later. No new SDK, model, embedding model, or vector database is selected by this plan.
+**Primary Dependencies**: Existing React, Vite, Tailwind, Express, current search/player components, and the shared API envelope. No new AI provider, embedding model, vector database, or SDK is approved; select none until the planned comparison and team decision recorded in project-plan dependency ED-08.
 
-**Storage**: Existing approved catalog metadata, lyrics, and audio-characteristic content. No new database schema is specified by this feature. The current frontend uses demo/mock catalog data and LocalStorage-backed app state.
+**Storage**: Existing catalog metadata, lyrics, and audio characteristics are the intended search dimensions. No production semantic index or feature-specific database schema is established by this repository; no schema change is proposed.
 
-**Testing**: Frontend unit/component tests, semantic contract integration tests, privacy/request-inspection tests, deterministic ranking tests, timeout/fallback tests, and responsive end-to-end usability/relevance evaluation. The repository currently provides Vite build scripts and a Node backend test file but no semantic-search-specific test runner convention.
+**Testing**: Focused unit, component, privacy/request-inspection, contract/integration, timeout/fallback, responsive acceptance, and human relevance-evaluation tests. Existing frontend scripts are `dev`, `build`, and `preview`; backend scripts are `start` and `dev`; root `test:backend` covers auth, and no semantic-specific test runner convention exists.
 
-**Target Platform**: AuraTune responsive web application plus the approved semantic-search/AI service boundary.
+**Target Platform**: AuraTune responsive web application with semantic processing behind an approved backend/service boundary.
 
-**Project Type**: Web application with React frontend, Express backend, separate AI-service boundary, and catalog/database integrations.
+**Project Type**: React web frontend, Express backend, and a documented but currently unimplemented internal AI-service boundary.
 
-**Performance Goals**: Initial semantic results should be visible within 3 seconds for at least 95% of normal-condition searches (SC-003). SC-003a also requires fallback to begin when no usable semantic response exists by 1,500 ms; the conflict between this threshold and FR-016's 3,000 ms timeout is recorded as an open clarification.
+**Performance Goals**: Start keyword fallback when semantic processing has not produced a usable result within 1,500 ms (FR-016 and SC-003a). SC-003 separately calls for visible initial results within 3 seconds for at least 95% of normal-condition searches.
 
-**Constraints**: Query accepts at least one alphanumeric token and at most 150 characters; reject only empty/whitespace-only input or over-limit input. Preserve query meaning across supported language, punctuation, emojis, and common variations. Never send listener names or emails to third-party AI services, diagnostics, or AI error payloads. Fallback must be explicit and safe.
+**Constraints**: Accept one meaningful alphanumeric token up to 150 characters; reject empty/whitespace-only and over-limit input. Never send listener names/emails to third-party AI, diagnostics, or AI-related error payloads. Locally match profile identity, detect email and context-aware names, preserve recognized catalog artist names, and use keyword fallback when safe distinction/removal is uncertain. Use the specified 30/40/30 ensemble with availability re-normalization; do not substitute a scoring formula.
 
-**Scale/Scope**: Natural-language semantic discovery for songs by mood/context/emotion, with playable ranked results, live suggestions, AI-understanding result presentation, fallback state, and privacy safeguards. Feature 033 only; lyric-fragment search and metadata search remain separate features.
+**Scale/Scope**: Natural-language song discovery by mood, emotion, or context, including live suggestions, ranked playable results, privacy gate, and keyword fallback. Feature 033 only; Metadata and AI Lyrics behavior are outside scope.
 
 ## Constitution Check
 
-*GATE: Must pass before implementation tasks are generated.*
-
-`.specify/memory/constitution.md` is still the unratified Spec Kit placeholder template and contains no actual project principles or governance rules. No project-specific constitutional gate can be certified; this is recorded as a repository governance gap rather than filled with invented policy.
+`.specify/memory/constitution.md` remains the unratified Spec Kit placeholder and contains no project-specific principles or governance rules. Formal constitutional compliance cannot be certified until that document is ratified.
 
 | Gate | Result | Evidence / action |
 |---|---|---|
-| Feature scope is limited to 033 | PASS | All planned behavior maps to `033-semantic-vector-search`; Metadata and AI Lyrics search remain outside this plan. |
-| Explicit semantic algorithm is respected | PASS | Uses only the spec-defined metadata 30%, lyrics 40%, audio 30% weighted ensemble with availability re-normalization. |
-| Privacy boundaries are respected | PASS | Local sanitization and safe fallback are required before any third-party AI request; names/emails are excluded from requests and diagnostics. |
-| Existing architecture is reused | PASS | Extends the current search route, `SemanticSearch`, `SearchPage`, shared cards/player, and Express/service boundaries. |
-| No unapproved provider/schema/database is introduced | PASS | Provider, vector database, response schema, and storage changes remain contract/architecture decisions. |
-| Constitution principles | NEEDS CLARIFICATION | Constitution is placeholder content and must be ratified at project level before formal compliance can be claimed. |
+| Scope limited to feature 033 | PASS | Plan covers semantic music search only; Metadata and AI Lyrics remain separate. |
+| Ranking follows the approved feature requirements | PASS | Uses only the 30% metadata, 40% lyrics, 30% audio-characteristic ensemble and availability re-normalization stated in the spec. |
+| Personal data protection | PASS WITH OPEN IMPLEMENTATION POLICY | Local detection/redaction and safe fallback are specified; profile source and locale/name detection policy need confirmation. |
+| Existing technology retained | PASS | Reuses React/Vite, Express conventions, shared UI/player, and documented Backend-to-Python boundary; selects no provider/vector technology. |
+| No unapproved API or persistence schema | PASS | Semantic route, payload, index shape, and schema remain unselected. |
+| Constitution principles | NEEDS CLARIFICATION | Constitution file is still a placeholder. |
 
 ## Existing Baseline, Planned Work, and Open Decisions
 
 | Area | Existing baseline | Planned for feature 033 | Needs confirmation |
 |---|---|---|---|
-| Route/UI | `/search` is registered in `src/frontend/src/routes/AppRouter.jsx`; `SearchPage.jsx` supports search tabs and demo AI sections; `SemanticSearch.jsx` provides a top-navigation suggestion dropdown. | Connect the Semantic mode to the approved semantic service, live suggestions, result understanding state, ranked result rendering, fallback indicator, and playback. | Exact URL/query contract and response envelope for semantic search are not in the repository. |
-| Search logic | `src/frontend/src/utils/searchEngine.js` normalizes local keyword search; `aiMockData.js` supplies demo recommendations; current semantic dropdown uses mock AI or a broad keyword fallback. | Replace production semantic behavior with a service adapter and keep local keyword logic only as the explicit fallback path. | Canonical catalog index and service-side ranking implementation are unresolved. |
-| AI service | `src/ai-service` contains only `.gitkeep`; no provider, embedding, vector DB, or endpoint implementation exists. | Integrate through the approved service boundary and isolate provider/vector implementation behind it. | AI provider, embedding model, vector database, hosting, authentication, and response schema require confirmation. |
-| Backend | `src/backend/server.js` contains health/auth routes, JSON/CORS middleware, and no semantic route. | Add only the approved semantic endpoint/proxy/service integration during implementation; preserve auth behavior. | Whether the current Express backend or `src/ai-service` owns the endpoint is unresolved. |
-| Data/privacy | `AppStore` and demo catalog contain local user/session and content data; no third-party AI privacy filter exists. | Build a local sanitizer/redaction gate before AI calls; use profile matching, email detection, context-aware name detection, artist-name preservation, and safe fallback as specified. | Exact authenticated-profile source and locale-aware name detector policy need implementation confirmation. |
-| Playback/results | `SongRow`, `CoverArt`, `PlaylistCard`, `PlayerContext`, and common UI primitives exist. | Reuse them for ranked songs, standard identity, understanding card, fallback notice, and playback. | Exact semantic response-to-view-model mapping follows the approved contract. |
+| Search UI | `/search`, `SearchPage`, and `SemanticSearch` exist; their AI results use demo/mock data. Existing result and player components are reusable. | Connect semantic input, suggestions, results, fallback states, and playback to an approved service boundary. | Final route/query and response mapping. |
+| API boundary | The frontend API client calls Express at `/api/v1`; `src/backend/server.js` currently mounts auth and health routes only. The shared API contract defines `{success,message,data,error}`, 503 `AI_SERVICE_UNAVAILABLE`, 429 `RATE_LIMITED`, and internal Backend-to-Python AI calls. | Use Express as the public API façade and preserve the documented internal AI boundary as the planning direction; add only a reviewed semantic contract. | Semantic route, request/response fields, Python service endpoint/authentication, score/explanation mapping, and timeout propagation. |
+| AI/vector service | `src/ai-service` contains only `.gitkeep`; no provider/model/indexing code exists. Proposal mentions ChromaDB/Pinecone as candidates, not a selected technology. | Implement against the approved service architecture after design approval. | Provider, embedding model, vector database, runtime/deployment, authentication, and where scoring runs. |
+| Searchable data | Frontend fixtures provide mock songs/lyrics; current code does not establish a production searchable corpus or semantic index. | Search available metadata, lyrics, and audio dimensions, tolerating missing dimensions. | Canonical catalog source, field availability/population, index build/update ownership, and whether audio characteristics are already sourced. |
+| Privacy | Existing mock search has no third-party privacy gate. AppStore provides local app/session state but its profile data source and canonical artist matching policy are not a feature contract. | Match profile details, detect emails and context-aware names locally, preserve catalog artist names, and route ambiguous/unsafe queries to keyword fallback. | Profile data source and locale/context detection policy. |
+| Timing, ranking, and rate limits | Spec fixes fallback at 1,500 ms and the weighted component weights. Its edge case treats an AI rate-limit response as unavailability and calls for keyword fallback where possible. | Start fallback at 1,500 ms; map an AI-service 429 to the fallback path; implement the exact ensemble, deduplicate, and order results. | Confirm per-dimension score ownership and equal-score tie-breaker. Do not add a retry policy without approval. |
 
 ## Technical Approach
 
-### 1. Query lifecycle and privacy gate
+### 1. Query validation and local privacy gate
 
-- Trim and normalize only enough to validate and preserve meaning; support the specified language, punctuation, emojis, and common variations without replacing the user's intent with a new query.
-- Reject empty/whitespace-only input and input over 150 characters with clear local validation. Accept at least one alphanumeric token.
-- Run personal-data detection locally before any third-party AI request: compare against the authenticated profile, detect email addresses, and perform context-aware name detection. Preserve names recognized as catalog artists.
-- If personal-data removal cannot be verified, do not send the query to third-party AI; use the safe keyword fallback instead.
-- Ensure redacted/original personal data is excluded from AI requests, search diagnostics, logs, and AI-related error payloads.
+- Trim and normalize whitespace for validation while preserving the query meaning, supported language, punctuation, emojis, and common variations.
+- Accept a query with at least one meaningful alphanumeric token up to 150 characters. Reject only empty/whitespace-only input and over-limit input with clear local feedback.
+- Before any third-party AI request, locally compare against the authenticated profile, detect email addresses, and perform context-aware name detection. Preserve names recognized as catalog artists.
+- Remove or mask personal information before external processing. If the system cannot verify safe sanitization, do not send to third-party AI; use the keyword fallback.
+- Exclude listener names/emails and original/redacted PII from AI requests, searchable payloads, diagnostics, logs, and AI-related error payloads.
+- Do not add search-history behavior in this feature; if any query history or result labels are surfaced by the existing application, verify they do not expose listener names or email addresses.
 
-### 2. Semantic service boundary and ranking
+### 2. Semantic processing and ranking
 
-- Use the approved semantic-search contract through a service adapter; do not expose provider credentials or couple the browser directly to an unapproved third-party AI service.
-- Represent the natural-language query and available song content in the comparable semantic form required by the approved service. The implementation must support metadata, lyrics, and audio-characteristic dimensions when available.
-- Apply the explicit weighted ensemble: metadata similarity 30%, lyrics similarity 40%, audio-characteristics similarity 30%; re-normalize weights across dimensions available for both the query and song.
-- Deduplicate songs before presentation and order descending by weighted semantic score, or by the approved keyword ranking when fallback is active.
-- Keep the client view model limited to standard song identity, playable metadata, result relevance/context, and any approved explanation content; do not invent response fields.
+- Route semantic work through the Express public API façade and the documented internal Backend-to-Python AI boundary. The exact semantic endpoints and payloads still require approval; the frontend must not call the internal AI service or a third-party provider directly.
+- Represent available metadata, lyrics, and listed audio characteristics in the approved service's comparable semantic representation. Do not choose an embedding/model/vector technology until approved.
+- Apply metadata similarity at 30%, lyric similarity at 40%, and audio-characteristic similarity at 30%. Re-normalize weights over dimensions available for both the query and song, as specified.
+- The listed audio dimension set is BPM/tempo, key, mode, energy, valence, danceability, acousticness, instrumentalness, speechiness, loudness, liveness, time signature, and duration.
+- Deduplicate songs and sort by descending semantic score, or by the approved keyword rank in fallback mode. Equal-score tie-breaking is not specified and remains open.
+- Validate semantic responses against the approved contract. Invalid or unsafe responses must use keyword fallback; the unsafe-response policy needs definition in that contract before implementation.
+- Map only approved contract fields into song identity/playback state and any approved AI-understanding content. Do not infer/expose undocumented explanation or score fields.
 
-### 3. Timeout, fallback, and failure states
+### 3. Timeout, failure, and fallback behavior
 
-- Start keyword fallback for an unavailable semantic operation, timeout, invalid response, or unsafe-to-process request, as required by FR-007.
-- The spec contains two timing thresholds: FR-016 says stop waiting after 3,000 ms, while SC-003a says fallback begins at 1,500 ms without a usable response. Do not silently choose a new requirement; isolate the timeout policy behind configuration and resolve the conflict before implementation acceptance.
-- Show a clear user-facing fallback indicator without credentials or sensitive diagnostics. Preserve a friendly no-results/unavailable-catalog state when neither path produces results.
-- Protect every state commit with a request identity/cancellation mechanism so a previous semantic or fallback response cannot overwrite a newer search.
+- Start keyword fallback when semantic processing is unavailable, times out, produces an invalid or unsafe response, or cannot safely process the query, as required by FR-007 and the feature edge cases.
+- Start keyword fallback when semantic processing has not produced a usable result within 1,500 ms, as now specified by FR-016 and SC-003a. SC-003 remains a separate goal for the initial visible result within 3 seconds in at least 95% of normal-condition searches.
+- Treat an AI-service rate-limit response (HTTP 429) as unavailability and use keyword fallback where possible, as specified by the feature edge case. Do not infer retries, retry intervals, or a new public error response.
+- Use the existing keyword search path only as a fallback baseline after confirming it covers the required catalog access; expose that fallback was used without credentials or sensitive diagnostics.
+- Show user-friendly no-results or catalog-unavailable feedback if neither semantic search nor fallback can produce results. Guard all async state updates so stale semantic/fallback responses cannot overwrite a newer query.
+- A later search may resume semantic processing automatically after service recovery, without a user configuration change.
 
-### 4. Search entry, suggestions, results, and playback
+### 4. Entry, suggestions, results, and playback
 
-- Extend the existing `SemanticSearch` dropdown to use the semantic service only after the local privacy gate and validation. Live suggestions must not leak profile data or send unsafe content.
-- Extend `SearchPage`'s dedicated Semantic mode to render the approved AI-understanding card, ranked song results, fallback state, loading, empty, and unavailable states.
-- Reuse `SongRow`, `CoverArt`, common UI primitives, `AppStore`, and `PlayerContext` for consistent visual identity and existing playback flow.
-- Keep Metadata (`031`) and AI Lyrics (`032`) behavior outside this plan; shared `/search` tab navigation is an integration boundary only.
+- Integrate the top navigation `SemanticSearch` dropdown and the dedicated Semantic mode in `SearchPage`; retain the documented keyboard/search navigation behavior.
+- Render ranked song results with standard identifying information and existing playback actions. Render an AI-understanding card only with approved, privacy-safe explanation data.
+- Display a clear fallback mode indicator and clear empty/unavailable state; avoid adding playlists or recommendation behavior beyond what the feature spec authorizes.
+- Reuse `SongRow`, cover/result components, common UI primitives, `AppStore`, and `PlayerContext`.
+- Keep feature 031 metadata behavior and feature 032 lyrics-fragment behavior outside this plan.
+
+### Screenshot scope boundary
+
+- The current UI screenshots include playlist suggestions and mock AI explanations. The functional requirements define semantic ranked song results and playback; they do not define semantic playlist generation or a response field for explanations. Treat screenshot-only playlist/AI-card details as visual references, and render only fields and result types explicitly approved in the feature contract. Do not add playlist generation or infer an explanation schema.
 
 ### 5. Data flow
 
 ```text
 Natural-language query
-        |
-        v
-trim + validate + local privacy detection/redaction
-        | unsafe/unverifiable ------------------------------+
-        |                                                   |
-        v                                                   v
-approved semantic service                         keyword fallback
-        | usable response / timeout / invalid / unavailable |
-        +------------------------------+--------------------+
-                                       v
-                  deduplicate + rank (weighted ensemble or keyword rank)
-                                       |
-                                       v
-          Semantic Search state -> result cards/understanding -> PlayerContext
-                                       |
-                                       +--> loading / fallback / empty / unavailable
+       -> local validation and profile/email/name privacy gate
+       -> safe query to approved backend boundary
+       -> AI semantic search over available metadata/lyrics/audio dimensions
+       -> weighted ensemble (30/40/30, available-dimension re-normalization)
+       -> deduplicate and order -> current Semantic Search results -> existing player
+
+Unsafe/ambiguous query, unavailable/invalid service, or approved timeout
+       -> keyword fallback -> explicit fallback state or no-results/unavailable state
 ```
 
-No listener identity is included after the privacy gate. Diagnostics and errors carry only safe, contract-approved information.
+No listener identity is sent to a third-party AI service or included in diagnostics/errors.
 
 ## Components and Responsibilities
 
-### Existing components/services to reuse
+### Existing components and services to reuse
 
-- `src/frontend/src/routes/AppRouter.jsx`: existing `/search` route.
-- `src/frontend/src/pages/Search/SearchPage.jsx`: current search tabs, AI section, URL state, empty state, and playback integration point.
-- `src/frontend/src/components/search/SemanticSearch.jsx`: current top-navigation input, dropdown, keyboard interaction, and navigation to full results.
-- `src/frontend/src/utils/searchEngine.js`: local normalized keyword baseline for explicit fallback only.
-- `src/frontend/src/utils/aiMockData.js`: demo AI behavior reference; not a production semantic contract.
-- `src/frontend/src/components/song/SongRow.jsx`, `src/frontend/src/components/playlist/CoverArt.jsx`, `PlaylistCard.jsx`, and common UI primitives: result rendering and state presentation.
-- `src/frontend/src/context/AppStore.jsx` and `src/frontend/src/context/PlayerContext.jsx`: catalog/playability, feedback, and existing playback flow.
-- `src/backend/server.js`: Express middleware and route conventions if the approved backend owns the service boundary.
+- `src/frontend/src/routes/AppRouter.jsx`: current `/search` route.
+- `src/frontend/src/components/search/SemanticSearch.jsx`: top-navigation search input, dropdown, keyboard handling, and result selection.
+- `src/frontend/src/pages/Search/SearchPage.jsx`: search query state, semantic/AI demo presentation, empty state, and playback entry points.
+- `src/frontend/src/utils/searchEngine.js`: local keyword search for the explicit fallback path only.
+- `src/frontend/src/utils/aiMockData.js`: demo behavior reference only; not a semantic API contract.
+- `src/frontend/src/context/AppStore.jsx` and `src/frontend/src/context/PlayerContext.jsx`: catalog/playability and existing playback flow.
+- `src/frontend/src/components/song/SongRow.jsx`, playlist/media cards, and common UI primitives: result and status presentation.
+- `src/backend/server.js`: existing Express middleware and route-mount convention if selected as the public backend boundary.
+- `src/ai-service/`: currently placeholder only; intended internal service implementation is not yet present.
 
-### Planned feature-owned implementation units
+### Planned implementation units
 
-Exact file names should be finalized by `/speckit.tasks` from repository conventions, but tasks should cover:
+- Local query validation/privacy utility and safe-to-process/fallback decision.
+- Approved semantic API adapter and contract validation, including safe error/diagnostic handling.
+- Semantic ranking adapter implementing only the required weighted ensemble/re-normalization and deduplication.
+- Query controller/hook for loading, timing policy, current-request identity, fallback, errors, and result mode.
+- `SemanticSearch` dropdown and `SearchPage` semantic result integration using approved response fields.
+- Unit, privacy leakage, ranking, contract, timeout/fallback, component, and acceptance tests.
+- Index/data ingestion work only after the approved source, ownership, and vector architecture are established; no schema is specified in this plan.
 
-- Local privacy/sanitization utility with profile, email, and context-aware name detection and safe fallback decision.
-- Semantic-search API adapter with contract mapping, timeout policy, invalid-response handling, and safe errors.
-- Semantic result/ranking adapter implementing the explicitly specified weighted ensemble and availability re-normalization without introducing another formula.
-- Search controller/hook for request identity, loading/fallback/error states, duplicate/stale response protection, and mode state.
-- Semantic dropdown/page integration, AI-understanding card, fallback indicator, result rendering, and playback wiring.
-- Tests covering privacy leakage, ranking, fallback, timing policy, deduplication, and responsive user flows.
+## Project Structure
+
+Feature work is expected to integrate with the existing `src/frontend/` and `src/backend/` applications. The current integration points are `src/frontend/src/components/search/SemanticSearch.jsx`, `src/frontend/src/pages/Search/SearchPage.jsx`, `src/frontend/src/utils/searchEngine.js`, `src/frontend/src/context/AppStore.jsx`, `src/frontend/src/context/PlayerContext.jsx`, and `src/backend/server.js`. `src/ai-service/` currently contains only `.gitkeep`; the internal AI implementation location/runtime must be confirmed before implementation. No source files, endpoints, migrations, or provider-specific structure are created by this planning document.
 
 ## Dependencies
 
-- Feature 033 `spec.md`, clarification decisions, UI references, and project-approved semantic-search contract.
-- Searchable catalog content with song metadata, lyrics, and available audio characteristics.
-- Existing frontend route, search components, player context, and Express middleware.
-- Approved AI provider/embedding/vector-search architecture and service deployment boundary.
-- Profile/session data source for local privacy detection; catalog artist data for artist-name preservation.
-- Integration boundary with features 031 and 032, without implementing those features here.
-- Ratified project constitution and canonical semantic response schema before formal implementation gating.
+- Feature 033 specification, clarification decisions, and UI references in this directory.
+- Searchable catalog content for metadata, lyrics, and the specified audio-characteristic fields.
+- Approved public semantic route, internal Backend-to-Python service contract, response schema, and service owner.
+- Approved provider, embedding/model, vector database, hosting, and authentication arrangement.
+- Authenticated profile source for local PII detection and catalog artist data for artist-name preservation.
+- Existing search UI, keyword fallback, shared result components, and player context.
+- Project constitution ratification before claiming formal governance compliance.
 
 ## Testing Strategy
 
-1. Unit: query validation/normalization, Unicode/punctuation/emoji handling, 150-character limit, email/name/profile detection, artist-name preservation, redaction decisions, weighted ensemble/re-normalization, duplicate removal, and keyword fallback ranking.
-2. Contract/integration: safe semantic request formation, response validation, metadata/lyrics/audio dimension handling, provider error mapping, invalid response fallback, timeout policy, and safe diagnostics. Inspect serialized requests to verify no listener names/emails are transmitted.
-3. Component: semantic search entry, live suggestions, validation, loading, AI-understanding card, ranked results, fallback indicator, no-results/unavailable state, stale-response suppression, and playback integration.
-4. End-to-end: representative mood/context queries, incomplete content dimensions, multiple reasonable genre/style interpretations, service unavailability, unsafe personal-data query, timeout/fallback, duplicate results, responsive layout, and first-attempt usability.
-5. Evaluation: at least 100 representative mood/context queries using the specified 1–5 human relevance scale, with 4/5 counted as relevant; measure SC-001 through SC-007 including privacy request inspection and duplicate-result rate.
-6. Regression: existing `/search` navigation, Metadata and AI Lyrics tabs, normal keyword search, playback, auth/health routes, and responsive shell remain unaffected.
+1. **Unit**: input validation/normalization; email/profile/contextual-name detection; catalog artist preservation; redaction and unsafe fallback; weighted ensemble and missing-dimension re-normalization; duplicate removal; deterministic post-processing; and keyword fallback status behavior.
+2. **Privacy/contract integration**: inspect serialized requests, searchable content, diagnostics, and AI error payloads to prove no listener name/email is transmitted; validate only the approved schema; test safe handling of invalid/unavailable responses and HTTP 429 fallback.
+3. **Timing/fallback integration**: exercise the 1,500 ms threshold, unavailable service, invalid response, unsafe query, HTTP 429, fallback results, no-results, and recovered-service subsequent search. Measure SC-003's 3-second initial-result goal separately.
+4. **Component**: entry/dropdown keyboard behavior, local validation, loading, semantic understanding card, ranked results, explicit fallback indication, empty/unavailable states, stale request handling, and playback integration.
+5. **Acceptance and relevance evaluation**: at least 100 representative mood/context queries using the spec's 1–5 scale; ratings 4–5 count as relevant; allow multiple reasonable interpretations satisfying the stated intent; measure SC-001 through SC-007 including privacy and duplicate checks.
+6. **Regression**: `/search` navigation, metadata and lyrics tabs, keyword search, playback, auth/health routes, and responsive application shell.
 
 ## Risks and Technical Considerations
 
-- **Timeout conflict**: FR-016 specifies 3 seconds while SC-003a specifies 1,500 ms. Make the policy configurable and obtain a product/architecture decision before final tasks; do not silently reinterpret the spec.
-- **Provider/vector architecture is absent**: no AI implementation exists under `src/ai-service`; provider, embedding model, vector database, hosting, and API ownership must be confirmed before implementation.
-- **Privacy false positives/negatives**: name detection is context-sensitive and must preserve catalog artist searches while safely falling back when uncertain. Privacy tests must inspect actual serialized requests and diagnostics.
-- **Missing content dimensions**: songs may lack lyrics/audio characteristics. Re-normalize only across dimensions available for both query and song as required; do not penalize or fabricate absent values.
-- **Ranking reproducibility**: semantic scores may vary by provider. Preserve the specified weighted ensemble and test deterministic post-processing (availability normalization, deduplication, ordering) around the provider response.
-- **Stale requests and fallback races**: semantic timeout, keyword fallback, live suggestions, and a newer query may overlap. Every async path needs request identity/cancellation protection.
-- **Sensitive configuration**: existing uncommitted backend configuration is outside this task; no credentials or provider secrets belong in this Plan or frontend code.
-- **Cross-feature boundary**: only Semantic mode is planned; Metadata and AI Lyrics algorithms and contracts remain owned by features 031 and 032.
-
-## Constitution Check (Post-Design)
-
-The design remains limited to feature 033, uses the existing React/Vite/Express/player architecture, follows the spec-defined weighted ensemble and privacy boundary, and avoids an unapproved provider, API schema, or database schema. Formal constitutional compliance remains unresolved because `.specify/memory/constitution.md` is placeholder content.
+- **Timeout and latency goals**: fallback starts at 1,500 ms; SC-003 measures visible initial results within 3 seconds in normal conditions. Validate that fallback and its keyword results can satisfy the intended experience.
+- **Provider/vector architecture absent**: proposal mentions ChromaDB/Pinecone as alternatives but selects neither; `src/ai-service` is empty. Do not add an SDK, provider, embedding model, or database before approval.
+- **Unspecified semantic contract**: API docs define shared envelope/error codes but no semantic endpoint or payload. A request/response contract is an implementation gate.
+- **Rate limiting**: the feature edge case includes rate limits in AI unavailability, while FR-007 lists other failure causes. Follow the more specific edge-case behavior and fall back on AI-service 429; retry behavior is unspecified and must not be invented.
+- **Privacy detector errors**: false negatives can disclose PII; false positives can block legitimate catalog-artist searches. Test profile matching, email detection, contextual names, and preservation of catalog artists.
+- **Data completeness**: missing lyrics/audio dimensions must not fail search; weights are re-normalized only across dimensions available for both query and song. Production field source and index lifecycle are unknown.
+- **Score reproducibility**: provider similarity scores may vary. Keep the required weighting and deterministic post-processing separate from the provider; equal-score tie-breaker remains open.
+- **Async races**: live dropdown, full search, timeout, fallback, and newer queries can overlap. Associate each response and state update with its active query.
+- **No semantic test runner**: choose feature-focused tooling consistent with the project during implementation; existing backend smoke test is auth-only.
+- **Constitution placeholder**: formal compliance remains unverified until project principles are ratified.
 
 ## Open Clarifications
 
-- Which AI provider, embedding model, vector database, runtime, and hosting boundary are approved?
-- What exact request/response schema and endpoint ownership define the semantic-search contract?
-- Does the approved contract return per-dimension scores/content availability, or must the service perform the weighted ensemble internally?
-- Should fallback begin at 1,500 ms per SC-003a or at 3,000 ms per FR-016?
-- What is the approved authenticated-profile source and locale/context policy for personal-name detection?
-- What stable tie-breaker should be used after equal semantic scores and duplicate removal?
-- What exact user-facing fields are permitted in the AI-understanding card?
+1. Which public semantic route and request/response fields should be approved, and what internal Python endpoint/authentication and timeout propagation will back it? The documented Express-to-Python boundary is the planning direction; no endpoint or payload is selected here.
+2. Which provider, embedding/model, vector database, runtime/deployment, and service authentication should be selected? Proposal candidates are not approved decisions; project-plan ED-08 calls for a comparison and recorded selection.
+3. Does the AI service return metadata/lyrics/audio similarity values separately, or return a combined score computed server-side?
+4. What is the canonical catalog source and index update lifecycle for metadata, lyrics, and each listed audio field? Which audio values already exist and which require an approved source?
+5. What profile source and locale/context policy should local personal-name detection use, and how should recognized catalog artists be identified safely?
+6. What stable tie-breaker applies to equal semantic or keyword ranks, and which explanation fields may appear in the AI-understanding card?
+7. Do screenshot-only playlist suggestions indicate an in-scope semantic result type, or are they demo references? The current functional requirements do not authorize playlist generation.
 
 ## Complexity Tracking
 
-No constitution violation is introduced. No new database schema or cross-group feature is proposed. Complexity is limited to the privacy gate, semantic service boundary, explicit weighted ranking, fallback policy, async state protection, and integration with the existing search/player UI.
+No additional project or database schema is proposed without approval. The feature's implementation complexity comes from the privacy gate, semantic-service boundary, explicitly weighted ranking, timeout/fallback handling, and async search UX. Unresolved decisions are recorded as approval gates rather than silently encoded as architecture.

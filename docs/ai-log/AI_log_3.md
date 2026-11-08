@@ -27,6 +27,9 @@
 | 23 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 081) | 08 Album Interaction |
 | 24 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 082) | 08 Album Interaction |
 | 25 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 083) | 08 Album Interaction |
+| 26 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 031 bằng Spec Kit bằng `/speckit-tasks` |
+| 27 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 032 bằng Spec Kit bằng `/speckit-tasks` | 030 Search |
+| 28 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 033 bằng Spec Kit bằng `/speckit-tasks` | 030 Search |
 
 ---
 
@@ -1105,16 +1108,16 @@ Hãy đưa ra các câu hỏi để chỉnh sửa các yêu cầu bạn nêu lê
 | Người thực hiện | Nguyễn Khánh Đăng |
 | Nhóm tính năng liên quan | 030 – Search, Feature 031: Metadata Search |
 | Công cụ AI | GPT-5.6-Luna |
-| Mục đích | Tạo Implementation Plan (`plan.md`) cho feature 031 dựa trên đặc tả nghiệp vụ, tuân thủ đúng quy trình của Spec Kit và giới hạn phạm vi chặt chẽ của dự án. |
+| Mục đích | Khởi tạo toàn bộ bộ tài liệu Implementation Plan (gồm `plan.md`, `research.md`, `data-model.md`, `quickstart.md`) cho tính năng tìm kiếm siêu dữ liệu dựa trên quy trình chuẩn của Spec Kit. |
 
 ### Prompt đã dùng
 
 ```text
-/speckit-plan # TASK: Execute `/speckit.plan` for Feature 031 Only
+/speckit-plan # TASK: Execute `/speckit.plan` cho Feature 031 Only
 
 Bạn đang làm việc trong repository AuraTune.
 
-Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `031` thuộc Group 030 – Search.
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo bộ tài liệu Implementation Plan cho feature `031` thuộc Group 030 – Search.
 
 **Chỉ lập Plan cho feature 031. Không xử lý feature khác.**
 
@@ -1144,82 +1147,74 @@ Sau khi xác định đúng feature context:
 2. Thực thi `/speckit.plan`.
 3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
 4. Tuân thủ instructions, template và conventions của repository.
-5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
-Không tự viết Plan thủ công thay cho Spec Kit command.
-Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+5. Tạo hoặc cập nhật **toàn bộ bộ tài liệu planning** đúng vị trí mà Spec Kit quy định, bao gồm: `plan.md`, `research.md`, `data-model.md`, `contracts/`, và `quickstart.md`.
+Không tự viết thủ công thay cho Spec Kit command. Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions.
 
-## 4. Yêu cầu đối với Plan
-Plan cần:
-- Bám sát requirements của feature 031 trong `spec.md`.
-- Phản ánh kiến trúc hiện tại của AuraTune.
-- Xác định technical approach.
-- Xác định các component và service liên quan.
-- Xác định dependencies.
-- Mô tả data flow và integration nếu cần.
-- Xác định testing strategy.
-- Xác định risks và technical considerations.
-- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
-Không tự ý:
-- Thêm Functional Requirements.
-- Thêm chức năng ngoài phạm vi feature 031.
-- Tạo API hoặc database schema không có căn cứ.
-- Tự đặt AI algorithm hoặc scoring formula.
+## 4. Yêu cầu đối với Bộ tài liệu Planning
+Phải sinh ra đầy đủ các file sau (nếu ngữ cảnh feature yêu cầu):
+
+*   **`plan.md` (Bắt buộc):** Phương án triển khai kỹ thuật. Xác định technical approach, components, services, dependencies, data flow, testing strategy, risks, và technical considerations. Cần đủ chi tiết để làm đầu vào cho `/speckit.tasks`.
+*   **`research.md` (Bắt buộc):** Kết quả nghiên cứu các câu hỏi kỹ thuật. Ghi nhận các giải pháp thay thế, lý do chọn công nghệ/thư viện/cách tiếp cận cụ thể cho feature này.
+*   **`data-model.md` (Tạo nếu cần):** Mô hình dữ liệu. Định nghĩa các thay đổi về database schema, entities mới, relationships, hoặc cấu trúc NoSQL/cache liên quan trực tiếp đến tính năng.
+*   **`contracts/` (Tạo nếu cần):** Chứa các file định nghĩa API (REST/gRPC), payload request/response, JSON schema, hoặc các hợp đồng giao tiếp giữa frontend-backend và các microservices.
+*   **`quickstart.md` (Tạo nếu cần):** Hướng dẫn setup môi trường, cách chạy thử (run), test cục bộ tính năng này, hoặc các CLI commands cần thiết.
+
+**Không tự ý:**
+- Thêm Functional Requirements hoặc chức năng ngoài phạm vi feature 031.
+- Tạo API hoặc database schema không có căn cứ từ `spec.md`.
+- Tự đặt AI algorithm hoặc scoring formula nếu chưa được duyệt.
 - Thay đổi công nghệ đã được dự án lựa chọn.
-- Đưa chức năng của Group khác vào Group 030.
-Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+- Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
 
 ## 5. Scope giới hạn
-Chỉ được tạo hoặc cập nhật Plan của feature 031 theo Spec Kit workflow.
+Chỉ được tạo hoặc cập nhật bộ tài liệu Planning của feature 031 theo Spec Kit workflow.
 Không được:
-- Lập Plan cho feature 032 trở đi.
-- Lập Plan cho toàn bộ Group 030.
-- Chỉnh sửa group khác.
-- Chỉnh sửa `spec.md`.
-- Chỉnh sửa `tasks.md`.
-- Implement source code.
-- Thay đổi frontend, backend, AI service hoặc database.
-- Chỉnh sửa tài liệu project-level.
+- Lập Plan cho feature 032 trở đi hoặc toàn bộ Group 030.
+- Chỉnh sửa group khác, `spec.md`, `tasks.md`, tài liệu project-level.
+- Implement source code (frontend, backend, AI service, database).
 - Commit hoặc push.
 Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
 
 ## 6. Validation
-Sau khi thực thi `/speckit.plan`:
-- Kiểm tra Plan thuộc đúng feature 031.
-- Kiểm tra tính nhất quán với `spec.md`.
+Sau khi thực thi:
+- Kiểm tra toàn bộ các file (`plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`) thuộc đúng feature 031.
+- Kiểm tra tính nhất quán giữa các file trong bộ tài liệu và `spec.md`.
 - Kiểm tra technical decisions có căn cứ.
-- Kiểm tra dependencies và testing strategy.
-- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
 - Chạy validation scripts theo Spec Kit workflow nếu có.
 - Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
-Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
 
 ## 7. Final Report
 Báo cáo bằng Vietnamese:
 1. Tên và đường dẫn feature 031 đã xác định.
 2. `/speckit.plan` có thực sự được thực thi hay không.
-3. File Plan đã tạo hoặc cập nhật.
-4. Nội dung chính của Plan.
+3. Danh sách toàn bộ các file đã tạo hoặc cập nhật (`plan.md`, `research.md`, `data-model.md`, `contracts/`...).
+4. Nội dung chính của từng file trong bộ tài liệu.
 5. Các technical decisions đáng chú ý.
-6. Validation results.
-7. Những vấn đề cần clarification.
-8. Danh sách file đã thay đổi.
-Completion criteria: Chỉ tạo Implementation Plan cho feature 031 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+6. Validation results và những vấn đề cần clarification.
+Completion criteria: Hoàn thành bộ tài liệu Implementation Plan (đủ các file yêu cầu) cho feature 031. Dừng lại và chờ review, không tự động chuyển feature.
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
 ```
 
 ### Tóm tắt phản hồi của AI
 
-- AI đã đọc kỹ hướng dẫn của skill `speckit-plan`, kiểm tra trạng thái Git và xác định đúng cấu trúc thư mục của feature `031-metadata-search`.
-- Mặc dù môi trường không có sẵn runner CLI để thực thi trực tiếp slash command `/speckit.plan` và file `setup-plan.sh` gặp lỗi permission trên Git Bash, AI đã linh hoạt áp dụng cách thực thi tương đương dựa trên template của Spec Kit.
-- Chỉ tạo và cập nhật duy nhất file `plan.md` cho feature 031, không sửa các file project-level, `spec.md`, `tasks.md` hay can thiệp vào source code.
-- Báo cáo rõ các technical decisions (như tái sử dụng React/Vite/Express, không thêm schema/API field ngoài luồng), validation results (bao phủ đúng API contract `q`, `type`, `limit`, `offset`) và các vấn đề cần clarification tiếp theo (response schema, filter/sort contract...).
+- Vượt qua lỗi môi trường không chạy được bash script `setup-plan.sh` (do lỗi quyền tạo thư mục) bằng cách áp dụng quy trình tương đương để phân tích và tạo thủ công bộ tài liệu.
+- Đã hoàn thiện toàn diện bộ tài liệu Planning cho tính năng 031:
+  - Cập nhật `plan.md`: Đưa vào mục tiêu hiệu năng 300 ms p95 (lấy từ Vision Document) và bổ sung cấu trúc dự án hiện hành.
+  - Tạo mới `research.md`: Ghi nhận các quyết định công nghệ, phương án thay thế và bằng chứng nghiên cứu từ repository.
+  - Tạo mới `data-model.md`: Định nghĩa mô hình dữ liệu từ phía frontend (phân trang, lịch sử tìm kiếm, kiểu dữ liệu), không tự ý tạo thêm bảng hay migration mới.
+  - Tạo mới `quickstart.md`: Viết hướng dẫn chạy frontend/backend, kiểm tra API, test phân trang và history.
+  - Xác nhận `contracts/search-api.md` đã có sẵn, trỏ đúng endpoint `GET /api/v1/search` và cấu trúc Supabase.
+- Ghi nhận rủi ro kỹ thuật: Mặc dù code có Supabase client, nhưng migration SQL hiện tại chỉ mới có bảng xác thực (auth). Schema của catalog chỉ mới nằm trên tài liệu, chưa được xác minh bằng file deployment thực tế. Do đó, yêu cầu phải xác minh bảng catalog trước khi lập trình.
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
 | Phần | Quyết định | Lý do |
 |---|---|---|
-| Sử dụng workflow tương đương để tạo `plan.md` | Dùng | Xử lý linh hoạt khi lệnh bash/slash command runner bị lỗi do môi trường, đáp ứng đúng yêu cầu của prompt. |
-| Giữ nguyên ranh giới hệ thống, không tự ý thêm các chức năng hay AI algorithm | Dùng | Đảm bảo đúng scope của feature 031, tránh lỗi "vượt quyền" thiết kế và tôn trọng tài liệu gốc. |
-| Các vấn đề Open Clarifications được liệt kê | Dùng | Ghi nhận trung thực những điểm cần Product/Design chốt thêm trước khi có thể triển khai code toàn diện. |
+| Sử dụng workflow tương đương thay lệnh slash | Dùng | Khắc phục rào cản môi trường CLI để hoàn thành đúng yêu cầu tạo bộ tài liệu |
+| Cập nhật `plan.md` và tạo thêm `research`, `data-model`, `quickstart` | Dùng | Phủ kín toàn bộ các khía cạnh kỹ thuật theo chuẩn framework Spec Kit |
+| Không tự tạo database schema / migration mới | Dùng | Phản ánh tính trung thực và ngăn chặn rủi ro tự thiết kế vượt quyền khi thực tế DB chưa được deploy bảng catalog |
+| Ghi nhận mục tiêu hiệu năng 300 ms p95 | Dùng | Đảm bảo đáp ứng ràng buộc phi chức năng (NFR) đã được đề ra từ tài liệu gốc (Vision Document) |
 
 ### Cách kiểm chứng
 
@@ -1228,28 +1223,26 @@ Completion criteria: Chỉ tạo Implementation Plan cho feature 031 bằng Spec
 - [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
-**Kết quả kiểm chứng:** Đạt. 
-
-**Ghi chú:** Implementation Plan đã được tạo thành công tại `specs/030-search/031-metadata-search/plan.md`. Sẵn sàng để chuyển sang bước tạo task (`/speckit.tasks`). Mọi thay đổi chưa commit khác trong Git working tree được bảo toàn đúng như yêu cầu.
+**Kết quả kiểm chứng:** Đạt. Quá trình sinh bộ tài liệu đảm bảo không làm ảnh hưởng (overwrite) đến các chỉnh sửa đang có của những tính năng khác. Cần Product/DBA chốt và cung cấp migration schema thực tế của catalog để có thể triển khai tiếp.
 
 ## Mục 18: Lập Implementation Plan cho spec 032 bằng Spec Kit
 
-| Trường | Nội dung |
-|---|---|
-| Ngày | 2026-11-07 |
-| Người thực hiện | Nguyễn Khánh Đăng |
-| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search |
-| Công cụ AI | GPT-5.6-Luna |
-| Mục đích | Tạo Implementation Plan (`plan.md`) cho tính năng tìm kiếm bằng lời bài hát AI (Feature 032), tuân thủ đúng quy trình Spec Kit, xử lý các ràng buộc kỹ thuật (fallback, timeout) và không vượt quyền thiết kế hệ thống. |
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-07 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Khởi tạo toàn bộ bộ tài liệu Implementation Plan (gồm `plan.md`, `research.md`, `data-model.md`, `contracts/lyrics-search.md` và `quickstart.md`) cho tính năng AI Lyrics Search dựa trên quy trình chuẩn của Spec Kit, đảm bảo không tự ý quyết định các lỗ hổng hệ thống. | 
 
 ### Prompt đã dùng
 
-```text
-/speckit-plan # TASK: Execute `/speckit.plan` for Feature 032 Only
+```
+/speckit-plan # TASK: Execute `/speckit.plan` cho Feature 032 Only
 
 Bạn đang làm việc trong repository AuraTune.
 
-Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `032` thuộc Group 030 – Search.
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo bộ tài liệu Implementation Plan cho feature `032` thuộc Group 030 – Search.
 
 **Chỉ lập Plan cho feature 032. Không xử lý feature khác.**
 
@@ -1279,85 +1272,78 @@ Sau khi xác định đúng feature context:
 2. Thực thi `/speckit.plan`.
 3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
 4. Tuân thủ instructions, template và conventions của repository.
-5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
-Không tự viết Plan thủ công thay cho Spec Kit command.
-Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+5. Tạo hoặc cập nhật **toàn bộ bộ tài liệu planning** đúng vị trí mà Spec Kit quy định, bao gồm: `plan.md`, `research.md`, `data-model.md`, `contracts/`, và `quickstart.md`.
+Không tự viết thủ công thay cho Spec Kit command. Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions.
 
-## 4. Yêu cầu đối với Plan
-Plan cần:
-- Bám sát requirements của feature 032 trong `spec.md`.
-- Phản ánh kiến trúc hiện tại của AuraTune.
-- Xác định technical approach.
-- Xác định các component và service liên quan.
-- Xác định dependencies.
-- Mô tả data flow và integration nếu cần.
-- Xác định testing strategy.
-- Xác định risks và technical considerations.
-- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
-Không tự ý:
-- Thêm Functional Requirements.
-- Thêm chức năng ngoài phạm vi feature 032.
-- Tạo API hoặc database schema không có căn cứ.
-- Tự đặt AI algorithm hoặc scoring formula.
+## 4. Yêu cầu đối với Bộ tài liệu Planning
+Phải sinh ra đầy đủ các file sau (nếu ngữ cảnh feature yêu cầu):
+
+*   **`plan.md` (Bắt buộc):** Phương án triển khai kỹ thuật. Xác định technical approach, components, services, dependencies, data flow, testing strategy, risks, và technical considerations. Cần đủ chi tiết để làm đầu vào cho `/speckit.tasks`.
+*   **`research.md` (Bắt buộc):** Kết quả nghiên cứu các câu hỏi kỹ thuật. Ghi nhận các giải pháp thay thế, lý do chọn công nghệ/thư viện/cách tiếp cận cụ thể cho feature này.
+*   **`data-model.md` (Tạo nếu cần):** Mô hình dữ liệu. Định nghĩa các thay đổi về database schema, entities mới, relationships, hoặc cấu trúc NoSQL/cache liên quan trực tiếp đến tính năng.
+*   **`contracts/` (Tạo nếu cần):** Chứa các file định nghĩa API (REST/gRPC), payload request/response, JSON schema, hoặc các hợp đồng giao tiếp giữa frontend-backend và các microservices.
+*   **`quickstart.md` (Tạo nếu cần):** Hướng dẫn setup môi trường, cách chạy thử (run), test cục bộ tính năng này, hoặc các CLI commands cần thiết.
+
+**Không tự ý:**
+- Thêm Functional Requirements hoặc chức năng ngoài phạm vi feature 032.
+- Tạo API hoặc database schema không có căn cứ từ `spec.md`.
+- Tự đặt AI algorithm hoặc scoring formula nếu chưa được duyệt.
 - Thay đổi công nghệ đã được dự án lựa chọn.
-- Đưa chức năng của Group khác vào Group 030.
-Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+- Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
 
 ## 5. Scope giới hạn
-Chỉ được tạo hoặc cập nhật Plan của feature 032 theo Spec Kit workflow.
+Chỉ được tạo hoặc cập nhật bộ tài liệu Planning của feature 032 theo Spec Kit workflow.
 Không được:
-- Lập Plan cho feature 032 trở đi.
-- Lập Plan cho toàn bộ Group 030.
-- Chỉnh sửa group khác.
-- Chỉnh sửa `spec.md`.
-- Chỉnh sửa `tasks.md`.
-- Implement source code.
-- Thay đổi frontend, backend, AI service hoặc database.
-- Chỉnh sửa tài liệu project-level.
+- Lập Plan cho feature 032 trở đi hoặc toàn bộ Group 030.
+- Chỉnh sửa group khác, `spec.md`, `tasks.md`, tài liệu project-level.
+- Implement source code (frontend, backend, AI service, database).
 - Commit hoặc push.
 Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
 
 ## 6. Validation
-Sau khi thực thi `/speckit.plan`:
-- Kiểm tra Plan thuộc đúng feature 032.
-- Kiểm tra tính nhất quán với `spec.md`.
+Sau khi thực thi:
+- Kiểm tra toàn bộ các file (`plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`) thuộc đúng feature 032.
+- Kiểm tra tính nhất quán giữa các file trong bộ tài liệu và `spec.md`.
 - Kiểm tra technical decisions có căn cứ.
-- Kiểm tra dependencies và testing strategy.
-- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
 - Chạy validation scripts theo Spec Kit workflow nếu có.
 - Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
-Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
 
 ## 7. Final Report
 Báo cáo bằng Vietnamese:
 1. Tên và đường dẫn feature 032 đã xác định.
 2. `/speckit.plan` có thực sự được thực thi hay không.
-3. File Plan đã tạo hoặc cập nhật.
-4. Nội dung chính của Plan.
+3. Danh sách toàn bộ các file đã tạo hoặc cập nhật (`plan.md`, `research.md`, `data-model.md`, `contracts/`...).
+4. Nội dung chính của từng file trong bộ tài liệu.
 5. Các technical decisions đáng chú ý.
-6. Validation results.
-7. Những vấn đề cần clarification.
-8. Danh sách file đã thay đổi.
-Completion criteria: Chỉ tạo Implementation Plan cho feature 032 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+6. Validation results và những vấn đề cần clarification.
+Completion criteria: Hoàn thành bộ tài liệu Implementation Plan (đủ các file yêu cầu) cho feature 032. Dừng lại và chờ review, không tự động chuyển feature.
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
 ```
 
 ### Tóm tắt phản hồi của AI
 
-- Môi trường không cho phép chạy slash-command runner trực tiếp và script `setup-plan.sh` bị lỗi permission trên Git Bash, do đó AI đã áp dụng workflow tương đương để tạo file `plan.md` cho đúng `032-ai-lyrics-search`.
-- Nội dung Plan bám sát các yêu cầu kỹ thuật: API endpoint `POST /ai/search/lyrics`, giới hạn input 3 từ - 200 ký tự, phân trang 20 bài, chống duplicate và stale responses.
-- Ghi nhận kỹ thuật xử lý lỗi: Timeout 3 giây và HTTP 503 sẽ kích hoạt fallback tìm kiếm exact phrase text, trong khi lỗi HTTP 429 chỉ yêu cầu retry.
-- Đảm bảo ranh giới hệ thống: Không tự thiết kế AI provider, vector database hay AI algorithm; giữ tính năng Metadata và Semantic Search ngoài phạm vi.
-- Chỉ ra các vấn đề cần Clarification tiếp theo: Mâu thuẫn timeout (3s vs 5s trong spec), schema trả về, AI provider/authentication, và logic tie-breaker.
-- Bảo toàn tuyệt đối các file ngoài phạm vi (như `AI_log_3.md` và `src/backend/config/`).
+* Vượt qua sự cố môi trường không cho phép thực thi bash script `setup-plan.sh` bằng cách áp dụng quy trình thủ công tương đương để điều hướng bối cảnh (context) về đúng `032-ai-lyrics-search`.
+
+* Đã hoàn thiện toàn diện bộ tài liệu Planning cho tính năng 032, bảo lưu toàn bộ các thay đổi chưa commit của những tính năng khác.
+
+* Cập nhật `plan.md`: Đặt ngưỡng thời gian chờ AI là 3 giây (theo bản làm rõ FR-008), ghi nhận nội dung 5 giây còn sót lại trong spec là một mâu thuẫn cần Product Owner giải quyết.
+
+* Tạo mới `research.md`: Phân tích căn cứ từ API contract và source hiện tại, liệt kê rõ các quyết định đã bị loại trừ.
+
+* Tạo mới `data-model.md`: Định hình mô hình logic và trạng thái (không đề xuất tạo schema mới vì chưa được duyệt).
+
+* Tạo mới `contracts/lyrics-search.md`: Ghi nhận contract một phần, phơi bày sự mâu thuẫn giữa đường dẫn `GET /search/lyrics` công khai và `POST /ai/search/lyrics` nội bộ.
+
+* Tạo mới `quickstart.md`: Hướng dẫn kiểm thử và chạy ứng dụng sau khi hệ thống backend hoàn thiện.
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần | Quyết định | Lý do |
-|---|---|---|
-| Sử dụng workflow tương đương tạo `plan.md` | Dùng | Đáp ứng đúng yêu cầu sinh file Plan cho tính năng dù gặp rào cản môi trường command line. |
-| Chọn Timeout 3 giây (thay vì 5 giây theo edge case) | Dùng | Ưu tiên yêu cầu được mô tả chi tiết hơn (FR-008) để viết plan, đồng thời note lại ở phần Open Clarifications để team chốt. |
-| Không thêm AI Model / Vector DB cụ thể | Dùng | Tuân thủ nghiêm ngặt quy tắc không vượt quyền, không tự chế công nghệ ngoài kiến trúc đã duyệt của dự án. |
-| Cơ chế phân biệt HTTP 503 (fallback) và 429 (retry) | Dùng | Đảm bảo luồng UX hợp lý, không bắt hệ thống fallback oan khi người dùng chỉ đang spam API (bị rate limit). |
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Sử dụng workflow thủ công tương đương thay bash script | Dùng | Khắc phục được rào cản từ hệ điều hành để hoàn thành trọn vẹn yêu cầu sinh artifact theo chuẩn framework Spec Kit | 
+| Phơi bày mâu thuẫn API và timeout vào file hợp đồng và plan | Dùng | Phản ánh trung thực tình trạng thiếu nhất quán giữa các tài liệu dự án, ngăn rủi ro lập trình viên code sai hợp đồng API | 
+| Không tự đặt nhà cung cấp AI (Provider), schema, thuật toán | Dùng | Đảm bảo giới hạn hệ thống (scope boundary), tôn trọng nguyên tắc không tự thiết kế kiến trúc lõi khi chưa được cấp quyền | 
 
 ### Cách kiểm chứng
 
@@ -1366,9 +1352,7 @@ Completion criteria: Chỉ tạo Implementation Plan cho feature 032 bằng Spec
 - [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
-**Kết quả kiểm chứng:** Đạt.
-
-**Ghi chú:** Implementation Plan đã được tạo thành công tại `specs/030-search/032-ai-lyrics-search/plan.md`. File đã sẵn sàng để tiếp tục chạy `/speckit.tasks` tạo đầu việc.
+**Kết quả kiểm chứng:** Đạt. Quá trình làm việc không ghi đè hay làm hỏng các thay đổi chưa commit của các tính năng khác.
 
 ## Mục 19: Lập Implementation Plan cho spec 033 bằng Spec Kit
 
@@ -1378,16 +1362,16 @@ Completion criteria: Chỉ tạo Implementation Plan cho feature 032 bằng Spec
 | Người thực hiện | Nguyễn Khánh Đăng | 
 | Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search | 
 | Công cụ AI | GPT-5.6-Luna | 
-| Mục đích | Tạo Implementation Plan (`plan.md`) cho tính năng tìm kiếm ngữ nghĩa âm nhạc bằng Vector (Feature 033), xử lý các quy tắc thuật toán, bảo vệ quyền riêng tư và fallback, đồng thời tuân thủ giới hạn của hệ thống. | 
+| Mục đích | Khởi tạo toàn bộ bộ tài liệu Implementation Plan cho tính năng Semantic Vector Music Search dựa trên quy trình chuẩn của Spec Kit, cập nhật phương án xử lý lỗi mâu thuẫn timeout 1.500 ms / 3.000 ms. | 
 
 ### Prompt đã dùng
 
-```text
-/speckit-plan # TASK: Execute `/speckit.plan` for Feature 033 Only
+```
+/speckit-plan # TASK: Execute `/speckit.plan` cho Feature 033 Only
 
 Bạn đang làm việc trong repository AuraTune.
 
-Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo Implementation Plan cho feature `033` thuộc Group 030 – Search.
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo bộ tài liệu Implementation Plan cho feature `033` thuộc Group 030 – Search.
 
 **Chỉ lập Plan cho feature 033. Không xử lý feature khác.**
 
@@ -1417,85 +1401,68 @@ Sau khi xác định đúng feature context:
 2. Thực thi `/speckit.plan`.
 3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
 4. Tuân thủ instructions, template và conventions của repository.
-5. Tạo hoặc cập nhật `plan.md` đúng vị trí mà Spec Kit quy định.
-Không tự viết Plan thủ công thay cho Spec Kit command.
-Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions chính thức trong repository. Báo cáo trung thực nếu không thể thực thi.
+5. Tạo hoặc cập nhật **toàn bộ bộ tài liệu planning** đúng vị trí mà Spec Kit quy định, bao gồm: `plan.md`, `research.md`, `data-model.md`, `contracts/`, và `quickstart.md`.
+Không tự viết thủ công thay cho Spec Kit command. Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions.
 
-## 4. Yêu cầu đối với Plan
-Plan cần:
-- Bám sát requirements của feature 033 trong `spec.md`.
-- Phản ánh kiến trúc hiện tại của AuraTune.
-- Xác định technical approach.
-- Xác định các component và service liên quan.
-- Xác định dependencies.
-- Mô tả data flow và integration nếu cần.
-- Xác định testing strategy.
-- Xác định risks và technical considerations.
-- Có đủ thông tin để tiếp tục tạo tasks bằng `/speckit.tasks`.
-Không tự ý:
-- Thêm Functional Requirements.
-- Thêm chức năng ngoài phạm vi feature 033.
-- Tạo API hoặc database schema không có căn cứ.
-- Tự đặt AI algorithm hoặc scoring formula.
+## 4. Yêu cầu đối với Bộ tài liệu Planning
+Phải sinh ra đầy đủ các file sau (nếu ngữ cảnh feature yêu cầu):
+
+*   **`plan.md` (Bắt buộc):** Phương án triển khai kỹ thuật. Xác định technical approach, components, services, dependencies, data flow, testing strategy, risks, và technical considerations. Cần đủ chi tiết để làm đầu vào cho `/speckit.tasks`.
+*   **`research.md` (Bắt buộc):** Kết quả nghiên cứu các câu hỏi kỹ thuật. Ghi nhận các giải pháp thay thế, lý do chọn công nghệ/thư viện/cách tiếp cận cụ thể cho feature này.
+*   **`data-model.md` (Tạo nếu cần):** Mô hình dữ liệu. Định nghĩa các thay đổi về database schema, entities mới, relationships, hoặc cấu trúc NoSQL/cache liên quan trực tiếp đến tính năng.
+*   **`contracts/` (Tạo nếu cần):** Chứa các file định nghĩa API (REST/gRPC), payload request/response, JSON schema, hoặc các hợp đồng giao tiếp giữa frontend-backend và các microservices.
+*   **`quickstart.md` (Tạo nếu cần):** Hướng dẫn setup môi trường, cách chạy thử (run), test cục bộ tính năng này, hoặc các CLI commands cần thiết.
+
+**Không tự ý:**
+- Thêm Functional Requirements hoặc chức năng ngoài phạm vi feature 033.
+- Tạo API hoặc database schema không có căn cứ từ `spec.md`.
+- Tự đặt AI algorithm hoặc scoring formula nếu chưa được duyệt.
 - Thay đổi công nghệ đã được dự án lựa chọn.
-- Đưa chức năng của Group khác vào Group 030.
-Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+- Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
 
 ## 5. Scope giới hạn
-Chỉ được tạo hoặc cập nhật Plan của feature 033 theo Spec Kit workflow.
+Chỉ được tạo hoặc cập nhật bộ tài liệu Planning của feature 033 theo Spec Kit workflow.
 Không được:
-- Lập Plan cho feature 033 trở đi.
-- Lập Plan cho toàn bộ Group 030.
-- Chỉnh sửa group khác.
-- Chỉnh sửa `spec.md`.
-- Chỉnh sửa `tasks.md`.
-- Implement source code.
-- Thay đổi frontend, backend, AI service hoặc database.
-- Chỉnh sửa tài liệu project-level.
+- Lập Plan cho feature 033 trở đi hoặc toàn bộ Group 030.
+- Chỉnh sửa group khác, `spec.md`, `tasks.md`, tài liệu project-level.
+- Implement source code (frontend, backend, AI service, database).
 - Commit hoặc push.
 Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
 
 ## 6. Validation
-Sau khi thực thi `/speckit.plan`:
-- Kiểm tra Plan thuộc đúng feature 033.
-- Kiểm tra tính nhất quán với `spec.md`.
+Sau khi thực thi:
+- Kiểm tra toàn bộ các file (`plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`) thuộc đúng feature 033.
+- Kiểm tra tính nhất quán giữa các file trong bộ tài liệu và `spec.md`.
 - Kiểm tra technical decisions có căn cứ.
-- Kiểm tra dependencies và testing strategy.
-- Kiểm tra Plan có thể tiếp tục sử dụng cho `/speckit.tasks`.
 - Chạy validation scripts theo Spec Kit workflow nếu có.
 - Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
-Nếu phát hiện vấn đề trong `spec.md`, chỉ ghi nhận, không tự ý sửa.
 
 ## 7. Final Report
 Báo cáo bằng Vietnamese:
 1. Tên và đường dẫn feature 033 đã xác định.
 2. `/speckit.plan` có thực sự được thực thi hay không.
-3. File Plan đã tạo hoặc cập nhật.
-4. Nội dung chính của Plan.
+3. Danh sách toàn bộ các file đã tạo hoặc cập nhật (`plan.md`, `research.md`, `data-model.md`, `contracts/`...).
+4. Nội dung chính của từng file trong bộ tài liệu.
 5. Các technical decisions đáng chú ý.
-6. Validation results.
-7. Những vấn đề cần clarification.
-8. Danh sách file đã thay đổi.
-Completion criteria: Chỉ tạo Implementation Plan cho feature 033 bằng Spec Kit `/speckit.plan`. Sau khi hoàn thành, dừng lại và chờ review, không tự động chuyển sang feature tiếp theo.
+6. Validation results và những vấn đề cần clarification.
+Completion criteria: Hoàn thành bộ tài liệu Implementation Plan (đủ các file yêu cầu) cho feature 033. Dừng lại và chờ review, không tự động chuyển feature.
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
 ```
 
 ### Tóm tắt phản hồi của AI
 
-* Môi trường không cho phép chạy slash-command runner trực tiếp và script `setup-plan.sh` lỗi permission, do đó AI đã áp dụng workflow tương đương để tạo file `plan.md` cho feature `033-semantic-vector-search`.
-* Kế hoạch triển khai xử lý chuẩn xác công thức xếp hạng trọng số: metadata 30%, lyrics 40%, audio characteristics 30% (có tính năng re-normalization khi thiếu dimension).
-* Xây dựng cổng bảo mật cục bộ (Local privacy gate) để loại bỏ thông tin email/tên thật của người dùng trước khi gửi yêu cầu tới AI.
-* Định hình fallback về keyword search khi gặp lỗi AI unavailable, invalid, unsafe response hoặc vượt quá timeout.
-* Ghi nhận mâu thuẫn timeout trong file spec gốc (giữa FR-016 yêu cầu 3s và SC-003a là 1,5s), đồng thời để lại vấn đề ở phần Open Clarifications thay vì tự quyết định.
-* Tuân thủ ranh giới hệ thống: Không quyết định thay cho việc chọn AI provider hay Vector DB; không sửa các Plan đã tạo trước đó của feature 031/032.
+*   **Quy trình:** Script `setup-plan.sh` gặp lỗi do hạn chế của môi trường Git Bash, nên hệ thống đã thực thi tương đương bằng cách rà soát thủ công toàn bộ spec và kiến trúc. Không làm ảnh hưởng đến các thay đổi chưa commit ở những tính năng khác.
+*   **Điểm mù kỹ thuật & Xung đột:** Đã kiểm tra kiến trúc codebase hiện tại của backend và frontend, đối chiếu với tài liệu `api-contract.md` cũng như các file kế hoạch hệ thống (`project_plan.md`). Đã chỉ ra những lỗ hổng như mâu thuẫn giữa 1.500 ms với 3.000 ms ở mốc timeout, vị trí đánh giá tính điểm, cấu trúc vector DB và API. 
+*   **Bộ tài liệu Planning:** Toàn bộ file đã được kiểm tra (bao gồm `plan.md`, `research.md`, `data-model.md`, `quickstart.md` và `contracts/`) và được điều chỉnh nhất quán với các yêu cầu dự án.
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
 | Phần | Quyết định | Lý do | 
 | ----- | ----- | ----- | 
-| Sử dụng workflow tương đương để tạo `plan.md` | Dùng | Đáp ứng đúng yêu cầu sinh file Plan khi công cụ dòng lệnh nội bộ (Spec Kit CLI) gặp sự cố hệ thống. | 
-| Cơ chế weighted ensemble (30/40/30) | Dùng | Phản ánh chính xác kết quả đã chốt từ phiên clarification trước đó của feature 033. | 
-| Privacy Gate | Dùng | Tuân thủ cam kết pháp lý (không gửi PII) được xác định từ Vision Document và Privacy Policy của hệ thống. | 
-| Đưa mâu thuẫn timeout vào Open Clarifications | Dùng | Đảm bảo nguyên tắc "không tự ý sửa spec" nếu phát hiện mâu thuẫn trong lúc lập Plan, ghi nhận trung thực để làm rõ sau. | 
+| Sử dụng luồng phân tích tương đương thay vì slash command | Dùng | Khắc phục rào cản lỗi permission của Git Bash mà vẫn sinh ra bộ file chuẩn theo framework | 
+| Giữ nguyên các mâu thuẫn cấu trúc và timeout thành "Blocker" | Dùng | Ngăn chặn rủi ro tự thiết kế vượt quyền khi các quyết định quan trọng (như Vector DB hay provider AI) chưa được chốt | 
+| Bảo toàn thư mục và file khác không thuộc feature 033 | Dùng | Tôn trọng ranh giới (scope) làm việc, tránh đụng độ (conflict) mã nguồn và tài liệu hiện tại | 
 
 ### Cách kiểm chứng
 
@@ -1504,9 +1471,7 @@ Completion criteria: Chỉ tạo Implementation Plan cho feature 033 bằng Spec
 - [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
-**Kết quả kiểm chứng:** Đạt.
-
-**Ghi chú:** Implementation Plan đã được tạo thành công tại `specs/030-search/033-semantic-vector-search/plan.md`. Giai đoạn lập kế hoạch cho Group 030 đã hoàn tất, sẵn sàng để tiếp tục chạy `/speckit.tasks` tạo đầu việc.
+**Kết quả kiểm chứng:** Đạt. Bộ tài liệu `plan.md` cho Semantic Vector Search đã được rà soát và cấu trúc chặt chẽ.
 
 ## Mục 20: Lập Implementation Plan cho spec 081 bằng Spec Kit
 
@@ -2283,3 +2248,398 @@ Completion criteria: Chỉ thực hiện đánh giá và làm rõ kỹ thuật (
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt. 
+
+## Mục 26: Phân rã công việc (Task Breakdown) cho spec 031 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-08 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 030 – Search, Feature 031: Metadata Search | 
+| Công cụ AI | GPT-5.6-Luna (Spec Kit) | 
+| Mục đích | Sử dụng lệnh `/speckit.tasks` để rà soát và tạo mới danh sách công việc (`tasks.md`) cho tính năng tìm kiếm siêu dữ liệu, loại bỏ các rào cản (gates) lỗi thời và đồng bộ với hợp đồng API mới nhất. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-tasks # TASK: Execute /speckit.tasks for Task Generation of Feature 031 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng Spec Kit /speckit.tasks để tiến hành phân rã kế hoạch triển khai thành danh sách công việc chi tiết (task breakdown) và tạo/cập nhật file tasks.md cho feature 031 đang được chỉ định.
+Chỉ thực hiện tạo Tasks cho feature 031. Không xử lý feature khác.
+
+1. Xác định Feature 031
+
+Kiểm tra:
+Thư mục chứa spec của feature hiện tại: specs/030-search/031-metadata-search/
+Các thư mục và file con bên trong, đặc biệt phải đảm bảo file spec.md và plan.md đã tồn tại.
+Nếu không tìm thấy feature được yêu cầu hoặc file plan.md chưa tồn tại, hãy dừng lại và báo cáo. Không thể chia task nếu chưa có kế hoạch kỹ thuật.
+
+2. Đọc tài liệu nguồn
+
+Đọc các tài liệu để làm hệ quy chiếu:
+docs/management/speckit-workflow-guide.md
+docs/management/team-contract.md
+Toàn bộ nội dung của spec.md (Nghiệp vụ) và đặc biệt là plan.md (Kế hoạch kỹ thuật) của feature 031.
+Các quy chuẩn coding convention hiện hành của dự án (nếu có nhắc đến trong docs).
+Sử dụng plan.md làm đầu vào tối thượng (single source of truth) cho bước này. Mọi task sinh ra phải có cơ sở từ plan.md.
+
+3. Thực thi Task Breakdown
+
+Sau khi xác định đúng feature context và nắm rõ bản Kế hoạch:
+Chọn feature 031 làm context hiện hành.
+Quét toàn bộ plan.md và phân rã các quyết định kỹ thuật thành các hành động lập trình cụ thể, độc lập và có thể kiểm chứng được .
+
+Tổ chức file tasks.md theo các Giai đoạn dựa trên mức độ phụ thuộc . Ví dụ (có thể tùy chỉnh theo plan):
+Phase 1: Setup & Database (Schema changes, Supabase/PostgreSQL migrations, types/interfaces).
+Phase 2: Backend Services & API (Go/Node.js endpoints, middleware, business logic).
+Phase 3: Frontend State & API Integration (Redux/Zustand slices, API hooks, React Query).
+Phase 4: Frontend UI Components (React components, styling, UI validation).
+Phase 5: Testing, Error Handling & Polish (Unit tests, loading states, error boundaries).
+
+4. Yêu cầu đối với quá trình tạo Tasks
+
+Khi tiến hành tạo/cập nhật tasks.md, bạn cần:
+Trình bày dưới dạng danh sách checkbox của Markdown (- [ ]).
+Viết tên task bằng động từ hành động rõ ràng (VD: Create..., Implement..., Update..., Add test for...).
+Cung cấp bối cảnh ngắn gọn trong từng task nếu cần (VD: file nào cần sửa, endpoint nào cần gọi).
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+
+Không tự ý:
+Bỏ sót bất kỳ yêu cầu kỹ thuật hay luồng xử lý lỗi nào đã được chốt trong plan.md.
+Sáng tác thêm các task nằm ngoài phạm vi của plan.md hoặc spec.md.
+Gộp quá nhiều việc lớn vào chung một checkbox (phải chia nhỏ để dễ theo dõi tiến độ).
+
+5. Scope giới hạn
+
+Chỉ được phép phân tích plan.md và tạo/cập nhật file tasks.md của feature 031.
+
+Không được:
+Làm rã task cho bất kỳ feature nào khác.
+Chỉnh sửa ngược lại file spec.md hoặc plan.md (nếu phát hiện lỗ hổng ở bước này, chỉ thêm task "Verify/Investigate..." hoặc báo cáo).
+Viết source code (không tạo/chỉnh sửa file trong thư mục src/).
+Chỉnh sửa tài liệu project-level.
+Commit hoặc push.
+Trước khi làm việc, kiểm tra git status và bảo toàn tất cả thay đổi chưa commit.
+
+6. Validation
+
+Sau khi thực thi tạo tasks:
+Traceability Check: Đảm bảo 100% các mục trong plan.md đều đã được ánh xạ thành ít nhất 1 task trong tasks.md.
+Dependency Check: Đảm bảo thứ tự các task logic (không thể gọi API ở frontend nếu task tạo API backend chưa được làm trước đó).
+Đảm bảo file tasks.md chuẩn format Markdown checklist và hoàn toàn bằng tiếng Anh.
+Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+7. Final Report
+
+Báo cáo bằng tiếng Việt:
+Tên và đường dẫn feature 031 đã xác định.
+Trạng thái thực thi tạo file tasks.md.
+Tóm tắt cấu trúc file tasks (Liệt kê các Phase và tổng số lượng task được tạo).
+Xác nhận sự liên kết (traceability) giữa plan.md và tasks.md (có phần nào trong plan khó chia task không?).
+Đánh giá mức độ sẵn sàng để chuyển sang bước lập trình thực tế (/speckit.implement).
+Danh sách file đã thay đổi/tạo mới.
+
+Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho feature <Tên/ID Feature>. Dừng lại sau khi xuất báo cáo để chờ tôi xác nhận, tuyệt đối không tự động chuyển sang bước viết code (/speckit.implement) hay chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+*   Xác nhận đúng thư mục ngữ cảnh của feature 031 và rà soát lại toàn bộ bộ tài liệu planning (`plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts`).
+*   Phát hiện bản `tasks.md` cũ chứa các mục chờ xác nhận (gates) không còn hợp lệ và bị thiếu các trường dữ liệu (`genre`, `release_year`, `sort`) vốn đã được chốt xong trong API contract.
+*   Xóa file cũ và tạo mới file `tasks.md` 100% bằng tiếng Anh, bao gồm **47 task** được tổ chức lại thành **6 Phase** theo trình tự:
+    *   Phase 1: Resolve Remaining Implementation Gates (3 tasks)
+    *   Phase 2: Foundational Search API (9 tasks)
+    *   Phase 3: User Story 1 – Find Music and Related Metadata (21 tasks)
+    *   Phase 4: User Story 2 – Refine and Order Results (6 tasks)
+    *   Phase 5: User Story 3 – Understand Empty and Unavailable Results (3 tasks)
+    *   Phase 6: Polish, Acceptance, and Regression (5 tasks)
+*   Chuyển các mục chưa chắc chắn trong plan thành 3 task kiểm chứng ở Phase 1 (xác minh schema catalog đã triển khai, thống nhất phương pháp test, ghi nhận trạng thái phê duyệt).
+*   Xác nhận cấu trúc file đạt chuẩn: 47 ID liên tục, toàn bộ đúng định dạng checkbox, tiếng Anh 100%, không phát hiện lỗi Git diff.
+*   Đánh giá: Tính năng **chưa sẵn sàng hoàn toàn** để code (`/speckit.implement`) cho đến khi 3 task rào cản ở Phase 1 được hoàn tất.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Cấu trúc 47 task chia thành 6 Phase theo User Story | Dùng | Giúp dễ dàng theo dõi tiến độ hoàn thiện của từng chức năng người dùng cụ thể và sắp xếp thứ tự logic chính xác (API làm trước, Frontend làm sau). | 
+| Thay thế các task "gates" cũ bằng task mới ở Phase 1 | Dùng | Phản ánh đúng thực tế dự án sau khi API contract đã được chốt, loại bỏ các câu hỏi thừa và chỉ tập trung vào các rủi ro cốt lõi (schema DB thực tế). | 
+| Giữ nguyên các thay đổi Git của các tính năng khác | Dùng | Bảo đảm an toàn cho không gian làm việc (workspace), không vô tình ghi đè tài liệu của nhóm tính năng 032 hay 033. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Cần Technical Lead vào chốt các task ở Phase 1 trước khi bắt đầu lập trình.
+
+## Mục 27: Phân rã công việc (Task Breakdown) cho spec 032 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-08 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Sử dụng lệnh `/speckit.tasks` để rà soát và tạo mới danh sách công việc (`tasks.md`) cho tính năng tìm kiếm bằng lời bài hát AI, đảm bảo các yếu tố kiến trúc còn bỏ ngỏ được chuyển thành các cổng xác nhận (decision gates) hợp lệ. | 
+
+### Prompt đã dùng
+
+```
+/speckit-tasks # TASK: Execute /speckit.tasks for Task Generation of Feature 032 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng Spec Kit /speckit.tasks để tiến hành phân rã kế hoạch triển khai thành danh sách công việc chi tiết (task breakdown) và tạo/cập nhật file tasks.md cho feature 032 đang được chỉ định.
+Chỉ thực hiện tạo Tasks cho feature 032. Không xử lý feature khác.
+
+1. Xác định Feature 032
+
+Kiểm tra:
+Thư mục chứa spec của feature hiện tại: specs/030-search/032-ai-lyrics-search/
+Các thư mục và file con bên trong, đặc biệt phải đảm bảo file spec.md và plan.md đã tồn tại.
+Nếu không tìm thấy feature được yêu cầu hoặc file plan.md chưa tồn tại, hãy dừng lại và báo cáo. Không thể chia task nếu chưa có kế hoạch kỹ thuật.
+
+2. Đọc tài liệu nguồn
+
+Đọc các tài liệu để làm hệ quy chiếu:
+docs/management/speckit-workflow-guide.md
+docs/management/team-contract.md
+Toàn bộ nội dung của spec.md (Nghiệp vụ) và đặc biệt là plan.md (Kế hoạch kỹ thuật) của feature 032.
+Các quy chuẩn coding convention hiện hành của dự án (nếu có nhắc đến trong docs).
+Sử dụng plan.md làm đầu vào tối thượng (single source of truth) cho bước này. Mọi task sinh ra phải có cơ sở từ plan.md.
+
+3. Thực thi Task Breakdown
+
+Sau khi xác định đúng feature context và nắm rõ bản Kế hoạch:
+Chọn feature 032 làm context hiện hành.
+Quét toàn bộ plan.md và phân rã các quyết định kỹ thuật thành các hành động lập trình cụ thể, độc lập và có thể kiểm chứng được .
+
+Tổ chức file tasks.md theo các Giai đoạn dựa trên mức độ phụ thuộc . Ví dụ (có thể tùy chỉnh theo plan):
+Phase 1: Setup & Database (Schema changes, Supabase/PostgreSQL migrations, types/interfaces).
+Phase 2: Backend Services & API (Go/Node.js endpoints, middleware, business logic).
+Phase 3: Frontend State & API Integration (Redux/Zustand slices, API hooks, React Query).
+Phase 4: Frontend UI Components (React components, styling, UI validation).
+Phase 5: Testing, Error Handling & Polish (Unit tests, loading states, error boundaries).
+
+4. Yêu cầu đối với quá trình tạo Tasks
+
+Khi tiến hành tạo/cập nhật tasks.md, bạn cần:
+Trình bày dưới dạng danh sách checkbox của Markdown (- [ ]).
+Viết tên task bằng động từ hành động rõ ràng (VD: Create..., Implement..., Update..., Add test for...).
+Cung cấp bối cảnh ngắn gọn trong từng task nếu cần (VD: file nào cần sửa, endpoint nào cần gọi).
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+
+Không tự ý:
+Bỏ sót bất kỳ yêu cầu kỹ thuật hay luồng xử lý lỗi nào đã được chốt trong plan.md.
+Sáng tác thêm các task nằm ngoài phạm vi của plan.md hoặc spec.md.
+Gộp quá nhiều việc lớn vào chung một checkbox (phải chia nhỏ để dễ theo dõi tiến độ).
+
+5. Scope giới hạn
+
+Chỉ được phép phân tích plan.md và tạo/cập nhật file tasks.md của feature 032.
+
+Không được:
+Làm rã task cho bất kỳ feature nào khác.
+Chỉnh sửa ngược lại file spec.md hoặc plan.md (nếu phát hiện lỗ hổng ở bước này, chỉ thêm task "Verify/Investigate..." hoặc báo cáo).
+Viết source code (không tạo/chỉnh sửa file trong thư mục src/).
+Chỉnh sửa tài liệu project-level.
+Commit hoặc push.
+Trước khi làm việc, kiểm tra git status và bảo toàn tất cả thay đổi chưa commit.
+
+6. Validation
+
+Sau khi thực thi tạo tasks:
+Traceability Check: Đảm bảo 100% các mục trong plan.md đều đã được ánh xạ thành ít nhất 1 task trong tasks.md.
+Dependency Check: Đảm bảo thứ tự các task logic (không thể gọi API ở frontend nếu task tạo API backend chưa được làm trước đó).
+Đảm bảo file tasks.md chuẩn format Markdown checklist và hoàn toàn bằng tiếng Anh.
+Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+7. Final Report
+
+Báo cáo bằng tiếng Việt:
+Tên và đường dẫn feature 032 đã xác định.
+Trạng thái thực thi tạo file tasks.md.
+Tóm tắt cấu trúc file tasks (Liệt kê các Phase và tổng số lượng task được tạo).
+Xác nhận sự liên kết (traceability) giữa plan.md và tasks.md (có phần nào trong plan khó chia task không?).
+Đánh giá mức độ sẵn sàng để chuyển sang bước lập trình thực tế (/speckit.implement).
+Danh sách file đã thay đổi/tạo mới.
+
+Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho feature <Tên/ID Feature>. Dừng lại sau khi xuất báo cáo để chờ tôi xác nhận, tuyệt đối không tự động chuyển sang bước viết code (/speckit.implement) hay chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+*   **Xác nhận Context:** AI đã xác định đúng ngữ cảnh làm việc tại thư mục `032-ai-lyrics-search` và đảm bảo các file `spec.md`, `plan.md` đã có sẵn.
+*   **Điều chỉnh Danh sách Task:** Phát hiện file `tasks.md` trước đó tổ chức kiểm thử (test) sai trình tự logic (đặt quá muộn và sai nhãn User Story). AI đã xóa file cũ và tái tạo file mới 100% bằng tiếng Anh.
+*   **Cấu trúc Task Breakdown:** Đã tạo ra **49 task** (tăng thêm độ chi tiết) chia thành **6 Phase**:
+    *   Phase 1: Resolve Service, Contract, and Test Gates (9 tasks)
+    *   Phase 2: Foundational AI Service Boundary (7 tasks)
+    *   Phase 3: US1 – Find a Song from a Lyric Fragment (11 tasks)
+    *   Phase 4: US2 – Understand Search Results and Empty Matches (3 tasks)
+    *   Phase 5: US3 – Continue Searching When AI Search Is Unavailable (14 tasks)
+    *   Phase 6: Polish, Acceptance, and Regression (5 tasks)
+*   **Bảo toàn kiến trúc:** Các yếu tố chưa được chốt từ Plan (endpoint schema, AI provider, quy tắc normalization/tie-break, nguồn lấy lyric) đều được cô lập thành các cổng xác nhận (Verify/Confirm) ở Phase 1. Không tự suy diễn hay "vượt quyền" thiết kế.
+*   **Đánh giá:** Tính năng **chưa sẵn sàng** để bước vào giai đoạn code (`/speckit.implement`) cho đến khi các rào cản ở Phase 1 được giải quyết hoàn toàn (nhất là mâu thuẫn timeout 3 giây vs 5 giây).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Cấu trúc 49 task chia thành 6 Phase theo User Story | Dùng | Sắp xếp lại trình tự logic (test contract trước khi gọi API, test story trước khi code) giúp đảm bảo quy trình TDD (Test-Driven Development). | 
+| Cố định các cổng xác nhận (gates) ở Phase 1 | Dùng | Đảm bảo an toàn kỹ thuật, bắt buộc Product Owner và Tech Lead phải thống nhất schema và AI Provider trước khi code. | 
+| Giữ nguyên các thay đổi chưa commit của file khác | Dùng | Tôn trọng vùng làm việc (Git workspace), không vô tình làm hỏng các chỉnh sửa đang làm dở của feature 031 hay tài liệu log. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 032 đã hoàn thiện. Yêu cầu làm rõ các vấn đề mâu thuẫn trước khi lập trình.
+
+## Mục 28: Phân rã công việc (Task Breakdown) cho spec 033 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-08 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Sử dụng lệnh `/speckit.tasks` để rà soát và tạo mới danh sách công việc (`tasks.md`) cho tính năng tìm kiếm nhạc ngữ nghĩa, đảm bảo giữ vững các cổng phê duyệt (approval gates) và kịch bản dự phòng (fallback) đã chốt. | 
+
+### Prompt đã dùng
+
+```
+/speckit-tasks # TASK: Execute /speckit.tasks for Task Generation of Feature 033 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng Spec Kit /speckit.tasks để tiến hành phân rã kế hoạch triển khai thành danh sách công việc chi tiết (task breakdown) và tạo/cập nhật file tasks.md cho feature 033 đang được chỉ định.
+Chỉ thực hiện tạo Tasks cho feature 033. Không xử lý feature khác.
+
+1. Xác định Feature 033
+
+Kiểm tra:
+Thư mục chứa spec của feature hiện tại: specs/030-search/033-semantic-vector-search/
+Các thư mục và file con bên trong, đặc biệt phải đảm bảo file spec.md và plan.md đã tồn tại.
+Nếu không tìm thấy feature được yêu cầu hoặc file plan.md chưa tồn tại, hãy dừng lại và báo cáo. Không thể chia task nếu chưa có kế hoạch kỹ thuật.
+
+2. Đọc tài liệu nguồn
+
+Đọc các tài liệu để làm hệ quy chiếu:
+docs/management/speckit-workflow-guide.md
+docs/management/team-contract.md
+Toàn bộ nội dung của spec.md (Nghiệp vụ) và đặc biệt là plan.md (Kế hoạch kỹ thuật) của feature 033.
+Các quy chuẩn coding convention hiện hành của dự án (nếu có nhắc đến trong docs).
+Sử dụng plan.md làm đầu vào tối thượng (single source of truth) cho bước này. Mọi task sinh ra phải có cơ sở từ plan.md.
+
+3. Thực thi Task Breakdown
+
+Sau khi xác định đúng feature context và nắm rõ bản Kế hoạch:
+Chọn feature 033 làm context hiện hành.
+Quét toàn bộ plan.md và phân rã các quyết định kỹ thuật thành các hành động lập trình cụ thể, độc lập và có thể kiểm chứng được .
+
+Tổ chức file tasks.md theo các Giai đoạn dựa trên mức độ phụ thuộc . Ví dụ (có thể tùy chỉnh theo plan):
+Phase 1: Setup & Database (Schema changes, Supabase/PostgreSQL migrations, types/interfaces).
+Phase 2: Backend Services & API (Go/Node.js endpoints, middleware, business logic).
+Phase 3: Frontend State & API Integration (Redux/Zustand slices, API hooks, React Query).
+Phase 4: Frontend UI Components (React components, styling, UI validation).
+Phase 5: Testing, Error Handling & Polish (Unit tests, loading states, error boundaries).
+
+4. Yêu cầu đối với quá trình tạo Tasks
+
+Khi tiến hành tạo/cập nhật tasks.md, bạn cần:
+Trình bày dưới dạng danh sách checkbox của Markdown (- [ ]).
+Viết tên task bằng động từ hành động rõ ràng (VD: Create..., Implement..., Update..., Add test for...).
+Cung cấp bối cảnh ngắn gọn trong từng task nếu cần (VD: file nào cần sửa, endpoint nào cần gọi).
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+
+Không tự ý:
+Bỏ sót bất kỳ yêu cầu kỹ thuật hay luồng xử lý lỗi nào đã được chốt trong plan.md.
+Sáng tác thêm các task nằm ngoài phạm vi của plan.md hoặc spec.md.
+Gộp quá nhiều việc lớn vào chung một checkbox (phải chia nhỏ để dễ theo dõi tiến độ).
+
+5. Scope giới hạn
+
+Chỉ được phép phân tích plan.md và tạo/cập nhật file tasks.md của feature 033.
+
+Không được:
+Làm rã task cho bất kỳ feature nào khác.
+Chỉnh sửa ngược lại file spec.md hoặc plan.md (nếu phát hiện lỗ hổng ở bước này, chỉ thêm task "Verify/Investigate..." hoặc báo cáo).
+Viết source code (không tạo/chỉnh sửa file trong thư mục src/).
+Chỉnh sửa tài liệu project-level.
+Commit hoặc push.
+Trước khi làm việc, kiểm tra git status và bảo toàn tất cả thay đổi chưa commit.
+
+6. Validation
+
+Sau khi thực thi tạo tasks:
+Traceability Check: Đảm bảo 100% các mục trong plan.md đều đã được ánh xạ thành ít nhất 1 task trong tasks.md.
+Dependency Check: Đảm bảo thứ tự các task logic (không thể gọi API ở frontend nếu task tạo API backend chưa được làm trước đó).
+Đảm bảo file tasks.md chuẩn format Markdown checklist và hoàn toàn bằng tiếng Anh.
+Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+7. Final Report
+
+Báo cáo bằng tiếng Việt:
+Tên và đường dẫn feature 033 đã xác định.
+Trạng thái thực thi tạo file tasks.md.
+Tóm tắt cấu trúc file tasks (Liệt kê các Phase và tổng số lượng task được tạo).
+Xác nhận sự liên kết (traceability) giữa plan.md và tasks.md (có phần nào trong plan khó chia task không?).
+Đánh giá mức độ sẵn sàng để chuyển sang bước lập trình thực tế (/speckit.implement).
+Danh sách file đã thay đổi/tạo mới.
+
+Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho feature <Tên/ID Feature>. Dừng lại sau khi xuất báo cáo để chờ tôi xác nhận, tuyệt đối không tự động chuyển sang bước viết code (/speckit.implement) hay chuyển sang feature tiếp theo.
+
+```
+
+### Tóm tắt phản hồi của AI
+
+* **Xác nhận Context & Bảo toàn mã nguồn:** Xác định đúng feature `033-semantic-vector-search`, ghi nhận và giữ nguyên toàn bộ các thay đổi Git chưa commit của các tính năng khác để tránh xung đột.
+
+* **Chi tiết Task Breakdown:** Tạo mới file `tasks.md` 100% bằng tiếng Anh. Tổng cộng có **53 task** được chia thành **7 Phase**:
+
+  * Phase 1: Setup and Approval Gates (10 tasks)
+
+  * Phase 2: Foundational Search Infrastructure (4 tasks)
+
+  * Phase 3: US1 — Mood Search (11 tasks)
+
+  * Phase 4: US2 — Multi-dimensional Ranking (7 tasks)
+
+  * Phase 5: US3 — Fallback (8 tasks)
+
+  * Phase 6: US4 — Privacy (8 tasks)
+
+  * Phase 7: Polish and Cross-Cutting Validation (5 tasks)
+
+* **Xử lý các rào cản kỹ thuật (Gates):** Các quyết định chưa được chốt (API provider, nguồn catalog, score ownership) được cô lập thành các task yêu cầu xác nhận ở Phase 1. Không tự ý chọn giải pháp thay thế.
+
+* **Quy tắc nghiệp vụ:** Bám sát các quyết định đã làm rõ: giữ nguyên ngưỡng fallback timeout là 1.500 ms, áp dụng ranking trọng số 30/40/30, xử lý lỗi 429 và đặt yêu cầu bắt buộc chạy luồng Privacy Gate trước khi gọi AI.
+
+* **Đánh giá:** Tính năng **chưa sẵn sàng** để bước vào giai đoạn implement do còn phụ thuộc vào các Approval Gates ở Phase 1.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Cấu trúc 53 task chia thành 7 Phase | Dùng | Đảm bảo bao quát đầy đủ 4 User Story, tách bạch rõ ràng phần setup infrastructure với luồng nghiệp vụ và bảo mật. | 
+| Giữ nguyên mốc fallback 1.500 ms | Dùng | Tuân thủ chính xác quyết định đã được làm rõ trong tài liệu plan, loại bỏ sự mâu thuẫn không cần thiết. | 
+| Khóa lời gọi AI sau Privacy Gate | Dùng | Ưu tiên hàng đầu về bảo mật thông tin cá nhân của dự án, mọi truy vấn phải qua bước làm sạch trước khi gửi cho AI. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 033 đã hoàn thiện và bao phủ toàn bộ các góc độ kỹ thuật. Cần chờ Tech Lead xác nhận các cổng phê duyệt ở Phase 1 trước khi bắt đầu viết code.

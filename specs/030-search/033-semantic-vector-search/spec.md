@@ -20,8 +20,12 @@
 
 ### Session 2026-11-01
 
-- Q: What unified timeout threshold should trigger automatic keyword fallback for AI semantic search? → A: 3 seconds (3,000 milliseconds), unifying across all AI search operations.
+- Q: What unified timeout threshold should trigger automatic keyword fallback for AI semantic search? → A: Superseded by the 1,500-millisecond.
 - Q: How should missing audio characteristics be handled during vector ranking? → A: Automatically re-normalize weights across available dimensions (metadata and lyrics) without failing the search.
+
+### Session 2026-11-01
+
+- Q: Which timeout threshold triggers keyword fallback when semantic processing has not produced a usable result? → A: 1,500 milliseconds (1.5 seconds).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -120,7 +124,7 @@ As a listener, I want my personal information to remain private while using sema
 - **FR-013**: The system MUST support songs with incomplete searchable content by using the content dimensions that are available.
 - **FR-014**: The system MUST preserve the meaning of the listener's query during normalization while handling supported language, punctuation, emojis, and common variations consistently.
 - **FR-015**: The system MUST accept queries containing at least one alphanumeric token up to 150 characters, MUST reject only empty or whitespace-only input at validation time, and MUST provide a clear validation message when the character limit is exceeded.
-- **FR-016**: The system MUST stop waiting for a usable semantic-search response after 3,000 milliseconds (3 seconds) and automatically start keyword fallback.
+- **FR-016**: The system MUST stop waiting for a usable semantic-search response after 1,500 milliseconds (1.5 seconds) and automatically start keyword fallback.
 - **FR-017**: Human evaluation of semantic-search relevance MUST use a 1–5 scale, where scores of 4 or 5 count as relevant; reviewers MUST allow multiple reasonable genre or style interpretations when each satisfies the query's stated intent.
 
 ### Key Entities

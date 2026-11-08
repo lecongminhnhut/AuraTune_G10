@@ -2,8 +2,8 @@
 
 **Feature Branch**: `031-metadata-search`  
 **Created**: 2026-10-28  
-**Status**: Draft  
-**Input**: User description: "Enable Public and Listener users to search songs, artists, albums, and playlists by text metadata, with filtering and sorting, through GET /search using q, type, and limit."
+**Status**: Approved
+**Input**: User description: "Enable Public and Listener users to search songs, artists, albums, and playlists by text metadata, with filtering and sorting, through GET /search using q, type, limit, offset, genre, release_year, and sort."
 
 ## Clarifications
 
@@ -19,6 +19,13 @@
 
 - Q: Does the search interface provide a search history mechanism for recently entered queries? → A: Yes, store up to 10 recent queries locally in the browser (LocalStorage) and display them in a dropdown when focused, with individual and clear-all actions.
 - Q: How are search modes organized on the Search page? → A: Dedicated tab navigation on `/search` separating Metadata ("Từ khóa / Tất cả"), AI Lyrics ("Lời bài hát"), and Semantic ("Tâm trạng / AI").
+
+### Session 2026-11-08
+
+- Q: Which service owns metadata search and which catalog source does it query? → A: The existing Express backend owns `GET /search` and queries catalog metadata stored in PostgreSQL through Supabase.
+- Q: Which request parameters and success response shape does metadata search use? → A: Use `q`, `type`, `limit`, `offset`, `genre`, `release_year`, and `sort`; return the standard API envelope with a `data` array and `pagination` object containing `next_offset` and `has_more`, as specified in `contracts/search-api.md`.
+- Q: Which metadata filters and sort choices are approved? → A: Use `genre` and `release_year` filters and the existing `relevance`, `plays`, `newest`, and `title` sort choices, with applicability defined in `contracts/search-api.md`.
+- Q: What latency target and cross-tab boundary apply to Feature 031? → A: No feature-specific numeric latency target is approved; Feature 031 owns only the Metadata tab, while AI Lyrics and Semantic remain separate features.
 
 ## User Scenarios & Testing
 
@@ -84,12 +91,12 @@ As a Public or Listener user, I want clear feedback when no result matches or th
 - **FR-004**: The system MUST search the approved metadata fields: song title, artist name, album name, and playlist name.
 - **FR-005**: The system MUST match metadata without distinguishing letter case, diacritics, or punctuation differences.
 - **FR-006**: The system MUST support results for songs, artists, albums, and playlists.
-- **FR-007**: The system MUST expose the approved search contract as `GET /search` with the query parameters `q`, `type`, `limit`, and `offset`.
-- **FR-008**: The system MUST use `q` to represent the user's text keyword, `type` to represent the requested result category, `limit` to constrain the number of returned results, and `offset` to identify the result position from which the next batch is loaded, according to the approved API Contract.
+- **FR-007**: The system MUST expose the approved search contract as `GET /search` with the query parameters `q`, `type`, `limit`, `offset`, `genre`, `release_year`, and `sort`, as defined in [the Search API Contract](./contracts/search-api.md).
+- **FR-008**: The system MUST use `q` for the text keyword, `type` for the result category, `limit` and `offset` for bounded batch pagination, `genre` and `release_year` for applicable metadata filters, and `sort` for an approved result ordering, according to [the Search API Contract](./contracts/search-api.md).
 - **FR-009**: The system MUST provide a “Load More” action when additional results are available, using the current search query and the next `offset` value to request the next batch.
-- **FR-010**: The system MUST provide the approved filtering controls for narrowing displayed search results. This specification does not add filter fields or semantics beyond the approved project contract.
+- **FR-010**: The system MUST provide the approved `genre` and `release_year` filtering controls for narrowing displayed search results, following [the Search API Contract](./contracts/search-api.md).
 - **FR-011**: The system MUST hide filters that do not apply to the current result type.
-- **FR-012**: The system MUST provide the approved sorting controls for ordering displayed search results. This specification does not add sort fields or semantics beyond the approved project contract.
+- **FR-012**: The system MUST provide the approved `sort` controls for ordering displayed search results, following [the Search API Contract](./contracts/search-api.md).
 - **FR-013**: The system MUST identify each result sufficiently for the user to distinguish songs, artists, albums, and playlists.
 - **FR-014**: The system MUST present an explicit no-results state when no item matches the keyword and active constraints.
 - **FR-015**: The system MUST present a clear error state when a search cannot be completed because of a connection or service failure.
@@ -118,9 +125,9 @@ As a Public or Listener user, I want clear feedback when no result matches or th
 
 - Public and Listener access to search is approved; no additional role is required for this feature.
 - Searchable song, artist, album, and playlist metadata already exists in the system's approved content sources.
-- The API Contract is authoritative for the request parameters and response behavior; this feature specification does not invent additional query parameters or response fields.
+- [The Search API Contract](./contracts/search-api.md) is authoritative for query parameters and response behavior. Its request parameters are `q`, `type`, `limit`, `offset`, `genre`, `release_year`, and `sort`; its successful response includes `data` and `pagination`.
 - Additional result batches are loaded through a “Load More” interaction using `offset` and `limit`.
-- Exact filter and sort choices are governed by the approved project contract or related search specifications and are not expanded here.
+- Approved filter and sort choices and their result-type applicability are defined in [the Search API Contract](./contracts/search-api.md).
 - The feature is scoped to metadata text search. AI lyrics search and semantic vector search remain separate search features identified in the proposal.
 - The feature is designed for AuraTune's responsive web application environment.
 
