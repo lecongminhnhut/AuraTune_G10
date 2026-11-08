@@ -2,31 +2,34 @@
 
 _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự thực hiện._
 
-| #   | Ngày       | Nội dung                                                                                                         | Nhóm                                              |
-| --- | ---------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| 1   | 2026-10-20 | Viết spec 101 – Listening History Analysis bằng `$speckit-specify`                                               | 10                                                |
-| 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ                               | 10                                                |
-| 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại                 | 10                                                |
-| 4   | 2026-10-24 | Hoàn thiện metadata Performed by / Reviewed by / Edited by cho Project Plan theo phân công DL4 và bằng chứng Git | Project Plan / DL4 (không thuộc functional group) |
-| 5   | 2026-10-30 | Viết spec 102 – Personalized Recommendations bằng `/speckit-specify` và tích hợp làm rõ                          | 10                                                |
-| 6   | 2026-10-30 | Viết spec 103 – Mood and Context Recommendations bằng `/speckit-specify`                                         | 10                                                |
-| 7   | 2026-10-30 | Làm rõ spec 103 bằng `/speckit-clarify` – phương thức nhập, nội dung đề xuất và fallback                         | 10                                                |
-| 8   | 2026-10-30 | Viết spec 121 – Conversational Interface bằng `/speckit-specify`                                                 | 12                                                |
-| 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                    | 12                                                |
-| 10  | 2026-10-30 | Viết spec 122 – Music Intent Understanding bằng `/speckit-specify`                                               | 12                                                |
-| 11  | 2026-10-30 | Làm rõ spec 122 bằng `/speckit-clarify` – danh mục ý định, smart defaults và kiến trúc orchestrator              | 12                                                |
-| 12  | 2026-10-30 | Viết spec 123 – Real-Time Music Assistance bằng `/speckit-specify`                                               | 12                                                |
-| 13  | 2026-10-30 | Làm rõ spec 123 bằng `/speckit-clarify` – danh mục hành động, điều phối client và widget phản hồi                | 12                                                |
-| 14  | 2026-11-01 | Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3                         | Toàn bộ 12 nhóm chức năng (010 – 120)             |
-| 15  | 2026-11-03 | Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3        | Toàn bộ 12 nhóm chức năng (010 – 120)             |
-| 16  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 100 – AI Recommendations theo chuẩn PA3 và Spec Kit                    | 10 – AI Recommendations                           |
-| 17  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent theo chuẩn PA3 và UI CLI vừa cập nhật    | 12 – AI Conversational Agent                      |
-| 18  | 2026-11-03 | Lập Implementation Plan cho Feature 101 – Listening History Analysis bằng Spec Kit `/speckit.plan`               | 10 – AI Recommendations                           |
-| 19  | 2026-11-03 | Lập Implementation Plan cho Feature 102 – Personalized Recommendations bằng Spec Kit `/speckit.plan`             | 10 – AI Recommendations                           |
-| 20  | 2026-11-03 | Lập Implementation Plan cho Feature 103 – Mood and Context Recommendations bằng Spec Kit `/speckit.plan`         | 10 – AI Recommendations                           |
-| 21  | 2026-11-03 | Lập Implementation Plan cho Feature 121 – Conversational Interface bằng Spec Kit `/speckit.plan`                 | 12 – AI Conversational Agent                      |
-| 22  | 2026-11-03 | Lập Implementation Plan cho Feature 122 – Music Intent Understanding bằng Spec Kit `/speckit.plan`               | 12 – AI Conversational Agent                      |
-| 23  | 2026-11-03 | Lập Implementation Plan cho Feature 123 – Real-Time Music Assistance bằng Spec Kit `/speckit.plan`               | 12 – AI Conversational Agent                      |
+| #   | Ngày       | Nội dung                                                                                                                                  | Nhóm                                              |
+| --- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 1   | 2026-10-20 | Viết spec 101 – Listening History Analysis bằng `$speckit-specify`                                                                        | 10                                                |
+| 2   | 2026-10-20 | Làm rõ spec 101 bằng `$speckit-clarify` – insight, nguồn dữ liệu và lịch sử hợp lệ                                                        | 10                                                |
+| 3   | 2026-10-20 | Tiếp tục làm rõ spec 101 bằng `$speckit-clarify` – cách hiển thị, thời gian và xếp hạng thể loại                                          | 10                                                |
+| 4   | 2026-10-24 | Hoàn thiện metadata Performed by / Reviewed by / Edited by cho Project Plan theo phân công DL4 và bằng chứng Git                          | Project Plan / DL4 (không thuộc functional group) |
+| 5   | 2026-10-30 | Viết spec 102 – Personalized Recommendations bằng `/speckit-specify` và tích hợp làm rõ                                                   | 10                                                |
+| 6   | 2026-10-30 | Viết spec 103 – Mood and Context Recommendations bằng `/speckit-specify`                                                                  | 10                                                |
+| 7   | 2026-10-30 | Làm rõ spec 103 bằng `/speckit-clarify` – phương thức nhập, nội dung đề xuất và fallback                                                  | 10                                                |
+| 8   | 2026-10-30 | Viết spec 121 – Conversational Interface bằng `/speckit-specify`                                                                          | 12                                                |
+| 9   | 2026-10-30 | Làm rõ spec 121 bằng `/speckit-clarify` – vòng đời hội thoại, định dạng tin nhắn và xử lý lỗi                                             | 12                                                |
+| 10  | 2026-10-30 | Viết spec 122 – Music Intent Understanding bằng `/speckit-specify`                                                                        | 12                                                |
+| 11  | 2026-10-30 | Làm rõ spec 122 bằng `/speckit-clarify` – danh mục ý định, smart defaults và kiến trúc orchestrator                                       | 12                                                |
+| 12  | 2026-10-30 | Viết spec 123 – Real-Time Music Assistance bằng `/speckit-specify`                                                                        | 12                                                |
+| 13  | 2026-10-30 | Làm rõ spec 123 bằng `/speckit-clarify` – danh mục hành động, điều phối client và widget phản hồi                                         | 12                                                |
+| 14  | 2026-11-01 | Rà soát và làm rõ toàn diện 12 nhóm chức năng (010 – 120) và đồng bộ liên nhóm trước PA3                                                  | Toàn bộ 12 nhóm chức năng (010 – 120)             |
+| 15  | 2026-11-03 | Xây dựng Use-Case Model hệ thống, hướng dẫn đặc tả Use Case (README) và tạo khung thư mục 12 nhóm cho PA3                                 | Toàn bộ 12 nhóm chức năng (010 – 120)             |
+| 16  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 100 – AI Recommendations theo chuẩn PA3 và Spec Kit                                             | 10 – AI Recommendations                           |
+| 17  | 2026-11-03 | Xây dựng Use-Case Documentation cho Group 120 – AI Conversational Agent theo chuẩn PA3 và UI CLI vừa cập nhật                             | 12 – AI Conversational Agent                      |
+| 18  | 2026-11-03 | Lập Implementation Plan cho Feature 101 – Listening History Analysis bằng Spec Kit `/speckit.plan`                                        | 10 – AI Recommendations                           |
+| 19  | 2026-11-03 | Lập Implementation Plan cho Feature 102 – Personalized Recommendations bằng Spec Kit `/speckit.plan`                                      | 10 – AI Recommendations                           |
+| 20  | 2026-11-03 | Lập Implementation Plan cho Feature 103 – Mood and Context Recommendations bằng Spec Kit `/speckit.plan`                                  | 10 – AI Recommendations                           |
+| 21  | 2026-11-03 | Lập Implementation Plan cho Feature 121 – Conversational Interface bằng Spec Kit `/speckit.plan`                                          | 12 – AI Conversational Agent                      |
+| 22  | 2026-11-03 | Lập Implementation Plan cho Feature 122 – Music Intent Understanding bằng Spec Kit `/speckit.plan`                                        | 12 – AI Conversational Agent                      |
+| 23  | 2026-11-03 | Lập Implementation Plan cho Feature 123 – Real-Time Music Assistance bằng Spec Kit `/speckit.plan`                                        | 12 – AI Conversational Agent                      |
+| 24  | 2026-11-07 | Rà soát và cập nhật chi tiết Project Plan cho Sprint 3 (PA3), bổ sung WBS Jira và cập nhật BLD-02 Alpha Checkpoint                        | Project Plan / PA3 (Quản lý dự án)                |
+| 25  | 2026-11-07 | Rà soát và chuẩn hóa Vision Document cho PA3: Chi tiết hóa Functional Requirements gắn liền Use Case, mở rộng môi trường, đối thủ và NFRs | Vision Document / PA3                             |
+| 26  | 2026-11-07 | Biên soạn tài liệu Changes.md cho PA3 ghi nhận chi tiết thay đổi của Project Plan (Mục A) và Vision Document (Mục B)                      | PA3 (Changes Log)                                 |
 
 ---
 
@@ -4373,3 +4376,252 @@ Báo cáo bằng Vietnamese:
 - **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu chéo 14 mã FR (`123-FR-001..014`), 5 User Stories và 5 Success Criteria trong `spec.md`, đảm bảo tất cả đều được giải quyết trong kiến trúc, data model, API contract và kịch bản test.
 - **Kiểm tra cú pháp Contract và Mermaid:** File `real-time-music-assistance-api.json` tuân thủ chuẩn OpenAPI 3.0.3; các sơ đồ Mermaid Flowchart và Sequence trong `data-model.md` và `plan.md` viết đúng cú pháp không gây lỗi render.
 - **Kiểm tra phạm vi Git (`git status`):** Xác nhận các file thay đổi/tạo mới chỉ thuộc Feature 123.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu toàn diện; 6 artifacts của Feature 123 hoàn thiện và vượt qua kiểm tra điều kiện tiên quyết của Spec Kit.
+
+---
+
+## Mục 24: Rà soát và cập nhật chi tiết Project Plan cho Sprint 3 (PA3)
+
+| Trường                   | Nội dung                                                                          |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-07                                                                        |
+| Người thực hiện          | Nhựt                                                                              |
+| Nhóm tính năng liên quan | Project Plan (`docs/proposal/project_plan.md`) – Đợt nộp bài PA3                  |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High)                                       |
+| Mục đích                 | Rà soát tài liệu PA3-2026, đối chiếu yêu cầu của GV về việc chi tiết hóa Sprint 3 |
+
+### Prompt đã dùng
+
+```text
+Bạn đóng vai trò là Senior Technical Project Manager. Nhiệm vụ của bạn là rà soát và cập nhật file `docs/proposal/project_plan.md` cho đợt nộp bài PA3 theo các yêu cầu nghiêm ngặt sau:
+
+1. Bổ sung mục chi tiết: "4.2.8 Sprint 3 Plan" (SCRUM Sprint 3: 26 Oct – 8 Nov 2026):
+   - Cấu trúc tương tự như mục 4.2.7 Sprint 2 Plan nhưng được chi tiết hóa tối đa cho Sprint 3.
+   - Xác định rõ Sprint Goal của Sprint 3: Hoàn thành toàn bộ gói bàn giao PA3 (Use-Case Model, Use-Case Specifications kèm UI Prototypes cho 12 nhóm chức năng; triển khai End-to-End 1 nhóm chức năng hoàn chỉnh bằng Spec Kit gồm Group 120 - AI Conversational Agent qua UI, API logic, Database; hoàn thiện các báo cáo và video demo có thuyết minh).
+   - Lập bảng phân rã công việc WBS chi tiết với mã Jira (ví dụ: SCRUM-201, SCRUM-202,...), nêu rõ: Jira Key, Task Name, Assignee (gán cho 5 thành viên: Nhựt, Khoa, Đăng, Hoàng, Huy), Reviewer, Start Date, Due Date, Dependencies.
+   - Các nhóm task trong bảng phải bao quát đủ các deliverables của PA3:
+     + Rà soát & cập nhật Project Plan và Vision Document + soạn thảo Changes.md.
+     + Xây dựng Use-Case Model (Mermaid diagrams) cho 12 functional groups.
+     + Viết chi tiết Use-Case Specifications và thiết kế UI Prototypes kèm screenshot.
+     + Thực hiện quy trình Spec Kit E2E cho nhóm chức năng được chọn (G120: 121, 122, 123) từ spec -> plan -> tasks -> implementation -> test cases.
+     + Giải quyết các Technical Spikes / PoC (kết nối LLM/Vector service, kiểm tra byte-range audio streaming, SMTP email).
+     + Ghi nhận Scrum meetings, Weekly Report, AI Usage Log và quay video demo (YouTube narrated demo).
+   - Thêm bảng "Workload check" kiểm tra cân bằng số lượng task và review giữa 5 thành viên.
+
+2. Cập nhật mục 2.4.3 (Deliverables của Sprint 3 / PA3) và mục 4.3.2 (Build Checkpoint BLD-02 - First Integrated Build / Alpha Checkpoint):
+   - Khẳng định rõ phạm vi kiểm thử và tiêu chí nghiệm thu (Exit Criteria) cho bản Alpha tại Sprint 3.
+   - Cập nhật trạng thái các Deliverables từ "Planned" sang "In progress" hoặc "Completed".
+
+3. Tuân thủ định dạng:
+   - Ngôn ngữ: Tiếng Anh học thuật.
+   - Giữ nguyên các dòng metadata: `Performed by: [...] | Reviewed by: [...] | Edited by: [...]` ngay dưới mỗi tiêu đề.
+   - Liệt kê sẵn danh sách các thay đổi để thuận tiện trích xuất sang file Changes.md.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nghiên cứu tài liệu PA3-2026**: Đọc trực tiếp file `docs/PA/PA3-2026.pdf` để xác định chính xác các hạng mục chấm điểm (Section A: Revised Project Plan - 5 pts; Section B: Detailed Vision Document - 5 pts; Section C & D: Use Case Model & Specs - 55 pts; Section E: Spec Kit 1 functional group E2E - 20 pts; Section F: Reports - 5 pts; quy định bắt buộc phải có `Changes.md`).
+- **Tư vấn và đề xuất prompt**: Cung cấp bộ 3 prompt mẫu được cấu trúc hóa chặt chẽ (Prompt cho Project Plan, Prompt cho Vision Document gắn FR với UC, Prompt tạo file Changes.md), giải thích rõ các điểm cốt lõi theo lời nhắc của giảng viên.
+- **Thực thi cập nhật trực tiếp `docs/proposal/project_plan.md`**:
+  - Cập nhật bảng Deliverables mục 2.4.3: Chuyển toàn bộ deliverables D-14..D-20 thành trạng thái `Completed`, chỉ định cụ thể Functional Group 120 (AI Conversational Agent) cho deliverable D-18.
+  - Cập nhật mốc Milestone mục 4.2.5 cho Sprint 3 / PA3.
+  - Thêm mới mục **4.2.8 Sprint 3 Plan** (26 Oct – 8 Nov 2026):
+    - Đặt Sprint Goal 5 trụ cột bao quát toàn bộ yêu cầu của PA3.
+    - Xây dựng bảng WBS chi tiết với 25 mã Jira (`SCRUM-201` đến `SCRUM-225`) phân bổ đều cho 5 thành viên (Nhựt, Khoa, Đăng, Hoàng, Huy) với người review độc lập, thời gian thực hiện và quan hệ phụ thuộc cụ thể.
+    - Xây dựng bảng Workload Check xác nhận khối lượng công việc được phân bổ đồng đều (4–6 tasks/người).
+    - Thiết lập quy trình đồng bộ hóa Jira board `NMSE_Group10` và 5 tiêu chuẩn hoàn thành (Definition of Done) nghiêm ngặt cho Sprint 3.
+  - Cập nhật mục 4.3 (Status note) và 4.3.2 (Build Checkpoint Plan):
+    - Chuyển trạng thái BLD-01 và BLD-02 thành `Completed`.
+    - Làm rõ phạm vi phần mềm hoàn thành thực tế của BLD-02 (Alpha Checkpoint): Full-stack Group 120 (121-conversational-interface, 122-music-intent-understanding, 123-real-time-music-assistance) kết hợp web foundation và local auth trên database PostgreSQL, kiểm thử smoke test, API integration test, kiểm tra khả năng phục hồi fallback khi AI offline, và tiêu chí nghiệm thu tag `v1.0.0-alpha.1` kèm video demo trên YouTube.
+  - Trích xuất sẵn bảng Change Log cho Section A để thuận tiện đưa vào file `Changes.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                         | Quyết định   | Lý do                                                                                                         |
+| :------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------ |
+| Cập nhật mục 2.4.3 (Deliverables D-14..D-20) | Dùng toàn bộ | Phản ánh đúng trạng thái hoàn tất các deliverables của Sprint 3 / PA3 và làm rõ nhóm chức năng 120 được chọn. |
+| Bổ sung mục 4.2.8 (Sprint 3 Plan & WBS)      | Dùng toàn bộ | Đáp ứng trực tiếp chỉ đạo của GV về việc làm rõ và chi tiết hóa Sprint 3 với 25 task Jira cụ thể.             |
+| Bảng Workload check cân bằng tải             | Dùng toàn bộ | Tuân thủ quy tắc làm việc nhóm và peer-review trong Team Contract.                                            |
+| Quy định Definition of Done Sprint 3         | Dùng toàn bộ | Thiết lập tiêu chuẩn nghiệm thu rõ ràng cho các artifacts và code increment.                                  |
+| Cập nhật BLD-02 trong Build Checkpoint Plan  | Dùng toàn bộ | Mô tả chính xác phạm vi Alpha build đã đạt được qua quy trình Spec Kit của Group 120.                         |
+| Đưa các thay đổi ngoài phạm vi Sprint 3      | Bỏ hoàn toàn | Giữ nguyên kế hoạch của các Sprint 4 và Sprint 5 để tránh làm xáo trộn lộ trình tổng thể.                     |
+
+### Cách kiểm chứng
+
+- **Kiểm tra cấu trúc Markdown và heading:** Xác nhận các heading mới được phân cấp chuẩn (`#### 4.2.8`, `##### 4.2.8.1`..`4.2.8.3`), bảng WBS và Workload check render chuẩn xác không bị lệch cột.
+- **Kiểm tra phân rã WBS và phụ thuộc:** Rà soát 25 mã Jira từ `SCRUM-201` đến `SCRUM-225`, đảm bảo không trùng lặp và các task có quan hệ logic chặt chẽ (ví dụ: task code phụ thuộc vào task spec & contract).
+- **Kiểm tra bảng Workload check:** Tổng số task phân công (25) và review (24) khớp chính xác với bảng phân công chi tiết của từng thành viên.
+- **Kiểm tra phạm vi Git:** Kiểm tra xác nhận file được cập nhật duy nhất là `docs/proposal/project_plan.md` với các diff chính xác.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu 100%; tài liệu Project Plan đã được chi tiết hóa toàn diện cho Sprint 3 theo chuẩn PA3.
+
+---
+
+## Mục 25: Rà soát và chuẩn hóa Vision Document cho PA3
+
+| Trường                   | Nội dung                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ngày                     | 2026-11-07                                                                                                                                                                     |
+| Người thực hiện Nhựt     |
+| Nhóm tính năng liên quan | Vision Document (`docs/proposal/Auratune_Vision_Document.md`) – Đợt nộp bài PA3                                                                                                |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High)                                                                                                                                    |
+| Mục đích                 | Chuẩn hóa tài liệu Vision Document theo rubric PA3 Section B và hướng dẫn của GV: chi tiết hóa Functional Requirements gắn liền Use Case, mở rộng môi trường, đối thủ và NFRs. |
+
+### Prompt đã dùng
+
+```text
+Bạn đóng vai trò là Lead Business Analyst và Requirements Engineer. Hãy cập nhật và chuẩn hóa file `docs/proposal/Auratune_Vision_Document.md` nhằm đáp ứng yêu cầu PA3 và chỉ đạo của giảng viên: "Vision cần chú ý rà soát để Functional Requirements phải rõ hơn vì gắn liền với Use Case".
+
+Hãy thực hiện các điều chỉnh sau:
+
+1. Chi tiết hóa mục 5 (Product Features & Functional Requirements):
+   - Thay vì chỉ viết đoạn văn mô tả chung chung cho G01 đến G12, hãy bổ sung tiểu mục chi tiết hóa các Functional Requirements (FR) có đánh mã ID rõ ràng (ví dụ: FR-010-001, FR-020-001, ..., FR-120-001) đồng bộ hoàn toàn với danh mục trong `docs/requirements/use-case-model.md` và thư mục `specs/`.
+   - Mỗi Functional Requirement cần có cấu trúc rõ ràng:
+     + Mã FR & Tên chức năng.
+     + Câu đặc tả chuẩn: "The system shall [hành động cụ thể] when [điều kiện/input]...".
+     + Mapped Use Case: Chỉ rõ liên kết trực tiếp tới Use Case tương ứng (ví dụ: UC-010-001, UC-120-001, etc.).
+     + User Role / Actor tham gia.
+     + Priority (Must Have / Should Have / Could Have).
+   - Bổ sung bảng tóm tắt "Functional Requirements to Use Case Traceability Matrix" ngay trong Section 5 để chứng minh 100% FR đều được map vào Use Case Model.
+
+2. Rà soát và hoàn thiện các mục theo rubric PA3 Section B:
+   - Mục 3.3 & 3.4 (User Environments): Bổ sung môi trường sử dụng thực tế (các trình duyệt hỗ trợ, độ phân giải màn hình máy tính và thiết bị di động, điều kiện mạng, thiết bị âm thanh ngoại vi).
+   - Mục 3.5 (Alternatives & Competitors): Bổ sung bảng so sánh đối thủ cạnh tranh (Spotify, Soundcloud, YouTube Music) trên các tiêu chí: AI Semantic search, bản quyền mở, chat host, collaborative playlist.
+   - Mục 6 (Non-Functional Requirements): Chuẩn hóa các chỉ số đo lường cụ thể, có thể kiểm chứng được (độ trễ streaming < 500ms, AI response time < 3s, chuẩn mã hóa HTTPS/TLS 1.3, thuật toán băm mật khẩu Argon2/bcrypt, tính sẵn sàng 99.5%).
+
+3. Quy chuẩn trình bày:
+   - Ngôn ngữ: Toàn bộ bằng tiếng Anh.
+   - Các sơ đồ luồng người dùng (User Workflows) dùng cú pháp Mermaid chuẩn.
+   - Giữ nguyên văn phong và dòng `Performed by: [...] | Reviewed by: [...] | Edited by: [...]` dưới mỗi tiêu đề.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Đối chiếu nguồn Use-Case Model và Spec Kit**: Tham chiếu trực tiếp danh mục 12 nhóm chức năng và bảng Traceability Matrix trong `docs/requirements/use-case-model.md` cùng các thư mục `specs/` (từ `010` đến `120`).
+- **Thực thi cập nhật toàn diện `docs/proposal/Auratune_Vision_Document.md`**:
+  - **Mục 1.1 & 1.4**: Cập nhật mục đích tài liệu ghi nhận đợt nộp bài PA3-2026; mở rộng bảng tài liệu tham chiếu với `use-case-model.md` và Project Plan PA3.
+  - **Mục 3.3 (User Environment)**: Chi tiết hóa môi trường thực tế gồm phiên bản trình duyệt tối thiểu (Chrome 110+, Edge 110+, Firefox 115+, Safari 16+), breakpoint responsive (Desktop 1024px–1920px+, Tablet 768px–1023px, Mobile 375px–767px), băng thông mạng (≥ 5 Mbps Wi-Fi, ≥ 2 Mbps 4G, độ trễ < 100ms) và thông số audio ngoại vi (HTML5 audio engine, stereo 44.1/48 kHz 16-bit PCM).
+  - **Mục 3.5 (Alternatives & Competition)**: Mở rộng phân tích 4 đối thủ (Spotify, SoundCloud, YouTube Music, Zing MP3) kèm bảng ma trận năng lực hệ thống 11 tiêu chí và tuyên bố định vị chiến lược của AuraTune.
+  - **Bổ sung Mục 5.3 (Detailed Functional Requirements)**: Thiết lập hệ thống FR có cấu trúc hoàn chỉnh cho 12 nhóm chức năng (`FR-010-001` đến `FR-120-004`). Mỗi FR gồm mã ID, câu đặc tả chuẩn ("The system shall..."), liên kết Use Case tương ứng (`UC-xxx`), Actor và độ ưu tiên MoSCoW.
+  - **Bổ sung Mục 5.4 (FR to UC Traceability Matrix)**: Xây dựng bảng ma trận chứng minh 100% FR của 12 nhóm chức năng được ánh xạ chính xác sang Use-Case Model.
+  - **Mục 5.5 (Key User Workflows)**: Đánh số lại từ 5.3 sang 5.5, giữ nguyên 2 sơ đồ Mermaid không phát sinh lỗi cú pháp.
+  - **Mục 6 (Non-Functional Requirements)**: Định lượng hóa các tiêu chí kiểm chứng: TTI trang chủ < 2.0s (broadband) và < 3.5s (4G); độ trễ phát nhạc < 500ms (buffer) và < 1.2s (cold stream byte-range); tìm kiếm vector < 3.0s; AI host SSE token đầu < 1.5s; p95 DB query < 100ms; mã hóa mật khẩu Argon2id/bcrypt; HTTPS TLS 1.3; phiên xác thực kép JWT + HttpOnly SameSite=Strict cookie; ẩn danh hóa dữ liệu trước khi gửi sang LLM (Nghị định 13/2023/NĐ-CP); chống brute-force; uptime 99.5%; pre-buffering âm thanh 30s; và tuân thủ OpenAPI 3.0.3.
+- **Trích xuất Change Log**: Tạo sẵn bảng đối chiếu thay đổi cho Section B để đưa vào file `Changes.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                 | Quyết định   | Lý do                                                                                                                                       |
+| :--------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| Danh mục Functional Requirements 5.3 có mã ID        | Dùng toàn bộ | Giải quyết triệt để lời nhắc của GV; chuyển đổi các đoạn văn chung chung thành các yêu cầu có thể kiểm chứng và liên kết chặt với Use Case. |
+| Ma trận Traceability Matrix 5.4                      | Dùng toàn bộ | Đảm bảo tính nhất quán 100% giữa Vision Document và Use-Case Model của cả 12 nhóm chức năng.                                                |
+| Mở rộng User Environment 3.3                         | Dùng toàn bộ | Thỏa mãn rubric chấm điểm PA3 Section B về môi trường người dùng thực tế.                                                                   |
+| Mở rộng Competitors 3.5 với bảng so sánh 11 tiêu chí | Dùng toàn bộ | Cung cấp cái nhìn toàn diện so với các đối thủ thương mại và định vị rõ ranh giới học thuật/bản quyền mở của AuraTune.                      |
+| Định lượng hóa chỉ số đo lường trong NFRs 6          | Dùng toàn bộ | Nâng cấp từ các tuyên bố định tính thành các chỉ số kiểm thử được qua automated benchmarks và APM.                                          |
+| Bỏ các sơ đồ luồng người dùng cũ                     | Bỏ           | Giữ nguyên và đánh số lại thành 5.5 vì các sơ đồ Mermaid hiện tại rất chuẩn xác và trực quan.                                               |
+
+### Cách kiểm chứng
+
+- **Kiểm tra tính nhất quán mã FR và UC:** Đối chiếu 72 Functional Requirements mới trong Section 5.3 với 72 mã Use Cases (`UC-010-001` đến `UC-120-004`) trong `docs/requirements/use-case-model.md`, xác nhận khớp 100% không sai lệch.
+- **Kiểm tra cú pháp Mermaid:** Render thử hai sơ đồ Workflow trong Section 5.5, xác nhận không có lỗi cú pháp.
+- **Kiểm tra Metadata tác giả:** Xác nhận 100% các tiêu đề mới (5.3, 5.4, 5.5, 6.1..6.4) đều có dòng đóng dấu trách nhiệm `Performed by / Reviewed by / Edited by` theo đúng phân công trong Team Contract.
+- **Kiểm tra tính đo lường được của NFR:** Rà soát các chỉ số trong Mục 6, đảm bảo tất cả đều có đơn vị đo cụ thể (ms, s, %, Mbps, px).
+- **Kiểm tra phạm vi Git:** Chạy `git diff --stat` xác nhận chỉ có file `docs/proposal/Auratune_Vision_Document.md` được sửa đổi với +267 dòng mới.
+
+**Kết quả kiểm chứng:** Đạt yêu cầu 100%; tài liệu Vision Document đã đáp ứng hoàn hảo tiêu chí PA3 và hướng dẫn của giảng viên.
+
+---
+
+## Mục 26: Biên soạn tài liệu Changes.md hợp nhất cho PA3
+
+| Trường                   | Nội dung                                                                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-07                                                                                                                                                                       |
+| Người thực hiện          | Nhựt                                                                                                                                                                             |
+| Nhóm tính năng liên quan | Đảm bảo chất lượng & Phát hành / PA3 Changes Log (`docs/PA/Changes.md`, `docs/proposal/Changes.md`)                                                                              |
+| Công cụ AI               | Antigravity (Gemini 2.5 Flash / Flash High)                                                                                                                                      |
+| Mục đích                 | Đáp ứng quy định bắt buộc của PA3-2026 (Section A & Section B): Tạo lập một file Changes.md duy nhất liệt kê toàn bộ các thay đổi so với bản PA2 cho Project Plan và Vision Doc. |
+
+### Prompt đã dùng
+
+```text
+Bạn đóng vai trò là Quality Assurance & Release Manager. Hãy tạo mới tập tin `docs/PA/Changes.md` (hoặc đặt tại thư mục nộp bài PA3) để đáp ứng quy định bắt buộc của PA3-2026 (Section A & Section B): "Your team must include a Changes.md file that clearly lists all changes made compared to the PA2-2026 version. Use a single Changes.md file per PA submission, with separate sections for each revised document."
+
+Nội dung tập tin `Changes.md` cần cấu trúc như sau:
+
+# AuraTune — PA3 Changes Log
+
+Document Information:
+- Project: AuraTune (Group 10)
+- Target Submission: PA3-2026
+- Baseline Version: PA2-2026
+- Performed by: Lê Công Minh Nhựt | Reviewed by: Nguyễn Khánh Đăng | Edited by: Lê Công Minh Nhựt
+
+---
+
+## Section A: Changes in Revised Project Plan
+(So sánh chi tiết giữa Project Plan nộp ở PA2 và bản sửa đổi nộp ở PA3)
+Trình bày dưới dạng bảng:
+| Section / Item | Change Type (Added / Modified / Detailed) | Description of Change | Rationale / Alignment with TA & Instructor Feedback |
+1. Mục 2.4.3 & Deliverables: Cập nhật chi tiết các deliverables của PA3 (Use Case Model, UC Specs, Spec Kit 1 functional group, video demo).
+2. Bổ sung mục 4.2.8 "Sprint 3 Plan": Phân rã WBS cụ thể từng task Jira cho 5 thành viên từ ngày 26 Oct - 8 Nov 2026, thiết lập rõ dependencies và workload check.
+3. Mục 4.3.2 (Build Plan - BLD-02): Làm rõ phạm vi kiểm thử Alpha build cho tính năng E2E được hiện thực (Group 120 AI Conversational Agent) và API integration testing.
+4. Cập nhật Risk Register & Assumptions (TA-01, ED-08): Bổ sung kết quả và kế hoạch cho AI technical spike.
+
+---
+
+## Section B: Changes in Detailed Vision Document
+(So sánh chi tiết giữa Vision Document nộp ở PA2 và bản cập nhật nộp ở PA3)
+Trình bày dưới dạng bảng:
+| Section / Item | Change Type (Added / Modified / Detailed) | Description of Change | Rationale / Alignment with TA & Instructor Feedback |
+1. Section 5 (Product Features & FRs): Chi tiết hóa toàn bộ các tính năng thành danh mục Functional Requirements có đánh mã ID rõ ràng (FR-010-xxx đến FR-120-xxx) và gắn kết trực tiếp 1-1 với Use Case ID (UC-xxx) từ Use Case Model.
+2. Section 3.3 & 3.4 (User Environments): Bổ sung chi tiết thông số môi trường phần cứng, trình duyệt web và kết nối mạng.
+3. Section 3.5 (Competitors and Alternatives): Mở rộng bảng so sánh định vị cạnh tranh với Spotify và Soundcloud về khả năng tìm kiếm AI ngữ nghĩa và chi phí bản quyền.
+4. Section 6 (Non-Functional Requirements): Định lượng cụ thể các chỉ số đo lường (latency, response time, storage quotas, bảo mật dữ liệu theo Nghị định 13/2023/NĐ-CP).
+
+Lưu ý: Viết toàn bộ bằng tiếng Anh súc tích, mạch lạc và chuyên nghiệp.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nghiên cứu yêu cầu quy chế nộp bài PA3**: Đối chiếu điều kiện Section A và B trong `PA3-2026.pdf`, đảm bảo chỉ sử dụng duy nhất một file `Changes.md` cho toàn bộ bài nộp, có cấu trúc phân định rõ ràng thành các Section A, B và C.
+- **Biên soạn tập tin `Changes.md` hoàn chỉnh**:
+  - **Document Information & Executive Summary**: Đầy đủ thông tin đề án, môn học, tác giả, người duyệt và tuyên bố tóm tắt mục đích audit log.
+  - **Section A: Changes in Revised Project Plan (2nd Submission)**: Bảng đối chiếu 10 hạng mục thay đổi trọng yếu giữa PA2 và PA3:
+    1. Cập nhật metadata và trạng thái baseline PA3 (Section 1.1).
+    2. Cập nhật bảng Deliverables mục 2.4.3 (D-14..D-20 thành Completed; định danh Group 120 E2E).
+    3. Ghi nhận kết quả các Technical Spikes trong Assumptions & Constraints mục 2.5 (HTTP 206 range streaming, LLM & vector db, SMTP mail).
+    4. Chi tiết hóa tiêu chí hoàn thành mốc nộp bài PA3 mục 4.2.5.
+    5. Bổ sung toàn diện Mục 4.2.8 "Sprint 3 Plan" với Sprint Goal 5 trụ cột.
+    6. Phân rã WBS Mục 4.2.8.1 gồm 25 mã Jira (`SCRUM-201` đến `SCRUM-225`) gán cho 5 thành viên có reviewer độc lập và quan hệ phụ thuộc.
+    7. Thêm bảng Workload check Mục 4.2.8.2 cân bằng tải (4–6 tasks/người).
+    8. Codified quy trình đồng bộ Jira và 5 tiêu chí Definition of Done (DoD) Mục 4.2.8.3.
+    9. Cập nhật Status note mục 4.3 ghi nhận BLD-02 đã bàn giao ở PA3.
+    10. Chi tiết hóa phạm vi thực thi của BLD-02 (Alpha Checkpoint) mục 4.3.2 gồm Group 120 Full-stack, smoke/API testing, fallback AI và tag `v1.0.0-alpha.1`.
+  - **Section B: Changes in Detailed Vision Document (2nd Submission)**: Bảng đối chiếu 11 hạng mục thay đổi lớn:
+    1. Cập nhật mục đích tài liệu Mục 1.1 cho PA3.
+    2. Bổ sung tham chiếu `use-case-model.md` và Project Plan PA3 Mục 1.4.
+    3. Mở rộng thông số môi trường người dùng thực tế Mục 3.3 (trình duyệt, viewport 375px–1920px+, mạng ≥ 5 Mbps / ≥ 2 Mbps, audio 44.1/48 kHz, OS).
+    4. Phân tích đối thủ cạnh tranh Mục 3.5 (Spotify, SoundCloud, YouTube Music, Zing MP3) kèm ma trận năng lực 11 tiêu chí và định vị chiến lược.
+    5. Thêm mới Mục 5.3 danh mục 72 Functional Requirements (`FR-010-001` đến `FR-120-004`) có câu lệnh chuẩn ("The system shall..."), map 1-1 với Use Cases, Actor và priority MoSCoW.
+    6. Thêm mới Mục 5.4 bảng ma trận truy vết Traceability Matrix bảo đảm 100% độ bao phủ giữa FR và Use-Case Model.
+    7. Đánh số lại Workflows Mermaid thành Mục 5.5.
+    8. Định lượng hóa các tiêu chí hiệu năng Mục 6.1 (TTI < 2s/3.5s, play < 500ms/1.2s, search < 300ms, vector < 3s, SSE token < 1.5s, DB p95 < 100ms).
+    9. Chuẩn hóa an toàn và bảo mật Mục 6.2 (Argon2id/bcrypt, HTTPS TLS 1.3, JWT + HttpOnly cookie, ẩn danh hóa PII Nghị định 13/2023/NĐ-CP, chống brute-force).
+    10. Yêu cầu tương thích đa nền tảng và trợ năng bàn phím/cảm ứng Mục 6.3.
+    11. Thuộc tính chất lượng Mục 6.4 (uptime 99.5%, pre-buffering 30s, AI fallback graceful, OpenAPI 3.0.3).
+  - **Section C: Verification and Traceability Summary**: Khẳng định tính chuẩn mực về định dạng Markdown, Mermaid, metadata tác giả và tính đồng bộ 100% với mã nguồn và specs.
+- **Lưu trữ đồng bộ**: Đặt file tại cả `docs/PA/Changes.md` và `docs/proposal/Changes.md` để đảm bảo bài nộp PA3 đầy đủ cả trong thư mục quản lý PA lẫn thư mục tài liệu đề án.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                         | Quyết định   | Lý do                                                                                                    |
+| :--------------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------- |
+| Cấu trúc bảng đối chiếu 4 cột (Section, Change Type, Description, Rationale) | Dùng toàn bộ | Format chuẩn mực, trực quan, giúp người chấm (TA/GV) nhanh chóng đối chiếu sự khác biệt giữa PA2 và PA3. |
+| Phân tách rõ Section A (Project Plan) và Section B (Vision Doc)              | Dùng toàn bộ | Tuân thủ chính xác yêu cầu của đề bài PA3: _"with separate sections for each revised document"_.         |
+| Thêm Section C tóm tắt kiểm chứng và truy vết                                | Dùng         | Tăng tính chuyên nghiệp, khẳng định cam kết chất lượng của đội ngũ kỹ thuật.                             |
+
+### Cách kiểm chứng
+
+- **Kiểm tra độ bao phủ nội dung:** Đối chiếu từng dòng trong bảng Section A với `project_plan.md` và từng dòng trong Section B với `Auratune_Vision_Document.md`, đảm bảo 100% thay đổi thực tế đều được ghi nhận trung thực.
+- **Kiểm tra chuẩn Markdown:** Đảm bảo tất cả các bảng, tiêu đề, danh sách và liên kết tài liệu hiển thị đẹp mắt, không phát sinh lỗi layout.

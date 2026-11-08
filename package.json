@@ -10,5 +10,8 @@
     "dev:frontend": "cd src/frontend && npm run dev",
     "dev": "node src/backend/server.js",
     "test:backend": "node src/backend/test-server.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.0"
   }
 }

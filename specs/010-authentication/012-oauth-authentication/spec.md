@@ -83,7 +83,7 @@ As a user, I want to be able to disconnect my Google or Facebook account from my
 - **User Cancels Authentication**: What happens when the user clicks "Cancel" on the Google/Facebook login page? The system should redirect back to the AuraTune login page with a user-friendly error message.
 - **Provider Service Interruption**: How does the system handle cases where Google or Facebook services are down? The system should display a message indicating that social login is temporarily unavailable and suggest local login.
 - **Email Conflict (Different Providers)**: What happens if a user tries to log in with Google and then later with Facebook using the same email? The system should link both providers to the same account based on the unique email.
-- **Incomplete Provider Data**: What if the provider does not return a display name or avatar? The system should use the email prefix as a default display name and a placeholder avatar.
+- **Incomplete Provider Data / Missing Email**: What if the provider (e.g., Facebook) does not return an email address or the email is unverified? The system MUST reject session creation and display a clear validation message asking the user to update their email on the social platform or use local email authentication.
 
 ## Requirements *(mandatory)*
 

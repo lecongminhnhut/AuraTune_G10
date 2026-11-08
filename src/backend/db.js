@@ -73,6 +73,54 @@ class Database {
     return this.users.find((u) => u.id === userId || u.user_id === userId) || null;
   }
 
+  // Find an AuraTune user by verified Firebase UID
+  findUserByFirebaseUid(firebaseUid) {
+    if (!firebaseUid) return null;
+
+    const link = ['firebase', 'google', 'facebook']
+      .map((provider) => this.findOAuthLink(provider, firebaseUid))
+      .find(Boolean);
+
+    if (!link) return null;
+
+    return this.findUserById(link.user_id);
+  }
+
+  // Link a Firebase UID to an AuraTune user
+  linkFirebaseUid(userId, firebaseUid) {
+    if (!userId || !firebaseUid) {
+      throw new Error('Missing user ID or Firebase UID');
+    }
+
+    const user = this.findUserById(userId);
+
+    if (!user) {
+      throw new Error('AuraTune user not found');
+    }
+
+    const existingUidLink = this.findOAuthLink(
+      'firebase',
+      firebaseUid
+    );
+
+    if (existingUidLink) {
+      if (existingUidLink.user_id !== userId) {
+        throw new Error('Firebase UID already linked to another user');
+      }
+
+      return existingUidLink;
+    }
+
+    const existingUserLink = this.getOAuthLinksForUser(userId)
+      .find((link) => link.provider === 'firebase');
+
+    if (existingUserLink) {
+      throw new Error('AuraTune user already linked to Firebase');
+    }
+
+    return this.addOAuthLink(userId, 'firebase', firebaseUid);
+  }
+
   createUser(userData) {
     const newUser = {
       id: userData.id || `u-${Date.now()}`,
@@ -117,10 +165,18 @@ class Database {
   }
 
   addOAuthLink(userId, provider, providerUserId) {
+    const identityOwner = this.findOAuthLink(provider, providerUserId);
+    if (identityOwner && identityOwner.user_id !== userId) {
+      throw new Error('Provider identity is already linked to another user');
+    }
+
     const existing = this.oauthLinks.find(
       (l) => l.user_id === userId && l.provider === provider
     );
     if (existing) {
+      if (existing.provider_user_id !== providerUserId) {
+        throw new Error('User already has a different identity linked for this provider');
+      }
       existing.last_login_at = new Date().toISOString();
       return existing;
     }

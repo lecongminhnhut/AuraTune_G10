@@ -81,6 +81,14 @@ The Visitor selects the "Login with Facebook" button on the login or registratio
 1. **System:** Displays an error: "Facebook login is currently unavailable. Please try using another sign-in method."
 - **Outcome:** Use Case ends in failure.
 
+### EF-02 – Missing or Unverified Facebook Email
+- **Starting step:** 5
+- **Condition:** Facebook account is not associated with an email address (e.g. registered via phone number), the user declined email permission, or the email address is unverified.
+1. **System:** Detects missing or unverified email attribute from the OAuth identity token.
+2. **System:** Rejects creation of a new AuraTune session.
+3. **System:** Displays an error: "Tài khoản mạng xã hội của bạn chưa liên kết email hoặc chưa được xác minh. Vui lòng cập nhật email trên Facebook hoặc sử dụng phương thức đăng nhập bằng Email."
+- **Outcome:** Use Case ends in failure.
+
 ---
 
 ## 9. Postconditions

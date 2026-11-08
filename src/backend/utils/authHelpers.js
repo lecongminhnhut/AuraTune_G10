@@ -1,9 +1,12 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { db } from '../db.js';
+import { db } from '../repositories/authRepository.js';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'auratune-super-secret-jwt-key-2026';
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET must be configured in production');
+}
+export const JWT_SECRET = process.env.JWT_SECRET || 'local-development-only-change-me';
 export const MAX_FAILED_ATTEMPTS = 5;
 export const LOCKOUT_MINUTES = 15;
 export const MAX_CONCURRENT_SESSIONS = 5;
@@ -37,8 +40,8 @@ export function setRefreshTokenCookie(res, refreshToken, days = INACTIVITY_DAYS)
   const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
   res.cookie('auratune_refresh_token', refreshToken, {
     httpOnly: true,
-    secure: false, // Set to false for local HTTP dev
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
     path: '/api/v1/auth',
     expires
   });
@@ -47,8 +50,8 @@ export function setRefreshTokenCookie(res, refreshToken, days = INACTIVITY_DAYS)
 export function clearRefreshTokenCookie(res) {
   res.clearCookie('auratune_refresh_token', {
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
     path: '/api/v1/auth'
   });
 }
@@ -66,13 +69,13 @@ export function checkPasswordStrength(password) {
   return { isStrong, checks };
 }
 
-export function createNewSession(userId, req, rememberMe = false) {
-  const activeSessions = db.getActiveUserSessions(userId);
+export async function createNewSession(userId, req, rememberMe = false) {
+  const activeSessions = await db.getActiveUserSessions(userId);
   if (activeSessions.length >= MAX_CONCURRENT_SESSIONS) {
     activeSessions.sort((a, b) => new Date(a.last_active_at) - new Date(b.last_active_at));
     const oldest = activeSessions[0];
     if (oldest) {
-      oldest.is_revoked = true;
+      await db.updateSession(oldest.session_id, { is_revoked: true });
     }
   }
 
@@ -104,12 +107,12 @@ export function createNewSession(userId, req, rememberMe = false) {
     expires_at: expiresAt
   };
 
-  db.createSession(sessionObj);
+  await db.createSession(sessionObj);
   return { sessionObj, refreshToken };
 }
 
-export function formatUserResponse(user) {
-  const linkedProviders = db.getOAuthLinksForUser(user.id || user.user_id).map((l) => l.provider);
+export async function formatUserResponse(user) {
+  const linkedProviders = (await db.getOAuthLinksForUser(user.id || user.user_id)).map((l) => l.provider);
   return {
     id: user.id || user.user_id,
     user_id: user.id || user.user_id,
