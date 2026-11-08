@@ -61,6 +61,7 @@ class Database {
     this.users = [...defaultUsers];
     this.oauthLinks = []; // [{ id, user_id, provider, provider_user_id, linked_at, last_login_at }]
     this.userSessions = []; // [{ session_id, user_id, refresh_token_hash, previous_token_hash, grace_expires_at, device_info, ip_address, remember_me, is_revoked, created_at, last_active_at, inactive_at, expires_at }]
+    this.passwordResetTokens = [];
   }
 
   findUserByEmail(email) {
@@ -230,6 +231,33 @@ class Database {
   createSession(sessionData) {
     this.userSessions.push(sessionData);
     return sessionData;
+  }
+
+  updateSession(sessionId, updates) {
+    const session = this.findSessionById(sessionId);
+    if (!session) return null;
+    Object.assign(session, updates);
+    return session;
+  }
+
+  createPasswordResetToken(row) {
+    this.passwordResetTokens.push(row);
+    return row;
+  }
+
+  findPasswordResetToken(tokenHash) {
+    return this.passwordResetTokens.find((t) => t.token_hash === tokenHash) || null;
+  }
+
+  consumePasswordResetToken(tokenHash) {
+    const index = this.passwordResetTokens.findIndex((t) => t.token_hash === tokenHash);
+    if (index === -1) return null;
+    const [consumed] = this.passwordResetTokens.splice(index, 1);
+    return consumed;
+  }
+
+  deletePasswordResetTokensForUser(userId) {
+    this.passwordResetTokens = this.passwordResetTokens.filter((t) => t.user_id !== userId);
   }
 }
 
