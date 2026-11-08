@@ -8,12 +8,15 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// .env nằm ở thư mục gốc dự án (cha của thư mục database)
+// Tải biến môi trường từ thư mục gốc hoặc backend/.env
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../backend/.env') });
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 
 
-const envUrl = process.env.SUPABASE_URL;
+const rawUrl = process.env.SUPABASE_URL;
+const envUrl = rawUrl ? rawUrl.replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '') : null;
 // This client is backend-only. Auth tables contain password hashes and session
 // tokens, so never use the public anon key for server-side writes.
 const envKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;

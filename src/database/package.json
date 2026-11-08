@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +10,7 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
+    "auratune": "file:../..",
     "dotenv": "^18.0.9"
   }
 }
