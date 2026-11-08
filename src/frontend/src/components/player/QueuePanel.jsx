@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowDown, ArrowUp, GripVertical, ListMusic, Play, X } from 'lucide-react'
 import CoverArt from '../playlist/CoverArt.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
+import useSwipeDown from '../../hooks/useSwipeDown.js'
 
 // Hàng chờ (G05): xem bài tiếp theo, phát ngay, xóa, kéo thả hoặc dùng nút mũi tên để sắp xếp.
 export default function QueuePanel({ isOpen, onClose }) {
@@ -11,6 +12,7 @@ export default function QueuePanel({ isOpen, onClose }) {
   closeRef.current = onClose
   const [dragIndex, setDragIndex] = useState(null)
   const [overIndex, setOverIndex] = useState(null)
+  const swipeDown = useSwipeDown(onClose)
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -30,8 +32,9 @@ export default function QueuePanel({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50">
       <div aria-hidden="true" onClick={onClose} className="absolute inset-0 bg-black/45 backdrop-blur-[2px]" />
-      <section ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="queue-title" className="ai-host-panel absolute bottom-[96px] right-2 top-2 flex w-[calc(100%-1rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#14151c] shadow-2xl shadow-black/60">
-        <header className="flex shrink-0 items-center justify-between border-b border-white/[0.07] px-5 py-4">
+      <section ref={panelRef} role="dialog" aria-modal="true" aria-labelledby="queue-title" className="ai-host-panel absolute inset-x-0 bottom-0 flex h-[85dvh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-[#14151c] shadow-2xl shadow-black/60 md:inset-x-auto md:bottom-[152px] md:right-2 md:top-2 md:h-auto md:w-[calc(100%-1rem)] md:max-w-[380px] md:rounded-2xl md:border lg:bottom-[96px]">
+        <header {...swipeDown} className="relative flex shrink-0 items-center justify-between border-b border-white/[0.07] px-5 py-4">
+          <span aria-hidden="true" className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-white/20 md:hidden" />
           <h2 id="queue-title" className="flex items-center gap-2 text-[15px] font-bold text-white"><ListMusic size={18} aria-hidden="true" className="text-violet-300" /> Danh sách chờ</h2>
           <button type="button" onClick={onClose} aria-label="Đóng danh sách chờ" className="rounded-lg p-2 text-zinc-400 transition hover:bg-white/[0.06] hover:text-white"><X size={18} /></button>
         </header>

@@ -28,7 +28,7 @@ export default function SongRow({ track, index, onPlay, onDownloadTrack, compact
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       {...rowProps}
-      className={`group grid grid-cols-[28px_minmax(0,1fr)_132px] items-center gap-3 rounded-md px-3 py-2.5 text-sm transition hover:bg-white/[0.07] md:grid-cols-[28px_minmax(0,1.8fr)_minmax(120px,1fr)_minmax(90px,.8fr)_132px] ${rowProps?.className ?? ''}`}
+      className={`group grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-3 rounded-md px-3 py-2.5 text-sm transition hover:bg-white/[0.07] md:grid-cols-[28px_minmax(0,1.8fr)_minmax(120px,1fr)_minmax(90px,.8fr)_132px] ${rowProps?.className ?? ''}`}
     >
       <div className="flex items-center">
         {dragHandleProps ? (

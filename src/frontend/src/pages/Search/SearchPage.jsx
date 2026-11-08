@@ -4,11 +4,12 @@ import PlaylistCard from '../../components/playlist/PlaylistCard.jsx'
 import CoverArt from '../../components/playlist/CoverArt.jsx'
 import { AlbumCard, ArtistCard, GenreTile } from '../../components/playlist/MediaCards.jsx'
 import SongRow from '../../components/song/SongRow.jsx'
+import Icon from '../../components/common/Icon.jsx'
 import { EmptyState, PageHeader, SectionHeading, chipClass } from '../../components/common/ui.jsx'
 import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import { genres, getArtist } from '../../utils/mockData.js'
-import { getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
+import { Link, getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
 import { searchCatalog, sortTracks } from '../../utils/searchEngine.js'
 
 const tabs = [
@@ -20,7 +21,12 @@ const tabs = [
   { id: 'lyrics', label: 'Theo lời bài hát' },
 ]
 
-const grid = 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+const browseLinks = [
+  { label: 'Khám phá', icon: 'compass', href: '/explore' },
+  { label: 'Bảng xếp hạng', icon: 'chart', href: '/charts' },
+]
+
+const grid = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
 export default function SearchPage() {
   const store = useStore()
@@ -51,14 +57,22 @@ export default function SearchPage() {
 
       <div className="px-5 sm:px-8">
         <form onSubmit={(event) => { event.preventDefault(); setParam({ q: draft.trim() }) }} className="flex gap-2 md:hidden">
-          <input type="search" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Bạn muốn nghe gì?" aria-label="Từ khóa tìm kiếm" className="h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-sm text-white outline-none focus:border-sky-300/40" />
+          <input type="search" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Bạn muốn nghe gì?" aria-label="Từ khóa tìm kiếm" className="h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-base text-white outline-none focus:border-sky-300/40" />
           <button type="submit" className="rounded-xl bg-sky-200 px-4 text-xs font-bold text-slate-950">Tìm</button>
         </form>
 
         {!query ? (
           <>
+            {/* Mobile và tablet không có Sidebar: lối vào Khám phá và Bảng xếp hạng nằm ở đây. */}
+            <div className="mb-8 mt-5 grid grid-cols-2 gap-3 lg:hidden">
+              {browseLinks.map((item) => (
+                <Link key={item.href} to={item.href} className="flex h-14 items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 text-sm font-semibold text-white transition hover:bg-white/[0.08]">
+                  <Icon name={item.icon} size={20} className="text-violet-300" /> {item.label}
+                </Link>
+              ))}
+            </div>
             <SectionHeading title="Duyệt theo thể loại" />
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">{genres.map((genre) => <GenreTile key={genre.id} genre={genre} />)}</div>
+            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">{genres.map((genre) => <GenreTile key={genre.id} genre={genre} />)}</div>
           </>
         ) : (
           <>

@@ -6,6 +6,7 @@ import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import { runAgent } from '../../utils/agentService.js'
 import { executeTool } from './agentTools.js'
+import useSwipeDown from '../../hooks/useSwipeDown.js'
 
 const SPINNER = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
 const THINKING_VERBS = ['Đang suy nghĩ', 'Đang phân tích', 'Đang chọn giai điệu', 'Đang lên kế hoạch']
@@ -26,6 +27,7 @@ export default function AIHostChat({ isOpen, onClose, onPlayPlaylist, currentPla
   const store = useStore()
   const player = usePlayer()
   const available = store.aiAvailable
+  const swipeDown = useSwipeDown(onClose)
   const [entries, setEntries] = useState([{ id: 'banner', kind: 'banner' }])
   const [input, setInput] = useState('')
   const [running, setRunning] = useState(false)
@@ -207,9 +209,10 @@ export default function AIHostChat({ isOpen, onClose, onPlayPlaylist, currentPla
         role="dialog"
         aria-modal="true"
         aria-labelledby="ai-host-title"
-        className="ai-host-panel absolute bottom-[96px] right-2 top-2 flex w-[calc(100%-1rem)] max-w-[460px] flex-col overflow-hidden rounded-2xl border border-sky-200/15 bg-[#0c0d12] shadow-2xl shadow-black/60"
+        className="ai-host-panel absolute inset-x-0 bottom-0 flex h-[92dvh] flex-col overflow-hidden rounded-t-2xl border-t border-sky-200/15 bg-[#0c0d12] shadow-2xl shadow-black/60 md:inset-x-auto md:bottom-[152px] md:right-2 md:top-2 md:h-auto md:w-[calc(100%-1rem)] md:max-w-[460px] md:rounded-2xl md:border lg:bottom-[96px]"
       >
-        <header className="flex shrink-0 items-center gap-3 border-b border-white/[0.07] bg-[#111219] px-4 py-3">
+        <header {...swipeDown} className="relative flex shrink-0 items-center gap-3 border-b border-white/[0.07] bg-[#111219] px-4 py-3 max-md:pt-5">
+          <span aria-hidden="true" className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-white/20 md:hidden" />
           <img src={brandMark} alt="" aria-hidden="true" className="h-8 w-auto" />
           <div className="min-w-0 flex-1">
             <h2 id="ai-host-title" className="text-[14px] font-bold tracking-tight text-white">AuraTune Agent</h2>
@@ -246,7 +249,7 @@ export default function AIHostChat({ isOpen, onClose, onPlayPlaylist, currentPla
               disabled={!available}
               onChange={(event) => { setInput(event.target.value); historyRef.current.index = -1 }}
               onKeyDown={onInputKeyDown}
-              className="block max-h-28 min-h-[22px] w-full resize-none bg-transparent text-[12.5px] leading-[22px] text-zinc-100 outline-none [field-sizing:content] placeholder:text-zinc-600 disabled:cursor-not-allowed"
+              className="block max-h-28 min-h-[22px] w-full resize-none bg-transparent text-base leading-[22px] md:text-[12.5px] text-zinc-100 outline-none [field-sizing:content] placeholder:text-zinc-600 disabled:cursor-not-allowed"
             />
           </form>
           <p className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 px-1 font-mono text-[9.5px] text-zinc-600">

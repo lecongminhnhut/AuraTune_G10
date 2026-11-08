@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { BarChart3, Heart, LayoutDashboard, Library, LogOut, Mic2, Settings, Sparkles, Users } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { BarChart3, Heart, LayoutDashboard, Library, LogOut, Mic2, Search, Settings, Sparkles, Users } from 'lucide-react'
 import Icon from './Icon.jsx'
 import Logo from './Logo.jsx'
 import SemanticSearch from '../search/SemanticSearch.jsx'
@@ -10,20 +11,22 @@ const roleLabel = { user: 'Người nghe', artist: 'Nghệ sĩ', admin: 'Quản 
 
 export default function TopBar({ onOpenChat, chatOpen, onPlayTrack, onPlayPlaylist }) {
   const store = useStore()
+  const [searchOpen, setSearchOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-3 border-b border-white/[0.04] bg-[#111113]/95 px-4 py-3.5 backdrop-blur-xl sm:h-[80px] sm:flex-nowrap sm:gap-4 sm:px-6">
-      <Link to="/" aria-label="AuraTune — Trang chủ" className="rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 md:hidden"><Logo compact /></Link>
+      <Link to="/" aria-label="AuraTune — Trang chủ" className="rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 lg:hidden"><Logo compact /></Link>
       <div className="hidden items-center gap-2 lg:flex">
         <button aria-label="Quay lại" onClick={() => window.history.back()} className="grid h-8 w-8 place-items-center rounded-full bg-black/40 text-zinc-300 transition hover:bg-black/70 hover:text-white"><Icon name="arrowLeft" size={18} /></button>
         <button aria-label="Tiến tới" onClick={() => window.history.forward()} className="grid h-8 w-8 place-items-center rounded-full bg-black/40 text-zinc-300 transition hover:bg-black/70 hover:text-white"><Icon name="arrowRight" size={18} /></button>
       </div>
 
-      <div className="order-last w-full min-w-0 sm:order-none sm:w-auto sm:flex-1">
+      <div className="hidden min-w-0 flex-1 md:block">
         <SemanticSearch onPlayTrack={onPlayTrack} onPlayPlaylist={onPlayPlaylist} />
       </div>
 
-      <div className="ml-auto flex shrink-0 items-center gap-2 sm:ml-0">
+      <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
+        <button type="button" onClick={() => setSearchOpen(true)} aria-label="Mở tìm kiếm" aria-expanded={searchOpen} className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-zinc-200 transition hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 md:hidden"><Search size={18} aria-hidden="true" /></button>
         <button type="button" onClick={onOpenChat} aria-label="Mở AuraTune AI Host" aria-expanded={chatOpen} aria-controls="ai-host-panel" className="flex h-9 items-center gap-2 rounded-full border border-sky-300/20 bg-gradient-to-r from-sky-300/10 to-violet-300/10 px-3 text-xs font-semibold text-sky-100 transition hover:border-sky-300/50 hover:bg-sky-300/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
           <Sparkles size={16} aria-hidden="true" /> <span>AI Host</span><span className={`h-1.5 w-1.5 rounded-full ${store.aiAvailable ? 'bg-emerald-400' : 'bg-amber-400'}`} />
         </button>
@@ -36,7 +39,22 @@ export default function TopBar({ onOpenChat, chatOpen, onPlayTrack, onPlayPlayli
           </>
         )}
       </div>
+      {searchOpen && <MobileSearch onClose={() => setSearchOpen(false)} onPlayTrack={onPlayTrack} onPlayPlaylist={onPlayPlaylist} />}
     </header>
+  )
+}
+
+// Ô tìm kiếm toàn chiều rộng cho điện thoại, mở từ nút kính lúp trên TopBar.
+function MobileSearch({ onClose, onPlayTrack, onPlayPlaylist }) {
+  return createPortal(
+    <div role="dialog" aria-modal="true" aria-label="Tìm kiếm" className="fixed inset-0 z-[55] md:hidden">
+      <div aria-hidden="true" onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-[3px]" />
+      <div className="mobile-search-panel relative flex items-center gap-2 border-b border-white/[0.06] bg-[#111113] px-3 py-3">
+        <button type="button" onClick={onClose} aria-label="Đóng tìm kiếm" className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-zinc-300 transition hover:bg-white/[0.06] hover:text-white"><Icon name="arrowLeft" size={20} /></button>
+        <SemanticSearch autoFocus onDone={onClose} onPlayTrack={onPlayTrack} onPlayPlaylist={onPlayPlaylist} />
+      </div>
+    </div>,
+    document.body,
   )
 }
 

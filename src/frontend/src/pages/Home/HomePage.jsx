@@ -10,7 +10,7 @@ import { usePlayer } from '../../context/PlayerContext.jsx'
 import { genres, getArtist, playlists, recentlyPlayed } from '../../utils/mockData.js'
 import { Link } from '../../utils/navigation.jsx'
 
-const gridClass = 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+const gridClass = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
 export default function HomePage() {
   const store = useStore()
@@ -121,7 +121,7 @@ export default function HomePage() {
 
       <section className="mt-10 px-5 sm:px-8">
         <SectionHeading title="Thể loại" subtitle="Chọn một thể loại để bắt đầu" action="Tất cả thể loại" actionTo="/explore" />
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {genres.map((genre) => <GenreTile key={genre.id} genre={genre} />)}
         </div>
       </section>

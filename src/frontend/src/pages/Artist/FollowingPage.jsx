@@ -24,7 +24,7 @@ export default function FollowingPage() {
       <PageHeader eyebrow="Thư viện" title="Nghệ sĩ đang theo dõi" description="Sắp xếp theo thời điểm bạn bắt đầu theo dõi, mới nhất trước." />
       <div className="px-5 sm:px-8">
         {visible.length ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {visible.map(({ artist, followedAt }) => <ArtistCard key={artist.id} artist={artist} subtitle={followedLabel(followedAt)} />)}
           </div>
         ) : (
