@@ -30,6 +30,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 24  | 2026-11-07 | Rà soát và cập nhật chi tiết Project Plan cho Sprint 3 (PA3), bổ sung WBS Jira và cập nhật BLD-02 Alpha Checkpoint                        | Project Plan / PA3 (Quản lý dự án)                |
 | 25  | 2026-11-07 | Rà soát và chuẩn hóa Vision Document cho PA3: Chi tiết hóa Functional Requirements gắn liền Use Case, mở rộng môi trường, đối thủ và NFRs | Vision Document / PA3                             |
 | 26  | 2026-11-07 | Biên soạn tài liệu Changes.md cho PA3 ghi nhận chi tiết thay đổi của Project Plan (Mục A) và Vision Document (Mục B)                      | PA3 (Changes Log)                                 |
+| 27  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 101 – Listening History Analysis bằng `/speckit.tasks`                             | 10 – AI Recommendations                           |
 
 ---
 
@@ -4625,3 +4626,133 @@ Lưu ý: Viết toàn bộ bằng tiếng Anh súc tích, mạch lạc và chuy�
 
 - **Kiểm tra độ bao phủ nội dung:** Đối chiếu từng dòng trong bảng Section A với `project_plan.md` và từng dòng trong Section B với `Auratune_Vision_Document.md`, đảm bảo 100% thay đổi thực tế đều được ghi nhận trung thực.
 - **Kiểm tra chuẩn Markdown:** Đảm bảo tất cả các bảng, tiêu đề, danh sách và liên kết tài liệu hiển thị đẹp mắt, không phát sinh lỗi layout.
+
+---
+
+## Mục 27: Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 101 – Listening History Analysis bằng `/speckit.tasks`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-08                                                                                                                                                                                                                                                                                                                      |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                            |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 101: Listening History Analysis (`specs/100-ai-recommendations/101-listening-history-analysis/`)                                                                                                                                                                                               |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit.tasks`                                                                                                                                                                                                                                                                   |
+| Mục đích                 | Phân rã toàn diện tài liệu thiết kế (plan.md, spec.md, data-model.md, research.md, quickstart.md, contracts) thành hệ thống 29 nhiệm vụ kỹ thuật (tasks.md) tuần tự, bám sát từng User Story và ranh giới kiến trúc đã duyệt, hoàn thiện sau phân tích `/speckit-analyze` để chuẩn bị trực tiếp cho quá trình cài đặt mã nguồn. |
+
+### Prompt đã dùng
+
+```text
+/speckit-tasks Hãy tạo file tasks.md cho Tính năng 101: Phân tích lịch sử nghe nhạc (Listening History Analysis) tại thư mục
+    specs/100-ai-recommendations/101-listening-history-analysis/ dựa trên toàn bộ tài liệu thiết kế có sẵn: plan.md, spec.md, data-model.md,
+    research.md, quickstart.md và contracts/listening-analysis-api.json.
+
+    Yêu cầu chi tiết và các ràng buộc kỹ thuật:
+
+    1. Thông tin tính năng mục tiêu:
+       - Thư mục: specs/100-ai-recommendations/101-listening-history-analysis/ (Branch: 101-listening-history-analysis).
+       - Nhóm: 100 – AI Recommendations (Chủ sở hữu: Lê Công Minh Nhựt).
+
+    2. Phân chia User Story và Thứ tự ưu tiên (Tổ chức theo từng Phase):
+       - Phase 3: User Story 1 (P1 - MVP): Xem thông tin chi tiết về lịch sử nghe nhạc. Tính toán tổng thời lượng nghe nhạc và danh sách top thể loại
+       được xếp hạng theo thời lượng nghe tích lũy trên các khoảng thời gian ('7', '30', 'all').
+       - Phase 4: User Story 2 (P2): Hiểu rõ trạng thái dữ liệu không đủ hoặc không khả dụng. Khi người dùng có dưới 1 bản ghi lịch sử hợp lệ
+       (hasSufficientData: false), hiển thị giao diện trạng thái trống ("Chưa có đủ dữ liệu để phân tích") cùng nút hành động "Khám phá nhạc".
+       - Phase 5: User Story 3 (P1): Đảm bảo quyền riêng tư và cô lập dữ liệu theo tài khoản. Áp dụng xác thực JWT trên endpoint GET
+       /api/v1/users/me/stats/listening-analysis, từ chối truy cập (HTTP 401) nếu chưa đăng nhập, và lọc dữ liệu tuyệt đối theo tài khoản đang đăng nhập
+       (WHERE user_id = :authenticated_user_id) nhằm tuân thủ Nghị định 13/2023/NĐ-CP.
+
+    3. Kiến trúc mã nguồn và đường dẫn file cụ thể:
+       - Backend (Node.js / Express):
+         - Repository: src/backend/repositories/historyRepository.js (Viết câu truy vấn dynamic SQL aggregation kết nối listening_history và songs, xử
+         lý lọc bỏ các bản ghi null/0 giây, cấu hình compound index idx_listening_history_user_played).
+         - Business Service: src/backend/services/listeningAnalysisService.js (Xử lý định dạng chuỗi thời lượng, quy tắc xếp hạng và tie-breaking cho
+         top thể loại theo duration giảm dần -> số lượt phát giảm dần -> tên thể loại A-Z, tính phần trăm tỷ lệ).
+         - Controller: src/backend/controllers/statsController.js (Tiếp nhận request GET /api/v1/users/me/stats/listening-analysis, xác thực tham số
+         range '7', '30', 'all').
+         - Định tuyến & Đăng ký server: src/backend/routes/statsRoutes.js và gắn route vào src/backend/server.js.
+       - Frontend (React / Vite):
+         - Service Client: src/frontend/src/services/statsService.js (Gọi HTTP GET kèm query param range và token Bearer).
+         - Mock Adapter: src/frontend/src/services/mock/mockStatsService.js (Adapter dự phòng khi bật chế độ VITE_USE_MOCKS=true).
+         - UI Component: src/frontend/src/pages/History/HistoryPage.jsx (Kết nối tab "Thống kê" vào statsService, quản lý trạng thái tải dữ liệu, lỗi
+         mạng, chọn khoảng thời gian và hiển thị card rỗng).
+
+    4. Ranh giới phạm vi nghiêm ngặt (Out-of-Scope / Prohibitions):
+       - Nguồn dữ liệu duy nhất là listening_history kết hợp songs (FR-003). TUYỆT ĐỐI KHÔNG đọc hoặc ghi vào bảng user_listening_stats, không dùng dữ
+       liệu likes, follows hay thông tin hồ sơ người dùng.
+       - KHÔNG tạo danh sách gợi ý bài hát cá nhân hóa, gợi ý theo ngữ cảnh hay tâm trạng (thuộc phạm vi của Feature 102 và 103).
+       - KHÔNG trả về top bài hát hay top nghệ sĩ (thuộc phạm vi sở hữu của Nhóm 070 - Listening History).
+       - KHÔNG gọi mô hình AI ngoài hoặc dịch vụ Python; tính toán hoàn toàn là dynamic SQL aggregation trên PostgreSQL (FR-009).
+
+    5. Định dạng đầu ra bắt buộc của tasks.md:
+       - Tuân thủ nghiêm ngặt cú pháp checklist chuẩn của Spec Kit:
+         - [ ] [TaskID] [P?] [Story?] Mô tả hành động kèm đường dẫn file chính xác
+       - Cấu trúc các giai đoạn rõ ràng:
+         - Phase 1: Setup (Khởi tạo & cấu hình dùng chung)
+         - Phase 2: Foundational (Các thành phần chặn luồng - middleware xác thực, cơ sở dữ liệu)
+         - Phase 3: User Story 1 (P1 - MVP)
+         - Phase 4: User Story 2 (P2)
+         - Phase 5: User Story 3 (P1)
+         - Final Phase: Polish & Cross-Cutting Concerns (Đồng bộ mock, chạy xác thực quickstart.md)
+       - Bổ sung đầy đủ các phần: Sơ đồ phụ thuộc (Dependencies), Ví dụ chạy song song (Parallel execution examples), và Tiêu chí nghiệm thu độc lập
+       (Independent test criteria) cho từng User Story.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Nạp và rà soát toàn bộ tài liệu thiết kế Feature 101**: Đọc và đối chiếu `plan.md`, `spec.md`, `data-model.md`, `research.md`, `quickstart.md`, `contracts/listening-analysis-api.json` và cấu trúc mã nguồn hiện hữu trong `src/backend/` và `src/frontend/`.
+- **Phân rã hệ thống nhiệm vụ chi tiết trong `tasks.md` gồm 29 tasks tuần tự (được tối ưu sau phân tích đối chiếu)**:
+  - **Phase 1: Setup (T001 – T004)**:
+    - T001: Khởi tạo cấu hình dependencies kiểm thử backend (`vitest`, `supertest`) trong `src/backend/package.json` và cấu hình lệnh `"test": "vitest run"` theo `plan.md`.
+    - T002 [P]: Khởi tạo migration script `src/database/migrations/002_listening_history_index.sql` tạo compound index `idx_listening_history_user_played` trên `listening_history(user_id, played_at)` nhằm bảo đảm truy vấn < 1.5s cho 10.000 bản ghi.
+    - T003 [P]: Khởi tạo mock stats service `src/frontend/src/services/mock/mockStatsService.js`.
+    - T004 [P]: Xây dựng helper định dạng response envelope chuẩn trong `src/backend/utils/statsResponse.js`.
+  - **Phase 2: Foundational (T005 – T008 - Chặn luồng thực thi)**:
+    - T005: Thiết lập kết nối cơ sở dữ liệu và hàm thực thi dynamic aggregation query trong `src/backend/repositories/historyRepository.js`.
+    - T006 [P]: Kiểm tra và điều chỉnh middleware xác thực JWT `authenticateToken` trong `src/backend/middleware/authMiddleware.js`, trích xuất `req.user.user_id`, chuẩn hóa định dạng lỗi 401 trên stats route theo OpenAPI contract: `{ success: false, message: "Yêu cầu đăng nhập để truy cập thông tin phân tích", data: null, error: { code: "UNAUTHORIZED", details: [] } }`.
+    - T007 [P]: Tạo stats router trong `src/backend/routes/statsRoutes.js` và gắn route `/api/v1/users/me/stats` vào `src/backend/server.js`.
+    - T008 [P]: Xây dựng client adapter trong `src/frontend/src/services/statsService.js` chuyển đổi linh hoạt giữa REST API và Mock Adapter theo biến `VITE_USE_MOCKS`.
+  - **Phase 3: User Story 1 - Xem thông tin chi tiết lịch sử nghe (P1 - MVP) (T009 – T017)**:
+    - T009 [P] [US1] & T010 [P] [US1]: Viết trước bộ kiểm thử Unit Test (`src/backend/tests/listeningAnalysisService.test.js`) và Contract Test (`src/backend/tests/contract/listeningAnalysisContract.test.js`) theo OpenAPI 3.0 (TDD approach).
+    - T011 [US1]: Viết câu truy vấn dynamic SQL aggregation trong `src/backend/repositories/historyRepository.js` kết nối `listening_history` và `songs`, lọc bỏ triệt để các bản ghi có `user_id IS NULL`, `song_id IS NULL`, `listened_duration <= 0` và lọc theo mốc thời gian (`'7'`, `'30'`, `'all'`). Trích dẫn ràng buộc FR-003: "Derive analysis in this feature from `listening_history` only; it MUST NOT use `user_listening_stats`, likes, follows, or other account data as analysis inputs".
+    - T012 [US1]: Xây dựng nghiệp vụ tính toán trong `src/backend/services/listeningAnalysisService.js` xử lý định dạng chuỗi thời lượng (e.g., `"14 giờ 25 phút"`), quy tắc xếp hạng tie-breaking top thể loại (`accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`), tính phần trăm và loại trừ bài hát thiếu `genre` khỏi xếp hạng thể loại nhưng vẫn giữ thời lượng trong tổng thời gian nghe (FR-012).
+    - T013 [US1]: Xây dựng controller handler trong `src/backend/controllers/statsController.js` xác thực tham số `range` và đóng gói JSON envelope chuẩn.
+    - T014 [US1]: Đăng ký endpoint `GET /listening-analysis` với middleware `authenticateToken` trong `src/backend/routes/statsRoutes.js`.
+    - T015 [P] [US1] & T016 [P] [US1]: Hiện thực hàm gọi HTTP `getListeningAnalysis(range)` trong `src/frontend/src/services/statsService.js` kèm token Bearer và thuật toán tính toán in-memory trong `src/frontend/src/services/mock/mockStatsService.js`.
+    - T017 [US1]: Cập nhật tab "Thống kê" tại `src/frontend/src/pages/History/HistoryPage.jsx` kết nối `statsService`, hiển thị các thẻ tóm tắt và thanh tiến độ gradient; loại bỏ hoàn toàn tính toán và giao diện cục bộ của Top bài hát và Top nghệ sĩ (dòng 133-163) để bảo toàn tuyệt đối ranh giới sở hữu của Group 070 (FR-004, FR-011).
+  - **Phase 4: User Story 2 - Hiểu rõ trạng thái dữ liệu không đủ / không khả dụng (P2) (T018 – T022)**:
+    - T018 [P] [US2]: Viết unit test cho trường hợp dữ liệu rỗng và xử lý mã lỗi 500 trong `src/backend/tests/insufficientData.test.js`.
+    - T019 [US2]: Bổ sung kiểm tra ngưỡng dữ liệu hợp lệ `< 1` bản ghi trong `src/backend/services/listeningAnalysisService.js`, trả về `hasSufficientData: false`, `topGenres: []`, `totalDurationSeconds: 0`.
+    - T020 [US2]: Xử lý ngoại lệ CSDL/timeout trong `src/backend/controllers/statsController.js`, trả về HTTP 500 với mã `"DATABASE_ERROR"` và thông báo tiếng Việt: _"Thông tin phân tích tạm thời không khả dụng, vui lòng thử lại sau"_.
+    - T021 [P] [US2]: Xử lý trả về `hasSufficientData: false` khi danh sách phát rỗng trong `src/frontend/src/services/mock/mockStatsService.js`.
+    - T022 [US2]: Kết nối giao diện empty state card tại `src/frontend/src/pages/History/HistoryPage.jsx` hiển thị thông báo _"Chưa có đủ dữ liệu để phân tích"_ cùng nút bấm _"Khám phá nhạc"_ dẫn tới `/`.
+  - **Phase 5: User Story 3 - Quyền riêng tư và cô lập dữ liệu theo tài khoản (P1) (T023 – T026)**:
+    - T023 [P] [US3]: Viết integration test trong `src/backend/tests/security/accountIsolation.test.js` kiểm tra lỗi 401 khi không có token và kiểm tra cô lập dữ liệu tuyệt đối giữa User A và User B.
+    - T024 [US3]: Áp đặt tham số an toàn trong `src/backend/repositories/historyRepository.js`, gán biến `$1` độc quyền từ `req.user.user_id`, từ chối mọi giá trị `user_id` do client truyền vào (FR-005, FR-006).
+    - T025 [US3]: Gắn middleware `authenticateToken` bảo vệ router trong `src/backend/routes/statsRoutes.js` trả về HTTP 401 chuẩn envelope.
+    - T026 [P] [US3]: Gắn guard `<LoginRequired />` trong `src/frontend/src/pages/History/HistoryPage.jsx` khi chưa đăng nhập.
+  - **Final Phase: Polish & Cross-Cutting Concerns (T027 – T029)**:
+    - T027 [P]: Cập nhật tài liệu hợp đồng `specs/100-ai-recommendations/101-listening-history-analysis/contracts/README.md`.
+    - T028 [P]: Viết component test cho giao diện `src/frontend/src/pages/History/__tests__/HistoryPage.test.jsx`.
+    - T029: Thực thi xác thực toàn diện 4 kịch bản nghiệm thu trong `quickstart.md`.
+- **Bổ sung các phần bổ trợ kiến trúc theo chuẩn Spec Kit**:
+  - Sơ đồ quan hệ phụ thuộc (Dependencies Graph bằng cú pháp Mermaid `flowchart TD`).
+  - Ví dụ thực thi song song (Parallel execution examples) cho từng User Story và đa lập trình viên.
+  - Bảng tiêu chí nghiệm thu độc lập (Independent Test Criteria) chi tiết cho cả 3 User Stories.
+  - Chiến lược thực thi MVP First (User Story 1 làm cốt lõi) và phân phối gia tăng (Incremental Delivery).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                     | Quyết định   | Lý do                                                                                                                                        |
+| :----------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cú pháp checklist Spec Kit (`- [ ] [TaskID] [P?] [Story?]`)              | Dùng toàn bộ | Tuân thủ tuyệt đối quy định định dạng của Spec Kit, giúp agent và developer có thể thực thi tự động từng task.                               |
+| Phân chia 6 giai đoạn rõ ràng (Setup, Foundation, US1, US2, US3, Polish) | Dùng toàn bộ | Đáp ứng chính xác yêu cầu tại mục 2 và 5 của prompt, tổ chức ưu tiên P1 (MVP) -> P2 -> P1 (Security).                                        |
+| Gắn đường dẫn file chính xác cho từng task                               | Dùng toàn bộ | Phản ánh đúng kiến trúc thực tế của AuraTune (`src/backend/`, `src/frontend/`, `src/database/migrations/`).                                  |
+| Trích dẫn verbatim ràng buộc từ `data-model.md` và `spec.md`             | Dùng toàn bộ | Bảo đảm tính nghiêm ngặt kỹ thuật: không đọc/ghi `user_listening_stats`, lọc `listened_duration > 0`, tie-breaker, không dùng likes/follows. |
+| Top bài hát & Top nghệ sĩ                                                | Loại trừ     | Thuộc thẩm quyền sở hữu của Group 070 (Listening History); không đưa vào phạm vi task của Feature 101.                                       |
+| External AI Service / Python AI Model                                    | Bỏ tuyệt đối | Feature 101 là dynamic SQL aggregation trên PostgreSQL, hoàn toàn không gọi AI service ngoài theo FR-009.                                    |
+
+### Cách kiểm chứng
+
+- **Kiểm tra cú pháp định dạng Spec Kit:** Toàn bộ 29 tasks đều có checkbox markdown `- [ ]`, mã Task ID duy nhất (`T001` - `T029`), nhãn parallel `[P]` đúng nơi, nhãn User Story (`[US1]`, `[US2]`, `[US3]`) chỉ xuất hiện trong story phase và có đường dẫn file cụ thể.
+- **Kiểm tra độ bao phủ yêu cầu:** Đối chiếu toàn diện với `spec.md` (FR-001..FR-014, 3 User Stories), `data-model.md`, `contracts/listening-analysis-api.json` và `quickstart.md` (đủ 4 kịch bản test).
+- **Kiểm tra ranh giới phạm vi:** Không có task nào đụng chạm tới `user_listening_stats`, recommendation engine hay Group 070 statistics.
