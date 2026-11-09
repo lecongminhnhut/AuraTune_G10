@@ -118,3 +118,11 @@ The only approved save/remove interface details present in the feature artifacts
 ## Complexity Tracking
 
 No constitution violation is asserted because the constitution has not been completed. No API response schema, new database schema, quota, or provider SDK is proposed. API ownership and destination mechanisms remain explicit dependencies for task planning.
+
+## Plan Execution Notes (2026-11-09)
+
+This plan was reviewed against the Feature 083 artifacts, the Spec Kit workflow and plan template, project API/architecture/database documents, UC-080-003, and the current album/library/auth/share source. The Spec Kit slash command is not exposed in this environment. The provided `setup-plan.sh --json` was attempted with Feature 083 explicitly selected and feature metadata persistence disabled, but Git Bash failed while creating its resolved directory (`Permission denied`). The workflow was therefore followed using the repository's plan template; the planning artifacts are confined to this feature directory.
+
+The API contract inventory confirms `PUT /albums/:id/save`, `DELETE /albums/:id/save`, and `GET /users/me/saved-albums` as User-authorized operations. It lists methods and routes but does not define response schemas. The current backend mounts authentication routes only. The current frontend saves to the active account's local demo `AppStore`, and `shareLink` uses Web Share API with clipboard fallback; neither implements all server-confirmed behavior required by Feature 083. These are implementation gaps, not authority to invent payloads or provider integrations.
+
+The current `spec.md` includes a provenance note that it was reconstructed from existing UI and describes local demo saving plus generic Web Share/clipboard behavior. UC-080-003 and the 083 clarification history in `docs/ai-log/AI_log_3.md` record the broader API-backed save/remove flow, pending/error handling, and named share destinations. Preserve this source mismatch as a review clarification; do not silently treat UI-derived `spec.md` content and broader use-case/clarification history as identical. Endpoint response shape, saved-state read mapping, persistence owner, and provider-specific sharing mechanism remain open. No schema, API payload, or provider URL format is introduced here.

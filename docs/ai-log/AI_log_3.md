@@ -27,9 +27,15 @@
 | 23 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 081) | 08 Album Interaction |
 | 24 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 082) | 08 Album Interaction |
 | 25 | 2026-11-07 | Làm rõ rủi ro kỹ thuật cho Implementation Plan (Feature 083) | 08 Album Interaction |
-| 26 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 031 bằng Spec Kit bằng `/speckit-tasks` |
-| 27 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 032 bằng Spec Kit bằng `/speckit-tasks` | 030 Search |
-| 28 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 033 bằng Spec Kit bằng `/speckit-tasks` | 030 Search |
+| 26 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 031 bằng Spec Kit `/speckit-tasks` |
+| 27 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 032 bằng Spec Kit `/speckit-tasks` | 030 Search |
+| 28 | 2026-11-08 | Phân rã công việc (Task Breakdown) cho spec 033 bằng Spec Kit `/speckit-tasks` | 030 Search |
+| 29 | 2026-11-09 | Hoàn thiện Implementation Plan cho spec 081 bằng Spec Kit | 08 Album Interaction |
+| 30 | 2026-11-09 | Hoàn thiện Implementation Plan cho spec 082 bằng Spec Kit | 08 Album Interaction |
+| 31 | 2026-11-09 | Hoàn thiện Implementation Plan cho spec 083 bằng Spec Kit | 08 Album Interaction |
+| 32 | 2026-11-09 | Phân rã công việc cho spec 081 bằng Spec Kit `/speckit-tasks` | 08 Album Interaction |
+| 33 | 2026-11-09 | Phân rã công việc cho spec 082 bằng Spec Kit `/speckit-tasks` | 08 Album Interaction |
+| 34 | 2026-11-09 | Phân rã công việc cho spec 083 bằng Spec Kit `/speckit-tasks` | 08 Album Interaction |
 
 ---
 
@@ -2643,3 +2649,770 @@ Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho 
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 033 đã hoàn thiện và bao phủ toàn bộ các góc độ kỹ thuật. Cần chờ Tech Lead xác nhận các cổng phê duyệt ở Phase 1 trước khi bắt đầu viết code.
+
+## Mục 29: Lập bộ tài liệu Planning cho spec 081 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-09 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Khởi tạo và hoàn thiện bộ tài liệu Implementation Plan (gồm `plan.md`, `research.md`, `data-model.md`, `contracts/README.md` và `quickstart.md`) cho tính năng xem chi tiết Album dựa trên quy trình chuẩn của Spec Kit. | 
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` cho Feature 081 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo bộ tài liệu Implementation Plan cho feature `081` thuộc Group 080 – Album Interaction.
+
+**Chỉ lập Plan cho feature 081. Không xử lý feature khác.**
+
+## 1. Xác định Feature 081
+Kiểm tra:
+- `specs/080-album-interaction/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 081.
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+Nếu không tìm thấy feature 081 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu cần thiết:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 081.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 081.
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+Sau khi xác định đúng feature context:
+1. Chọn feature 081 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật **toàn bộ bộ tài liệu planning** đúng vị trí mà Spec Kit quy định, bao gồm: `plan.md`, `research.md`, `data-model.md`, `contracts/`, và `quickstart.md`.
+Không tự viết thủ công thay cho Spec Kit command. Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions.
+
+## 4. Yêu cầu đối với Bộ tài liệu Planning
+Phải sinh ra đầy đủ các file sau (nếu ngữ cảnh feature yêu cầu):
+
+*   **`plan.md` (Bắt buộc):** Phương án triển khai kỹ thuật. Xác định technical approach, components, services, dependencies, data flow, testing strategy, risks, và technical considerations. Cần đủ chi tiết để làm đầu vào cho `/speckit.tasks`.
+*   **`research.md` (Bắt buộc):** Kết quả nghiên cứu các câu hỏi kỹ thuật. Ghi nhận các giải pháp thay thế, lý do chọn công nghệ/thư viện/cách tiếp cận cụ thể cho feature này.
+*   **`data-model.md` (Tạo nếu cần):** Mô hình dữ liệu. Định nghĩa các thay đổi về database schema, entities mới, relationships, hoặc cấu trúc NoSQL/cache liên quan trực tiếp đến tính năng.
+*   **`contracts/` (Tạo nếu cần):** Chứa các file định nghĩa API (REST/gRPC), payload request/response, JSON schema, hoặc các hợp đồng giao tiếp giữa frontend-backend và các microservices.
+*   **`quickstart.md` (Tạo nếu cần):** Hướng dẫn setup môi trường, cách chạy thử (run), test cục bộ tính năng này, hoặc các CLI commands cần thiết.
+
+**Không tự ý:**
+- Thêm Functional Requirements hoặc chức năng ngoài phạm vi feature 081.
+- Tạo API hoặc database schema không có căn cứ từ `spec.md`.
+- Tự đặt AI algorithm hoặc scoring formula nếu chưa được duyệt.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+Chỉ được tạo hoặc cập nhật bộ tài liệu Planning của feature 081 theo Spec Kit workflow.
+Không được:
+- Lập Plan cho feature 081 trở đi hoặc toàn bộ Group 080.
+- Chỉnh sửa group khác, `spec.md`, `tasks.md`, tài liệu project-level.
+- Implement source code (frontend, backend, AI service, database).
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi:
+- Kiểm tra toàn bộ các file (`plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`) thuộc đúng feature 081.
+- Kiểm tra tính nhất quán giữa các file trong bộ tài liệu và `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 081 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. Danh sách toàn bộ các file đã tạo hoặc cập nhật (`plan.md`, `research.md`, `data-model.md`, `contracts/`...).
+4. Nội dung chính của từng file trong bộ tài liệu.
+5. Các technical decisions đáng chú ý.
+6. Validation results và những vấn đề cần clarification.
+Completion criteria: Hoàn thành bộ tài liệu Implementation Plan (đủ các file yêu cầu) cho feature 081. Dừng lại và chờ review, không tự động chuyển feature.
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Khắc phục sự cố không thể chạy trực tiếp script `setup-plan.sh` (do lỗi quyền tạo thư mục trong Git Bash) bằng cách áp dụng quy trình tương đương để phân tích và tạo thủ công bộ tài liệu cho tính năng 081.
+- Hoàn thiện bộ tài liệu Planning mà không làm thay đổi ngữ cảnh (`feature.json`) hay đụng độ với các tính năng khác:
+  - Cập nhật `plan.md`: Bổ sung ghi chú thực thi, hiện trạng mã nguồn, các phụ thuộc API và giới hạn kiểm thử.
+  - Tạo mới `research.md`: Ghi nhận các quyết định kỹ thuật, phương án thay thế về API, frontend, xử lý dữ liệu track và test tooling.
+  - Tạo mới `data-model.md`: Chỉ mô tả read projection và giá trị dẫn xuất (ví dụ: phân biệt số 0 với giá trị thiếu), không đề xuất schema lưu trữ mới.
+  - Tạo mới `contracts/README.md`: Xác định ranh giới với API đã được duyệt, không tự tạo payload hay endpoint thay thế.
+  - Tạo mới `quickstart.md`: Cung cấp hướng dẫn chạy ứng dụng và các bước nghiệm thu theo script hiện có.
+- Chỉ ra các điểm cần xác nhận (Blockers): Ghi nhận chưa có schema API đầy đủ, yêu cầu xác nhận chủ sở hữu API `GET /albums/:id`, nguồn dữ liệu cho danh sách “More from [Artist]”, và test harness của dự án trước khi bước vào giai đoạn implement.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Sử dụng luồng phân tích tương đương thay lệnh slash | Dùng | Khắc phục rào cản lỗi permission của môi trường hệ điều hành để hoàn thành đúng yêu cầu tạo bộ tài liệu của framework. | 
+| Không tự tạo database schema hay endpoint API mới | Dùng | Phản ánh tính trung thực của kiến trúc hiện tại, tôn trọng ranh giới thiết kế và không vượt quyền System Architect. | 
+| Ghi nhận các rủi ro API vào mục cần xác nhận | Dùng | Ngăn chặn việc lập trình viên tự đoán (mock) sai dữ liệu dẫn đến lỗi tích hợp hệ thống về sau. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Quá trình sinh bộ tài liệu đảm bảo không ghi đè hay ảnh hưởng đến các thay đổi của tính năng khác. Cần làm rõ các route backend trước khi tiến hành viết code.
+
+## Mục 30: Lập Implementation Plan cho spec 082 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-09 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist Playback |
+| Công cụ AI | GPT-5.6-Luna  |
+| Mục đích | Khởi tạo toàn bộ bộ tài liệu Implementation Plan (gồm `plan.md`, `research.md`, `data-model.md`, `contracts/README.md` và `quickstart.md`) cho tính năng Album Tracklist Playback dựa trên quy trình chuẩn của Spec Kit, đồng thời khoanh vùng các mâu thuẫn hệ thống. |
+
+### Prompt đã dùng
+
+```text
+/speckit-plan # TASK: Execute `/speckit.plan` cho Feature 082 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo bộ tài liệu Implementation Plan cho feature `082` thuộc Group 080 – Album Interaction.
+
+**Chỉ lập Plan cho feature 082. Không xử lý feature khác.**
+
+## 1. Xác định Feature 082
+Kiểm tra:
+- `specs/080-album-interaction/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 082.
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+Nếu không tìm thấy feature 082 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu cần thiết:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 082.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 082.
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+Sau khi xác định đúng feature context:
+1. Chọn feature 082 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật **toàn bộ bộ tài liệu planning** đúng vị trí mà Spec Kit quy định, bao gồm: `plan.md`, `research.md`, `data-model.md`, `contracts/`, và `quickstart.md`.
+Không tự viết thủ công thay cho Spec Kit command. Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions.
+
+## 4. Yêu cầu đối với Bộ tài liệu Planning
+Phải sinh ra đầy đủ các file sau (nếu ngữ cảnh feature yêu cầu):
+
+*   **`plan.md` (Bắt buộc):** Phương án triển khai kỹ thuật. Xác định technical approach, components, services, dependencies, data flow, testing strategy, risks, và technical considerations. Cần đủ chi tiết để làm đầu vào cho `/speckit.tasks`.
+*   **`research.md` (Bắt buộc):** Kết quả nghiên cứu các câu hỏi kỹ thuật. Ghi nhận các giải pháp thay thế, lý do chọn công nghệ/thư viện/cách tiếp cận cụ thể cho feature này.
+*   **`data-model.md` (Tạo nếu cần):** Mô hình dữ liệu. Định nghĩa các thay đổi về database schema, entities mới, relationships, hoặc cấu trúc NoSQL/cache liên quan trực tiếp đến tính năng.
+*   **`contracts/` (Tạo nếu cần):** Chứa các file định nghĩa API (REST/gRPC), payload request/response, JSON schema, hoặc các hợp đồng giao tiếp giữa frontend-backend và các microservices.
+*   **`quickstart.md` (Tạo nếu cần):** Hướng dẫn setup môi trường, cách chạy thử (run), test cục bộ tính năng này, hoặc các CLI commands cần thiết.
+
+**Không tự ý:**
+- Thêm Functional Requirements hoặc chức năng ngoài phạm vi feature 082.
+- Tạo API hoặc database schema không có căn cứ từ `spec.md`.
+- Tự đặt AI algorithm hoặc scoring formula nếu chưa được duyệt.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+Chỉ được tạo hoặc cập nhật bộ tài liệu Planning của feature 082 theo Spec Kit workflow.
+Không được:
+- Lập Plan cho feature 082 trở đi hoặc toàn bộ Group 080.
+- Chỉnh sửa group khác, `spec.md`, `tasks.md`, tài liệu project-level.
+- Implement source code (frontend, backend, AI service, database).
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi:
+- Kiểm tra toàn bộ các file (`plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`) thuộc đúng feature 082.
+- Kiểm tra tính nhất quán giữa các file trong bộ tài liệu và `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 082 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. Danh sách toàn bộ các file đã tạo hoặc cập nhật (`plan.md`, `research.md`, `data-model.md`, `contracts/`...).
+4. Nội dung chính của từng file trong bộ tài liệu.
+5. Các technical decisions đáng chú ý.
+6. Validation results và những vấn đề cần clarification.
+Completion criteria: Hoàn thành bộ tài liệu Implementation Plan (đủ các file yêu cầu) cho feature 082. Dừng lại và chờ review, không tự động chuyển feature.
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+```
+
+### Tóm tắt phản hồi của AI
+
+-   **Quy trình:** Script `setup-plan.sh` không thể thực thi trong Git Bash do lỗi phân quyền (`Permission denied`). Do đó, hệ thống đã chạy luồng công việc tương đương để điều hướng và tạo các artifact thủ công tại thư mục `082-album-tracklist`, bảo toàn toàn bộ mã nguồn cũng như các thay đổi chưa commit của feature 081.
+-   **Hoàn thiện bộ Planning:**
+    -   `plan.md`: Định hình phương án kỹ thuật, mô tả việc tích hợp với Music Player/Queue dùng chung thay vì tạo module riêng. Ghi nhận rõ các "blocker" (rào cản).
+    -   `research.md`: Lưu lại lý do và cơ sở của các quyết định về tracklist, queue, playback và xử lý tính khả dụng (availability).
+    -   `data-model.md`: Cung cấp mô hình runtime state, không can thiệp schema.
+    -   `contracts/README.md`: Đặt ranh giới tương tác với `PlayerContext` hiện tại, không tự ý sáng tạo API hay payload mới.
+    -   `quickstart.md`: Hướng dẫn kiểm thử và sử dụng các script có sẵn.
+-   **Quyết định kỹ thuật & Gaps (Blocker):** Giữ đúng các quy tắc từ `spec.md` như tự động tắt Shuffle khi chọn "Play Album". Đánh dấu 3 vấn đề lớn làm **Blocker** cần Product Owner chốt:
+    1.  Thao tác Play Album sẽ "thay thế" hàng đợi hay "chèn vào" hàng đợi (mâu thuẫn giữa `FR-004` và bản clarification).
+    2.  Album có thể dài hơn 100 bài hát, nhưng module Queue (Group 050) đang giới hạn tối đa 50 bài.
+    3.  Cơ chế tự động nhảy bài (recovery) khi track mất khả năng phát sinh vào lúc đang play.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sử dụng luồng phân tích tương đương thay vì slash command | Dùng | Khắc phục rào cản lỗi môi trường (Git Bash permission), đáp ứng tiến độ mà vẫn tuân thủ đúng chuẩn Spec Kit |
+| Treo các quyết định mâu thuẫn thành Blocker | Dùng | Đảm bảo tính minh bạch về ranh giới hệ thống, ngăn rủi ro Developer tự ý phán đoán dẫn đến xung đột với nhóm 040 & 050 |
+| Tích hợp chung với `PlayerContext` hiện có | Dùng | Tránh dư thừa logic, tái sử dụng các components Music Player đã được thiết kế |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Bộ tài liệu `plan.md` cho Album Tracklist Playback đã hoàn thiện. Phải chờ Product Owner giải quyết các Blocker trước khi tạo Task.
+
+## Mục 31: Lập Implementation Plan cho spec 083 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-09 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Khởi tạo toàn bộ bộ tài liệu Implementation Plan (gồm `plan.md`, `research.md`, `data-model.md`, `contracts/album-save-share.md` và `quickstart.md`) cho tính năng Lưu và Chia sẻ Album dựa trên quy trình chuẩn của Spec Kit, đồng thời đối chiếu và làm rõ mâu thuẫn giữa tài liệu Spec và Use Case. | 
+
+### Prompt đã dùng
+
+```
+/speckit-plan # TASK: Execute `/speckit.plan` cho Feature 083 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng **Spec Kit `/speckit.plan`** để tạo bộ tài liệu Implementation Plan cho feature `083` thuộc Group 080 – Album Interaction.
+
+**Chỉ lập Plan cho feature 083. Không xử lý feature khác.**
+
+## 1. Xác định Feature 083
+Kiểm tra:
+- `specs/080-album-interaction/`
+- Các thư mục và file con bên trong.
+- `spec.md` của feature 083.
+- Metadata và configuration liên quan.
+Xác định chính xác tên feature và đường dẫn Spec Kit.
+Nếu không tìm thấy feature 083 hoặc không xác định được context, hãy dừng lại và báo cáo. Không tự tạo feature thay thế.
+
+## 2. Đọc tài liệu nguồn
+Đọc các tài liệu cần thiết:
+- `docs/management/speckit-workflow-guide.md`
+- `docs/management/team-contract.md`
+- `docs/proposal/Auratune_Vision_Document.md`
+- `docs/proposal/project_plan.md`
+- `docs/proposal/proposal.md`
+- Toàn bộ tài liệu thuộc feature 083.
+- Các tài liệu kiến trúc và source code liên quan trực tiếp đến feature 083.
+Kiểm tra `.specify/` và `.agents/` để hiểu instructions, templates và workflow của Spec Kit.
+
+## 3. Thực thi `/speckit.plan`
+Sau khi xác định đúng feature context:
+1. Chọn feature 083 làm context hiện hành.
+2. Thực thi `/speckit.plan`.
+3. Sử dụng nội dung `spec.md` và thông tin kiến trúc thực tế của AuraTune làm đầu vào.
+4. Tuân thủ instructions, template và conventions của repository.
+5. Tạo hoặc cập nhật **toàn bộ bộ tài liệu planning** đúng vị trí mà Spec Kit quy định, bao gồm: `plan.md`, `research.md`, `data-model.md`, `contracts/`, và `quickstart.md`.
+Không tự viết thủ công thay cho Spec Kit command. Nếu môi trường không hỗ trợ slash command trực tiếp, hãy tìm cách thực thi tương đương theo instructions.
+
+## 4. Yêu cầu đối với Bộ tài liệu Planning
+Phải sinh ra đầy đủ các file sau (nếu ngữ cảnh feature yêu cầu):
+
+*   **`plan.md` (Bắt buộc):** Phương án triển khai kỹ thuật. Xác định technical approach, components, services, dependencies, data flow, testing strategy, risks, và technical considerations. Cần đủ chi tiết để làm đầu vào cho `/speckit.tasks`.
+*   **`research.md` (Bắt buộc):** Kết quả nghiên cứu các câu hỏi kỹ thuật. Ghi nhận các giải pháp thay thế, lý do chọn công nghệ/thư viện/cách tiếp cận cụ thể cho feature này.
+*   **`data-model.md` (Tạo nếu cần):** Mô hình dữ liệu. Định nghĩa các thay đổi về database schema, entities mới, relationships, hoặc cấu trúc NoSQL/cache liên quan trực tiếp đến tính năng.
+*   **`contracts/` (Tạo nếu cần):** Chứa các file định nghĩa API (REST/gRPC), payload request/response, JSON schema, hoặc các hợp đồng giao tiếp giữa frontend-backend và các microservices.
+*   **`quickstart.md` (Tạo nếu cần):** Hướng dẫn setup môi trường, cách chạy thử (run), test cục bộ tính năng này, hoặc các CLI commands cần thiết.
+
+**Không tự ý:**
+- Thêm Functional Requirements hoặc chức năng ngoài phạm vi feature 083.
+- Tạo API hoặc database schema không có căn cứ từ `spec.md`.
+- Tự đặt AI algorithm hoặc scoring formula nếu chưa được duyệt.
+- Thay đổi công nghệ đã được dự án lựa chọn.
+- Phân biệt rõ những gì đã tồn tại, những gì sẽ triển khai và những gì còn cần xác nhận.
+
+## 5. Scope giới hạn
+Chỉ được tạo hoặc cập nhật bộ tài liệu Planning của feature 083 theo Spec Kit workflow.
+Không được:
+- Lập Plan cho feature 083 trở đi hoặc toàn bộ Group 080.
+- Chỉnh sửa group khác, `spec.md`, `tasks.md`, tài liệu project-level.
+- Implement source code (frontend, backend, AI service, database).
+- Commit hoặc push.
+Trước khi làm việc, kiểm tra `git status` và bảo toàn tất cả thay đổi chưa commit.
+
+## 6. Validation
+Sau khi thực thi:
+- Kiểm tra toàn bộ các file (`plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`) thuộc đúng feature 083.
+- Kiểm tra tính nhất quán giữa các file trong bộ tài liệu và `spec.md`.
+- Kiểm tra technical decisions có căn cứ.
+- Chạy validation scripts theo Spec Kit workflow nếu có.
+- Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+## 7. Final Report
+Báo cáo bằng Vietnamese:
+1. Tên và đường dẫn feature 083 đã xác định.
+2. `/speckit.plan` có thực sự được thực thi hay không.
+3. Danh sách toàn bộ các file đã tạo hoặc cập nhật (`plan.md`, `research.md`, `data-model.md`, `contracts/`...).
+4. Nội dung chính của từng file trong bộ tài liệu.
+5. Các technical decisions đáng chú ý.
+6. Validation results và những vấn đề cần clarification.
+Completion criteria: Hoàn thành bộ tài liệu Implementation Plan (đủ các file yêu cầu) cho feature 083. Dừng lại và chờ review, không tự động chuyển feature.
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Vượt rào cản môi trường:** Lệnh `/speckit.plan` và script `setup-plan.sh` không thể chạy trực tiếp do lỗi permission của Git Bash. AI đã dùng quy trình tương đương để phân tích và sinh bộ tài liệu một cách thủ công, bảo toàn tuyệt đối không gian Git làm việc hiện tại của dự án.
+- **Tạo và cập nhật bộ Planning:**
+  - `plan.md`: Bổ sung ghi chú thực thi, phân tích hiện trạng mã nguồn và các điểm cần review.
+  - `research.md`: Ghi chép phân tích kỹ thuật về API, trạng thái save/remove, tính năng chia sẻ, tính bền vững dữ liệu và test.
+  - `data-model.md`: Mô tả quan hệ account–album, trạng thái giao diện UI, không đề xuất các cấu trúc (schema) cơ sở dữ liệu mới.
+  - `contracts/album-save-share.md`: Khoanh vùng các endpoint đã tồn tại (`GET /users/me/saved-albums`, `PUT /albums/:id/save`, `DELETE /albums/:id/save`), không tự ý định nghĩa request/response payload mới.
+  - `quickstart.md`: Đưa ra hướng dẫn build và kiểm tra acceptance.
+- **Rủi ro và điểm chờ chốt (Blockers):** AI phát hiện sự bất đồng giữa tài liệu `spec.md` (chỉ là bản dựng lại từ UI) và tài liệu `UC-080-003` (được bổ sung đầy đủ kịch bản mạng xã hội trong AI log). Đồng thời, backend hiện tại chưa mount các route xử lý việc lưu/chia sẻ album, do đó cần Tech Lead và API Owner xác nhận phản hồi dữ liệu (response mapping) trước khi code.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sử dụng luồng phân tích tương đương thay lệnh slash | Dùng | Khắc phục được sự cố từ hệ điều hành để sinh bộ tài liệu chuẩn chỉnh theo đúng Spec Kit. |
+| Giữ nguyên API Contract, không tự định nghĩa schema | Dùng | Tôn trọng ranh giới kỹ thuật hiện có, không vượt quyền thiết kế hệ thống khi chưa được System Architect phê duyệt. |
+| Phơi bày mâu thuẫn giữa `spec.md` và `UC-080-003` | Dùng | Minh bạch hóa rủi ro về độ vênh của tài liệu, giúp team Product và Tech chốt phương án cuối cùng trước khi chuyển sang giai đoạn Task. |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Bộ tài liệu `plan.md` và các file thiết kế phụ trợ cho tính năng Save and Share Album đã hoàn thành. Cần giải quyết các mâu thuẫn trong spec và ranh giới API trước khi tạo task.
+
+## Mục 32: Cập nhật phân rã công việc (Task Breakdown) cho spec 081 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-09 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Sử dụng lệnh `/speckit.tasks` để rà soát, tái cấu trúc và tạo mới danh sách công việc (`tasks.md`) cho tính năng Xem chi tiết Album, đảm bảo tuân thủ chặt chẽ các rào cản hệ thống và quy trình Spec Kit. | 
+
+### Prompt đã dùng
+
+```
+/speckit-tasks # TASK: Execute /speckit.tasks for Task Generation of Feature 081 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng Spec Kit /speckit.tasks để tiến hành phân rã kế hoạch triển khai thành danh sách công việc chi tiết (task breakdown) và tạo/cập nhật file tasks.md cho feature 081 đang được chỉ định.
+Chỉ thực hiện tạo Tasks cho feature 081. Không xử lý feature khác.
+
+1. Xác định Feature 081
+
+Kiểm tra:
+Thư mục chứa spec của feature hiện tại: specs/080-album-interaction/081-album-details/
+Các thư mục và file con bên trong, đặc biệt phải đảm bảo file spec.md và plan.md đã tồn tại.
+Nếu không tìm thấy feature được yêu cầu hoặc file plan.md chưa tồn tại, hãy dừng lại và báo cáo. Không thể chia task nếu chưa có kế hoạch kỹ thuật.
+
+2. Đọc tài liệu nguồn
+
+Đọc các tài liệu để làm hệ quy chiếu:
+docs/management/speckit-workflow-guide.md
+docs/management/team-contract.md
+Toàn bộ nội dung của spec.md (Nghiệp vụ) và đặc biệt là plan.md (Kế hoạch kỹ thuật) của feature 081.
+Các quy chuẩn coding convention hiện hành của dự án (nếu có nhắc đến trong docs).
+Sử dụng plan.md làm đầu vào tối thượng (single source of truth) cho bước này. Mọi task sinh ra phải có cơ sở từ plan.md.
+
+3. Thực thi Task Breakdown
+
+Sau khi xác định đúng feature context và nắm rõ bản Kế hoạch:
+Chọn feature 081 làm context hiện hành.
+Quét toàn bộ plan.md và phân rã các quyết định kỹ thuật thành các hành động lập trình cụ thể, độc lập và có thể kiểm chứng được .
+
+Tổ chức file tasks.md theo các Giai đoạn dựa trên mức độ phụ thuộc . Ví dụ (có thể tùy chỉnh theo plan):
+Phase 1: Setup & Database (Schema changes, Supabase/PostgreSQL migrations, types/interfaces).
+Phase 2: Backend Services & API (Go/Node.js endpoints, middleware, business logic).
+Phase 3: Frontend State & API Integration (Redux/Zustand slices, API hooks, React Query).
+Phase 4: Frontend UI Components (React components, styling, UI validation).
+Phase 5: Testing, Error Handling & Polish (Unit tests, loading states, error boundaries).
+
+4. Yêu cầu đối với quá trình tạo Tasks
+
+Khi tiến hành tạo/cập nhật tasks.md, bạn cần:
+Trình bày dưới dạng danh sách checkbox của Markdown (- [ ]).
+Viết tên task bằng động từ hành động rõ ràng (VD: Create..., Implement..., Update..., Add test for...).
+Cung cấp bối cảnh ngắn gọn trong từng task nếu cần (VD: file nào cần sửa, endpoint nào cần gọi).
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+
+Không tự ý:
+Bỏ sót bất kỳ yêu cầu kỹ thuật hay luồng xử lý lỗi nào đã được chốt trong plan.md.
+Sáng tác thêm các task nằm ngoài phạm vi của plan.md hoặc spec.md.
+Gộp quá nhiều việc lớn vào chung một checkbox (phải chia nhỏ để dễ theo dõi tiến độ).
+
+5. Scope giới hạn
+
+Chỉ được phép phân tích plan.md và tạo/cập nhật file tasks.md của feature 081.
+
+Không được:
+Làm rã task cho bất kỳ feature nào khác.
+Chỉnh sửa ngược lại file spec.md hoặc plan.md (nếu phát hiện lỗ hổng ở bước này, chỉ thêm task "Verify/Investigate..." hoặc báo cáo).
+Viết source code (không tạo/chỉnh sửa file trong thư mục src/).
+Chỉnh sửa tài liệu project-level.
+Commit hoặc push.
+Trước khi làm việc, kiểm tra git status và bảo toàn tất cả thay đổi chưa commit.
+
+6. Validation
+
+Sau khi thực thi tạo tasks:
+Traceability Check: Đảm bảo 100% các mục trong plan.md đều đã được ánh xạ thành ít nhất 1 task trong tasks.md.
+Dependency Check: Đảm bảo thứ tự các task logic (không thể gọi API ở frontend nếu task tạo API backend chưa được làm trước đó).
+Đảm bảo file tasks.md chuẩn format Markdown checklist và hoàn toàn bằng tiếng Anh.
+Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+7. Final Report
+
+Báo cáo bằng tiếng Việt:
+Tên và đường dẫn feature 081 đã xác định.
+Trạng thái thực thi tạo file tasks.md.
+Tóm tắt cấu trúc file tasks (Liệt kê các Phase và tổng số lượng task được tạo).
+Xác nhận sự liên kết (traceability) giữa plan.md và tasks.md (có phần nào trong plan khó chia task không?).
+Đánh giá mức độ sẵn sàng để chuyển sang bước lập trình thực tế (/speckit.implement).
+Danh sách file đã thay đổi/tạo mới.
+
+Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho feature <Tên/ID Feature>. Dừng lại sau khi xuất báo cáo để chờ tôi xác nhận, tuyệt đối không tự động chuyển sang bước viết code (/speckit.implement) hay chuyển sang feature tiếp theo.
+```
+
+### Tóm tắt phản hồi của AI
+
+*   **Xác nhận Context:** Đã xác định chính xác ngữ cảnh làm việc tại thư mục `081-album-details/`. Vì slash command không khả dụng trực tiếp, AI đã chạy script `setup-tasks.sh` (không ghi lưu cấu hình metadata) để thiết lập không gian, sau đó tiến hành phân rã thủ công theo đúng chuẩn Spec Kit.
+*   **Chi tiết Task Breakdown:** Tạo thành công file `tasks.md` 100% tiếng Anh, gồm **29 task** được chia thành **6 Phase**:
+    *   Setup: 3 task (Xác nhận API contract, nguồn "More from Artist", và test harness).
+    *   Foundational: 3 task (Tích hợp service và cache).
+    *   US1 (View Album Information): 10 task.
+    *   US2 (Review Track-Level Play Counts): 5 task.
+    *   US3 (Handle Missing or Unavailable Album Details): 5 task.
+    *   Polish & Cross-Cutting Validation: 3 task.
+*   **Bảo toàn kiến trúc:** Không tự ý tạo endpoint, schema hay dependency mới. Các yếu tố chưa được chốt (như API owner/contract, nguồn "More from Artist" và môi trường kiểm thử) được đặt thành các task xác nhận (Gates) ở Phase 1.
+*   **Đánh giá sự sẵn sàng:** Tính năng **chưa sẵn sàng** để bước vào giai đoạn code (`/speckit.implement`) cho đến khi Tech Lead và các bên liên quan xác nhận xong các yêu cầu về API và Test Harness ở Phase 1.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Cấu trúc 29 task chia thành 6 Phase theo User Story | Dùng | Sắp xếp trình tự công việc hợp lý (Setup -> Foundational -> Từng User Story) giúp kiểm soát tiến độ và phân tách ranh giới rõ ràng. |
+| Khóa các điểm chưa chốt thành task xác nhận (Gate) ở Phase 1 | Dùng | Tuân thủ nguyên tắc không được tự thiết kế (vượt quyền) khi các quyết định quan trọng về Backend chưa được chốt. |
+| Giữ nguyên các thay đổi chưa commit của feature khác | Dùng | Tôn trọng không gian làm việc hiện tại, đảm bảo không làm mất dữ liệu của các nhóm hoặc tài liệu khác (như `AI_log_3.md`). |
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 081 đã được lập chi tiết và hợp lệ. Phải giải quyết các cổng chặn (Blocker) ở Phase 1 trước khi bắt đầu lập trình.
+
+## Mục 33: Phân rã công việc (Task Breakdown) cho spec 082 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-09 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist Playback | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Sử dụng lệnh `/speckit.tasks` để rà soát và tạo mới danh sách công việc (`tasks.md`) cho tính năng Album Tracklist Playback, đảm bảo các quy tắc nghiệp vụ về Hàng đợi (Queue) và Trình phát (Player) được khoanh vùng thành các rào cản xác nhận hợp lệ. | 
+
+### Prompt đã dùng
+
+```
+/speckit-tasks # TASK: Execute /speckit.tasks for Task Generation of Feature 082 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng Spec Kit /speckit.tasks để tiến hành phân rã kế hoạch triển khai thành danh sách công việc chi tiết (task breakdown) và tạo/cập nhật file tasks.md cho feature 082 đang được chỉ định.
+Chỉ thực hiện tạo Tasks cho feature 082. Không xử lý feature khác.
+
+1. Xác định Feature 082
+
+Kiểm tra:
+Thư mục chứa spec của feature hiện tại: specs/080-album-interaction/082-album-tracklist/
+Các thư mục và file con bên trong, đặc biệt phải đảm bảo file spec.md và plan.md đã tồn tại.
+Nếu không tìm thấy feature được yêu cầu hoặc file plan.md chưa tồn tại, hãy dừng lại và báo cáo. Không thể chia task nếu chưa có kế hoạch kỹ thuật.
+
+2. Đọc tài liệu nguồn
+
+Đọc các tài liệu để làm hệ quy chiếu:
+docs/management/speckit-workflow-guide.md
+docs/management/team-contract.md
+Toàn bộ nội dung của spec.md (Nghiệp vụ) và đặc biệt là plan.md (Kế hoạch kỹ thuật) của feature 082.
+Các quy chuẩn coding convention hiện hành của dự án (nếu có nhắc đến trong docs).
+Sử dụng plan.md làm đầu vào tối thượng (single source of truth) cho bước này. Mọi task sinh ra phải có cơ sở từ plan.md.
+
+3. Thực thi Task Breakdown
+
+Sau khi xác định đúng feature context và nắm rõ bản Kế hoạch:
+Chọn feature 082 làm context hiện hành.
+Quét toàn bộ plan.md và phân rã các quyết định kỹ thuật thành các hành động lập trình cụ thể, độc lập và có thể kiểm chứng được .
+
+Tổ chức file tasks.md theo các Giai đoạn dựa trên mức độ phụ thuộc . Ví dụ (có thể tùy chỉnh theo plan):
+Phase 1: Setup & Database (Schema changes, Supabase/PostgreSQL migrations, types/interfaces).
+Phase 2: Backend Services & API (Go/Node.js endpoints, middleware, business logic).
+Phase 3: Frontend State & API Integration (Redux/Zustand slices, API hooks, React Query).
+Phase 4: Frontend UI Components (React components, styling, UI validation).
+Phase 5: Testing, Error Handling & Polish (Unit tests, loading states, error boundaries).
+
+4. Yêu cầu đối với quá trình tạo Tasks
+
+Khi tiến hành tạo/cập nhật tasks.md, bạn cần:
+Trình bày dưới dạng danh sách checkbox của Markdown (- [ ]).
+Viết tên task bằng động từ hành động rõ ràng (VD: Create..., Implement..., Update..., Add test for...).
+Cung cấp bối cảnh ngắn gọn trong từng task nếu cần (VD: file nào cần sửa, endpoint nào cần gọi).
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+
+Không tự ý:
+Bỏ sót bất kỳ yêu cầu kỹ thuật hay luồng xử lý lỗi nào đã được chốt trong plan.md.
+Sáng tác thêm các task nằm ngoài phạm vi của plan.md hoặc spec.md.
+Gộp quá nhiều việc lớn vào chung một checkbox (phải chia nhỏ để dễ theo dõi tiến độ).
+
+5. Scope giới hạn
+
+Chỉ được phép phân tích plan.md và tạo/cập nhật file tasks.md của feature 082.
+
+Không được:
+Làm rã task cho bất kỳ feature nào khác.
+Chỉnh sửa ngược lại file spec.md hoặc plan.md (nếu phát hiện lỗ hổng ở bước này, chỉ thêm task "Verify/Investigate..." hoặc báo cáo).
+Viết source code (không tạo/chỉnh sửa file trong thư mục src/).
+Chỉnh sửa tài liệu project-level.
+Commit hoặc push.
+Trước khi làm việc, kiểm tra git status và bảo toàn tất cả thay đổi chưa commit.
+
+6. Validation
+
+Sau khi thực thi tạo tasks:
+Traceability Check: Đảm bảo 100% các mục trong plan.md đều đã được ánh xạ thành ít nhất 1 task trong tasks.md.
+Dependency Check: Đảm bảo thứ tự các task logic (không thể gọi API ở frontend nếu task tạo API backend chưa được làm trước đó).
+Đảm bảo file tasks.md chuẩn format Markdown checklist và hoàn toàn bằng tiếng Anh.
+Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+7. Final Report
+
+Báo cáo bằng tiếng Việt:
+Tên và đường dẫn feature 082 đã xác định.
+Trạng thái thực thi tạo file tasks.md.
+Tóm tắt cấu trúc file tasks (Liệt kê các Phase và tổng số lượng task được tạo).
+Xác nhận sự liên kết (traceability) giữa plan.md và tasks.md (có phần nào trong plan khó chia task không?).
+Đánh giá mức độ sẵn sàng để chuyển sang bước lập trình thực tế (/speckit.implement).
+Danh sách file đã thay đổi/tạo mới.
+
+Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho feature <Tên/ID Feature>. Dừng lại sau khi xuất báo cáo để chờ tôi xác nhận, tuyệt đối không tự động chuyển sang bước viết code (/speckit.implement) hay chuyển sang feature tiếp theo.
+
+```
+
+### Tóm tắt phản hồi của AI
+
+*   **Xác nhận Context:** AI đã nhận diện đúng thư mục `082-album-tracklist/` và rà soát file `plan.md` làm đầu vào. Lệnh slash command không khả dụng trực tiếp, nên AI đã sử dụng kịch bản setup tương đương theo Spec Kit.
+*   **Chi tiết Task Breakdown:** Tạo mới file `tasks.md` 100% bằng tiếng Anh, bao gồm **37 task** được tổ chức chặt chẽ qua **6 Phase**:
+    *   Setup / shared prerequisites: 6 tasks
+    *   Foundational: 3 tasks
+    *   US1 — Browse an Album Tracklist: 8 tasks
+    *   US2 — Play an Entire Album: 12 tasks
+    *   US3 — Play a Selected Track: 5 tasks
+    *   Polish & Cross-Cutting Validation: 3 tasks
+*   **Bảo toàn kiến trúc và xử lý Blocker:** Ba điểm nghẽn kỹ thuật (blocker) đã được chốt trong `plan.md` được giữ nguyên thành các task "Prerequisite/Verify" (yêu cầu xác nhận) tại Phase 1, bao gồm:
+    1.  Chính sách phát Album: Thay thế hàng đợi (Queue) hay Chèn thêm vào hàng đợi.
+    2.  Xung đột giới hạn 50 mục của Queue so với một Album có thể dài hơn.
+    3.  Quy trình tự động phục hồi (Recovery) khi Music Player gặp Track mất khả năng phát sinh (Unavailable).
+*   **Đánh giá:** Tính năng **chưa sẵn sàng** để chuyển sang giai đoạn Code (`/speckit.implement`) cho đến khi các chính sách về Hàng đợi và Trình phát được thống nhất.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Cấu trúc 37 task chia thành 6 Phase theo User Story | Dùng | Đảm bảo bao phủ toàn bộ luồng duyệt Tracklist, trạng thái bài hát, hành vi Play Album, Play 1 bài và cấu hình Shuffle. | 
+| Giữ các Blocker ở dạng Prerequisite (Yêu cầu xác nhận trước) | Dùng | Không tự ý đưa ra quyết định vượt quyền, ép buộc Team Product/Tech Lead phải làm rõ ranh giới hệ thống với Group 040 và 050 trước khi lập trình. | 
+| Bảo toàn không gian Git hiện tại | Dùng | Các thay đổi chưa commit của Feature 081 và Feature 083 được giữ nguyên an toàn, AI chỉ tạo mới file `tasks.md` cho đúng Feature 082. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 082 đã hoàn thiện. Phải chờ Product Owner giải quyết các Blocker trước khi chuyển sang bước Code.
+
+## Mục 34: Phân rã công việc (Task Breakdown) cho spec 083 bằng Spec Kit
+
+| Trường | Nội dung | 
+| ----- | ----- | 
+| Ngày | 2026-11-09 | 
+| Người thực hiện | Nguyễn Khánh Đăng | 
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album | 
+| Công cụ AI | GPT-5.6-Luna | 
+| Mục đích | Sử dụng lệnh `/speckit.tasks` để rà soát và tạo mới danh sách công việc (`tasks.md`) cho tính năng Lưu và Chia sẻ Album, đảm bảo các yếu tố chưa được chốt (như API schema, cơ chế mạng xã hội) được đặt thành các rào cản kỹ thuật hợp lệ. | 
+
+### Prompt đã dùng
+
+```
+/speckit-tasks # TASK: Execute /speckit.tasks for Task Generation of Feature 083 Only
+
+Bạn đang làm việc trong repository AuraTune.
+
+Hãy sử dụng Spec Kit /speckit.tasks để tiến hành phân rã kế hoạch triển khai thành danh sách công việc chi tiết (task breakdown) và tạo/cập nhật file tasks.md cho feature 083 đang được chỉ định.
+Chỉ thực hiện tạo Tasks cho feature 083. Không xử lý feature khác.
+
+1. Xác định Feature 083
+
+Kiểm tra:
+Thư mục chứa spec của feature hiện tại: specs/080-album-interaction/083-save-and-share-album/
+Các thư mục và file con bên trong, đặc biệt phải đảm bảo file spec.md và plan.md đã tồn tại.
+Nếu không tìm thấy feature được yêu cầu hoặc file plan.md chưa tồn tại, hãy dừng lại và báo cáo. Không thể chia task nếu chưa có kế hoạch kỹ thuật.
+
+2. Đọc tài liệu nguồn
+
+Đọc các tài liệu để làm hệ quy chiếu:
+docs/management/speckit-workflow-guide.md
+docs/management/team-contract.md
+Toàn bộ nội dung của spec.md (Nghiệp vụ) và đặc biệt là plan.md (Kế hoạch kỹ thuật) của feature 083.
+Các quy chuẩn coding convention hiện hành của dự án (nếu có nhắc đến trong docs).
+Sử dụng plan.md làm đầu vào tối thượng (single source of truth) cho bước này. Mọi task sinh ra phải có cơ sở từ plan.md.
+
+3. Thực thi Task Breakdown
+
+Sau khi xác định đúng feature context và nắm rõ bản Kế hoạch:
+Chọn feature 083 làm context hiện hành.
+Quét toàn bộ plan.md và phân rã các quyết định kỹ thuật thành các hành động lập trình cụ thể, độc lập và có thể kiểm chứng được .
+
+Tổ chức file tasks.md theo các Giai đoạn dựa trên mức độ phụ thuộc . Ví dụ (có thể tùy chỉnh theo plan):
+Phase 1: Setup & Database (Schema changes, Supabase/PostgreSQL migrations, types/interfaces).
+Phase 2: Backend Services & API (Go/Node.js endpoints, middleware, business logic).
+Phase 3: Frontend State & API Integration (Redux/Zustand slices, API hooks, React Query).
+Phase 4: Frontend UI Components (React components, styling, UI validation).
+Phase 5: Testing, Error Handling & Polish (Unit tests, loading states, error boundaries).
+
+4. Yêu cầu đối với quá trình tạo Tasks
+
+Khi tiến hành tạo/cập nhật tasks.md, bạn cần:
+Trình bày dưới dạng danh sách checkbox của Markdown (- [ ]).
+Viết tên task bằng động từ hành động rõ ràng (VD: Create..., Implement..., Update..., Add test for...).
+Cung cấp bối cảnh ngắn gọn trong từng task nếu cần (VD: file nào cần sửa, endpoint nào cần gọi).
+
+CRITICAL REQUIREMENT: Dù quá trình trao đổi/hỏi đáp diễn ra bằng tiếng Việt, nội dung file tasks.md ĐỀU BẮT BUỘC phải viết 100% bằng tiếng Anh.
+
+Không tự ý:
+Bỏ sót bất kỳ yêu cầu kỹ thuật hay luồng xử lý lỗi nào đã được chốt trong plan.md.
+Sáng tác thêm các task nằm ngoài phạm vi của plan.md hoặc spec.md.
+Gộp quá nhiều việc lớn vào chung một checkbox (phải chia nhỏ để dễ theo dõi tiến độ).
+
+5. Scope giới hạn
+
+Chỉ được phép phân tích plan.md và tạo/cập nhật file tasks.md của feature 083.
+
+Không được:
+Làm rã task cho bất kỳ feature nào khác.
+Chỉnh sửa ngược lại file spec.md hoặc plan.md (nếu phát hiện lỗ hổng ở bước này, chỉ thêm task "Verify/Investigate..." hoặc báo cáo).
+Viết source code (không tạo/chỉnh sửa file trong thư mục src/).
+Chỉnh sửa tài liệu project-level.
+Commit hoặc push.
+Trước khi làm việc, kiểm tra git status và bảo toàn tất cả thay đổi chưa commit.
+
+6. Validation
+
+Sau khi thực thi tạo tasks:
+Traceability Check: Đảm bảo 100% các mục trong plan.md đều đã được ánh xạ thành ít nhất 1 task trong tasks.md.
+Dependency Check: Đảm bảo thứ tự các task logic (không thể gọi API ở frontend nếu task tạo API backend chưa được làm trước đó).
+Đảm bảo file tasks.md chuẩn format Markdown checklist và hoàn toàn bằng tiếng Anh.
+Kiểm tra Git diff để bảo đảm không sửa file ngoài phạm vi.
+
+7. Final Report
+
+Báo cáo bằng tiếng Việt:
+Tên và đường dẫn feature 083 đã xác định.
+Trạng thái thực thi tạo file tasks.md.
+Tóm tắt cấu trúc file tasks (Liệt kê các Phase và tổng số lượng task được tạo).
+Xác nhận sự liên kết (traceability) giữa plan.md và tasks.md (có phần nào trong plan khó chia task không?).
+Đánh giá mức độ sẵn sàng để chuyển sang bước lập trình thực tế (/speckit.implement).
+Danh sách file đã thay đổi/tạo mới.
+
+Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho feature <Tên/ID Feature>. Dừng lại sau khi xuất báo cáo để chờ tôi xác nhận, tuyệt đối không tự động chuyển sang bước viết code (/speckit.implement) hay chuyển sang feature tiếp theo.
+
+```
+
+### Tóm tắt phản hồi của AI
+
+* **Xác nhận Context:** Đã nhận diện đúng thư mục `083-save-and-share-album/` và kiểm tra sự tồn tại của `spec.md` cùng `plan.md`. AI sử dụng script setup tương đương để thực thi do lệnh slash không khả dụng trực tiếp.
+
+* **Chi tiết Task Breakdown:** Khởi tạo file `tasks.md` 100% bằng tiếng Anh, bao gồm **30 task** được chia gọn gàng thành **5 Phase**:
+
+  * Shared prerequisites (4 tasks)
+
+  * Foundational account-scoped state (4 tasks)
+
+  * US1 — Save an Album to a Personal Library (P1) (11 tasks)
+
+  * US2 — Share an Album (P1) (8 tasks)
+
+  * Polish & Cross-Cutting Validation (3 tasks)
+
+* **Xử lý các Blocker:** Các điểm chưa được thống nhất như API owner, schema mapping, cơ chế chia sẻ đích đến (Facebook, Instagram, X, Zalo) và baseline đặc tả đều được ghi nhận thành các task "prerequisites" (yêu cầu xác nhận) tại Phase đầu tiên.
+
+* **Bảo toàn kiến trúc:** Không tự ý suy diễn payload API hay cơ chế chia sẻ. File duy nhất được tạo ra là `tasks.md`, toàn bộ các thay đổi chưa commit của các tính năng khác (081, 082) được bảo toàn tuyệt đối.
+
+* **Đánh giá:** Tính năng **chưa sẵn sàng** để bước vào giai đoạn Code (`/speckit.implement`) cho đến khi các prerequisite về API và thiết kế nền tảng được phê duyệt.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do | 
+| ----- | ----- | ----- | 
+| Cấu trúc 30 task chia thành 5 Phase theo tiến trình logic | Dùng | Giúp tách bạch rõ ràng phần setup/trạng thái tài khoản (account-scoped state) trước khi đi vào từng User Story cụ thể. | 
+| Giữ các yếu tố chưa chốt thành task xác nhận | Dùng | Tuân thủ chặt chẽ ranh giới thiết kế, tránh rủi ro lập trình viên code sai schema hoặc chọn nhầm cơ chế chia sẻ mạng xã hội. | 
+| Bảo vệ an toàn Git Workspace | Dùng | Không ghi đè hay làm hỏng các thay đổi đang dở dang của nhóm tính năng 081 và 082. | 
+
+### Cách kiểm chứng
+
+- [x] Chạy thử hoặc kiểm thử kết quả (nếu áp dụng).
+- [x] Đối chiếu với tài liệu chính thức và yêu cầu dự án.
+- [x] Kiểm tra tính đúng đắn, bảo mật và các trường hợp ngoại lệ (nếu áp dụng).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 083 đã hoàn chỉnh. Yêu cầu phối hợp với API Owner và Tech Lead để tháo gỡ các prerequisites trước khi code.

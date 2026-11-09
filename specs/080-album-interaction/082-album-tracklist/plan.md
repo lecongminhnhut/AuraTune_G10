@@ -113,3 +113,11 @@ There is no new external API or data model in this plan. Current album data is m
 ## Complexity Tracking
 
 No constitution violation is asserted because the constitution contains placeholders. No new service, API contract, project, or persistence schema is proposed. Queue-policy implementation remains gated by the conflicting requirements documented above.
+
+## Plan Execution Notes (2026-11-09)
+
+This plan was reviewed against the Feature 082 specification and existing plan, the Spec Kit workflow and plan template, project architecture/API/database documentation, Group 040/050 specifications, and current album/player/queue source. The Spec Kit slash command is not exposed in this environment. The provided `setup-plan.sh --json` was attempted with Feature 082 explicitly selected and feature metadata persistence disabled, but Git Bash failed while creating its resolved directory (`Permission denied`). The workflow was therefore followed using the repository's plan template and the planning artifacts below are scoped to this feature directory.
+
+The current implementation confirms that `AlbumPage` currently supplies `publicTracks` to `playCollection` and `addManyToQueue`; `App.jsx` filters playability and delegates to the shared `useMockPlayer`; `QueuePanel` and the persistent `BottomPlayer` consume that global state. The current hook has collection start and bulk-add operations but does not implement all Feature 082 policies, notably the explicit shuffle reset, album-segment replacement/insertion policy, queue-capacity enforcement, or playback-time availability recovery. These are implementation gaps and cross-feature dependencies, not authority to change Group 040/050 contracts.
+
+The plan's queue-policy and capacity conflicts remain unresolved as already recorded in the Risks and Clarifications table. No precedence, chunking behavior, or substitute player recovery contract is introduced by these planning artifacts. Test tooling remains to be confirmed because the frontend manifest declares only Vite lifecycle scripts.
