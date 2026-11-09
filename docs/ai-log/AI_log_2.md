@@ -29,6 +29,8 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 23  | 2026-11-03 | Lập implementation plan cho Feature 010 – Authentication bằng `$speckit-plan` (011, 012, 013)              | 01   |
 | 24  | 2026-11-05 | Thực thi implementation cho Feature 010 bằng `$speckit-implement`                                           | 01   |
 | 25  | 2026-11-07 | Dùng AI rà soát và sửa lỗi sau implement Authentication: repository bất đồng bộ, session và password recovery | 01   |
+| 26  | 2026-11-09 | Hoàn thiện plan và tasks cho Group 060 – Playlist Management (061–065)                                         | 06   |
+| 27  | 2026-11-09 | Hoàn thiện plan và tasks cho Group 070 – Listening History (071–073)                                           | 07   |
 
 ---
 
@@ -1042,3 +1044,84 @@ Rà soát và sửa các lỗi trong Feature 010 – Authentication sau khi impl
 - Chưa ghi nhận kết quả chạy test trong mục này; việc xác nhận runtime cần được thực hiện riêng.
 
 **Kết quả kiểm chứng:** Các sửa đổi đã được áp dụng trong source hiện tại; chưa xác nhận bằng kết quả chạy test.
+
+---
+
+## Mục 26: Hoàn thiện plan và tasks cho Group 060 – Playlist Management
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-09 |
+| Người thực hiện          | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 06 – Playlist Management (Features 061–065) |
+| Công cụ AI               | Codex (GPT-6), Spec Kit plan và tasks workflows |
+| Mục đích                 | Hoàn thiện plan và tasks cho các feature 061–065, dựa trên spec, tài liệu use case, thiết kế database/API và cấu trúc source hiện có; chỉ rõ các quyết định kiến trúc chưa được xác nhận. |
+
+### Prompt đã dùng
+
+```text
+Đọc hướng dẫn trong .specify và các tài liệu liên quan của Group 060. Tham khảo cấu trúc plan/tasks trong specs/030. Hoàn thiện plan và tasks cho các feature 061–065, đối chiếu spec, use case, thiết kế database/API và source hiện tại. Không tự chọn database, API contract, hoặc giải pháp lưu trữ khi tài liệu dự án chưa xác nhận; ghi rõ các approval gates còn mở.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Hoàn thiện plan và tasks cho 061–065 tại `specs/060-playlist-management/`.
+- Ghi nhận nền tảng React/Vite và Node.js/Express hiện có cùng khoảng cách giữa prototype/local state và chức năng backend production.
+- Đánh dấu các quyết định chưa được xác nhận, gồm nguồn lưu trữ chuẩn, route/payload API, tính nhất quán và chính sách cập nhật aggregate.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Mở rộng cấu trúc React + Express hiện tại | Dùng làm định hướng | Phù hợp cấu trúc source đang có mà không thêm dịch vụ ngoài phạm vi. |
+| PostgreSQL hoặc Firestore làm lựa chọn mặc định | Bỏ | Tài liệu database chưa xác nhận database production; plan không được tự suy diễn lựa chọn. |
+| Gộp các feature 061–065 thành một plan/task duy nhất | Bỏ | Mỗi feature giữ riêng spec, kế hoạch và danh sách việc theo phạm vi của nó. |
+
+### Cách kiểm chứng
+
+- Đối chiếu plan và tasks của 061–065 với `spec.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/` và tài liệu Group 060 tương ứng.
+- Kiểm tra plan chỉ chọn kiến trúc đã có căn cứ, còn các quyết định chưa duyệt được ghi là gate.
+
+**Kết quả kiểm chứng:** Có plan và tasks cho các feature 061–065; các quyết định chưa duyệt được giữ thành gate trước khi triển khai.
+
+---
+
+## Mục 27: Hoàn thiện plan và tasks cho Group 070 – Listening History
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-09 |
+| Người thực hiện          | Mai Đăng Khoa |
+| Nhóm tính năng liên quan | 07 – Listening History (Features 071–073) |
+| Công cụ AI               | Codex (GPT-6), Spec Kit plan và tasks workflows |
+| Mục đích                 | Hoàn thiện plan và tasks theo thứ tự phụ thuộc cho các feature 071–073; phân biệt điều kiện cần được duyệt với công việc implementation và không đánh dấu hoàn tất khi chưa thực hiện. |
+
+### Prompt đã dùng
+
+```text
+Đọc hướng dẫn trong .specify, spec và tài liệu use case/database/API của Group 070; tham khảo artifacts trong specs/030. Hoàn thiện plan và tasks cho 071–073, nhóm task theo phase và user story, nêu dependency và đường dẫn liên quan. Không giả định route, database hoặc schema chưa được duyệt; ghi những quyết định đó thành approval gates. Không chạy implement.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Hoàn thiện plan và `tasks.md` cho ba feature listening-history 071–073.
+- Tổ chức task theo approval gates, foundation, user stories và cross-cutting validation; nêu phụ thuộc giữa các phase.
+- Chuẩn hóa `073/spec.md` theo FR và UC đã chốt: artist xếp theo thời lượng rồi lượt phát, genre xếp theo lượt phát trên từng tag, time range 7/30/365 ngày; ghi nhận prototype genre-duration là khoảng trống cần cập nhật.
+- Các task vẫn ở trạng thái chưa hoàn thành; đây là kế hoạch công việc, không phải báo cáo implementation.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Task xác nhận API, nguồn dữ liệu, idempotency và retention trước triển khai phụ thuộc | Dùng | Ngăn implementation dựa trên các lựa chọn chưa có trong tài liệu dự án. |
+| Task theo user story với tiêu chí kiểm chứng độc lập | Dùng | Giúp triển khai theo phần giá trị người dùng và theo dõi dependency rõ ràng. |
+| Giữ các task mẫu của template | Bỏ/thay thế | Tasks cần trỏ tới hành vi và file cụ thể của từng feature. |
+| Đánh dấu sẵn các task implementation là hoàn tất | Bỏ | Chưa thực hiện code trong lượt lập kế hoạch này. |
+
+### Cách kiểm chứng
+
+- Đối chiếu plan/tasks với feature spec/contracts và UC inventory của Group 070.
+- Kiểm tra `git diff --check` và rà soát các placeholder còn sót trong tài liệu mới.
+- Không chạy test hoặc implement vì thay đổi trong lượt này là tài liệu đặc tả và kế hoạch.
+
+**Kết quả kiểm chứng:** Có plan và danh sách task cho các feature 071–073; các task implementation chưa được thực thi và vẫn để trạng thái chưa hoàn thành.
