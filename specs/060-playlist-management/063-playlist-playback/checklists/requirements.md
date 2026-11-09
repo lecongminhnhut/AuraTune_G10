@@ -2,7 +2,7 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-10-29
-**Feature**: [specs/060-playlist-management/063-playlist-playback/spec.md](specs/060-playlist-management/063-playlist-playback/spec.md)
+**Feature**: [Playlist Playback specification](../spec.md)
 
 ## Content Quality
 
