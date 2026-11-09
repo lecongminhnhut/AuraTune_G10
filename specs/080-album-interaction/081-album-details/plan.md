@@ -109,3 +109,11 @@ The feature artifact does not include related-album fields in `GET /albums/:id`.
 ## Complexity Tracking
 
 No constitution violation is asserted because the constitution file contains placeholders rather than approved gates. No new project, persistence model, or API contract is proposed.
+
+## Plan Execution Notes (2026-11-09)
+
+This plan was reviewed against the checked-in feature specification, the Spec Kit workflow and plan template, project architecture/API/database documentation, and the current album page/store/components and backend entry point. The Spec Kit slash command is not exposed in this environment. The provided `setup-plan.sh --json` was attempted with an explicit Feature 081 context and persistence disabled, but Git Bash could not create its resolved directory (`Permission denied`); no generated path output was available. The planning workflow was therefore followed using the repository's plan template and artifacts are confined to this feature directory.
+
+The current implementation confirms that `/album/:id` is routed to `AlbumPage`, which reads mock-backed `AppStore` data; the backend currently mounts health and authentication routes only. The checked-in API contract document and current code did not provide an authoritative `GET /albums/:id` response schema or implementation. Treat endpoint ownership, base path, exact response mapping, and the source for related albums as blocking confirmations. This plan does not define those details, introduce an endpoint, or add a database schema. Keep all proposed response fields limited to those already required by `spec.md` and the approved contract once the contract owner identifies it.
+
+The project test setup currently declares only Vite `dev`, `build`, and `preview` scripts in the frontend and `start`/`dev` in the backend; no test runner is declared in those package manifests. The exact local verification commands and scenarios are recorded in `quickstart.md` without claiming an executable automated test suite exists.
