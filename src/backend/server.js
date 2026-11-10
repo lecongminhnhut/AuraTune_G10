@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import mediaRoutes from './routes/mediaRoutes.js';
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ app.get('/api/health', (req, res) => {
 
 // Mount Feature 010 Auth Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/media', mediaRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
