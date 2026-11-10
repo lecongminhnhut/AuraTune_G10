@@ -1,0 +1,39 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "AuraTune public Artist identity", "version": "1.0.0", "description": "User-approved identity-only increment. Catalog operations remain gated. Public identity never depends on auth or catalog success." },
+  "servers": [{ "url": "/api/v1" }],
+  "paths": {
+    "/artists/{id}": {
+      "get": {
+        "operationId": "getPublicArtistProfile",
+        "security": [],
+        "description": "Anonymous read without cookies or bearer. Explicit public visibility; linked users must have is_banned=false. Unlinked public artists qualify. Hidden, unreviewed, banned, dangling and nonexistent are indistinguishable. No persistent cache. No query parameters or request body.",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "$ref": "#/components/schemas/ArtistId" } }],
+        "responses": {
+          "200": { "description": "Public identity only", "headers": { "Cache-Control": { "schema": { "type": "string", "enum": ["no-store"] } } }, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Success" } } } },
+          "400": { "description": "Malformed or out-of-int64 ID; VALIDATION_ERROR", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Failure" } } } },
+          "404": { "description": "Unknown or nonpublic Artist; NOT_FOUND, message Artist not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Failure" } } } },
+          "500": { "description": "Temporary storage/configuration/protocol failure; INTERNAL_ERROR. Retry whole identity, never render demo data or fake empty success.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Failure" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArtistId": { "type": "string", "pattern": "^(?:0|-?[1-9]\\d{0,18})$", "description": "Canonical signed int64 decimal string, additionally checked within -9223372036854775808..9223372036854775807. Never a JSON number.", "example": "9007199254740993" },
+      "Artist": { "type": "object", "additionalProperties": false, "required": ["id", "name", "imageUrl", "biography"], "properties": {
+        "id": { "$ref": "#/components/schemas/ArtistId" },
+        "name": { "type": "string", "minLength": 1, "description": "Trimmed public artist name; invalid source causes temporary failure." },
+        "imageUrl": { "type": "string", "nullable": true, "description": "HTTP(S) URL or null; invalid/missing URLs become null. Broken image renders a neutral fallback." },
+        "biography": { "type": "string", "nullable": true, "description": "Plain text; missing/whitespace-only source becomes null. Render escaped, preserving line breaks." }
+      } },
+      "Success": { "type": "object", "additionalProperties": false, "required": ["success", "message", "data", "error"], "properties": {
+        "success": { "type": "boolean", "enum": [true] }, "message": { "type": "string", "enum": ["Artist profile loaded"] }, "data": { "$ref": "#/components/schemas/Artist" }, "error": { "type": "object", "nullable": true, "enum": [null] }
+      } },
+      "Failure": { "type": "object", "additionalProperties": false, "required": ["success", "message", "data", "error"], "properties": {
+        "success": { "type": "boolean", "enum": [false] }, "message": { "type": "string" }, "data": { "type": "object", "nullable": true, "enum": [null] },
+        "error": { "type": "object", "additionalProperties": false, "required": ["code", "details"], "properties": { "code": { "type": "string", "enum": ["VALIDATION_ERROR", "NOT_FOUND", "INTERNAL_ERROR"] }, "details": { "type": "array", "maxItems": 0, "items": { "type": "string" } } } }
+      } }
+    }
+  }
+}

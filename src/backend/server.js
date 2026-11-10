@@ -12,6 +12,11 @@ import assistanceRoutes from './routes/assistanceRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
 import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
+import mediaRoutes from './routes/mediaRoutes.js';
+import artistRoutes from './routes/artistRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import studioRoutes from './routes/studioRoutes.js';
+import { followTransportError } from './controllers/followArtistController.js';
 
 dotenv.config();
 
@@ -68,6 +73,11 @@ app.use('/api/v1/users/me/stats', statsRoutes);
 // Group 100 AI Recommendations: Feature 102 (Personalized Recommendations)
 app.use('/api/v1/recommendations/mood-context', moodRecommendationRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1/media', mediaRoutes);
+// Feature 091: anonymous public identity, independent of personal auth.
+app.use('/api/v1/artists', artistRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/studio', studioRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
@@ -81,6 +91,7 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 // Fallback 404 handler
+app.use(followTransportError);
 app.use((req, res) => {
   res.status(404).json({ error: 'not_found', message: `Route ${req.method} ${req.url} not found` });
 });

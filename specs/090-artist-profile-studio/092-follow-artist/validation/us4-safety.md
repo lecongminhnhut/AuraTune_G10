@@ -1,0 +1,7 @@
+# US4 safety — local evidence
+
+[Processing/recovery](./processing-and-recovery.md) supplies real commit/rollback/lock and reversed-response evidence. [Auth API tests](../../../../src/backend/tests/follow-auth.test.js) validate signed JWT, required existing session, canonical owner versus distinct legacy id, revocation, expiry, banned denial, role allowance, owner-selector rejection and unchanged anonymous 091 access.
+
+[Session client regression](../../../../src/frontend/src/services/sessionApiClient.follow.test.js) first reproduced unsafe replay and now passes. Origin account/session/generation is captured before request, refresh and replay; an A action cannot be retried as B, after logout or into a new session of A. Delayed replies are ignored. Refresh is bounded to a pre-write 401; 5xx is not replayed. Follow endpoints never use the generic auth middleware's memory fallback or optional-session exceptions; authoritative database checks are inside their transaction. Other features' established auth response formats remain compatible.
+
+The scoped test set has zero observed cross-owner reassignment, zero fake empty/negative state from incomplete/error reads, zero false definitive success on lost acknowledgement and no relation/time change after definite SQL rollback. This is a statement about the executed cases, not arbitrary-fault or production certification. Guest/expired/banned UI offers sign-in/denial without gating public identity. No hidden relationship viewer or persistent personal follow cache is introduced.

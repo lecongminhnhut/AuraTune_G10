@@ -113,18 +113,18 @@ As a security boundary, AuraTune Studio must only allow access to accounts posse
 - **FR-001**: AuraTune MUST restrict access to `/studio` to authenticated users with `role: 'artist'`.
 - **FR-002**: The Studio dashboard MUST display summary statistics for the artist: total tracks, active tracks, and total play count.
 - **FR-003**: The Studio catalog MUST render all artist-associated tracks with cover art, title, album, duration, genre, play count, status, and management action buttons.
-- **FR-004**: AuraTune MUST allow artists to upload new tracks by providing an audio file, title, optional album name, genre, and duration.
+- **FR-004**: AuraTune MUST allow artists to upload new tracks by providing an audio file, title, optional existing own album selection (or no album), genre, and duration; no album is created from free text.
 - **FR-005**: Duration input MUST validate against the pattern `^\d{1,2}:[0-5]\d$`.
 - **FR-006**: AuraTune MUST allow artists to edit metadata (title, album, genre, duration) of uploaded tracks.
 - **FR-007**: AuraTune MUST allow artists to toggle track visibility between active ("Công khai") and hidden ("Đang ẩn").
 - **FR-008**: AuraTune MUST require modal confirmation before permanently deleting a track.
 - **FR-009**: The system MUST provide toast notifications upon upload, update, status toggle, and deletion.
-- **FR-010**: AuraTune MUST persist uploaded audio files to backend cloud media/blob storage (e.g., Cloudinary or S3) and associate the permanent audio URL with the track record for public streaming.
+- **FR-010**: AuraTune MUST persist uploaded audio in Cloudinary and associate a stable backend-controlled playable reference with the track record. Provider URLs remain internal; new playback must enforce current public eligibility.
 
 ### Measurable Outcomes
 
 - **SC-001**: 100% of non-artist accounts and unauthenticated visitors are prevented from managing or accessing artist track controls.
-- **SC-002**: Track upload and metadata edit actions reflect in the studio catalog and store within 500ms of user submission.
+- **SC-002**: Metadata edit actions reflect in the Studio catalog and store within 500ms of user submission. Binary upload shows transfer progress; measure its full submission-to-confirmed-persistence duration separately, without a 500ms binary-transfer completion promise.
 - **SC-003**: Hidden tracks are excluded from 100% of public listener searches and catalog queries while retaining historical play counts in Studio.
 
 ## Assumptions
@@ -175,3 +175,7 @@ As a security boundary, AuraTune Studio must only allow access to accounts posse
 - **Path**: `./ui/05-delete-track.png`
 - **Description**: Deletion confirmation modal warning that the track will be removed from AuraTune without ability to restore, offering "Hủy" and red "Xóa" confirmation buttons.
 - **User Story**: User Story 5 (Delete Track) & FR-008.
+
+## Owner alignment — 2026-11-13
+
+The owner supplied the actual context-only schema and accepted proposals 2–8. See [accepted design](./preparation/accepted-design.md). The album, Cloudinary controlled delivery and SC-002 text above reflect that explicit authorization. Other story acceptance criteria remain pending; a read-only implementation is not complete feature acceptance.

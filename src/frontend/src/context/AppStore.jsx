@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { authApi, configureAuthContext } from '../services/sessionApiClient.js'
+import { authApi, configureAuthContext, invalidateAuthRequests, sessionIdentity, currentAuthIdentity } from '../services/sessionApiClient.js'
+import { useArtistFollowing } from '../hooks/useArtistFollowing.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 
@@ -117,16 +118,19 @@ export const formatTotalDuration = (seconds) => {
     useEffect(() => {
       configureAuthContext({
         getAccessToken: () => stateRef.current.session?.token || null,
+        getSessionIdentity: () => sessionIdentity(stateRef.current.session),
         refreshSession: async () => {
+          const origin = sessionIdentity(stateRef.current.session)
           try {
             const response = await authApi.refresh()
+            if (sessionIdentity(stateRef.current.session) !== origin) return { ok: false }
             const accessToken = response.data?.access_token
             if (response.status !== 'success' || !accessToken) {
               return { ok: false, message: response.message }
             }
 
             const expiresIn = response.data.expires_in || 900
-            setState((previous) => previous.session?.source === 'backend'
+            setState((previous) => previous.session?.source === 'backend' && sessionIdentity(previous.session) === origin
               ? {
                   ...previous,
                   session: {
@@ -236,6 +240,7 @@ export const formatTotalDuration = (seconds) => {
 
   const sessionValid = state.session && new Date(state.session.expiresAt).getTime() > Date.now()
   const currentUser = sessionValid ? state.users.find((user) => user.id === state.session.userId && !user.banned) ?? null : null
+  const followingList = useArtistFollowing(currentUser ? currentAuthIdentity() : null)
 
   // Clear invalid sessions after restoration finishes.
   useEffect(() => {
@@ -325,6 +330,7 @@ export const formatTotalDuration = (seconds) => {
 
   // ---------- Xác thực API / Backend (Spec 011, 012, 013) ----------
   const register = useCallback(async ({ email, password, displayName, termsAccepted = true }) => {
+    invalidateAuthRequests()
     const normalized = normalizeEmail(email)
     if (!EMAIL_PATTERN.test(normalized)) return { ok: false, field: 'email', error: 'Email không đúng định dạng.' }
     if (!isStrongPassword(password)) return { ok: false, field: 'password', error: 'Mật khẩu chưa đủ mạnh.' }
@@ -359,6 +365,7 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [])
   const login = useCallback(async ({ email, password, rememberMe = false }) => {
+    invalidateAuthRequests()
     const normalized = normalizeEmail(email)
     if (!EMAIL_PATTERN.test(normalized)) return { ok: false, error: 'Email không đúng định dạng.' }
 
@@ -391,8 +398,12 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [])
   const logout = useCallback(async () => {
+    invalidateAuthRequests()
+    const request = authApi.logout()
+    stateRef.current = { ...stateRef.current, session: null }
+    setState((previous) => ({ ...previous, session: null }))
     try {
-      await authApi.logout()
+      await request
     } catch {
       // Clear the in-memory session even if the server is unreachable.
     }
@@ -401,9 +412,13 @@ export const formatTotalDuration = (seconds) => {
   }, [])
 
   const logoutFromAllDevices = useCallback(async () => {
+    invalidateAuthRequests()
+    const token = stateRef.current.session?.token
+    const request = token ? authApi.logoutAll(token) : Promise.resolve()
+    stateRef.current = { ...stateRef.current, session: null }
+    setState((previous) => ({ ...previous, session: null }))
     try {
-      const token = stateRef.current.session?.token
-      if (token) await authApi.logoutAll(token)
+      await request
     } catch {
       // Clear the in-memory session even if the server is unreachable.
     }
@@ -427,6 +442,7 @@ export const formatTotalDuration = (seconds) => {
   // Firebase Authentication -> AuraTune Session
   const loginWithFirebase = useCallback(
     async ({ firebaseUser, termsAccepted = false }) => {
+      invalidateAuthRequests()
       try {
         if (!firebaseUser) {
           return {
@@ -626,28 +642,6 @@ export const formatTotalDuration = (seconds) => {
     return true
   }, [updateLibrary])
 
-  // ---------- Theo dõi nghệ sĩ (spec 092) ----------
-  // Mô phỏng một lời gọi mạng để giao diện có trạng thái "đang cập nhật".
-  const setFollow = useCallback((artistId, follow) => new Promise((resolve, reject) => {
-    window.setTimeout(() => {
-      const userId = stateRef.current.session?.userId
-      if (!userId) { reject(new Error('Bạn cần đăng nhập để theo dõi nghệ sĩ.')); return }
-      const artist = getArtist(artistId)
-      if (!artist || (!artist.isPublic && follow)) { reject(new Error('Không tìm thấy nghệ sĩ.')); return }
-      setState((previous) => {
-        const current = previous.libraries[userId] ?? emptyLibrary()
-        const exists = current.follows.some((item) => item.artistId === artistId)
-        const follows = follow
-          ? (exists ? current.follows : [...current.follows, { artistId, followedAt: new Date().toISOString() }])
-          : current.follows.filter((item) => item.artistId !== artistId)
-        return { ...previous, libraries: { ...previous.libraries, [userId]: { ...current, follows } } }
-      })
-      resolve(follow)
-    }, 450)
-  }), [])
-
-  const isFollowing = (artistId) => library.follows.some((item) => item.artistId === artistId)
-
   // ---------- Lịch sử nghe (G07 / spec 101) ----------
   const recordPlay = useCallback((trackId) => {
     if (!stateRef.current.session) return null
@@ -712,13 +706,12 @@ export const formatTotalDuration = (seconds) => {
   const setQueueOpen = useCallback((queueOpen) => setUi((previous) => ({ ...previous, queueOpen })), [])
 
   const value = {
-    state, currentUser, library, toasts, ui, toast,
+    state, currentUser, sessionRestoring, followingList, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
     register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
-    setFollow, isFollowing,
     recordPlay, updateListened, clearHistory,
     comments: state.comments, addComment, deleteComment,
     uploadTrack, updateStudioTrack, deleteStudioTrack, setTrackStatus,
