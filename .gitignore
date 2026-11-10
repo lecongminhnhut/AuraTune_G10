@@ -17,6 +17,9 @@ dist/
 build/
 npm-debug.log
 
+# Tệp nhạc cục bộ cho endpoint stream (Group 040), không đưa lên git
+src/backend/media/
+
 # Python (AI Service)
 __pycache__/
 *.py[cod]
