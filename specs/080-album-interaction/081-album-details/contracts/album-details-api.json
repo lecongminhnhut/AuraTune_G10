@@ -122,7 +122,7 @@
                   "message": "Thông tin album tạm thời không khả dụng, vui lòng thử lại sau",
                   "data": null,
                   "error": {
-                    "code": "DATABASE_ERROR",
+                    "code": "INTERNAL_ERROR",
                     "details": []
                   }
                 }
