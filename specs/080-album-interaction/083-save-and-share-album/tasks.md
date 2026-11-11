@@ -16,10 +16,10 @@ description: "Dependency-ordered implementation tasks for Save and Share Albums"
 
 **Purpose**: Resolve requirements and integration dependencies without inventing payloads or provider behavior.
 
-- [ ] T001 Confirm with the feature owner whether the reconstructed `specs/080-album-interaction/083-save-and-share-album/spec.md` is the authoritative baseline alongside UC-080-003 and the clarification history; keep the provenance discrepancy as a blocker until confirmed.
-- [ ] T002 Identify the approved API owner and response/error mapping for `GET /users/me/saved-albums`, `PUT /albums/:id/save`, and `DELETE /albums/:id/save`, including persistence boundary and authentication requirements; do not define undocumented request or response fields.
-- [ ] T003 Confirm the approved invocation mechanism for Facebook, Instagram, X, and Zalo controls; ensure each uses the canonical album URL and do not invent provider URL formats or add SDKs.
-- [ ] T004 Confirm the repository-approved frontend test runner and API/browser fixtures from repository configuration, then record supported commands in `specs/080-album-interaction/083-save-and-share-album/quickstart.md` without adding dependencies.
+- [x] T001 Confirm with the feature owner whether the reconstructed `specs/080-album-interaction/083-save-and-share-album/spec.md` is the authoritative baseline alongside UC-080-003 and the clarification history; keep the provenance discrepancy as a blocker until confirmed.
+- [x] T002 Identify the approved API owner and response/error mapping for `GET /users/me/saved-albums`, `PUT /albums/:id/save`, and `DELETE /albums/:id/save`, including persistence boundary and authentication requirements; do not define undocumented request or response fields.
+- [x] T003 Confirm the approved invocation mechanism for Facebook, Instagram, X, and Zalo controls; ensure each uses the canonical album URL and do not invent provider URL formats or add SDKs.
+- [x] T004 Confirm the repository-approved frontend test runner and API/browser fixtures from repository configuration, then record supported commands in `specs/080-album-interaction/083-save-and-share-album/quickstart.md` without adding dependencies.
 
 ---
 
