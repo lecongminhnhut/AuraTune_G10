@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import songRoutes from './routes/songRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
+import assistanceRoutes from './routes/assistanceRoutes.js';
 
 dotenv.config();
 
@@ -57,6 +58,8 @@ app.use('/api/v1/songs', songRoutes);
 app.use('/api/v1/agent', agentRoutes);
 // Group 120 AI Conversational Agent: Feature 122 (Music Intent Understanding)
 app.use('/api/v1/agent/intent', intentRoutes);
+// Group 120 AI Conversational Agent: Feature 123 (Real-Time Music Assistance)
+app.use('/api/v1/agent/assistance', assistanceRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',

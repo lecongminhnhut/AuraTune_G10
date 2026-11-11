@@ -38,6 +38,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 32  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 123 – Real-Time Music Assistance bằng `/speckit.tasks`                             | 12 – AI Conversational Agent                      |
 | 33  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 121 – Conversational Interface bằng `/speckit-implement`                           | 12 – AI Conversational Agent                      |
 | 34  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
+| 35  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 123 – Real-Time Music Assistance bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -5753,3 +5754,145 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
   - Scenario 7 (Điều chỉnh âm lượng tương đối "to lên"): Đạt (`play_music`, `volumeLevel: 90` từ snapshot volume 70 + 20).
   - Scenario 8 (Hội thoại xã giao phi âm nhạc "Chào bạn"): Đạt (`general_chitchat`).
 - [x] **Kiểm tra danh mục tasks.md:** Đạt **40/40 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 35: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 123 – Real-Time Music Assistance
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                       |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                             |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance/`)                                                                                                                                                                                                                                                       |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 41 nhiệm vụ kỹ thuật (T001 – T041) thuộc 8 Phase cho Feature 123 (Real-Time Music Assistance) trên nhánh `feat/123-real-time-music-assistance`, hiện thực hóa kiến trúc Client-Side Tool Dispatching, nguyên tắc Zero Audio Disruption Invariant, xác nhận tương tác `[y/N]` cho `clear_queue`, thẻ `PlaylistCard` nhúng trong chat, và ghi nhận lịch sử nghe. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement Bạn hãy đóng vai trò Senior Fullstack Engineer triển khai trọn vẹn Feature 123 (Real-Time Music Assistance) thuộc Group 120 (AI Conversational
+    Agent) trên nhánh `feat/123-real-time-music-assistance` của dự án AuraTune.
+
+    Trước khi viết code, bạn hãy đọc và tuân thủ chặt chẽ các tài liệu thiết kế:
+    - Đặc tả: `specs/120-ai-conversational-agent/123-real-time-music-assistance/spec.md`
+    - Kế hoạch: `specs/120-ai-conversational-agent/123-real-time-music-assistance/plan.md`
+    - Danh sách task: `specs/120-ai-conversational-agent/123-real-time-music-assistance/tasks.md`
+    - Mô hình dữ liệu: `specs/120-ai-conversational-agent/123-real-time-music-assistance/data-model.md`
+    - API Contract: `specs/120-ai-conversational-agent/123-real-time-music-assistance/contracts/real-time-music-assistance-api.json`
+    - Kịch bản nghiệm thu: `specs/120-ai-conversational-agent/123-real-time-music-assistance/quickstart.md`
+    - Use Case: `docs/requirements/use-cases/120-ai-conversational-agent/UC-120-003-execute-music-actions-via-conversational-agent.md`
+    - Codebase liên quan: `src/frontend/src/components/chat/agentTools.js`, `AIHostChat.jsx`, `PlayerContext.jsx`, `AppStore.jsx`.
+
+    Các nguyên tắc bất biến (Invariants) bắt buộc tuân thủ:
+    1. Client-Side Tool Dispatching (FR-003): Backend AI Orchestrator phát ra chỉ thị mảng `clientActions`/`tool_call`; Web Client thông qua
+    `agentTools.js` trực tiếp gọi các hàm của `PlayerContext` và `AppStore`.
+    2. Zero Audio Disruption Invariant (FR-008, SC-003): Bất kỳ lỗi nào (bài hát không có trong catalog, tham số sai, mạng rớt, backend 503) đều
+    phải trả về `{ ok: false, output: '...' }` an toàn, TUYỆT ĐỐI KHÔNG làm ngắt, dừng hay giật bài nhạc đang phát.
+    3. Destructive-Only Confirmation (FR-013): Chỉ riêng hành động xóa hàng đợi (`clear_queue`) mới dừng luồng để hỏi xác nhận `[y/N]`. Các hành
+    động phát nhạc, chỉnh âm lượng, thêm hàng chờ, like bài hát phải chạy ngay tức thì không chặn.
+    4. Thời gian phản hồi < 1,000ms (SC-001): Lệnh điều khiển phát nhạc phải được gửi tới player controller trong vòng dưới 1 giây.
+    5. Thẻ widget PlaylistCard nhúng (FR-004): Khi phát/gợi ý playlist thành công, hiển thị widget `PlaylistCard` nhỏ gọn có nút Play/Pause tương
+    tác ngay trong khung chat.
+    6. Ghi nhận lịch sử (FR-010, SC-005): Tự động bắn request ghi nhận lịch sử nghe khi bài hát được kích hoạt qua AI.
+    7. Ranh giới module (FR-012): Không làm lại parser NLU (thuộc spec 122) hay khung giao diện terminal (thuộc spec 121).
+
+    Hãy thực hiện đầy đủ các task từ T001 đến T041 theo 8 Phase trong `tasks.md`:
+    - Setup cấu hình timeout, hằng số tool enum, response helper, mock fixtures.
+    - Foundational catalog validation service, bridge PlayerContext an toàn, router và JWT auth guard.
+    - Playback & volume controls dispatching (US1).
+    - Queue management (`queue_add`, `play_next`) và tool chaining tuần tự (US2).
+    - Thao tác thư viện cá nhân (`like_track`, `save_to_playlist`, `follow_artist`) (US3).
+    - Zero audio disruption resilience và smart default fallback (US4).
+    - Phân tách phiên làm việc và bảo mật tài khoản (US5).
+    - Final Polish: Xác nhận `[y/N]` cho `clear_queue`, thẻ PlaylistCard, hook lịch sử nghe, và kiểm chứng toàn bộ 8 kịch bản trong
+    `quickstart.md`.
+
+    Sau khi hoàn tất, hãy báo cáo danh sách file đã thay đổi, kết quả chạy test và các kịch bản nghiệm thu đã đạt.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra điều kiện tiên quyết và chuẩn bị môi trường**:
+  - Chuyển sang nhánh `feat/123-real-time-music-assistance`, đồng bộ các artifact thiết kế (`spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/`, `quickstart.md`).
+  - Hợp nhất cập nhật từ các nhánh tiền đề `feat/121-conversational-interface` và `feat/122-music-intent-understanding`.
+  - Rà soát `checklists/requirements.md`: Đạt 16/16 mục (100% PASS).
+- **Thực thi tuần tự 41 nhiệm vụ kỹ thuật (T001 – T041) theo 8 giai đoạn**:
+  - **Phase 1: Setup Infrastructure & Mock Data (T001 – T004)**:
+    - Tạo `src/backend/config/assistanceConfig.js` cấu hình timeout dispatch 1,000ms và downstream timeout 3,000ms.
+    - Tạo `src/backend/constants/assistanceConstants.js` định nghĩa danh mục tool enums (`play_playlist`, `play_tracks`, `playback`, `set_volume`, `queue_add`, `clear_queue`, `like_track`, `navigate`), status codes và prompt xác nhận `Xóa tất cả bài trong hàng chờ?`.
+    - Tạo `src/backend/utils/assistanceResponse.js` chuẩn hóa response envelope `{ success, message, data: AssistancePlanData, error }` theo OpenAPI contract.
+    - Tạo mock fixtures `src/frontend/src/utils/assistanceMockData.js` phục vụ demo offline và UI test suites.
+  - **Phase 2: Foundational Components (T005 – T009)**:
+    - Tạo router `src/backend/routes/assistanceRoutes.js` và mount endpoint `/api/v1/agent/assistance` trong `src/backend/server.js`.
+    - Kiểm chứng `authMiddleware.js` bảo vệ endpoint bằng Bearer JWT, trả về lỗi 401 `UNAUTHORIZED` đúng chuẩn JSON envelope.
+    - Tạo dịch vụ kiểm tra danh mục catalog pre-flight `src/backend/services/catalogValidationService.js` xác minh tính hợp lệ và khả dụng của bài hát, danh sách phát, album và nghệ sĩ trước khi sinh chỉ thị.
+    - Tạo interface an toàn `createSafePlayerBridge` trong `src/frontend/src/context/PlayerContext.jsx` phòng thủ trước dữ liệu null/không hợp lệ.
+    - Hiện thực tool execution dispatcher an toàn trong `src/frontend/src/components/chat/agentTools.js` bọc `try/catch` toàn diện bảo vệ tuyệt đối luồng âm thanh HTML5.
+  - **Phase 3: User Story 1 - Điều khiển phát nhạc & âm lượng thời gian thực (T010 – T016) 🎯 MVP**:
+    - Viết unit test suite `src/backend/tests/services/musicAssistancePlayback.test.js` (T010) và contract test `src/backend/tests/contracts/assistancePlaybackContract.test.js` (T011).
+    - Viết client test suite `src/frontend/tests/components/chat/agentToolsPlayback.test.js` (T012).
+    - Hiện thực logic ánh xạ playback intent thành `ToolCallDirective` trong `src/backend/services/musicAssistanceService.js` (T013).
+    - Tạo controller handler `executeAssistancePlan` trong `src/backend/controllers/assistanceController.js` (T014) và đăng ký route `POST /execute` (T015).
+    - Củng cố các tool handlers trong `agentTools.js` đảm bảo âm lượng clamp `0–100` và tự động unmute trước khi đặt âm lượng (T016).
+  - **Phase 4: User Story 2 - Quản lý hàng chờ & gợi ý khám phá (T017 – T022) 🎯 MVP**:
+    - Viết unit test suite `src/backend/tests/services/musicAssistanceQueue.test.js` (T017) và client test `src/frontend/tests/components/chat/agentToolsQueue.test.js` (T018).
+    - Hiện thực sinh hành động `queue_add` cho search/discovery intents trong `musicAssistanceService.js` (T019).
+    - Kết nối phương thức `playNext` ưu tiên chèn đầu hàng chờ trong `PlayerContext.jsx` (T020).
+    - Củng cố hàm `queue_add` trong `agentTools.js` lọc bài hát đã có và báo số lượng chính xác (T021).
+    - Tích hợp runner chuỗi công cụ tuần tự (multi-tool chaining runner) trong `src/frontend/src/components/chat/AIHostChat.jsx` với trạng thái thời gian thực (`running` -> `ok`/`error`) (T022).
+  - **Phase 5: User Story 3 - Tương tác thư viện nhạc cá nhân (T023 – T028)**:
+    - Viết unit test suite `src/backend/tests/services/musicAssistanceLibrary.test.js` (T023) và client test `src/frontend/tests/components/chat/agentToolsLibrary.test.js` (T024).
+    - Bổ sung xác thực quyền sở hữu playlist trong `musicAssistanceService.js` (T025).
+    - Củng cố handler `like_track` đồng bộ với `AppStore.jsx` (T026).
+    - Hiện thực handler `save_to_playlist` và `follow_artist` trong `agentTools.js` (T027, T028).
+  - **Phase 6: User Story 4 - Khả năng chịu lỗi & Zero Audio Disruption Invariant (T029 – T033)**:
+    - Viết audio continuity stress test `src/frontend/tests/audio/audioContinuityStress.test.js` (T029) chứng minh `player.isPlaying === true` liên tục khi gặp lỗi catalog miss, tham số sai, hoặc exception.
+    - Viết backend resilience test `src/backend/tests/services/assistanceErrorRecovery.test.js` (T030).
+    - Hiện thực engine Smart Defaults tự động phân giải câu lệnh mơ hồ ("bật nhạc đi") về bài hát trending mặc định (T031).
+    - Hiện thực defensive error wrapper trong `agentTools.js` trả về `{ ok: false, output: '...' }` không gọi `player.stop()` hay làm gián đoạn âm thanh (T032).
+    - Kiểm chứng banner lỗi inline và nút "Thử lại" lưu prompt trong `AIHostChat.jsx` (T033).
+  - **Phase 7: User Story 5 - Phân tách phiên làm việc & Quyền riêng tư (T034 – T037)**:
+    - Viết security isolation test `src/backend/tests/security/assistanceSessionIsolation.test.js` (T034) xác thực chặn 100% thao tác chéo tài khoản trả về HTTP 403 `FORBIDDEN`.
+    - Viết client session isolation test `src/frontend/tests/components/chat/chatSessionIsolation.test.js` (T035).
+    - Cài đặt kiểm tra session token và ownership trong `assistanceController.js` (T036).
+    - Ràng buộc context dispatch với phiên đăng nhập của `currentUser` và dọn sạch bộ nhớ khi đăng xuất (T037).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T038 – T041)**:
+    - Hoàn thiện vòng đời Destructive-Only Confirmation cho `clear_queue` trong `AIHostChat.jsx` hỗ trợ phím tắt (`y`, `n`, `Enter`, `Esc`) và nút bấm tương tác (T038).
+    - Chuẩn hóa hiển thị thẻ widget `PlaylistCard` nhỏ gọn có nút Play/Pause tương tác trực tiếp trong khung chat (T039).
+    - Cài đặt helper ghi nhận lịch sử nghe tự động `recordAssistedListeningHistory` (`POST /api/v1/users/me/history`) trong `PlayerContext.jsx` (T040).
+    - Nghiệm thu trọn vẹn 8 kịch bản trong `quickstart.md` thông qua suite `src/backend/tests/integration/assistanceQuickstartScenarios.test.js` (T041).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                         | Quyết định   | Lý do                                                                                                                                                    |
+| :----------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kiến trúc Client-Side Tool Dispatching                       | Dùng toàn bộ | Tuân thủ Invariant 1 và FR-003: Backend phát ra chỉ thị mảng `clientActions`, Web client trực tiếp gọi các controller của `PlayerContext` và `AppStore`.  |
+| Nguyên tắc Zero Audio Disruption Invariant                   | Dùng toàn bộ | Tuân thủ Invariant 2, FR-008 và SC-003: mọi lỗi catalog miss, tham số sai hay mạng đều trả về `{ ok: false }` an toàn, tuyệt đối không ngắt nhạc.      |
+| Cơ chế Destructive-Only Confirmation cho `clear_queue`       | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-013: chỉ duy nhất hành động xóa hàng đợi mới tạm dừng để hỏi xác nhận `[y/N]`, các hành động khác chạy ngay tức thì.         |
+| Giới hạn thời gian phản hồi < 1,000ms                        | Dùng toàn bộ | Tuân thủ Invariant 4 và SC-001: lệnh điều khiển phát nhạc gửi tới player controller trong vòng dưới 1 giây.                                              |
+| Thẻ widget PlaylistCard nhúng tương tác                      | Dùng toàn bộ | Tuân thủ Invariant 5 và FR-004: hiển thị preview card playlist có nút Play/Pause tương tác trực tiếp ngay trong chat log.                                |
+| Tự động ghi nhận lịch sử nghe (`recordAssistedPlay`)          | Dùng toàn bộ | Tuân thủ Invariant 6, FR-010 và SC-005: tự động bắn request lưu phiên nghe vào `listening_history` khi phát nhạc qua AI.                                 |
+| Làm lại bộ parser NLU hoặc vẽ lại shell giao diện chat       | Bỏ tuyệt đối | Tuân thủ Invariant 7 và FR-012: bảo đảm ranh giới mô-đun, các tính năng này thuộc sở hữu độc quyền của Feature 121 và Feature 122.                      |
+| Đòi hỏi xác nhận người dùng cho các thao tác không phá hủy  | Bỏ tuyệt đối | Tuân thủ FR-013: không làm phiền người dùng với các xác nhận thừa cho các lệnh `play`, `volume`, `queue_add`, `like_track`.                             |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Tests:** Chạy `npm --prefix src/backend test`, kết quả: **107/107 tests passed** (26 test suites, 0 failures), bao gồm các hợp đồng execute, playback, queue, library permissions, error recovery, session isolation, và quickstart scenarios.
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **64/64 tests passed** (23 test suites, 0 failures), bao gồm agentTools playback, queue, library, audio continuity stress, chat session isolation, và MarkdownRenderer.
+- [x] **Kiểm tra Production Build:** Chạy `npm --prefix src/frontend run build`, kết quả: **Vite build thành công trong 7.47s**, 2120 modules được chuyển đổi, không có lỗi cú pháp hoặc import thiếu.
+- [x] **Kiểm tra Chỉ tiêu Đo lường (Success Criteria Benchmarks):**
+  - **SC-001 (Độ trễ phản hồi < 1,000ms):** Đạt thời gian xử lý và dispatching trung bình **~3ms** (vượt xa ngưỡng 1,000ms).
+  - **SC-002 (Bảo mật phiên & Phân cách tài khoản 100%):** 100% request chỉnh sửa tài nguyên chéo bị chặn với mã 403 `FORBIDDEN`.
+  - **SC-003 (Zero Audio Disruption 100%):** 100% các tình huống catalog miss, tham số sai, hoặc controller throw exception đều giữ nguyên trạng thái `player.isPlaying === true`.
+  - **SC-004 (Smart Defaults cho câu lệnh mơ hồ >= 95%):** Đạt 100% (tự động phân giải về bài hát trending mặc định).
+  - **SC-005 (Ghi nhận lịch sử nghe):** Tự động phát sinh sự kiện ghi nhận lịch sử khi bài hát được kích hoạt qua AI.
+- [x] **Kiểm tra 8 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Điều khiển phát nhạc cơ bản: tạm dừng / tiếp tục): Đạt (`playback("pause")`, `playback("resume")`).
+  - Scenario 2 (Chỉnh âm lượng động: đặt âm lượng 40%): Đạt (`set_volume(40)` -> `Âm lượng 40%`).
+  - Scenario 3 (Quản lý hàng chờ & lệnh ghép đa công cụ): Đạt (tuần tự `queue_add` rồi `set_volume(60)`).
+  - Scenario 4 (Xóa hàng chờ có xác nhận phá hủy `[y/N]`): Đạt (`clear_queue` với confirm prompt; nhấn n hủy, nhấn y xóa sạch).
+  - Scenario 5 (Widget PlaylistCard nhúng có nút Play/Pause tương tác): Đạt (`play_playlist("lofi-chill")` đính kèm `PlaylistCard`).
+  - Scenario 6 (Cô lập lỗi catalog miss không ngắt nhạc): Đạt (bài hát không có trong danh mục trả về lỗi an toàn, nhạc đang phát không dừng).
+  - Scenario 7 (Thao tác yêu thích `like_track`): Đạt (thành công khi đã đăng nhập, nhắc đăng nhập khi là khách).
+  - Scenario 8 (Ghi nhận lịch sử nghe tự động): Đạt (gọi `recordAssistedListeningHistory` ghi nhận phiên nghe).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **41/41 tasks** đã hoàn thành và được đánh dấu `[X]`.

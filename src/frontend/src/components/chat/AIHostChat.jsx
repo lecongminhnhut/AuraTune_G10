@@ -130,6 +130,18 @@ export function AIHostChatInner({ isOpen, onClose, onPlayPlaylist, currentPlayli
     inputRef.current?.focus({ preventScroll: true })
 
     const onKeyDown = (event) => {
+      if (confirmRef.current) {
+        if (event.key === 'Escape' || event.key === 'n' || event.key === 'N') {
+          event.preventDefault()
+          answerConfirm(false)
+          return
+        }
+        if (event.key === 'y' || event.key === 'Y') {
+          event.preventDefault()
+          answerConfirm(true)
+          return
+        }
+      }
       if (event.key === 'Escape') {
         if (runningRef.current) {
           event.preventDefault()
@@ -291,11 +303,15 @@ export function AIHostChatInner({ isOpen, onClose, onPlayPlaylist, currentPlayli
             state: result.ok ? 'ok' : 'error',
             output: result.output
           })
+          if (result.ok && event.name === 'play_playlist' && event.args?.playlistId) {
+            updateEntry(runId, (entry) => ({ ...entry, playlistId: event.args.playlistId }))
+          }
         } else if (event.type === 'text') {
           endThinking()
           updateEntry(runId, (entry) => ({ ...entry, text: entry.text + event.delta }))
-        } else if (event.type === 'playlist') {
-          updateEntry(runId, (entry) => ({ ...entry, playlistId: event.playlistId }))
+        } else if (event.type === 'playlist' || event.embeddedWidget?.type === 'playlist') {
+          const plId = event.playlistId || event.embeddedWidget?.playlistId
+          updateEntry(runId, (entry) => ({ ...entry, playlistId: plId }))
         } else if (event.type === 'error') {
           updateEntry(runId, (entry) => ({
             ...entry,
@@ -361,9 +377,9 @@ export function AIHostChatInner({ isOpen, onClose, onPlayPlaylist, currentPlayli
   }
 
   const onInputKeyDown = (event) => {
-    if (confirmRef.current && ['y', 'n', 'Enter'].includes(event.key) && !input) {
+    if (confirmRef.current && ['y', 'Y', 'n', 'N', 'Enter'].includes(event.key) && !input) {
       event.preventDefault()
-      answerConfirm(event.key === 'y')
+      answerConfirm(event.key === 'y' || event.key === 'Y' || event.key === 'Enter')
       return
     }
     if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
