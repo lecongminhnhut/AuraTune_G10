@@ -9,7 +9,7 @@ import MobileNav from './components/common/MobileNav.jsx'
 import { Toaster } from './components/common/ui.jsx'
 import { AddToPlaylistDialog, PlaylistFormDialog } from './components/playlist/PlaylistDialogs.jsx'
 import AppRouter from './routes/AppRouter.jsx'
-import useMockPlayer from './hooks/useMockPlayer.js'
+import useAudioPlayer from './hooks/useAudioPlayer.js'
 import { AppStoreProvider, useStore } from './context/AppStore.jsx'
 import { PlayerContext } from './context/PlayerContext.jsx'
 import { loginPath, navigate } from './utils/navigation.jsx'
@@ -25,7 +25,7 @@ export default function App() {
 
 function AppShell() {
   const store = useStore()
-  const player = useMockPlayer()
+  const player = useAudioPlayer({ findTrack: store.findTrack, isPlayable: store.isPlayable })
   const [chatOpen, setChatOpen] = useState(false)
   const [fullScreenOpen, setFullScreenOpen] = useState(false)
   const queueOpen = store.ui.queueOpen
@@ -36,25 +36,30 @@ function AppShell() {
   const openChat = () => { store.setQueueOpen(false); setChatOpen(true) }
   const openQueue = () => { setChatOpen(false); setFullScreenOpen(false); store.setQueueOpen(true) }
 
-  // Ghi lịch sử nghe: mỗi lần một bài bắt đầu phát tạo một bản ghi, thời lượng nghe được cập nhật khi đổi bài hoặc tạm dừng.
+  // Ghi lịch sử nghe (041-FR-014): một phiên nghe chỉ thành lượt phát khi trình phát báo đã nghe liên tục
+  // 30 giây hoặc nửa bài (playCounted). Thời lượng nghe được cập nhật khi đổi bài, tạm dừng hoặc rời trang.
   const sessionRef = useRef(null)
   const userId = store.currentUser?.id
   const { recordPlay, updateListened } = store
+  const playSessionKey = `${userId}:${player.track.id}:${player.playKey}`
+
   useEffect(() => {
-    if (sessionRef.current && sessionRef.current.trackId === player.track.id) sessionRef.current.listened = player.elapsed
-  }, [player.elapsed, player.track.id])
+    const session = sessionRef.current
+    if (session && session.key !== playSessionKey) {
+      updateListened(session.entryId, session.listened)
+      sessionRef.current = null
+    }
+    if (!userId || !player.playCounted) return
+    if (sessionRef.current) sessionRef.current.listened = player.listened
+    else sessionRef.current = { key: playSessionKey, entryId: recordPlay(player.track.id), listened: player.listened }
+  }, [playSessionKey, userId, player.playCounted, player.listened, player.track.id, recordPlay, updateListened])
 
   useEffect(() => {
     const flush = () => { if (sessionRef.current) updateListened(sessionRef.current.entryId, sessionRef.current.listened) }
-    if (!player.isPlaying || !userId) { flush(); return undefined }
-    const key = `${userId}:${player.track.id}:${player.playKey}`
-    if (sessionRef.current?.key !== key) {
-      flush()
-      sessionRef.current = { key, trackId: player.track.id, entryId: recordPlay(player.track.id), listened: 0 }
-    }
+    if (!player.isPlaying) flush()
     window.addEventListener('pagehide', flush)
     return () => window.removeEventListener('pagehide', flush)
-  }, [player.isPlaying, player.track.id, player.playKey, userId, recordPlay, updateListened])
+  }, [player.isPlaying, updateListened])
 
   const requireLogin = (message = 'Bạn cần đăng nhập để dùng tính năng này.') => {
     store.toast(message, 'error')
