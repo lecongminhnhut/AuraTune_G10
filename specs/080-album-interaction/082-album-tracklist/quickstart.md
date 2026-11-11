@@ -42,4 +42,5 @@ The frontend package currently declares Vite `dev`, `build`, and `preview` scrip
 
 ## Test tooling status
 
-No test command appears in the frontend package manifest. Confirm the repository's approved test runner and fixtures before translating these scenarios into automated commands. Queue-capacity, replacement/insertion, and recovery cases remain blocked as recorded in Feature 082's plan.
+- **Automated Testing**: The frontend package declares Vite `dev`, `build`, and `preview` scripts. Per project constraints (T005), no automated test dependencies (e.g., Vitest, Jest) have been added.
+- **Current Approach**: Validation for Feature 082 will rely strictly on the manual **Acceptance walkthrough** scenarios defined above, utilizing `npm run dev`.

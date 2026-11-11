@@ -16,12 +16,12 @@ description: "Dependency-ordered implementation tasks for Album Tracklist Playba
 
 **Purpose**: Resolve cross-feature behavior and validation prerequisites without changing another feature's contract.
 
-- [ ] T001 Investigate and obtain requirements-owner resolution for Play Album queue replacement in FR-004 versus insertion/preservation in the clarification, assumptions, and repeated-play behavior before implementing queue mutation; do not select a policy while this conflict remains open.
-- [ ] T002 Investigate and obtain requirements-owner and Group 050-owner resolution for the 50-item queue limit versus full playback and Add all behavior for albums with 100 or more tracks; retain the Group 050 limit until the conflict is resolved.
-- [ ] T003 Identify the Group 040 player error/recovery contract and owner for a track that becomes unavailable at playback time; do not define a new callback or skip policy in Feature 082.
-- [ ] T004 Confirm that album playback and selected-track insertion can coexist with the approved repeat-play segment identity and duplicate-handling behavior in the shared player/queue state.
-- [ ] T005 Confirm the existing frontend test runner, fixtures, and test locations from repository configuration, then record supported test commands in `specs/080-album-interaction/082-album-tracklist/quickstart.md` without adding dependencies.
-- [ ] T006 Confirm the active Group 050 queue persistence behavior against browser-local persistence and paused-on-reload requirements before relying on it for Feature 082 playback state.
+- [x] T001 Investigate and obtain requirements-owner resolution for Play Album queue replacement in FR-004 versus insertion/preservation in the clarification, assumptions, and repeated-play behavior before implementing queue mutation; do not select a policy while this conflict remains open.
+- [x] T002 Investigate and obtain requirements-owner and Group 050-owner resolution for the 50-item queue limit versus full playback and Add all behavior for albums with 100 or more tracks; retain the Group 050 limit until the conflict is resolved.
+- [x] T003 Identify the Group 040 player error/recovery contract and owner for a track that becomes unavailable at playback time; do not define a new callback or skip policy in Feature 082.
+- [x] T004 Confirm that album playback and selected-track insertion can coexist with the approved repeat-play segment identity and duplicate-handling behavior in the shared player/queue state.
+- [x] T005 Confirm the existing frontend test runner, fixtures, and test locations from repository configuration, then record supported test commands in `specs/080-album-interaction/082-album-tracklist/quickstart.md` without adding dependencies.
+- [x] T006 Confirm the active Group 050 queue persistence behavior against browser-local persistence and paused-on-reload requirements before relying on it for Feature 082 playback state.
 
 ---
 

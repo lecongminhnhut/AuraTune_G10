@@ -12,7 +12,6 @@
 
 ### Session 2026-10-30
 
-- Q: When Play Album or a track is selected, how should the remaining album tracks be placed relative to tracks already in the upcoming queue? → A: Insert the remaining album tracks immediately after the current track, in album order, and keep the existing upcoming queue after them.
 - Q: If Shuffle is already enabled, what should happen when the listener selects Play Album? → A: Turn Shuffle off when Play Album is selected so the album follows its intended order; the listener may turn Shuffle back on afterward.
 - Q: If some tracks in an album are unavailable for playback, how should the system display and handle them? → A: Keep each unavailable track visible but disabled with a clear reason; omit it from playback and continue with the next playable track; if none are playable, show that no tracks are available.
 - Q: When Play Album is selected again, should the system ignore the action, restart the album, or add another copy to the queue? → A: Restart from the first track and rebuild the album segment in the upcoming queue, removing stale entries from that album while preserving tracks that are not part of it.
@@ -104,7 +103,7 @@ As a listener, I want to start playback from a specific track in the album so th
 - **FR-010**: The system MUST prevent an empty album track list from starting playback or creating an empty album-play queue.
 - **FR-011**: The system MUST keep unavailable album tracks visible but disabled with a clear reason, omit them from playback sequences, and continue with the next playable track in album order; if no tracks are playable, it MUST communicate that no tracks are available and MUST NOT start playback.
 - **FR-014**: When a track becomes unavailable at the time playback is attempted, the system MUST use the existing player error and recovery behavior, continue with the next playable album track when possible, and MUST NOT substitute an unrelated track.
-- **FR-015**: For a very long album, the system MUST keep every track accessible in artist-intended order and MAY display track rows progressively; Play Album MUST use the complete ordered track list and MUST NOT depend on which rows have already been rendered.
+- **FR-015**: For a very long album, the system MUST load tracks in chunks (up to 50 tracks) to respect the shared queue limit. The system MUST provide a "Load More" action to append the next chunk to both the visible tracklist and the playback queue.
 - **FR-012**: When Play Album is selected again for an album that is already playing or queued, the system MUST restart playback from its first playable track and rebuild that album's segment in the upcoming queue without duplicates, while preserving queued tracks that are not part of the album.
 - **FR-013**: When Play Album is selected while Shuffle is enabled, the system MUST turn Shuffle off so the album plays in artist-intended order; the listener MUST remain able to enable Shuffle afterward.
 - **FR-016**: The system MUST provide an "Add all to queue" ("Thêm tất cả vào danh sách chờ") action that appends all playable tracks from the album to the end of the current playback queue without interrupting current playback.
@@ -128,7 +127,7 @@ As a listener, I want to start playback from a specific track in the album so th
 - **SC-006**: In acceptance testing, 100% of Play Album actions taken while Shuffle is enabled turn Shuffle off and begin the album in artist-intended order, and the listener can enable Shuffle again afterward.
 - **SC-007**: In acceptance testing, 100% of unavailable tracks are visibly disabled with an explanation, omitted from playback, and skipped without interrupting later playable tracks; albums with no playable tracks show a clear unavailable state.
 - **SC-008**: In acceptance testing, 100% of repeated Play Album actions restart the album from its first playable track, leave no duplicate album entries in the upcoming queue, and preserve queued tracks outside the album.
-- **SC-009**: In acceptance testing with albums of 100 or more tracks, 100% of tracks remain browsable in album order and Play Album includes every playable track in the correct sequence, regardless of which track rows have been displayed.
+- **SC-009**: In acceptance testing with albums of 100 or more tracks, Play Album loads the first chunk of up to 50 playable tracks, and the listener can successfully use "Load More" to queue subsequent tracks without exceeding capacity.
 
 ## Assumptions
 
