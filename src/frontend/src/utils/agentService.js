@@ -348,12 +348,13 @@ export async function* runAgent(prompt, { context = {}, signal } = {}) {
       JSON.parse(localStorage.getItem('auratune_session') || '{}')?.token) ||
     '';
 
-  const apiBase =
+  const rawApiUrl =
     (typeof import.meta !== 'undefined' &&
       import.meta.env &&
-      import.meta.env.VITE_API_URL) ||
+      (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL)) ||
     '';
-  const chatEndpoint = `${apiBase}/api/v1/agent/chat`;
+  const cleanApiBase = rawApiUrl.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '');
+  const chatEndpoint = cleanApiBase ? `${cleanApiBase}/api/v1/agent/chat` : '/api/v1/agent/chat';
 
   let response;
   try {
@@ -374,6 +375,31 @@ export async function* runAgent(prompt, { context = {}, signal } = {}) {
       }),
       signal
     });
+
+    // If 404 on relative path, attempt direct localhost:5000 fallback
+    if (response.status === 404 && !cleanApiBase) {
+      const directEndpoint = 'http://localhost:5000/api/v1/agent/chat';
+      const retryRes = await fetch(directEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          prompt: sanitizedPrompt,
+          context: {
+            currentTrack: context.currentTrack || null,
+            isPlaying: Boolean(context.isPlaying),
+            volume: typeof context.volume === 'number' ? context.volume : 80
+          }
+        }),
+        signal
+      });
+      if (retryRes.ok) {
+        response = retryRes;
+      }
+    }
   } catch (err) {
     if (signal?.aborted || err.name === 'AbortError') {
       const abortError = new Error('Đã dừng');
@@ -388,6 +414,14 @@ export async function* runAgent(prompt, { context = {}, signal } = {}) {
   }
 
   if (!response.ok) {
+    // If backend 401 (unauthenticated/expired session), 404 or 503,
+    // seamlessly fallback to local assistant generator for uninterrupted music experience (Zero Audio Disruption Invariant)
+    if (response.status === 401 || response.status === 403 || response.status === 404 || response.status === 503) {
+      console.warn(`Backend chat endpoint responded with HTTP ${response.status}. Seamlessly falling back to local assistant generator.`);
+      yield* mockAgentStream(prompt, { context, signal });
+      return;
+    }
+
     let errorMessage = `Lỗi máy chủ (${response.status})`;
     try {
       const errorJson = await response.json();

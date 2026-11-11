@@ -240,7 +240,104 @@ export async function* mockAgentStream(prompt, options = {}) {
     if (signal?.aborted) return
     yield { type: 'thinking', text: phrase }
     try {
-      await sleep(250, signal)
+      await sleep(150, signal)
+    } catch {
+      return
+    }
+  }
+
+  // Phân tích intent điều khiển nhạc cho offline/fallback mode (Feature 123)
+  const norm = normalizeText(prompt || '')
+  let toolToCall = null
+
+  if (norm.includes('lofi') || norm.includes('chill') || norm.includes('code') || norm.includes('tap trung') || norm.includes('thu gian')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-1',
+      name: 'play_playlist',
+      args: { playlistId: 'lofi-chill' },
+      confirm: false
+    }
+  } else if (norm.includes('tam dung') || norm.includes('pause') || norm.includes('dung lai') || norm.includes('ngung nhac')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-2',
+      name: 'playback',
+      args: { action: 'pause' },
+      confirm: false
+    }
+  } else if (norm.includes('tiep tuc') || norm.includes('resume') || norm.includes('phat tiep') || norm.includes('choi tiep')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-3',
+      name: 'playback',
+      args: { action: 'resume' },
+      confirm: false
+    }
+  } else if (norm.includes('chuyen bai') || norm.includes('next') || norm.includes('qua bai') || norm.includes('bai tiep')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-4',
+      name: 'playback',
+      args: { action: 'next' },
+      confirm: false
+    }
+  } else if (norm.includes('quay lai') || norm.includes('previous') || norm.includes('bai truoc')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-5',
+      name: 'playback',
+      args: { action: 'previous' },
+      confirm: false
+    }
+  } else if (norm.includes('am luong') || norm.includes('volume') || norm.includes('to len') || norm.includes('nho lai')) {
+    const volMatch = norm.match(/(\d{1,3})/)
+    let targetVol = 60
+    if (volMatch) {
+      targetVol = Math.max(0, Math.min(100, parseInt(volMatch[1], 10)))
+    } else if (norm.includes('to len') || norm.includes('tang')) {
+      targetVol = Math.min(100, (context.volume ?? 50) + 20)
+    } else if (norm.includes('nho lai') || norm.includes('giam')) {
+      targetVol = Math.max(0, (context.volume ?? 50) - 20)
+    }
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-6',
+      name: 'set_volume',
+      args: { value: targetVol },
+      confirm: false
+    }
+  } else if (norm.includes('xoa hang cho') || norm.includes('clear queue')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-7',
+      name: 'clear_queue',
+      args: {},
+      confirm: true
+    }
+  } else if (norm.includes('nang tho') || norm.includes('hoang dung')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-8',
+      name: 'play_tracks',
+      args: { trackIds: ['t1'] },
+      confirm: false
+    }
+  } else if (norm.includes('buoc qua mua co don') || norm.includes('vu')) {
+    toolToCall = {
+      type: 'tool_call',
+      id: 'call-mock-9',
+      name: 'play_tracks',
+      args: { trackIds: ['t2'] },
+      confirm: false
+    }
+  }
+
+  if (toolToCall) {
+    if (signal?.aborted) return
+    yield toolToCall
+    try {
+      await sleep(80, signal)
     } catch {
       return
     }
@@ -253,7 +350,7 @@ export async function* mockAgentStream(prompt, options = {}) {
     if (signal?.aborted) return
     yield { type: 'text', delta: chunk }
     try {
-      await sleep(40, signal)
+      await sleep(30, signal)
     } catch {
       return
     }
