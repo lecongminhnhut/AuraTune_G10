@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import songRoutes from './routes/songRoutes.js';
+import agentRoutes from './routes/agentRoutes.js';
 
 dotenv.config();
 
@@ -51,6 +52,8 @@ app.get('/api/health', (req, res) => {
 app.use('/api/v1/auth', authRoutes);
 // Group 040 Music Player: song metadata & audio stream
 app.use('/api/v1/songs', songRoutes);
+// Group 120 AI Conversational Agent: Feature 121
+app.use('/api/v1/agent', agentRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
