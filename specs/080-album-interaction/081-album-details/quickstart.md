@@ -44,4 +44,8 @@ npm run build
 
 ## Test tooling status
 
-The frontend manifest declares `dev`, `build`, and `preview`; the backend declares `start` and `dev`. Neither manifest declares a test script. Once the team confirms the test harness and the authoritative API provider/contract, add the corresponding automated acceptance, request-state, and contract checks without changing the approved behavior.
+## Test tooling status
+
+- **Automated Testing**: The frontend package manifest declares `dev`, `build`, and `preview`; the backend declares `start` and `dev`. Neither manifest currently declares an automated test script (e.g., Vitest, Jest). Per project constraints, no test dependency has been added during planning.
+- **Current Approach**: Validation for Feature 081 will rely strictly on the manual **Acceptance walkthrough** defined above, using `npm run dev`.
+- **Future Action**: Once the team (Vision Owner/Admin) officially approves and configures a repository-wide test harness, the automated presentation and request-state tests (T007, T008, T017, T022, T027) will be implemented using that framework.

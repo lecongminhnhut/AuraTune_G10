@@ -17,8 +17,8 @@ description: "Dependency-ordered implementation tasks for Album Details"
 **Purpose**: Confirm the external and repository prerequisites without inventing an API contract, catalog source, or test framework.
 
 - [x] T001 Identify the approved public `GET /albums/:id` contract owner and source of truth, including the service provider, route/base-path alignment, response mapping, and complete ordered track-list guarantee; record the confirmed reference in `specs/080-album-interaction/081-album-details/contracts/README.md`.
-- [ ] T002 Confirm which existing approved catalog source supplies other albums by artist; keep the finding or unresolved blocker in `specs/080-album-interaction/081-album-details/research.md` and do not add album-detail response fields.
-- [ ] T003 Identify the repository-approved frontend component/interaction test harness and available API fixtures from package manifests and test configuration; record runnable commands and test locations in `specs/080-album-interaction/081-album-details/quickstart.md` without adding dependencies.
+- [x] T002 Confirm which existing approved catalog source supplies other albums by artist; keep the finding or unresolved blocker in `specs/080-album-interaction/081-album-details/research.md` and do not add album-detail response fields.
+- [x] T003 Identify the repository-approved frontend component/interaction test harness and available API fixtures from package manifests and test configuration; record runnable commands and test locations in `specs/080-album-interaction/081-album-details/quickstart.md` without adding dependencies.
 
 ---
 
