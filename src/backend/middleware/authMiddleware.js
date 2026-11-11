@@ -14,12 +14,28 @@ export async function authenticateToken(req, res, next) {
     req.originalUrl?.includes('/agent') ||
     req.path?.includes('/agent');
 
+  const isMoodRoute =
+    req.baseUrl?.includes('/mood-context') ||
+    req.originalUrl?.includes('/mood-context') ||
+    req.path?.includes('/mood-context');
+
   const isRecommendationRoute =
     req.baseUrl?.startsWith('/api/v1/recommendations') ||
     req.originalUrl?.includes('/recommendations') ||
     req.path?.includes('/recommendations');
 
   const sendUnauthorized = (legacyMsg) => {
+    if (isMoodRoute) {
+      return res.status(401).json({
+        success: false,
+        message: 'Yêu cầu đăng nhập để nhận gợi ý theo tâm trạng',
+        data: null,
+        error: {
+          code: 'UNAUTHORIZED',
+          details: []
+        }
+      });
+    }
     if (isRecommendationRoute) {
       return res.status(401).json({
         success: false,

@@ -104,6 +104,74 @@ async def recommend(req: RecommendRequest):
         "candidates": candidates
     }
 
+class MoodRecommendRequest(BaseModel):
+    user_id: Optional[str] = None
+    tag: str = Field(..., description="Mood or context tag")
+    type: Optional[str] = Field(default="all", description="Entity filter: all, song, playlist")
+    limit: int = Field(default=20, ge=1, le=50)
+
+MOOD_CATALOG_MAPPING = {
+    "chill": [
+        {"type": "song", "id": "t8", "score": 0.98},
+        {"type": "song", "id": "t9", "score": 0.95},
+        {"type": "playlist", "id": "lofi-chill", "score": 0.92},
+        {"type": "song", "id": "t1", "score": 0.90},
+    ],
+    "energetic": [
+        {"type": "song", "id": "t4", "score": 0.96},
+        {"type": "song", "id": "t5", "score": 0.94},
+        {"type": "playlist", "id": "aura-mix", "score": 0.91},
+    ],
+    "melancholy": [
+        {"type": "song", "id": "t2", "score": 0.95},
+        {"type": "song", "id": "t3", "score": 0.92},
+        {"type": "song", "id": "t7", "score": 0.89},
+    ],
+    "focus": [
+        {"type": "song", "id": "t10", "score": 0.97},
+        {"type": "playlist", "id": "deep-focus", "score": 0.94},
+        {"type": "song", "id": "t8", "score": 0.91},
+    ],
+    "study_work": [
+        {"type": "playlist", "id": "deep-focus", "score": 0.96},
+        {"type": "song", "id": "t10", "score": 0.93},
+        {"type": "song", "id": "t8", "score": 0.90},
+    ],
+    "workout": [
+        {"type": "song", "id": "t4", "score": 0.97},
+        {"type": "song", "id": "t5", "score": 0.95},
+        {"type": "playlist", "id": "aura-mix", "score": 0.92},
+    ],
+    "late_night": [
+        {"type": "playlist", "id": "lofi-chill", "score": 0.97},
+        {"type": "song", "id": "t8", "score": 0.94},
+        {"type": "song", "id": "t9", "score": 0.92},
+    ],
+    "travel_commute": [
+        {"type": "song", "id": "t1", "score": 0.95},
+        {"type": "playlist", "id": "indie-viet", "score": 0.93},
+        {"type": "song", "id": "t3", "score": 0.90},
+    ],
+}
+
+@app.post("/ai/recommend/mood")
+async def recommend_mood(req: MoodRecommendRequest):
+    tag = req.tag.strip().lower()
+    items = MOOD_CATALOG_MAPPING.get(tag, [])
+
+    # Filter strictly to songs and playlists only
+    if req.type and req.type != "all":
+        items = [item for item in items if item.get("type") == req.type]
+
+    candidates = items[: req.limit]
+
+    return {
+        "status": "success",
+        "tag": tag,
+        "model_version": "v1.3.0-mood-context-vector",
+        "candidates": candidates
+    }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host=settings.AI_SERVICE_HOST, port=settings.AI_SERVICE_PORT, reload=True)

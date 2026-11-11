@@ -8,4 +8,7 @@ export const aiConfig = {
   internalSecret: process.env.AI_INTERNAL_SECRET || 'auratune-internal-secret-2026',
 };
 
+export const AI_SERVICE_URL = aiConfig.aiServiceUrl;
+export const AI_SERVICE_TIMEOUT_MS = aiConfig.aiServiceTimeoutMs;
+
 export default aiConfig;

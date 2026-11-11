@@ -42,6 +42,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 36  | 2026-11-11 | Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)                           | 12 – AI Conversational Agent                      |
 | 37  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 101 – Listening History Analysis bằng `/speckit-implement`                         | 10 – AI Recommendations                           |
 | 38  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 102 – Personalized Recommendations bằng `/speckit-implement`                       | 10 – AI Recommendations                           |
+| 39  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`                     | 10 – AI Recommendations                           |
 
 ---
 
@@ -6240,3 +6241,132 @@ Sau khi hoàn tất, hãy báo cáo danh sách file đã tạo/sửa đổi, k�
   - Scenario 4 (Account Privacy & Boundary Isolation - US4): Đạt (chặn 401 khi thiếu token, token User A không thể đọc dữ liệu User B, query param spoofing bị vô hiệu hóa hoàn toàn).
   - Scenario 5 (Transition to Cold-Start Following History Purge - AF-03): Đạt (sau khi xóa lịch sử nghe ở Group 070, request gợi ý lập tức chuyển về baseline Cold-Start).
 - [x] **Kiểm tra danh mục tasks.md:** Đạt **34/34 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 39: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations/`)                                                                                                                                                                                                                                                                                                                                                                            |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 37 nhiệm vụ kỹ thuật (T001 – T037) thuộc 7 Phase cho Feature 103 (Mood and Context Recommendations) trên nhánh `103-mood-and-context-recommendations` theo chuẩn Test-Driven Development (TDD), giới hạn nghiêm ngặt taxonomy đúng 8 preset tags chuẩn, hạn chế thực thể trả về chỉ gồm Songs và Curated Mood Playlists, bọc timeout cứng 2.5s khi gọi Python AI service kèm graceful degradation về catalog cục bộ, xử lý empty state với 2-3 gợi ý thay thế, và cô lập tài khoản. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement Bạn là Kỹ sư Full-stack cao cấp cho dự án AuraTune (Node.js/Express + React/Vite). Hãy triển khai hoàn chỉnh Feature 103: Mood and Context Recommendations thuộc Group 100 theo tiêu chuẩn Test-Driven Development (TDD).
+
+Vui lòng đọc và tuân thủ tuyệt đối các file sau:
+1. specs/100-ai-recommendations/103-mood-and-context-recommendations/spec.md
+2. specs/100-ai-recommendations/103-mood-and-context-recommendations/plan.md
+3. specs/100-ai-recommendations/103-mood-and-context-recommendations/tasks.md
+4. specs/100-ai-recommendations/103-mood-and-context-recommendations/data-model.md
+5. specs/100-ai-recommendations/103-mood-and-context-recommendations/contracts/mood-context-recommendations-api.json
+6. specs/100-ai-recommendations/103-mood-and-context-recommendations/quickstart.md
+7. docs/requirements/use-cases/100-ai-recommendations/UC-100-003-discover-music-by-mood-and-context.md
+
+Các nguyên tắc bất biến (Non-negotiables):
+- TAXONOMY: Chỉ hỗ trợ đúng 8 tags chuẩn: 4 moods (chill, energetic, melancholy, focus) và 4 contexts (study_work, workout, late_night, travel_commute). Bất kỳ tag nào khác phải bị chặn với HTTP 400 INVALID_MOOD_TAG.
+- THỰC THỂ: Chỉ trả về individual songs và curated mood playlists. Tuyệt đối KHÔNG trả về albums hay artists.
+- RANH GIỚI: Không nhầm lẫn với thống kê nghe nhạc (101), gu tổng thể (102), search text (030), hay chat bot (120).
+- RESILIENCE: Cuộc gọi AI Service có timeout cứng 2.5s. Nếu timeout hoặc AI chết, fallback về local playlist trong DB kèm cờ `is_service_degraded: true`. Không được trả về lỗi 500.
+- EMPTY STATE: Tag không có nhạc trả về HTTP 200 với mảng items rỗng và 2-3 `alternative_suggestions`.
+- UI/UX: Single-select tag; dùng AbortController chống race condition khi switch tag nhanh; in-memory cache TTL 5 phút để chuyển đổi < 50ms.
+- BẢO MẬT: Bắt buộc Bearer JWT (HTTP 401 nếu thiếu); tuân thủ Nghị định 13/2023/NĐ-CP (lựa chọn mood chỉ mang tính tạm thời theo phiên).
+
+Kế hoạch thực hiện:
+Lần lượt hoàn thành toàn bộ 37 tasks từ T001 đến T037 qua 7 phases:
+- Phase 1: Setup & Environment Configuration (T001 - T003)
+- Phase 2: Foundational Components & Taxonomy Setup (T004 - T009)
+- Phase 3: User Story 1 - Discover Music by Selected Mood/Context Tag (MVP Core) (T010 - T019)
+- Phase 4: User Story 2 - Empty Results & Active Alternative Suggestions (T020 - T023)
+- Phase 5: User Story 3 - AI Service Outage & 2.5s Timeout Graceful Degradation (T024 - T028)
+- Phase 6: User Story 4 - Data Privacy & Account Isolation (T029 - T031)
+- Phase 7: Polish, Quality Assurance & Quickstart Verification (T032 - T037)
+
+Sau khi hoàn thành, hãy chạy toàn bộ test suite và đối chiếu với 5 kịch bản trong quickstart.md để chứng minh tính năng hoạt động 100% hoàn hảo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Khởi tạo và kiểm tra tiền điều kiện:**
+  - Khởi tạo và checkout sang nhánh làm việc `103-mood-and-context-recommendations`.
+  - Kiểm tra `.specify/extensions.yml` (không tồn tại, bỏ qua hook an toàn).
+  - Rà soát toàn bộ các tài liệu thiết kế: `spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/mood-context-recommendations-api.json`, `quickstart.md`, `UC-100-003` và checklist chất lượng `checklists/requirements.md` (16/16 mục đạt yêu cầu).
+
+- **Thực thi tuần tự toàn bộ 37 nhiệm vụ kỹ thuật (T001 – T037) qua 7 Phase:**
+  - **Phase 1: Setup Infrastructure & Taxonomy Configuration (T001 – T005):**
+    - Cấu hình cài đặt kết nối và timeout microservice AI (`AI_SERVICE_URL`, `AI_SERVICE_TIMEOUT_MS = 2500`) trong `src/backend/config/aiConfig.js` (T001).
+    - Tạo hằng số taxonomy 8 preset tags chuẩn (`chill`, `energetic`, `melancholy`, `focus`, `study_work`, `workout`, `late_night`, `travel_commute`) phân theo 2 nhóm (`mood`, `context`) kèm icon và gradient màu trong `src/backend/constants/moodTaxonomy.js` (T002).
+    - Bổ sung phương thức client nội bộ `getMoodRecommendations` trong `src/backend/clients/aiServiceClient.js` gọi `POST /ai/recommend/mood` với `AbortController` timeout cứng 2.5s; đồng thời bổ sung endpoint `POST /ai/recommend/mood` trong `src/ai-service/main.py` (T003).
+    - Tạo helper `src/backend/utils/moodResponse.js` chuẩn hóa envelope `{ success, message, data, error }` theo OpenAPI contract (T004).
+    - Tạo mock service skeleton `src/frontend/src/services/mock/mockMoodRecommendationService.js` với 8 tags và dữ liệu giả lập đa hình (`song`, `playlist`) (T005).
+  - **Phase 2: Foundational Prerequisites (T006 – T009):**
+    - Tạo `src/backend/repositories/moodCatalogRepository.js` truy vấn songs đang hoạt động (`is_active = true` và `deleted_at IS NULL`) và public mood playlists (`status = 'Public'`) theo tag (T006).
+    - Tạo `src/backend/services/moodCatalogHydrationService.js` hydrate metadata hiển thị, khử trùng lặp `(type, id)`, và lọc bỏ triệt để các thực thể album, artist, private playlist hoặc bài hát bị xóa (T007).
+    - Tạo router `src/backend/routes/moodRecommendationRoutes.js` và mount `/api/v1/recommendations/mood-context` trong `src/backend/server.js` (T008).
+    - Tạo frontend API adapter `src/frontend/src/services/moodRecommendationService.js` hỗ trợ chuyển đổi linh hoạt Mock/Live qua `VITE_USE_MOCKS`, tích hợp `AbortController` chống race condition và bộ đệm in-memory cache TTL 5 phút (T009).
+  - **Phase 3: User Story 1 - Discover Music by Mood or Context (T010 – T019) 🎯 MVP:**
+    - Viết unit test `src/backend/tests/services/moodRecommendationService.test.js` kiểm thử tag resolution, entity restriction (chỉ song và playlist), khử trùng lặp `(type, id)`, và lọc entity type (`song`/`playlist`) (T010).
+    - Viết contract test `src/backend/tests/contracts/moodContextRecommendationsContract.test.js` xác thực tính tương thích với OpenAPI schema cho `GET /tags` và `GET /` (T011).
+    - Cài đặt workflow điều phối gợi ý theo tâm trạng trong `src/backend/services/moodRecommendationService.js` (T012).
+    - Cài đặt controller `getMoodContextTags` và `getMoodContextRecommendations` trong `src/backend/controllers/moodRecommendationController.js` validate query params `tag`, `type` và `limit` (T013).
+    - Đăng ký endpoint `router.get('/tags')` và `router.get('/')` kèm guard `authenticateToken` trong `moodRecommendationRoutes.js` (T014).
+    - Cài đặt các phương thức client frontend gửi kèm Bearer JWT token (T015).
+    - Xây dựng component thanh cuộn ngang `src/frontend/src/components/mood/MoodChipBar.jsx` render 8 chips với trạng thái active, icon và visual gradient tokens (T016).
+    - Xây dựng component card `src/frontend/src/components/mood/MoodItemCard.jsx` hiển thị artwork, title, subtitle, badge và tương tác 1-click: bài hát phát ngay qua `player.playTrack()`, playlist chuyển sang `/playlist/:id` (T017).
+    - Xây dựng container `src/frontend/src/components/mood/MoodDiscoverySection.jsx` phối hợp chip bar, card grid, loading skeleton và player context (T018).
+    - Tạo trang `src/frontend/src/pages/Discovery/MoodDiscoveryPage.jsx` và nhúng `MoodDiscoverySection` trực tiếp vào luồng khám phá Trang chủ `src/frontend/src/pages/Home/HomePage.jsx` với tag mặc định ban đầu là `"chill"` (T019).
+  - **Phase 4: User Story 2 - Handle Unrecognized Inputs or Empty Results (T020 – T024):**
+    - Viết unit test `src/backend/tests/services/moodValidationAndAlternatives.test.js` kiểm tra whitelist 8 tags (chặn chuỗi ngoài danh mục) và thuật toán sinh 2–3 gợi ý thay thế (T020).
+    - Cài đặt kiểm tra whitelist trong controller trả về HTTP 400 mã `INVALID_MOOD_TAG` liệt kê danh sách các tag hợp lệ (T021).
+    - Cài đặt bộ sinh gợi ý thay thế trong `moodRecommendationService.js`: khi số lượng items sau hydration bằng 0, trả về `total_items: 0`, `items: []` kèm `alternative_suggestions` (T022).
+    - Xây dựng component `src/frontend/src/components/mood/MoodEmptyState.jsx` hiển thị thông điệp thân thiện kèm các chip gợi ý thay thế có thể click để đổi tag ngay (T023).
+    - Tích hợp `MoodEmptyState` vào `MoodDiscoverySection.jsx` hiển thị khi kết quả rỗng (T024).
+  - **Phase 5: User Story 3 - Resilient Handling of AI Service Outage (T025 – T028):**
+    - Viết integration test `src/backend/tests/integration/moodDegradationResilience.test.js` mô phỏng AI timeout (> 2.5s) và AI báo lỗi 500, xác thực hệ thống phản hồi HTTP 200 trong 52ms với `is_service_degraded: true` (T025).
+    - Cài đặt khối bọc `try...catch` trong `moodRecommendationService.js`: khi AI gặp sự cố hoặc timeout, tự động truy vấn public playlist và songs từ local catalog, gán `is_service_degraded: true` và bổ sung `fallback_shortcuts` (T026).
+    - Xây dựng component banner `src/frontend/src/components/mood/MoodDegradedBanner.jsx` hiển thị thông báo bảo trì nhẹ nhàng kèm lối tắt điều hướng (T027).
+    - Tích hợp `MoodDegradedBanner` vào `MoodDiscoverySection.jsx` khi `data.is_service_degraded === true`, bảo toàn 100% trải nghiệm nghe nhạc liên tục (T028).
+  - **Phase 6: User Story 4 - Account Isolation and Privacy (T029 – T032):**
+    - Viết security test `src/backend/tests/security/moodAccountIsolation.test.js` kiểm thử chặn 401 khi thiếu Bearer token, token sai lệch, cô lập phiên đồng thời giữa User A và User B, và đảm bảo không lộ PII trong response (T029).
+    - Áp dụng middleware `authenticateToken` trong `moodRecommendationRoutes.js` và chuẩn hóa thông báo 401 `"Yêu cầu đăng nhập để nhận gợi ý theo tâm trạng"` trong `authMiddleware.js` (T030).
+    - Đảm bảo phiên truy vấn tâm trạng mang tính tạm thời theo session, không ghi nhận vĩnh viễn dữ liệu nhạy cảm theo Nghị định 13/2023/NĐ-CP (T031).
+    - Bổ sung giao diện yêu cầu đăng nhập thân thiện trong `MoodDiscoverySection.jsx` khi nhận lỗi 401 (T032).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T033 – T037):**
+    - Tích hợp bộ nhớ đệm in-memory client-side cache TTL 5 phút trong `moodRecommendationService.js`, phản hồi lại chip cũ trong $< 50$ms (T033).
+    - Triệt tiêu race condition bằng `AbortController` tự động hủy bỏ request cũ khi người dùng bấm đổi chip liên tục (T034).
+    - Viết component unit tests `src/frontend/tests/components/MoodChipBar.test.jsx` và `src/frontend/tests/components/MoodDiscoverySection.test.jsx` kiểm thử render, 1-click play, empty state, degraded banner và cache (T035).
+    - Cập nhật tài liệu hợp đồng tích hợp `specs/100-ai-recommendations/103-mood-and-context-recommendations/contracts/README.md` (T036).
+    - Viết test tích hợp `src/backend/tests/integration/moodQuickstartScenarios.test.js` và xác thực toàn diện cả 5 kịch bản nghiệm thu trong `quickstart.md` (T037).
+    - Đánh dấu hoàn tất `[X]` cho toàn bộ 37 tasks trong `tasks.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                         | Quyết định   | Lý do                                                                                                                                                                                            |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Taxonomy đúng 8 tags chuẩn (4 Moods + 4 Contexts)            | Dùng toàn bộ | Tuân thủ FR-002, SC-003: chỉ cho phép 8 tags được phê duyệt. Mọi tag khác bị từ chối bằng HTTP 400 `INVALID_MOOD_TAG`.                                                                        |
+| Giới hạn thực thể nghiêm ngặt (Chỉ Songs và Playlists)       | Dùng toàn bộ | Tuân thủ Invariant 2, FR-003: chỉ trả về bài hát và danh sách phát theo chủ đề. Lọc bỏ hoàn toàn các thực thể Albums và Artists tại tầng repository và hydration service.                       |
+| Tương tác 1-Click (1-Click Play & Navigate)                  | Dùng toàn bộ | Tuân thủ FR-007, SC-004: click bài hát phát ngay lập tức thông qua `PlayerContext.playTrack()`; click danh sách phát chuyển hướng ngay tới `/playlist/:id`.                                     |
+| Chịu lỗi AI & Timeout 2.5s (Graceful Degradation)            | Dùng toàn bộ | Tuân thủ FR-004, EF-01, SC-003: bọc `AbortController` 2500ms; khi AI chết hoặc timeout, tự động fallback về catalog local với `is_service_degraded: true`, HTTP 200, không bao giờ trả lỗi 500. |
+| Empty State & 2–3 Gợi ý thay thế chủ động                    | Dùng toàn bộ | Tuân thủ FR-004, AF-02: khi không có nội dung khớp, trả về mảng rỗng kèm 2–3 `alternative_suggestions` và UI hiển thị chip chuyển tag tức thì.                                                |
+| Bộ nhớ đệm in-memory (< 50ms) & AbortController              | Dùng toàn bộ | Tuân thủ AF-01: hủy bỏ yêu cầu đang bay khi chuyển tag nhanh để tránh race condition; cache in-memory 5 phút giúp mở lại tag đã xem tức thì không cần gọi mạng.                                |
+| Bảo mật & Cô lập tài khoản theo Nghị định 13/2023/NĐ-CP      | Dùng toàn bộ | Tuân thủ FR-005, FR-006, SC-001: bắt buộc Bearer JWT token, chưa đăng nhập trả về HTTP 401 `UNAUTHORIZED`. Lựa chọn tâm trạng chỉ mang tính tạm thời, không lộ chéo giữa các tài khoản.        |
+| Thực thể Albums và Artists trong kết quả gợi ý Feature 103  | Bỏ tuyệt đối | Đảm bảo ranh giới thiết kế của Feature 103: chỉ tập trung vào Songs và Curated Mood Playlists, không gợi ý Albums/Artists (vốn thuộc Feature 102).                                              |
+| Tính toán thống kê lịch sử nghe hoặc gu nghe nhạc tổng quát | Bỏ tuyệt đối | Phân định ranh giới module rõ ràng: thống kê nghe nhạc thuộc Feature 101, gu nghe nhạc cá nhân hóa tổng quát thuộc Feature 102.                                                                  |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Feature 103 Tests:** Chạy `node --test` trên 5 test suites (`moodRecommendationService.test.js`, `moodValidationAndAlternatives.test.js`, `moodDegradationResilience.test.js`, `moodAccountIsolation.test.js`, `moodContextRecommendationsContract.test.js`, `moodQuickstartScenarios.test.js`), kết quả: **21/21 tests passed** (0 failures).
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **84/84 tests passed** (36 suites, 0 failures), các component test `MoodChipBar.test.jsx` và `MoodDiscoverySection.test.jsx` pass 100%.
+- [x] **Kiểm tra hồi quy toàn bộ Backend Test Suite:** Chạy `npm --prefix src/backend test`, kết quả: **178/178 tests passed** (49 suites, 0 failures) trong 18.5s.
+- [x] **Kiểm tra 5 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Standard Mood Stream - US1): Đạt (`is_service_degraded: false`, trả về các bài hát và playlist chính thức, 0 duplicate, 0 album/artist, click phát nhạc ngay).
+  - Scenario 2 (Empty Matches with Alternative Suggestions - US2): Đạt (khi tag không có kết quả, trả về HTTP 200 `total_items: 0`, `items: []` và 2–3 `alternative_suggestions`, UI hiển thị chip chuyển tag).
+  - Scenario 3 (AI Service Downtime & Graceful Degradation - US3): Đạt (khi AI microservice offline hoặc quá 2.5s, backend bắt lỗi trả về HTTP 200 trong 52ms kèm `fallback_shortcuts` và banner bảo trì nhẹ nhàng).
+  - Scenario 4 (Account Privacy & Boundary Isolation - US4): Đạt (chặn 401 khi thiếu token, chặn 400 mã `INVALID_MOOD_TAG` khi tag không thuộc 8 preset tags, cô lập hoàn toàn giữa User A và User B).
+  - Scenario 5 (Rapid Tag Switching & Cache - AF-01): Đạt (`AbortController` hủy bỏ request đang bay khi bấm đổi chip liên tục; bộ đệm in-memory trả về tag cũ trong $< 50$ms).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **37/37 tasks** đã hoàn thành và được đánh dấu `[X]`.
