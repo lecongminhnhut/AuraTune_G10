@@ -263,6 +263,203 @@ export async function* mockAgentStream(prompt, options = {}) {
   yield { type: 'done', totalDurationMs }
 }
 
+export const mockIntentFixtures = {
+  play_music: {
+    requestId: 'req-mock-play-01',
+    intentType: 'play_music',
+    confidenceScore: 0.95,
+    completenessStatus: 'complete',
+    extractedEntities: {
+      songTitle: 'Chúng ta của hiện tại',
+      artistName: 'Sơn Tùng M-TP',
+      albumTitle: null,
+      genre: null,
+      mood: null,
+      activity: null,
+      lyricsSnippet: null,
+      controlAction: 'play',
+      volumeLevel: null,
+      playlistName: null,
+      targetTrackId: null,
+    },
+    clauses: [
+      {
+        clauseIndex: 0,
+        rawClauseText: 'bật bài Chúng ta của hiện tại của Sơn Tùng M-TP',
+        intentType: 'play_music',
+        extractedEntities: {
+          songTitle: 'Chúng ta của hiện tại',
+          artistName: 'Sơn Tùng M-TP',
+          controlAction: 'play',
+        },
+        suggestedAction: 'real_time_assistance',
+      },
+    ],
+    suggestedAction: 'real_time_assistance',
+    inferredDefaults: null,
+    sanitizedPrompt: 'bật bài Chúng ta của hiện tại của Sơn Tùng M-TP',
+  },
+  search_music: {
+    requestId: 'req-mock-search-01',
+    intentType: 'search_music',
+    confidenceScore: 0.92,
+    completenessStatus: 'complete',
+    extractedEntities: {
+      songTitle: null,
+      artistName: null,
+      albumTitle: null,
+      genre: null,
+      mood: 'chill',
+      activity: 'học bài đêm khuya',
+      lyricsSnippet: null,
+      controlAction: null,
+      volumeLevel: null,
+      playlistName: null,
+      targetTrackId: null,
+    },
+    clauses: [
+      {
+        clauseIndex: 0,
+        rawClauseText: 'tìm cho mình mấy bài chill để học bài đêm khuya',
+        intentType: 'search_music',
+        extractedEntities: {
+          mood: 'chill',
+          activity: 'học bài đêm khuya',
+        },
+        suggestedAction: 'recommendation_service',
+      },
+    ],
+    suggestedAction: 'recommendation_service',
+    inferredDefaults: null,
+    sanitizedPrompt: 'tìm cho mình mấy bài chill để học bài đêm khuya',
+  },
+  query_music_info: {
+    requestId: 'req-mock-query-01',
+    intentType: 'query_music_info',
+    confidenceScore: 0.91,
+    completenessStatus: 'complete',
+    extractedEntities: {
+      songTitle: 'Ánh Nắng Của Anh',
+      artistName: 'Đức Phúc',
+      albumTitle: null,
+      genre: null,
+      mood: null,
+      activity: null,
+      lyricsSnippet: null,
+      controlAction: null,
+      volumeLevel: null,
+      playlistName: null,
+      targetTrackId: 'song-1',
+    },
+    clauses: [
+      {
+        clauseIndex: 0,
+        rawClauseText: 'bài đang phát là gì thế?',
+        intentType: 'query_music_info',
+        extractedEntities: {
+          targetTrackId: 'song-1',
+        },
+        suggestedAction: 'dialogue_response',
+      },
+    ],
+    suggestedAction: 'dialogue_response',
+    inferredDefaults: null,
+    sanitizedPrompt: 'bài đang phát là gì thế?',
+  },
+  manage_library: {
+    requestId: 'req-mock-lib-01',
+    intentType: 'manage_library',
+    confidenceScore: 0.88,
+    completenessStatus: 'complete',
+    extractedEntities: {
+      songTitle: null,
+      artistName: null,
+      albumTitle: null,
+      genre: null,
+      mood: null,
+      activity: null,
+      lyricsSnippet: null,
+      controlAction: 'like_track',
+      volumeLevel: null,
+      playlistName: 'Yêu thích',
+      targetTrackId: null,
+    },
+    clauses: [
+      {
+        clauseIndex: 0,
+        rawClauseText: 'lưu bài này vào danh sách phát yêu thích',
+        intentType: 'manage_library',
+        extractedEntities: {
+          controlAction: 'like_track',
+          playlistName: 'Yêu thích',
+        },
+        suggestedAction: 'real_time_assistance',
+      },
+    ],
+    suggestedAction: 'real_time_assistance',
+    inferredDefaults: null,
+    sanitizedPrompt: 'lưu bài này vào danh sách phát yêu thích',
+  },
+  general_chitchat: {
+    requestId: 'req-mock-chat-01',
+    intentType: 'general_chitchat',
+    confidenceScore: 0.96,
+    completenessStatus: 'complete',
+    extractedEntities: {
+      songTitle: null,
+      artistName: null,
+      albumTitle: null,
+      genre: null,
+      mood: null,
+      activity: null,
+      lyricsSnippet: null,
+      controlAction: null,
+      volumeLevel: null,
+      playlistName: null,
+      targetTrackId: null,
+    },
+    clauses: [
+      {
+        clauseIndex: 0,
+        rawClauseText: 'hôm nay thời tiết thế nào bạn ơi?',
+        intentType: 'general_chitchat',
+        extractedEntities: {},
+        suggestedAction: 'dialogue_response',
+      },
+    ],
+    suggestedAction: 'dialogue_response',
+    inferredDefaults: null,
+    sanitizedPrompt: 'hôm nay thời tiết thế nào bạn ơi?',
+  },
+}
+
+export function getMockIntentAnalysis(prompt, context = {}) {
+  const norm = normalizeText(prompt || '')
+  if (norm.includes('thoi tiet') || norm.includes('an gi') || norm.includes('chao ban')) {
+    return { ...mockIntentFixtures.general_chitchat, sanitizedPrompt: prompt }
+  }
+  if (norm.includes('bai dang phat') || norm.includes('la gi') || norm.includes('ai hat')) {
+    const targetId = context?.currentTrack?.id || 'song-1'
+    return {
+      ...mockIntentFixtures.query_music_info,
+      sanitizedPrompt: prompt,
+      extractedEntities: {
+        ...mockIntentFixtures.query_music_info.extractedEntities,
+        targetTrackId: targetId,
+        songTitle: context?.currentTrack?.title || 'Ánh Nắng Của Anh',
+        artistName: context?.currentTrack?.artist || 'Đức Phúc',
+      },
+    }
+  }
+  if (norm.includes('tim') || norm.includes('goi y') || norm.includes('muon nghe') || norm.includes('chill')) {
+    return { ...mockIntentFixtures.search_music, sanitizedPrompt: prompt }
+  }
+  if (norm.includes('luu') || norm.includes('playlist') || norm.includes('thu vien')) {
+    return { ...mockIntentFixtures.manage_library, sanitizedPrompt: prompt }
+  }
+  return { ...mockIntentFixtures.play_music, sanitizedPrompt: prompt }
+}
+
 export default {
   searchPlaceholder,
   normalizeText,
@@ -271,5 +468,7 @@ export default {
   quickPrompts,
   mockMessages,
   createMockHostReply,
-  mockAgentStream
+  mockAgentStream,
+  mockIntentFixtures,
+  getMockIntentAnalysis,
 }

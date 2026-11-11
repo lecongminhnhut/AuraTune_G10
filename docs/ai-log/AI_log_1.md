@@ -37,6 +37,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 31  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 122 – Music Intent Understanding bằng `/speckit.tasks`                             | 12 – AI Conversational Agent                      |
 | 32  | 2026-11-08 | Tạo danh sách nhiệm vụ thực thi (tasks.md) cho Feature 123 – Real-Time Music Assistance bằng `/speckit.tasks`                             | 12 – AI Conversational Agent                      |
 | 33  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 121 – Conversational Interface bằng `/speckit-implement`                           | 12 – AI Conversational Agent                      |
+| 34  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -5614,3 +5615,141 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
   - Scenario 7 (Chế độ `● tạm ngưng` khi `aiAvailable = false`, không làm ngắt nhạc nền): Đạt.
   - Scenario 8 (Cô lập tài khoản & xóa sạch RAM khi logout theo Nghị định 13/2023/NĐ-CP): Đạt.
 - [x] **Kiểm tra danh mục tasks.md:** Đạt **41/41 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 34: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                              |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                    |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding/`)                                                                                                                                                                                                           |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                       |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 40 nhiệm vụ kỹ thuật (T001 – T040) thuộc 8 Phase cho Feature 122 (Music Intent Understanding) trên nhánh `feat/122-music-intent-understanding`, hiện thực hóa endpoint phân tích ý định âm nhạc 2 tầng (Two-Tier Architecture), khử định danh PII 100%, phân tích mệnh đề ghép, smart defaults và phân giải ngữ cảnh. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement Bạn hãy đóng vai trò Fullstack AI Engineer triển khai trọn vẹn Feature 122 (Music Intent Understanding) thuộc Group 120 (AI Conversational
+    Agent) trên nhánh `feat/122-music-intent-understanding` của dự án AuraTune.
+
+    Hãy nghiên cứu kỹ các tài liệu trong repository trước khi viết code:
+    - Đặc tả: `specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md`
+    - Kế hoạch: `specs/120-ai-conversational-agent/122-music-intent-understanding/plan.md`
+    - Danh sách task: `specs/120-ai-conversational-agent/122-music-intent-understanding/tasks.md`
+    - Mô hình dữ liệu: `specs/120-ai-conversational-agent/122-music-intent-understanding/data-model.md`
+    - API Contract: `specs/120-ai-conversational-agent/122-music-intent-understanding/contracts/music-intent-understanding-api.json`
+    - Kịch bản nghiệm thu: `specs/120-ai-conversational-agent/122-music-intent-understanding/quickstart.md`
+    - Use Case: `docs/requirements/use-cases/120-ai-conversational-agent/UC-120-002-interpret-music-intent-via-chat.md`
+    - Quy chuẩn API: `docs/design/api/api-conventions.md`
+
+    Các nguyên tắc kỹ thuật bắt buộc (Invariants):
+    1. Ranh giới trách nhiệm (FR-012): Feature 122 CHỈ phân tích ngôn ngữ và xuất ra payload JSON cấu trúc `MusicIntentResult`. Tuyệt đối KHÔNG
+    trực tiếp gọi lệnh phát nhạc hay thay đổi giao diện chat (thuộc Feature 121 và 123).
+    2. Bảo mật PII (FR-008, SC-003): Xóa sạch 100% email (`[EMAIL_REDACTED]`), số điện thoại (`[PHONE_REDACTED]`) và mật khẩu ở cả client edge và
+    backend trước khi gửi tới bất kỳ AI endpoint nào (Nghị định 13/2023/NĐ-CP).
+    3. 5 Intent chuẩn (FR-002): Phân loại chính xác `play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat` (hoặc
+    `unknown`).
+    4. Tách câu ghép (FR-005): Tách câu đa mệnh đề nối bởi "rồi", "sau đó", dấu phẩy thành mảng `clauses[]` tuần tự.
+    5. Smart Defaults (FR-005): Câu lệnh mơ hồ ("bật nhạc đi") tự động gán mặc định trending/personalized, không hỏi vặn người dùng.
+    6. Ngữ cảnh (FR-004): Giải quyết đại từ ("bài này", "ca sĩ này") và âm lượng tương đối ("to lên", "nhỏ lại") từ `PlaybackContextSnapshot`.
+    7. Kiến trúc 2 tầng (Two-Tier) & Timeout 1,200ms: Bọc timeout 1.2s. Nếu Tier 1 AI lỗi hoặc quá giờ, tự động fallback sang Tier 2 Regex parser
+    (`planClause`) mà không làm ngắt nhạc hay sập app.
+    8. API Endpoint: `POST /api/v1/agent/intent/analyze` được bảo vệ bởi Bearer JWT.
+
+    Hãy thực hiện đầy đủ các task từ T001 đến T040 theo 8 Phase trong `tasks.md`:
+    - Setup config & constants, response helper, mock data.
+    - Foundational PII sanitizers, clause decomposer, route & auth middleware.
+    - Playback & Control intent extraction (US1).
+    - Search & Discovery intent extraction (US2).
+    - Contextual track resolution & Relative volume (US3).
+    - Ambiguity defaults, compound clauses & Chitchat classification (US4).
+    - PII privacy scrubbing (US5).
+    - Final Polish: Timeout 1,200ms fallback, test benchmark accuracy >= 90%, và xác minh toàn bộ 8 kịch bản trong `quickstart.md`.
+
+    Sau khi hoàn tất, hãy liệt kê danh sách file đã tạo/chỉnh sửa và kết quả chạy test xác thực.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra điều kiện tiên quyết và chuẩn bị môi trường**:
+  - Chuyển sang nhánh `feat/122-music-intent-understanding`, đồng bộ các artifact thiết kế (`spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/`, `quickstart.md`).
+  - Rà soát `checklists/requirements.md`: Đạt 16/16 mục (100% PASS).
+- **Thực thi tuần tự 40 nhiệm vụ kỹ thuật (T001 – T040) theo 8 giai đoạn**:
+  - **Phase 1: Setup Infrastructure & Config (T001 – T004)**:
+    - Tạo `src/backend/config/intentConfig.js` cấu hình timeout 1,200ms, confidence threshold 0.7 và feature flags.
+    - Tạo `src/backend/constants/intentConstants.js` định nghĩa 5 intent chuẩn (`play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`, `unknown`), danh sách slot keys và các biểu thức regex nhận diện từ khóa tiếng Việt / tiếng Anh.
+    - Tạo `src/backend/utils/intentResponse.js` chuẩn hóa envelope JSON phản hồi `formatIntentResponse` và `formatIntentError` theo `api-conventions.md`.
+    - Tạo fixture mẫu `mockIntentFixtures` và hàm `getMockIntentAnalysis` trong `src/frontend/src/utils/aiMockData.js` phục vụ chế độ offline / `VITE_USE_MOCKS=true`.
+  - **Phase 2: Foundational Components (T005 – T009)**:
+    - Tạo router `src/backend/routes/intentRoutes.js` và mount endpoint `/api/v1/agent/intent` trong `src/backend/server.js`.
+    - Kích hoạt `authenticateToken` JWT middleware bảo vệ route `POST /api/v1/agent/intent/analyze`.
+    - Tạo dịch vụ khử PII backend `src/backend/services/piiSanitizerService.js` (redact email, phone, credentials, token).
+    - Tạo module khử PII client-edge `src/frontend/src/utils/piiSanitizer.js` đảm bảo không gửi PII qua network.
+    - Tạo dịch vụ phân tích mệnh đề ghép `src/backend/services/clauseDecompositionService.js` tách chuỗi prompt theo liên từ ("rồi", "sau đó", "tiếp theo", dấu phẩy) thành mảng clauses tuần tự.
+  - **Phase 3: User Story 1 - Phân tích ý định phát nhạc & điều khiển (T010 – T015) 🎯 MVP**:
+    - Viết unit test suite `src/backend/tests/services/intentPlaybackExtraction.test.js` (T010) và contract test `src/backend/tests/contracts/intentAnalyzePlaybackContract.test.js` (T011).
+    - Hiện thực phân loại intent `play_music` và trích xuất slots (`trackTitle`, `artistName`, `actionType`, `targetEntity`) trong `src/backend/services/intentUnderstandingService.js` (T012).
+    - Tạo controller handler `analyzeMusicIntent` trong `src/backend/controllers/intentController.js` (T013) và đăng ký route `POST /analyze` (T014).
+    - Nâng cấp Tier-2 parser `planClause` trong `src/frontend/src/utils/agentService.js` (T015) đảm bảo đồng bộ phân loại tại client khi offline/fallback.
+  - **Phase 4: User Story 2 - Phân tích ý định tìm kiếm & khám phá (T016 – T019) 🎯 MVP**:
+    - Viết unit test `src/backend/tests/services/intentSearchExtraction.test.js` (T016) và client test `src/frontend/tests/utils/agentServiceSearchPlan.test.js` (T017).
+    - Bổ sung trích xuất slot tìm kiếm (`genre`, `mood`, `era`, `searchQuery`) và phân loại `search_music` trong `intentUnderstandingService.js` (T018).
+    - Nâng cấp rule-based extractor trong `agentService.js` hỗ trợ câu lệnh tìm kiếm và phân trang/lọc (T019).
+  - **Phase 5: User Story 3 - Truy vấn thông tin nhạc & giải quyết ngữ cảnh (T020 – T024)**:
+    - Viết unit test `src/backend/tests/services/intentContextResolution.test.js` (T020) và contract test `src/backend/tests/contracts/intentTrackQueryContract.test.js` (T021).
+    - Hiện thực giải quyết đại từ chỉ định ngữ cảnh ("bài này", "ca sĩ này", "album này", "nó") thành `targetTrackId`, `trackTitle`, `artistName` từ `PlaybackContextSnapshot` (T022).
+    - Hiện thực giải quyết âm lượng tương đối ("to lên", "nhỏ lại", "tăng âm lượng") thành delta `volumeLevel: ±20` dựa trên `currentVolume` trong snapshot (T023).
+    - Tích hợp contextual pronoun resolution và relative volume adjustment vào client `planClause` (T024).
+  - **Phase 6: User Story 4 - Smart Defaults, Câu ghép & Chit-chat (T025 – T030)**:
+    - Viết unit test `src/backend/tests/services/intentAmbiguityAndChitchat.test.js` (T025) và integration test `src/backend/tests/integration/intentCompoundClauses.test.js` (T026).
+    - Hiện thực gán mặc định thông minh `inferredDefaults: { default_source: "personalized_or_trending" }` cho câu lệnh mơ hồ ("bật nhạc đi", "phát nhạc lên") mà không hỏi vặn người dùng (T027).
+    - Kết nối bộ tách câu ghép `clauseDecompositionService` trả về danh sách `clauses[]` tuần tự (T028).
+    - Hiện thực phân loại hội thoại xã giao `general_chitchat` cho lời chào hỏi, cảm ơn, thời tiết (T029).
+    - Cài đặt thực thi tuần tự compound clauses trong client `agentService.js` (T030).
+  - **Phase 7: User Story 5 - Khử định danh PII & Quyền riêng tư (T031 – T035)**:
+    - Viết security test suite `src/backend/tests/security/piiSanitizerService.test.js` (T031) và client security test `src/frontend/tests/utils/piiSanitizer.test.js` (T032).
+    - Đặt `piiSanitizerService.sanitize()` là bước xử lý đầu tiên bắt buộc trong pipeline backend trước khi chuyển cho bất kỳ mô hình AI nào (T033).
+    - Tích hợp `sanitizePromptEdge()` vào đầu hàm `runAgent()` ở client edge trước khi gửi request (T034).
+    - Đảm bảo session scoping theo `req.user.id` và chỉ log sanitized prompt ra server logs, tuân thủ Nghị định 13/2023/NĐ-CP (T035).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T036 – T040)**:
+    - Kiểm chứng wrapper `AbortController` timeout 1,200ms bọc gọi Tier-1 AI model, fallback an toàn sang Tier-2 parser mà không gây lỗi hoặc ngắt quãng phát nhạc (T036).
+    - Viết benchmark test độ chính xác `src/backend/tests/benchmarks/intentAccuracyBenchmark.test.js` (T037), chạy 51 trường hợp kiểm thử đạt **100.0% accuracy** (vượt chỉ tiêu SC-001 >= 90%).
+    - Viết benchmark test độ trễ `src/backend/tests/benchmarks/intentLatencyBenchmark.test.js` (T038), đo 20 lần chạy đạt trung bình **1.38ms**, tối đa **10.73ms** (vượt chỉ tiêu SC-002 < 1,200ms).
+    - Cập nhật tài liệu API contract tại `specs/120-ai-conversational-agent/122-music-intent-understanding/contracts/README.md` (T039).
+    - Viết suite nghiệm thu `src/backend/tests/integration/intentQuickstartScenarios.test.js` xác thực trọn vẹn 8 kịch bản trong `quickstart.md` (T040).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                | Quyết định   | Lý do                                                                                                                                              |
+| :-------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kiến trúc 2 tầng (Two-Tier Architecture)            | Dùng toàn bộ | Tuân thủ Invariant 7: Tier 1 bọc timeout 1,200ms, tự động fallback mượt sang Tier 2 Regex parser không làm gián đoạn trải nghiệm người dùng.       |
+| Khử định danh PII 2 lớp (Client Edge & Backend)     | Dùng toàn bộ | Tuân thủ Invariant 2, FR-008, SC-003 và Nghị định 13/2023/NĐ-CP: khử sạch 100% email, số điện thoại, mật khẩu trước khi qua mạng và chuyển cho AI. |
+| Phân loại 5 Intent chuẩn & Unknown                  | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-002: phân loại chuẩn hóa `play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`.        |
+| Phân tích câu ghép tuần tự (`clauses[]`)            | Dùng toàn bộ | Tuân thủ Invariant 4 và FR-005: hỗ trợ câu lệnh phức hợp tách bằng "rồi", "sau đó", dấu phẩy.                                                       |
+| Smart Defaults cho câu lệnh mơ hồ                   | Dùng toàn bộ | Tuân thủ Invariant 5 và FR-005: "bật nhạc đi" tự động gán nguồn trending/personalized, không hỏi vặn người dùng.                                   |
+| Phân giải ngữ cảnh từ `PlaybackContextSnapshot`     | Dùng toàn bộ | Tuân thủ Invariant 6 và FR-004: giải quyết chính xác đại từ ("bài này", "ca sĩ này") và âm lượng tương đối (`±20`).                               |
+| Trực tiếp gọi API phát nhạc hoặc mutate player state | Bỏ tuyệt đối | Tuân thủ Invariant 1 (FR-012): Feature 122 chỉ phân tích ngôn ngữ; tác vụ điều khiển phát nhạc thuộc độc quyền của Feature 123.                    |
+| Can thiệp hiển thị giao diện chat CLI               | Bỏ tuyệt đối | Tuân thủ Invariant 1 (FR-012): việc render message bubble/terminal thuộc độc quyền của Feature 121.                                                |
+| Tạo bảng cơ sở dữ liệu lưu lịch sử phân tích intent | Bỏ tuyệt đối | Không tạo schema hay bảng CSDL thừa; việc phân tích thực hiện in-flight stateless.                                                                 |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Tests:** Chạy `npm --prefix src/backend test`, kết quả: **72/72 tests passed** (21 test suites, 0 failures), bao gồm trích xuất playback, search, context resolution, ambiguity, compound clauses, PII sanitization, benchmark độ chính xác, benchmark độ trễ, và quickstart scenarios.
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **43/43 tests passed** (18 test suites, 0 failures), bao gồm client PII sanitizer và agentService parser cho playback, search, context và compound actions.
+- [x] **Kiểm tra Production Build:** Chạy `npm --prefix src/frontend run build`, kết quả: **Vite build thành công trong 6.00s**, 2120 modules được chuyển đổi, không có lỗi cú pháp hoặc import thiếu.
+- [x] **Kiểm tra Chỉ tiêu Đo lường (Success Criteria Benchmarks):**
+  - **SC-001 (Độ chính xác >= 90%):** Đạt **100.0%** (51/51 test cases phân loại intent và trích xuất slot chính xác tuyệt đối).
+  - **SC-002 (Độ trễ < 1,200ms):** Đạt thời gian phản hồi trung bình **1.38ms**, tối đa **10.73ms** (vượt xa ngưỡng 1,200ms).
+  - **SC-003 (Bảo mật PII 100%):** 100% email, số điện thoại, mật khẩu được thay thế bằng placeholder trước khi chuyển tiếp.
+- [x] **Kiểm tra 8 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Phát nhạc theo tên bài hát & ca sĩ): Đạt (`play_music`, `trackTitle: "Chúng ta của hiện tại"`, `artistName: "Sơn Tùng M-TP"`).
+  - Scenario 2 (Tìm kiếm bài hát theo thể loại / tâm trạng): Đạt (`search_music`, `genre: "lo-fi"`, `mood: "chill"`).
+  - Scenario 3 (Truy vấn bài hát đang phát bằng đại từ "bài này"): Đạt (`query_music_info`, giải quyết `targetTrackId: "track-123"`).
+  - Scenario 4 (Lệnh mơ hồ "bật nhạc đi" gán Smart Defaults): Đạt (`play_music`, `inferredDefaults: { default_source: "personalized_or_trending" }`).
+  - Scenario 5 (Lệnh ghép đa mệnh đề qua liên từ "sau đó"): Đạt (mảng 2 clauses tuần tự: `play_music` rồi `manage_library`).
+  - Scenario 6 (Tự động lọc PII email & số điện thoại): Đạt (`email` -> `[EMAIL_REDACTED]`, `phone` -> `[PHONE_REDACTED]`).
+  - Scenario 7 (Điều chỉnh âm lượng tương đối "to lên"): Đạt (`play_music`, `volumeLevel: 90` từ snapshot volume 70 + 20).
+  - Scenario 8 (Hội thoại xã giao phi âm nhạc "Chào bạn"): Đạt (`general_chitchat`).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **40/40 tasks** đã hoàn thành và được đánh dấu `[X]`.
