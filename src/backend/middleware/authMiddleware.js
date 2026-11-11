@@ -4,12 +4,28 @@ import { db } from '../repositories/authRepository.js';
 import { db as memDb } from '../db.js';
 
 export async function authenticateToken(req, res, next) {
+  const isStatsRoute =
+    req.baseUrl?.startsWith('/api/v1/users/me/stats') ||
+    req.originalUrl?.includes('/stats') ||
+    req.path?.includes('/stats');
+
   const isAgentRoute =
     req.baseUrl?.startsWith('/api/v1/agent') ||
     req.originalUrl?.includes('/agent') ||
     req.path?.includes('/agent');
 
   const sendUnauthorized = (legacyMsg) => {
+    if (isStatsRoute) {
+      return res.status(401).json({
+        success: false,
+        message: 'Yêu cầu đăng nhập để truy cập thông tin phân tích',
+        data: null,
+        error: {
+          code: 'UNAUTHORIZED',
+          details: []
+        }
+      });
+    }
     if (isAgentRoute) {
       return res.status(401).json({
         success: false,
@@ -79,7 +95,7 @@ export async function authenticateToken(req, res, next) {
     ) {
       return sendUnauthorized('Session is invalid, expired or revoked');
     }
-  } else if (sessionId && !session && !isAgentRoute) {
+  } else if (sessionId && !session && !isAgentRoute && !isStatsRoute) {
     return sendUnauthorized('Session is invalid, expired or revoked');
   }
 

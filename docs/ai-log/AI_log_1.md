@@ -40,6 +40,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 34  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 | 35  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 123 – Real-Time Music Assistance bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 | 36  | 2026-11-11 | Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)                           | 12 – AI Conversational Agent                      |
+| 37  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 101 – Listening History Analysis bằng `/speckit-implement`                         | 10 – AI Recommendations                           |
 
 ---
 
@@ -5997,3 +5998,119 @@ Các yêu cầu kỹ thuật và nguyên tắc kiến trúc bắt buộc:
 - [x] **Kiểm tra tự động Backend Tests:** Chạy `npm --prefix src/backend test`, kết quả: **107/107 tests passed** (26 suites, 0 failures), cơ chế fallback khi AI service offline hoạt động chính xác.
 - [x] **Kiểm tra tự động Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **64/64 tests passed** (23 suites, 0 failures), bộ công cụ `agentTools.js` và giao diện `AIHostChat.jsx` tương thích hoàn toàn.
 - [x] **Kiểm tra Production Build:** Chạy `npm --prefix src/frontend run build`, thành công trong 7.47s (0 errors).
+
+---
+
+## Mục 37: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 101 – Listening History Analysis bằng `/speckit-implement`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                      |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                            |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 101: Listening History Analysis (`specs/100-ai-recommendations/101-listening-history-analysis/`)                                                                                                                                                                                                                                               |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro / Advanced Agentic Coding), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                       |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 29 nhiệm vụ kỹ thuật (T001 – T029) thuộc 6 Phase cho Feature 101 (Listening History Analysis) trên nhánh `101-listening-history-analysis`, hiện thực hóa cơ chế tổng hợp thống kê xác định (SQL Aggregation), chuẩn hóa ranh giới miền dữ liệu với Group 070, cô lập dữ liệu người dùng tuyệt đối theo Nghị định 13/2023/NĐ-CP, và xử lý hiển thị trạng thái thiếu dữ liệu. |
+
+### Prompt đã dùng
+
+```text
+Bạn hãy đóng vai trò Fullstack Senior Engineer triển khai trọn vẹn Feature 101 (Listening History Analysis) thuộc Group 100 (AI Recommendations) trên nhánh `101-listening-history-analysis` của dự án AuraTune.
+
+Hãy nghiên cứu kỹ các tài liệu thiết kế sau trước khi viết mã:
+- Đặc tả: `specs/100-ai-recommendations/101-listening-history-analysis/spec.md`
+- Kế hoạch: `specs/100-ai-recommendations/101-listening-history-analysis/plan.md`
+- Danh sách task: `specs/100-ai-recommendations/101-listening-history-analysis/tasks.md`
+- Mô hình dữ liệu: `specs/100-ai-recommendations/101-listening-history-analysis/data-model.md`
+- API Contract: `specs/100-ai-recommendations/101-listening-history-analysis/contracts/listening-analysis-api.json`
+- Kịch bản nghiệm thu: `specs/100-ai-recommendations/101-listening-history-analysis/quickstart.md`
+- Use Case: `docs/requirements/use-cases/100-ai-recommendations/UC-100-001-view-listening-history-analysis.md`
+- File UI hiện tại: `src/frontend/src/pages/History/HistoryPage.jsx`
+
+Các nguyên tắc kỹ thuật bắt buộc (Invariants):
+1. Thuần túy thống kê xác định (FR-009): Tính toán trực tiếp bằng SQL Aggregation từ PostgreSQL, TUYỆT ĐỐI KHÔNG dùng AI hay gọi Python AI service.
+2. Ranh giới module (FR-004, FR-011): Feature 101 CHỈ sở hữu Tổng thời lượng nghe và Top thể loại. Trong `HistoryPage.jsx`, phải XÓA BỎ phần UI và tính toán của "Nghệ sĩ nghe nhiều nhất" và "Bài hát nghe nhiều nhất" (dòng 133–163) vì thuộc sở hữu của Group 070.
+3. Nguồn dữ liệu duy nhất (FR-003): Chỉ dùng `listening_history` join `songs`. Loại bỏ bản ghi có `user_id` null, `song_id` null, hoặc `duration <= 0`. Không dùng likes, follows hay `user_listening_stats`.
+4. Quy tắc xếp hạng thể loại (FR-014): Xếp theo thời lượng tích lũy (`accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`). Tính `percentage` theo tổng thời lượng thể loại.
+5. Thiếu dữ liệu (FR-007, FR-012, SC-002): Cần tối thiểu 1 bản ghi hợp lệ. Nếu ít hơn, trả về `hasSufficientData: false`, hiển thị thẻ Empty State *"Chưa có đủ dữ liệu để phân tích"* kèm nút CTA *"Khám phá nhạc"*. Tuyệt đối không bịa đặt số liệu giả mạo.
+6. Bảo mật & Cô lập tài khoản (Nghị định 13/2023/NĐ-CP): Bắt buộc Bearer JWT token. SQL query lọc `WHERE lh.user_id = $authenticated_user_id`. Không có token trả về HTTP 401 code `"UNAUTHORIZED"`.
+7. Bộ lọc thời gian: Hỗ trợ query parameter `range` với 3 giá trị `'7'`, `'30'`, `'all'` (mặc định `'all'`).
+8. Cập nhật động (FR-013): Tính lại số liệu mỗi khi người dùng mở lại tab "Thống kê".
+
+Hãy thực hiện đầy đủ các task từ T001 đến T029 theo 6 Phase trong `tasks.md`:
+- Setup migration index `(user_id, played_at)`, response envelope, test harness dependencies.
+- Foundational repository helper, JWT auth guard, stats router mounting, statsService adapter.
+- Playback duration & top genres dynamic calculation (US1 - MVP).
+- Insufficient data handling (< 1 record) & database error 500 (US2).
+- Privacy & account isolation verification (US3).
+- Final Polish: Document update, component test, và xác minh 4 kịch bản trong `quickstart.md`.
+
+Sau khi hoàn tất, hãy báo cáo danh sách file đã tạo/sửa đổi, kết quả chạy test và các kịch bản nghiệm thu đã đạt.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra môi trường và tiếp nhận artifact thiết kế**:
+  - Xác nhận nhánh hiện tại `101-listening-history-analysis`.
+  - Khảo sát kỹ lưỡng các tài liệu thiết kế: `spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/listening-analysis-api.json`, `quickstart.md`, use case `UC-100-001`.
+- **Thực thi tuần tự toàn bộ 29 nhiệm vụ kỹ thuật (T001 – T029) qua 6 Phase**:
+  - **Phase 1: Setup Infrastructure & Environment (T001 – T004)**:
+    - Bổ sung cấu hình `vitest`, `supertest` vào `devDependencies` trong `src/backend/package.json` (T001).
+    - Tạo migration `src/database/migrations/002_listening_history_index.sql` tạo compound index `idx_listening_history_user_played` trên `listening_history(user_id, played_at)` tối ưu truy vấn dưới 1.5s cho 10,000 bản ghi (T002).
+    - Tạo mock stats service `src/frontend/src/services/mock/mockStatsService.js` với phương thức `getMockListeningAnalysis(range)` bám sát OpenAPI schema (T003).
+    - Tạo helper `src/backend/utils/statsResponse.js` định dạng response envelope `{ success, message, data, error }` theo API contract (T004).
+  - **Phase 2: Foundational Prerequisites (T005 – T008)**:
+    - Tạo repository helper `src/backend/repositories/historyRepository.js` thực thi SQL aggregation động kết nối `listening_history` join `songs`, hỗ trợ in-memory fallback và mô phỏng lỗi DB (T005).
+    - Cập nhật `src/backend/middleware/authMiddleware.js` hỗ trợ chuẩn hóa lỗi 401 envelope `UNAUTHORIZED` cho các route `/stats` (T006).
+    - Tạo router `src/backend/routes/statsRoutes.js` và mount route `/api/v1/users/me/stats` trong `src/backend/server.js` (T007).
+    - Tạo frontend API adapter `src/frontend/src/services/statsService.js` hỗ trợ chuyển đổi linh hoạt giữa Live Backend và Mock qua cờ `VITE_USE_MOCKS` (T008).
+  - **Phase 3: User Story 1 - Review Listening Insights (T009 – T017) 🎯 MVP**:
+    - Viết unit test `src/backend/tests/services/listeningAnalysisService.test.js` kiểm tra format duration (`0s` -> `"0 phút"`, `45s` -> `"1 phút"`, `3660s` -> `"1 giờ 1 phút"`, `48250s` -> `"13 giờ 24 phút"`), tính tổng thời lượng, và tie-breaking 3 bậc (`accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`) (T009).
+    - Viết contract test `src/backend/tests/contracts/listeningAnalysisContract.test.js` xác thực tính tương thích với OpenAPI schema (T010).
+    - Hoàn thiện truy vấn `findListeningAnalysis(userId, range)` trong `historyRepository.js` lọc nghiêm ngặt `user_id = $1`, `duration > 0`, non-null references (T011).
+    - Cài đặt `calculateListeningAnalysis(userId, range)` trong `src/backend/services/listeningAnalysisService.js` tính tỉ lệ `percentage = (accumulated_seconds / total_genre_duration) * 100` và loại bỏ bài hát không có `genre` khỏi xếp hạng nhưng vẫn giữ thời lượng trong tổng số (T012).
+    - Cài đặt controller `getListeningAnalysis` trong `src/backend/controllers/statsController.js` validate `range` enum `['7', '30', 'all']` (T013).
+    - Đăng ký route `GET /listening-analysis` với guard `authenticateToken` (T014).
+    - Cài đặt phương thức `getListeningAnalysis(range)` trong `statsService.js` gửi kèm header `Authorization: Bearer <token>` (T015).
+    - Cài đặt in-memory fallback trong `mockStatsService.js` phục vụ chế độ demo (T016).
+    - Tái cấu trúc tab "Thống kê" trong `src/frontend/src/pages/History/HistoryPage.jsx`: Xóa bỏ 100% phần UI và tính toán "Nghệ sĩ nghe nhiều nhất" và "Bài hát nghe nhiều nhất" (dòng 133–163 cũ) để bảo vệ ranh giới sở hữu của Group 070 (FR-004, FR-011); kết nối `statsService`, render 3 thẻ Stat và thanh tiến độ thể loại tỷ lệ trực quan (T017).
+  - **Phase 4: User Story 2 - Understand Insufficient or Unavailable Data (T018 – T022)**:
+    - Viết unit test `src/backend/tests/services/insufficientData.test.js` kiểm tra trường hợp tài khoản có 0 bản ghi hoặc bản ghi không hợp lệ, và lỗi DB 500 (T018).
+    - Bổ sung đánh giá ngưỡng `< 1` bản ghi hợp lệ trả về `hasSufficientData: false`, `topGenres: []`, `totalDurationSeconds: 0` trong `listeningAnalysisService.js` (T019).
+    - Bổ sung khối catch lỗi cơ sở dữ liệu / timeout trả về HTTP 500 mã `"DATABASE_ERROR"` trong `statsController.js` (T020).
+    - Cài đặt điều kiện 0-record trong `mockStatsService.js` (T021).
+    - Cập nhật hiển thị Empty State trong `HistoryPage.jsx` với tiêu đề *"Chưa có đủ dữ liệu để phân tích"* kèm nút CTA *"Khám phá nhạc"* và toast thông báo khi xảy ra lỗi 500 mà không làm crash giao diện (T022).
+  - **Phase 5: User Story 3 - Privacy and Account Data Isolation (T023 – T026)**:
+    - Viết integration test `src/backend/tests/security/accountIsolation.test.js` kiểm thử request thiếu Bearer token, token hết hạn, cô lập dữ liệu User A vs User B, và ngăn chặn spoofing `user_id` qua query parameter (T023).
+    - Khóa chặt tham số truy vấn `$1` với `req.user.user_id` trong `historyRepository.js`, cấm hoàn toàn ghi đè `user_id` từ client (T024).
+    - Áp dụng middleware `authenticateToken` chặn request chưa đăng nhập ngay từ router trả về HTTP 401 code `"UNAUTHORIZED"` (T025).
+    - Bổ sung guard `LoginRequired` trong `HistoryPage.jsx` khi `store.currentUser` là null (T026).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T027 – T029)**:
+    - Cập nhật tài liệu hợp đồng `specs/100-ai-recommendations/101-listening-history-analysis/contracts/README.md` (T027).
+    - Viết component test `src/frontend/src/pages/History/__tests__/HistoryPage.test.jsx` kiểm thử format thời gian, tính toán mock aggregation, lọc time range và kiểm tra domain boundary (T028).
+    - Viết test tích hợp `src/backend/tests/integration/listeningQuickstartScenarios.test.js` và xác thực toàn diện cả 4 kịch bản nghiệm thu trong `quickstart.md` (T029).
+    - Đánh dấu hoàn thành toàn bộ `[X]` cho 29 task trong `tasks.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                          | Quyết định   | Lý do                                                                                                                                                                     |
+| :---------------------------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Thuần túy thống kê xác định (Deterministic SQL Aggregation)                    | Dùng toàn bộ | Tuân thủ Invariant 1 và FR-009: tính toán trực tiếp bằng SQL Aggregation từ cơ sở dữ liệu PostgreSQL, tuyệt đối không dùng AI hoặc gọi Python AI service.                      |
+| Ranh giới miền dữ liệu Module (Domain Boundaries với Group 070)               | Dùng toàn bộ | Tuân thủ Invariant 2, FR-004, FR-011: Feature 101 chỉ sở hữu Tổng thời lượng nghe và Top thể loại. Đã xóa bỏ toàn bộ UI và tính toán Top Artists và Top Songs trong HistoryPage. |
+| Nguồn dữ liệu duy nhất `listening_history` join `songs`                       | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-003: loại bỏ bản ghi có `user_id` null, `song_id` null, hoặc `duration <= 0`. Tuyệt đối không đọc `user_listening_stats`, likes hay follows.  |
+| Quy tắc xếp hạng thể loại 3 bậc & Tỉ lệ phần trăm                             | Dùng toàn bộ | Tuân thủ Invariant 4 và FR-014: xếp theo `accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`. Tính `percentage` trên tổng thời lượng thể loại hợp lệ.  |
+| Trạng thái thiếu dữ liệu (Truthful Empty State khi < 1 bản ghi)               | Dùng toàn bộ | Tuân thủ Invariant 5, FR-007, FR-012, SC-002: trả về `hasSufficientData: false`, hiển thị thẻ Empty State kèm CTA "Khám phá nhạc", tuyệt đối không tạo số liệu giả mạo. |
+| Bảo mật & Cô lập dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP                 | Dùng toàn bộ | Tuân thủ Invariant 6, FR-005, FR-006: yêu cầu Bearer JWT token, SQL filter `WHERE user_id = $1`, cấm client override `user_id` qua query parameters.                     |
+| Bộ lọc thời gian động (`'7'`, `'30'`, `'all'`)                                | Dùng toàn bộ | Tuân thủ Invariant 7 và FR-013: hỗ trợ chuyển đổi khoảng thời gian và tính toán lại tức thì mỗi khi mở lại tab "Thống kê".                                                |
+| Gọi Python AI service hoặc mô hình Machine Learning cho Feature 101           | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt FR-009: Feature 101 là tính năng thống kê số liệu thuần túy, không có thành phần dự đoán hay sinh nội dung bằng AI.                                  |
+| Phần UI Top Artists và Top Tracks trên trang History                          | Bỏ tuyệt đối | Đảm bảo ranh giới nghiệp vụ của dự án: các chức năng này thuộc quyền sở hữu độc quyền của Group 070 (History).                                                            |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Feature 101 Tests:** Chạy `node --test` trên 5 test suites (`listeningAnalysisService.test.js`, `listeningAnalysisContract.test.js`, `insufficientData.test.js`, `accountIsolation.test.js`, `listeningQuickstartScenarios.test.js`), kết quả: **23/23 tests passed** (8 suites, 0 failures).
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **69/69 tests passed** (26 suites, 0 failures), component test `HistoryPage.test.jsx` và mock service hoạt động hoàn hảo trong 2.2s.
+- [x] **Kiểm tra 4 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Happy Path - Review Insights): Đạt (`hasSufficientData: true`, format thời lượng chuẩn tiếng Việt, Top thể loại sắp xếp giảm dần theo thời lượng).
+  - Scenario 2 (Insufficient History State): Đạt (tài khoản < 1 bản ghi trả về `hasSufficientData: false`, hiển thị Empty State kèm nút CTA "Khám phá nhạc", không bịa đặt số liệu).
+  - Scenario 3 (Account Isolation & Privacy): Đạt (yêu cầu JWT token, trả về HTTP 401 `UNAUTHORIZED` khi thiếu token, cô lập tuyệt đối dữ liệu User A và User B, cấm query param spoofing).
+  - Scenario 4 (Dynamic Refresh on New Playback Events): Đạt (tính toán lại tức thì số liệu và bổ sung thể loại mới khi người dùng ghi nhận lượt phát mới).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **29/29 tasks** đã hoàn thành và được đánh dấu `[X]`.
