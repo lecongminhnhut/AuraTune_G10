@@ -24,11 +24,13 @@ Feature 122 provides the analytical endpoint and payload definitions for analyzi
   - `completenessStatus`: `"complete" | "missing_parameters" | "ambiguous"`
   - `extractedEntities`: Key-value map of recognized music slots
   - `clauses`: Array of sequential clause plans for compound instructions
-  - `suggestedAction`: Downstream routing target (`"real_time_assistance" | "search_service" | "dialogue_response"`)
+  - `suggestedAction`: Downstream routing target (`"real_time_assistance" | "search_service" | "recommendation_service" | "dialogue_response" | "unrecognized_fallback"`)
+  - `inferredDefaults`: Object containing heuristic fallback source (e.g. `{ "default_source": "personalized_or_trending" }`) or null
+  - `sanitizedPrompt`: Prompt string with all PII scrubbed per Decree 13/2023/NĐ-CP
 - **Error Responses**:
-  - `400 Bad Request` (`VALIDATION_ERROR`): Empty or whitespace-only prompt.
+  - `400 Bad Request` (`VALIDATION_ERROR`): Empty, whitespace-only, or exceeding 500 characters.
   - `401 Unauthorized` (`UNAUTHORIZED`): Missing or invalid JWT session token.
-  - `503 Service Unavailable` (`AI_SERVICE_UNAVAILABLE`): Fallback triggered or returned if internal parsing fails unrecoverably.
+  - `503 Service Unavailable` (`AI_SERVICE_UNAVAILABLE`): Fallback exhausted or service error.
 
 ## Payload Example
 
