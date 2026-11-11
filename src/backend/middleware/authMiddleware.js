@@ -14,7 +14,23 @@ export async function authenticateToken(req, res, next) {
     req.originalUrl?.includes('/agent') ||
     req.path?.includes('/agent');
 
+  const isRecommendationRoute =
+    req.baseUrl?.startsWith('/api/v1/recommendations') ||
+    req.originalUrl?.includes('/recommendations') ||
+    req.path?.includes('/recommendations');
+
   const sendUnauthorized = (legacyMsg) => {
+    if (isRecommendationRoute) {
+      return res.status(401).json({
+        success: false,
+        message: 'Yêu cầu đăng nhập để nhận gợi ý cá nhân hóa',
+        data: null,
+        error: {
+          code: 'UNAUTHORIZED',
+          details: []
+        }
+      });
+    }
     if (isStatsRoute) {
       return res.status(401).json({
         success: false,
@@ -95,11 +111,22 @@ export async function authenticateToken(req, res, next) {
     ) {
       return sendUnauthorized('Session is invalid, expired or revoked');
     }
-  } else if (sessionId && !session && !isAgentRoute && !isStatsRoute) {
+  } else if (sessionId && !session && !isAgentRoute && !isStatsRoute && !isRecommendationRoute) {
     return sendUnauthorized('Session is invalid, expired or revoked');
   }
 
   if (user && user.is_banned) {
+    if (isRecommendationRoute) {
+      return res.status(403).json({
+        success: false,
+        message: 'Tài khoản của bạn đã bị khóa',
+        data: null,
+        error: {
+          code: 'ACCOUNT_BANNED',
+          details: []
+        }
+      });
+    }
     return sendUnauthorized('Account is unavailable');
   }
 

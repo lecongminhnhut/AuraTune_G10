@@ -159,3 +159,24 @@ In accordance with `docs/design/architecture/system-architecture.md` Section 3 &
 | `ACCOUNT_BANNED` | `403` | User account status is disabled/banned | Rejects request with notification message |
 | `VALIDATION_ERROR` | `400` | Query parameters violate limits (e.g. `limit > 50` or invalid `type`) | Returns descriptive error details |
 | *(Internal AI Timeout / Error)* | `200 OK` (Degraded) | AI service unresponsive $> 2.5$s or returns HTTP 5xx | Backend intercepts error, logs warning, and serves popular fallback with non-blocking notice (FR-006) |
+
+---
+
+## 4. Implementation & Verification Status
+
+| Layer | Component | Path | Status |
+|---|---|---|---|
+| **AI Service** | FastAPI inference endpoint | `src/ai-service/main.py` (`POST /ai/recommend`) | ✅ Implemented |
+| **Backend Config** | Microservice connection & timeout | `src/backend/config/aiConfig.js` (`AI_SERVICE_TIMEOUT_MS=2500`) | ✅ Implemented |
+| **Backend Client** | AI microservice client | `src/backend/clients/aiServiceClient.js` | ✅ Implemented |
+| **Backend Repositories** | Preference signal repo | `src/backend/repositories/preferenceSignalRepository.js` | ✅ Implemented |
+| **Backend Repositories** | Catalog repo & popular items | `src/backend/repositories/catalogRepository.js` | ✅ Implemented |
+| **Backend Services** | Catalog hydration & filter | `src/backend/services/catalogHydrationService.js` | ✅ Implemented |
+| **Backend Services** | Core recommendation workflow | `src/backend/services/recommendationService.js` | ✅ Implemented |
+| **Backend Controllers** | REST controller & alias | `src/backend/controllers/recommendationController.js` | ✅ Implemented |
+| **Backend Routes** | Route mounting & auth guard | `src/backend/routes/recommendationRoutes.js` | ✅ Implemented |
+| **Frontend Service** | Client API adapter & mock | `src/frontend/src/services/recommendationService.js` | ✅ Implemented |
+| **Frontend UI** | Polymorphic card component | `src/frontend/src/components/recommendation/RecommendedItemCard.jsx` | ✅ Implemented |
+| **Frontend UI** | Degradation notice banner | `src/frontend/src/components/recommendation/FallbackNoticeBanner.jsx` | ✅ Implemented |
+| **Frontend Container** | Recommendation feed | `src/frontend/src/components/recommendation/RecommendationFeed.jsx` | ✅ Implemented |
+| **Frontend View** | Home Dashboard integration | `src/frontend/src/pages/Home/HomePage.jsx` | ✅ Implemented |
