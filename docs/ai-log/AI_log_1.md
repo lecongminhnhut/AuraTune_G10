@@ -39,6 +39,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 33  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 121 – Conversational Interface bằng `/speckit-implement`                           | 12 – AI Conversational Agent                      |
 | 34  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 | 35  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 123 – Real-Time Music Assistance bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
+| 36  | 2026-11-11 | Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)                           | 12 – AI Conversational Agent                      |
 
 ---
 
@@ -5621,12 +5622,12 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
 
 ## Mục 34: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding
 
-| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                              |
-| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                    |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding/`)                                                                                                                                                                                                           |
-| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                       |
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                          |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding/`)                                                                                                                                                                                                         |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                   |
 | Mục đích                 | Triển khai hoàn chỉnh toàn bộ 40 nhiệm vụ kỹ thuật (T001 – T040) thuộc 8 Phase cho Feature 122 (Music Intent Understanding) trên nhánh `feat/122-music-intent-understanding`, hiện thực hóa endpoint phân tích ý định âm nhạc 2 tầng (Two-Tier Architecture), khử định danh PII 100%, phân tích mệnh đề ghép, smart defaults và phân giải ngữ cảnh. |
 
 ### Prompt đã dùng
@@ -5723,17 +5724,17 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần                                                | Quyết định   | Lý do                                                                                                                                              |
-| :-------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Kiến trúc 2 tầng (Two-Tier Architecture)            | Dùng toàn bộ | Tuân thủ Invariant 7: Tier 1 bọc timeout 1,200ms, tự động fallback mượt sang Tier 2 Regex parser không làm gián đoạn trải nghiệm người dùng.       |
-| Khử định danh PII 2 lớp (Client Edge & Backend)     | Dùng toàn bộ | Tuân thủ Invariant 2, FR-008, SC-003 và Nghị định 13/2023/NĐ-CP: khử sạch 100% email, số điện thoại, mật khẩu trước khi qua mạng và chuyển cho AI. |
-| Phân loại 5 Intent chuẩn & Unknown                  | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-002: phân loại chuẩn hóa `play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`.        |
-| Phân tích câu ghép tuần tự (`clauses[]`)            | Dùng toàn bộ | Tuân thủ Invariant 4 và FR-005: hỗ trợ câu lệnh phức hợp tách bằng "rồi", "sau đó", dấu phẩy.                                                       |
-| Smart Defaults cho câu lệnh mơ hồ                   | Dùng toàn bộ | Tuân thủ Invariant 5 và FR-005: "bật nhạc đi" tự động gán nguồn trending/personalized, không hỏi vặn người dùng.                                   |
-| Phân giải ngữ cảnh từ `PlaybackContextSnapshot`     | Dùng toàn bộ | Tuân thủ Invariant 6 và FR-004: giải quyết chính xác đại từ ("bài này", "ca sĩ này") và âm lượng tương đối (`±20`).                               |
+| Phần                                                 | Quyết định   | Lý do                                                                                                                                              |
+| :--------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kiến trúc 2 tầng (Two-Tier Architecture)             | Dùng toàn bộ | Tuân thủ Invariant 7: Tier 1 bọc timeout 1,200ms, tự động fallback mượt sang Tier 2 Regex parser không làm gián đoạn trải nghiệm người dùng.       |
+| Khử định danh PII 2 lớp (Client Edge & Backend)      | Dùng toàn bộ | Tuân thủ Invariant 2, FR-008, SC-003 và Nghị định 13/2023/NĐ-CP: khử sạch 100% email, số điện thoại, mật khẩu trước khi qua mạng và chuyển cho AI. |
+| Phân loại 5 Intent chuẩn & Unknown                   | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-002: phân loại chuẩn hóa `play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`.        |
+| Phân tích câu ghép tuần tự (`clauses[]`)             | Dùng toàn bộ | Tuân thủ Invariant 4 và FR-005: hỗ trợ câu lệnh phức hợp tách bằng "rồi", "sau đó", dấu phẩy.                                                      |
+| Smart Defaults cho câu lệnh mơ hồ                    | Dùng toàn bộ | Tuân thủ Invariant 5 và FR-005: "bật nhạc đi" tự động gán nguồn trending/personalized, không hỏi vặn người dùng.                                   |
+| Phân giải ngữ cảnh từ `PlaybackContextSnapshot`      | Dùng toàn bộ | Tuân thủ Invariant 6 và FR-004: giải quyết chính xác đại từ ("bài này", "ca sĩ này") và âm lượng tương đối (`±20`).                                |
 | Trực tiếp gọi API phát nhạc hoặc mutate player state | Bỏ tuyệt đối | Tuân thủ Invariant 1 (FR-012): Feature 122 chỉ phân tích ngôn ngữ; tác vụ điều khiển phát nhạc thuộc độc quyền của Feature 123.                    |
-| Can thiệp hiển thị giao diện chat CLI               | Bỏ tuyệt đối | Tuân thủ Invariant 1 (FR-012): việc render message bubble/terminal thuộc độc quyền của Feature 121.                                                |
-| Tạo bảng cơ sở dữ liệu lưu lịch sử phân tích intent | Bỏ tuyệt đối | Không tạo schema hay bảng CSDL thừa; việc phân tích thực hiện in-flight stateless.                                                                 |
+| Can thiệp hiển thị giao diện chat CLI                | Bỏ tuyệt đối | Tuân thủ Invariant 1 (FR-012): việc render message bubble/terminal thuộc độc quyền của Feature 121.                                                |
+| Tạo bảng cơ sở dữ liệu lưu lịch sử phân tích intent  | Bỏ tuyệt đối | Không tạo schema hay bảng CSDL thừa; việc phân tích thực hiện in-flight stateless.                                                                 |
 
 ### Cách kiểm chứng
 
@@ -5759,12 +5760,12 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
 
 ## Mục 35: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 123 – Real-Time Music Assistance
 
-| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                         |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                       |
-| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                             |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance/`)                                                                                                                                                                                                                                                       |
-| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                |
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                   |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                         |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Feature 123: Real-Time Music Assistance (`specs/120-ai-conversational-agent/123-real-time-music-assistance/`)                                                                                                                                                                                                                                                  |
+| Công cụ AI               | Antigravity CLI (Gemini 3.8 Flash), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                            |
 | Mục đích                 | Triển khai hoàn chỉnh toàn bộ 41 nhiệm vụ kỹ thuật (T001 – T041) thuộc 8 Phase cho Feature 123 (Real-Time Music Assistance) trên nhánh `feat/123-real-time-music-assistance`, hiện thực hóa kiến trúc Client-Side Tool Dispatching, nguyên tắc Zero Audio Disruption Invariant, xác nhận tương tác `[y/N]` cho `clear_queue`, thẻ `PlaylistCard` nhúng trong chat, và ghi nhận lịch sử nghe. |
 
 ### Prompt đã dùng
@@ -5864,16 +5865,16 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần                                                         | Quyết định   | Lý do                                                                                                                                                    |
-| :----------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Kiến trúc Client-Side Tool Dispatching                       | Dùng toàn bộ | Tuân thủ Invariant 1 và FR-003: Backend phát ra chỉ thị mảng `clientActions`, Web client trực tiếp gọi các controller của `PlayerContext` và `AppStore`.  |
-| Nguyên tắc Zero Audio Disruption Invariant                   | Dùng toàn bộ | Tuân thủ Invariant 2, FR-008 và SC-003: mọi lỗi catalog miss, tham số sai hay mạng đều trả về `{ ok: false }` an toàn, tuyệt đối không ngắt nhạc.      |
-| Cơ chế Destructive-Only Confirmation cho `clear_queue`       | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-013: chỉ duy nhất hành động xóa hàng đợi mới tạm dừng để hỏi xác nhận `[y/N]`, các hành động khác chạy ngay tức thì.         |
-| Giới hạn thời gian phản hồi < 1,000ms                        | Dùng toàn bộ | Tuân thủ Invariant 4 và SC-001: lệnh điều khiển phát nhạc gửi tới player controller trong vòng dưới 1 giây.                                              |
-| Thẻ widget PlaylistCard nhúng tương tác                      | Dùng toàn bộ | Tuân thủ Invariant 5 và FR-004: hiển thị preview card playlist có nút Play/Pause tương tác trực tiếp ngay trong chat log.                                |
-| Tự động ghi nhận lịch sử nghe (`recordAssistedPlay`)          | Dùng toàn bộ | Tuân thủ Invariant 6, FR-010 và SC-005: tự động bắn request lưu phiên nghe vào `listening_history` khi phát nhạc qua AI.                                 |
-| Làm lại bộ parser NLU hoặc vẽ lại shell giao diện chat       | Bỏ tuyệt đối | Tuân thủ Invariant 7 và FR-012: bảo đảm ranh giới mô-đun, các tính năng này thuộc sở hữu độc quyền của Feature 121 và Feature 122.                      |
-| Đòi hỏi xác nhận người dùng cho các thao tác không phá hủy  | Bỏ tuyệt đối | Tuân thủ FR-013: không làm phiền người dùng với các xác nhận thừa cho các lệnh `play`, `volume`, `queue_add`, `like_track`.                             |
+| Phần                                                       | Quyết định   | Lý do                                                                                                                                                    |
+| :--------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Kiến trúc Client-Side Tool Dispatching                     | Dùng toàn bộ | Tuân thủ Invariant 1 và FR-003: Backend phát ra chỉ thị mảng `clientActions`, Web client trực tiếp gọi các controller của `PlayerContext` và `AppStore`. |
+| Nguyên tắc Zero Audio Disruption Invariant                 | Dùng toàn bộ | Tuân thủ Invariant 2, FR-008 và SC-003: mọi lỗi catalog miss, tham số sai hay mạng đều trả về `{ ok: false }` an toàn, tuyệt đối không ngắt nhạc.        |
+| Cơ chế Destructive-Only Confirmation cho `clear_queue`     | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-013: chỉ duy nhất hành động xóa hàng đợi mới tạm dừng để hỏi xác nhận `[y/N]`, các hành động khác chạy ngay tức thì.          |
+| Giới hạn thời gian phản hồi < 1,000ms                      | Dùng toàn bộ | Tuân thủ Invariant 4 và SC-001: lệnh điều khiển phát nhạc gửi tới player controller trong vòng dưới 1 giây.                                              |
+| Thẻ widget PlaylistCard nhúng tương tác                    | Dùng toàn bộ | Tuân thủ Invariant 5 và FR-004: hiển thị preview card playlist có nút Play/Pause tương tác trực tiếp ngay trong chat log.                                |
+| Tự động ghi nhận lịch sử nghe (`recordAssistedPlay`)       | Dùng toàn bộ | Tuân thủ Invariant 6, FR-010 và SC-005: tự động bắn request lưu phiên nghe vào `listening_history` khi phát nhạc qua AI.                                 |
+| Làm lại bộ parser NLU hoặc vẽ lại shell giao diện chat     | Bỏ tuyệt đối | Tuân thủ Invariant 7 và FR-012: bảo đảm ranh giới mô-đun, các tính năng này thuộc sở hữu độc quyền của Feature 121 và Feature 122.                       |
+| Đòi hỏi xác nhận người dùng cho các thao tác không phá hủy | Bỏ tuyệt đối | Tuân thủ FR-013: không làm phiền người dùng với các xác nhận thừa cho các lệnh `play`, `volume`, `queue_add`, `like_track`.                              |
 
 ### Cách kiểm chứng
 
@@ -5896,3 +5897,103 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
   - Scenario 7 (Thao tác yêu thích `like_track`): Đạt (thành công khi đã đăng nhập, nhắc đăng nhập khi là khách).
   - Scenario 8 (Ghi nhận lịch sử nghe tự động): Đạt (gọi `recordAssistedListeningHistory` ghi nhận phiên nghe).
 - [x] **Kiểm tra danh mục tasks.md:** Đạt **41/41 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 36: Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                        |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                              |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Kiến trúc Microservice AI Service (`src/ai-service`) kết nối Group 120 (Features 121, 122, 123)                                                                                                                                                                                                                                    |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Flash), Python FastAPI, Google GenAI SDK (`v1beta`)                                                                                                                                                                                                                                                                                   |
+| Mục đích                 | Xây dựng và tích hợp trọn vẹn "Bộ não AI" độc lập (AI Brain Agent Service) bằng Python FastAPI kết hợp Google Gemini API (`gemini-2.5-flash`), hỗ trợ ReAct / Function Calling điều khiển trình phát nhạc thời gian thực qua luồng Server-Sent Events (SSE) theo kiến trúc chuẩn của AuraTune, kết nối xuyên suốt Web Client, Node.js Backend và AI Service. |
+
+### Prompt đã dùng
+
+```text
+Bạn hãy đóng vai trò AI Systems Architect & Fullstack Senior Engineer thực hiện thiết kế và tích hợp hoàn chỉnh "Bộ não AI" (AI Brain Agent Service) cho dự án AuraTune tại thư mục `src/ai-service`, kết nối toàn diện với 3 tính năng thuộc Group 120 (Feature 121: Conversational Interface, Feature 122: Music Intent Understanding, Feature 123: Real-Time Music Assistance).
+
+Các yêu cầu kỹ thuật và nguyên tắc kiến trúc bắt buộc:
+1. Kiến trúc Microservice độc lập (`src/ai-service`):
+   - Xây dựng service bằng Python FastAPI chạy tại cổng 8000, có cấu trúc module rõ ràng (`config.py`, `tools.py`, `agent.py`, `main.py`).
+   - Cung cấp endpoint kiểm tra sức khỏe `GET /health` và `GET /ai/health` trả về trạng thái service, model và catalog count.
+   - Cung cấp endpoint đàm thoại thời gian thực `POST /ai/agent/stream` truyền dữ liệu theo chuẩn Server-Sent Events (SSE).
+2. Mô hình AI & Function Calling (ReAct Agent):
+   - Tận dụng `GEMINI_API_KEY` đã cấu hình trong `.env`, tích hợp mô hình Google Gemini 2.5 Flash thông qua SDK chính thức `google-genai` (API version `v1beta`).
+   - Định nghĩa persona "AuraTune AI Host" thấu hiểu âm nhạc, giao tiếp tiếng Việt tự nhiên và truyền ngữ cảnh trình phát (`PlaybackContextSnapshot`).
+   - Khai báo 7 công cụ Function Calling chuẩn hóa: `play_playlist`, `play_tracks`, `playback`, `set_volume`, `queue_add`, `clear_queue`, `like_track` đồng bộ chính xác với hệ sinh thái catalog (`t1`–`t10`, `lofi-chill`, `deep-focus`, `aura-mix`...).
+3. Giao thức luồng sự kiện SSE 4 pha:
+   - `thinking`: Gửi thông tin suy nghĩ hiển thị trong accordion terminal.
+   - `tool_call`: Phát payload chỉ thị để Web Client (`AIHostChat.jsx` & `agentTools.js`) trực tiếp điều khiển trình phát qua `PlayerContext` & `AppStore`.
+   - `text`: Stream câu trả lời tự nhiên theo từng từ (typewriter effect).
+   - `done`: Kết thúc phiên kèm tổng thời gian tính toán (`totalDurationMs`).
+4. Tích hợp Node.js Backend (`src/backend`) & Khả năng chịu lỗi:
+   - Nâng cấp `agentConversationService.js` làm proxy chuyển tiếp luồng SSE từ AI Service tới Web Client.
+   - Tuân thủ nguyên tắc bất biến Zero Audio Disruption Invariant: nếu Gemini quá tải (503) hoặc AI Service offline, tự động fallback an toàn về Local Rule-Based Engine mà không bao giờ làm ngắt bài hát đang phát.
+   - Tuân thủ Destructive-Only Confirmation: thao tác `clear_queue` bắt buộc phải gán `confirm: true` yêu cầu xác nhận `[y/N]`.
+5. Đóng gói & Tiện ích khởi chạy:
+   - Viết bài test độc lập `test_agent.py` nghiệm thu luồng stream và Function Calling trên môi trường Python.
+   - Tạo script khởi chạy nhanh `start.bat`, `start.ps1` và script 1-click `start-all.bat` ở thư mục gốc khởi động cùng lúc AI Service, Backend và Frontend.
+   - Đảm bảo 100% test suites của Backend và Frontend tiếp tục vượt qua không lỗi.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Khảo sát môi trường và lựa chọn kiến trúc thông qua khảo sát interactive**:
+  - Xác nhận phiên bản môi trường Python 3.13 tiêu chuẩn trên Windows (`py -3.13`).
+  - Lựa chọn mô hình **Google Gemini (`gemini-2.5-flash`)** với Google GenAI SDK (`google-genai` v3.1.0, API version `v1beta`), tận dụng `GEMINI_API_KEY` có sẵn trong `.env`.
+  - Thiết kế kiến trúc Microservice độc lập tại `src/ai-service` chạy cổng 8000 theo đúng quy chuẩn kiến trúc của AuraTune.
+  - Áp dụng kiến trúc ReAct / Function Calling: AI tự do đàm thoại, tự suy nghĩ (thinking), tự quyết định gọi công cụ điều khiển nhạc, và stream kết quả về client theo thời gian thực.
+- **Xây dựng module công cụ và ánh xạ danh mục hệ thống (`src/ai-service/tools.py`)**:
+  - Ánh xạ đầy đủ danh mục bài hát thực tế của AuraTune (`t1` đến `t10`: *Nàng thơ*, *Bước qua mùa cô đơn*, *Có em*, *Thích em hơi nhiều*, *Chuyện rằng*, *Midnight Coffee*, v.v.).
+  - Ánh xạ danh mục danh sách phát (`lofi-chill`, `deep-focus`, `aura-mix`, `indie-viet`, `dem-thanh-pho`, `nang-len`).
+  - Cài đặt lớp `ToolCollector` hỗ trợ 7 công cụ Function Calling cho Gemini:
+    - `play_playlist(playlist_id)`: Phát tuyển tập danh sách phát theo chủ đề.
+    - `play_tracks(track_ids)`: Phát danh sách bài hát theo danh sách ID.
+    - `playback(action)`: Điều khiển trạng thái phát nhạc (`pause`, `resume`, `next`, `previous`).
+    - `set_volume(value)`: Đặt mức âm lượng từ 0 đến 100%.
+    - `queue_add(track_ids)`: Thêm bài hát vào hàng đợi phát tiếp theo.
+    - `clear_queue()`: Xóa toàn bộ hàng đợi phát nhạc (đánh dấu `confirm: true` kích hoạt xác nhận phá hủy `[y/N]`).
+    - `like_track(track_id)`: Lưu bài hát vào danh sách Bài hát đã thích.
+- **Hiện thực Agent Engine với luồng Server-Sent Events (`src/ai-service/agent.py`)**:
+  - Thiết lập Persona **AuraTune AI Host**: Trợ lý âm nhạc Việt Nam tinh tế, ấm áp, trả lời súc tích và chủ động điều khiển nhạc.
+  - Bổ sung ngữ cảnh trình phát nhạc hiện tại (`PlaybackContextSnapshot`) vào System Instructions của Gemini.
+  - Xây dựng luồng Server-Sent Events (SSE) chuẩn hóa gồm 4 loại sự kiện:
+    - `event: thinking`: Accordion hiển thị tiến trình suy nghĩ của AI.
+    - `event: tool_call`: Bắn action payload cho Web Client trực tiếp thực thi trên `PlayerContext` & `AppStore`.
+    - `event: text`: Stream câu trả lời tự nhiên theo hiệu ứng typewriter từng từ.
+    - `event: done`: Báo hoàn thành phiên stream kèm tổng thời gian xử lý (`totalDurationMs`).
+  - Tích hợp cơ chế **Local Rule-Based NLU Fallback Engine** bảo đảm nguyên tắc bất biến Zero Audio Disruption: nếu Gemini quá tải (503) hoặc mất kết nối mạng, Agent tự động phân tích và xử lý cục bộ mượt mà mà không bao giờ ngắt nhạc.
+- **Xây dựng ứng dụng FastAPI (`src/ai-service/main.py`)**:
+  - Cấu hình CORS middleware cho phép kết nối từ mọi origin của dự án.
+  - Cung cấp endpoint `GET /health` và `GET /ai/health` trả về trạng thái service, model Gemini, và số lượng catalog.
+  - Cung cấp endpoint `POST /ai/agent/stream` nhận `prompt` và `context`, trả về `StreamingResponse` định dạng `text/event-stream`.
+- **Nâng cấp Node.js Backend (`src/backend`) kết nối AI Service**:
+  - Mở rộng `src/backend/utils/sseResponse.js`: Bổ sung `sendToolCall` và `sendRaw` hỗ trợ stream trực tiếp event `tool_call`.
+  - Cập nhật `src/backend/services/agentConversationService.js`: Kết nối tới `${agentConfig.aiAgentServiceUrl}/ai/agent/stream` chuyển tiếp luồng SSE về Client; tự động fallback về simulation engine nội bộ khi AI Service offline.
+- **Kiểm thử độc lập và hoàn thiện tiện ích khởi chạy**:
+  - Viết script kiểm thử `src/ai-service/test_agent.py` xác nhận thành công 17 SSE chunks (gồm thinking, tool_call `play_playlist("lofi-chill")`, text delta và done).
+  - Tạo script khởi động nhanh trên Windows: `src/ai-service/start.bat` và `src/ai-service/start.ps1`.
+  - Tạo script khởi động toàn diện 1-click `start-all.bat` ở thư mục gốc (khởi chạy cùng lúc AI Service, Backend và Frontend).
+  - Cập nhật tài liệu hướng dẫn chi tiết tại `src/ai-service/README.md`.
+  - Chạy toàn bộ test suites: Backend đạt **107/107 tests pass**, Frontend đạt **64/64 tests pass**, Vite build thành công trong 7.47s.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                         | Quyết định   | Lý do                                                                                                                                                    |
+| :----------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mô hình `gemini-2.5-flash` qua SDK `google-genai`            | Dùng toàn bộ | Model chính thức tối ưu về tốc độ, hỗ trợ tiếng Việt xuất sắc, tương thích Function Calling qua API version `v1beta`.                                    |
+| Kiến trúc Microservice FastAPI độc lập (`src/ai-service`)    | Dùng toàn bộ | Tuân thủ quy chuẩn kiến trúc của dự án AuraTune, tách biệt module AI bằng Python chuyên dụng mà không can thiệp logic nghiệp vụ Node.js Backend.        |
+| Giao thức Server-Sent Events (SSE) thời gian thực            | Dùng toàn bộ | Đảm bảo tính liên tục của luồng hội thoại, hiển thị trạng thái suy nghĩ (`thinking`), chỉ thị thực thi (`tool_call`) và câu trả lời (`text`).           |
+| Cơ chế Safe Local NLU Fallback                               | Dùng toàn bộ | Tuân thủ nguyên tắc bất biến Zero Audio Disruption Invariant: nếu dịch vụ đám mây gặp sự cố, hệ thống tự động fallback xử lý mà không làm ngắt nhạc.   |
+| Cấu trúc Free-Threaded build (Python 3.13t)                  | Bỏ           | Gặp lỗi không tương thích với các module C-extensions (`pydantic_core`, `cffi`). Chuyển sang sử dụng Python 3.13 standard build (`py -3.13`) ổn định.   |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm thử độc lập Python AI Service:** Chạy `py -3.13 src/ai-service/test_agent.py`, kết quả sinh ra đủ 17 SSE chunks gồm `thinking`, `tool_call` (`play_playlist` với `lofi-chill`), `text` delta và `done`.
+- [x] **Kiểm thử API Endpoint Health Check:** Endpoint `GET /health` trả về HTTP 200 `{ "status": "online", "model": "gemini-2.5-flash", "hasGeminiKey": true }`.
+- [x] **Kiểm tra tự động Backend Tests:** Chạy `npm --prefix src/backend test`, kết quả: **107/107 tests passed** (26 suites, 0 failures), cơ chế fallback khi AI service offline hoạt động chính xác.
+- [x] **Kiểm tra tự động Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **64/64 tests passed** (23 suites, 0 failures), bộ công cụ `agentTools.js` và giao diện `AIHostChat.jsx` tương thích hoàn toàn.
+- [x] **Kiểm tra Production Build:** Chạy `npm --prefix src/frontend run build`, thành công trong 7.47s (0 errors).

@@ -39,6 +39,8 @@ export function createSSEResponse(res) {
     isClosed: () => closed || res.writableEnded,
     sendThinking: (text) => send('thinking', { type: 'thinking', text }),
     sendText: (delta) => send('text', { type: 'text', delta }),
+    sendToolCall: (call) => send('tool_call', call),
+    sendRaw: (event, data) => send(event, data),
     sendError: (message, code = 'AI_SERVICE_UNAVAILABLE') => {
       send('error', { type: 'error', message, code });
     },

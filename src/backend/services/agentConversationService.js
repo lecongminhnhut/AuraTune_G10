@@ -74,15 +74,117 @@ function generateLocalResponse(prompt, context = {}) {
 }
 
 /**
+ * Streams conversation from Python AI Brain Service (FastAPI + Gemini)
+ * Returns true if completed successfully, false/throws if unavailable.
+ */
+async function streamFromAIService(url, payload, sseEmitter, signal) {
+  const streamEndpoint = `${url.replace(/\/+$/, '')}/ai/agent/stream`;
+  const response = await fetch(streamEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'text/event-stream'
+    },
+    body: JSON.stringify(payload),
+    signal
+  });
+
+  if (!response.ok) {
+    throw new Error(`AI service responded with HTTP ${response.status}`);
+  }
+
+  if (!response.body) {
+    throw new Error('AI service returned an empty response body');
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    if (signal?.aborted || sseEmitter.isClosed()) {
+      await reader.cancel();
+      break;
+    }
+
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop() || '';
+
+    for (const part of parts) {
+      if (!part.trim()) continue;
+      const lines = part.split('\n');
+      let eventType = 'message';
+      let dataStr = '';
+
+      for (const line of lines) {
+        if (line.startsWith('event:')) {
+          eventType = line.slice(6).trim();
+        } else if (line.startsWith('data:')) {
+          dataStr = line.slice(5).trim();
+        }
+      }
+
+      if (dataStr) {
+        let parsed = null;
+        try {
+          parsed = JSON.parse(dataStr);
+        } catch {
+          parsed = dataStr;
+        }
+
+        if (eventType === 'thinking') {
+          sseEmitter.sendThinking(parsed?.text || dataStr);
+        } else if (eventType === 'tool_call') {
+          if (typeof sseEmitter.sendToolCall === 'function') {
+            sseEmitter.sendToolCall(parsed);
+          } else if (typeof sseEmitter.sendRaw === 'function') {
+            sseEmitter.sendRaw('tool_call', parsed);
+          }
+        } else if (eventType === 'text') {
+          sseEmitter.sendText(parsed?.delta || dataStr);
+        } else if (eventType === 'done') {
+          sseEmitter.sendDone(parsed?.totalDurationMs || 0);
+          return true;
+        } else if (eventType === 'error') {
+          sseEmitter.sendError(parsed?.message || 'Lỗi từ AI Host', parsed?.code);
+          return true;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+/**
  * Streams conversation events to the sseEmitter.
- * sseEmitter must provide: sendThinking(text), sendText(delta), sendError(msg, code), sendDone(durationMs), isClosed()
+ * Prioritizes the external AI Service (FastAPI + Gemini) and falls back seamlessly to local engine.
  */
 export async function streamConversation({ prompt, context = {}, user = null, sseEmitter, signal }) {
   const startedAt = Date.now();
   const validatedPrompt = validatePrompt(prompt);
 
-  // If external AI service is available and reachable, we could stream from it.
-  // Otherwise, stream local high-quality response chunks.
+  // Attempt external AI Brain Service first
+  if (agentConfig.aiAgentServiceUrl) {
+    try {
+      const forwarded = await streamFromAIService(
+        agentConfig.aiAgentServiceUrl,
+        { prompt: validatedPrompt, context },
+        sseEmitter,
+        signal
+      );
+      if (forwarded) return;
+    } catch (err) {
+      if (signal?.aborted) return;
+      console.warn(`External AI Service at ${agentConfig.aiAgentServiceUrl} unavailable (${err.message}). Using local simulator fallback.`);
+    }
+  }
+
+  // Fallback simulator for local tests / offline dev
   const thinkingSteps = [
     'Đang kết nối đến AI Host...',
     'Đang phân tích ngữ cảnh yêu cầu...',
