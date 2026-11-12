@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --import ./tests/register-loader.js --test \"tests/**/*.test.jsx\" \"tests/**/*.test.js\" \"src/**/*.test.js\""
+    "test": "node --import ./tests/register-loader.js --test \"tests/**/*.test.jsx\" \"tests/**/*.test.js\" \"src/**/*.test.js\" \"src/**/*.test.jsx\""
   },
   "dependencies": {
     "auratune": "file:../..",

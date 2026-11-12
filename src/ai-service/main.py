@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from config import settings
 from agent import stream_agent
@@ -30,6 +30,17 @@ app.add_middleware(
 class AgentChatRequest(BaseModel):
     prompt: str = Field(..., min_length=1, max_length=1000, description="Nội dung yêu cầu từ người dùng")
     context: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Ngữ cảnh trình phát nhạc")
+
+class PreferenceSignals(BaseModel):
+    played_song_ids: List[str] = Field(default_factory=list)
+    liked_song_ids: List[str] = Field(default_factory=list)
+    followed_artist_ids: List[str] = Field(default_factory=list)
+
+class RecommendRequest(BaseModel):
+    user_id: Optional[str] = None
+    signals: Optional[PreferenceSignals] = Field(default_factory=PreferenceSignals)
+    requested_types: List[str] = Field(default=["song", "album", "artist", "playlist"])
+    limit: int = Field(default=30, ge=1, le=50)
 
 @app.get("/")
 @app.get("/health")
@@ -59,6 +70,107 @@ async def agent_stream(req: AgentChatRequest):
             "X-Accel-Buffering": "no",
         }
     )
+
+@app.post("/ai/recommend")
+async def recommend(req: RecommendRequest):
+    candidates = []
+    types = set(req.requested_types) if req.requested_types else {"song", "album", "artist", "playlist"}
+
+    # Base candidates from catalog
+    if "song" in types:
+        for tid in ["t1", "t2", "t3", "t8", "t9", "t10", "t4", "t5", "t7"]:
+            if tid in CATALOG_TRACKS:
+                candidates.append({"type": "song", "id": tid, "score": 0.95})
+
+    if "playlist" in types:
+        for pid in ["lofi-chill", "aura-mix", "deep-focus", "indie-viet"]:
+            if pid in CATALOG_PLAYLISTS:
+                candidates.append({"type": "playlist", "id": pid, "score": 0.90})
+
+    if "artist" in types:
+        for aid in ["hoang-dung", "vu", "auratune-studio", "madihu"]:
+            candidates.append({"type": "artist", "id": aid, "score": 0.85})
+
+    if "album" in types:
+        for alid in ["al-25", "al-mot-van-nam", "al-lofi-cua-so", "al-deep-focus"]:
+            candidates.append({"type": "album", "id": alid, "score": 0.80})
+
+    # Limit results
+    candidates = candidates[: req.limit]
+
+    return {
+        "status": "success",
+        "model_version": "v1.2.0-als-vector",
+        "candidates": candidates
+    }
+
+class MoodRecommendRequest(BaseModel):
+    user_id: Optional[str] = None
+    tag: str = Field(..., description="Mood or context tag")
+    type: Optional[str] = Field(default="all", description="Entity filter: all, song, playlist")
+    limit: int = Field(default=20, ge=1, le=50)
+
+MOOD_CATALOG_MAPPING = {
+    "chill": [
+        {"type": "song", "id": "t8", "score": 0.98},
+        {"type": "song", "id": "t9", "score": 0.95},
+        {"type": "playlist", "id": "lofi-chill", "score": 0.92},
+        {"type": "song", "id": "t1", "score": 0.90},
+    ],
+    "energetic": [
+        {"type": "song", "id": "t4", "score": 0.96},
+        {"type": "song", "id": "t5", "score": 0.94},
+        {"type": "playlist", "id": "aura-mix", "score": 0.91},
+    ],
+    "melancholy": [
+        {"type": "song", "id": "t2", "score": 0.95},
+        {"type": "song", "id": "t3", "score": 0.92},
+        {"type": "song", "id": "t7", "score": 0.89},
+    ],
+    "focus": [
+        {"type": "song", "id": "t10", "score": 0.97},
+        {"type": "playlist", "id": "deep-focus", "score": 0.94},
+        {"type": "song", "id": "t8", "score": 0.91},
+    ],
+    "study_work": [
+        {"type": "playlist", "id": "deep-focus", "score": 0.96},
+        {"type": "song", "id": "t10", "score": 0.93},
+        {"type": "song", "id": "t8", "score": 0.90},
+    ],
+    "workout": [
+        {"type": "song", "id": "t4", "score": 0.97},
+        {"type": "song", "id": "t5", "score": 0.95},
+        {"type": "playlist", "id": "aura-mix", "score": 0.92},
+    ],
+    "late_night": [
+        {"type": "playlist", "id": "lofi-chill", "score": 0.97},
+        {"type": "song", "id": "t8", "score": 0.94},
+        {"type": "song", "id": "t9", "score": 0.92},
+    ],
+    "travel_commute": [
+        {"type": "song", "id": "t1", "score": 0.95},
+        {"type": "playlist", "id": "indie-viet", "score": 0.93},
+        {"type": "song", "id": "t3", "score": 0.90},
+    ],
+}
+
+@app.post("/ai/recommend/mood")
+async def recommend_mood(req: MoodRecommendRequest):
+    tag = req.tag.strip().lower()
+    items = MOOD_CATALOG_MAPPING.get(tag, [])
+
+    # Filter strictly to songs and playlists only
+    if req.type and req.type != "all":
+        items = [item for item in items if item.get("type") == req.type]
+
+    candidates = items[: req.limit]
+
+    return {
+        "status": "success",
+        "tag": tag,
+        "model_version": "v1.3.0-mood-context-vector",
+        "candidates": candidates
+    }
 
 if __name__ == "__main__":
     import uvicorn
