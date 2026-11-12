@@ -7,6 +7,8 @@ import { usePlayer } from '../../context/PlayerContext.jsx'
 import { getMockRecommendations, normalizeText } from '../../utils/aiMockData.js'
 import { genres } from '../../utils/mockData.js'
 import { navigate } from '../../utils/navigation.jsx'
+import { playlistApi } from '../../services/playlistApi.js'
+import { formatTime } from '../../utils/playback.js'
 
 const examples = ['Nhạc nhẹ nhàng để học bài buổi tối', 'Năng lượng cho buổi chạy bộ sáng', 'Indie Việt cho chuyến đi xa', 'Lofi chill khi trời mưa']
 
@@ -20,12 +22,24 @@ export default function AIPlaylistPage() {
 
   if (!store.currentUser) return <LoginRequired description="Đăng nhập để tạo và lưu playlist bằng AI." />
 
-  const generate = (event) => {
+  const generate = async (event) => {
     event?.preventDefault()
     if (!prompt.trim()) return
-    if (!store.aiAvailable) { setStatus('unavailable'); return }
+    if (prompt.length > 200) return
+    if (store.currentUser && store.state.session?.source !== 'backend' && !store.aiAvailable) { setStatus('unavailable'); return }
     setStatus('loading')
-    window.setTimeout(() => {
+    try {
+      if (store.state.session?.source === 'backend') {
+        const result = await playlistApi.generate(prompt.trim())
+        if (result.noMatch || !result.tracks?.length) { setStatus('no-match'); return }
+        const proposedTracks = result.tracks.map((song) => store.findTrack(song.song_id) || ({
+          ...song, id: String(song.song_id), artist: song.artist || song.artist_name || '',
+          duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), cover: 'aurora',
+        }))
+        setProposal({ title: result.title || prompt.trim().slice(0, 80), reason: result.reason || '', tracks: proposedTracks })
+        setStatus('ready')
+        return
+      }
       const recommendation = getMockRecommendations(prompt)
       const normalized = normalizeText(prompt)
       const genreIds = genres.filter((genre) => normalizeText(`${genre.name} ${genre.description}`).split(/\s+/).some((word) => word.length > 3 && normalized.includes(word))).map((genre) => genre.id)
@@ -33,13 +47,18 @@ export default function AIPlaylistPage() {
       const proposed = ids.map(store.findTrack).filter((track) => track && store.isPlayable(track.id)).slice(0, 10)
       setProposal({ title: prompt.trim().slice(0, 60), reason: recommendation.reason, tracks: proposed })
       setStatus('ready')
-    }, 650)
+    } catch (error) {
+      setStatus(error.status === 503 ? 'unavailable' : 'error')
+      store.toast(error.message, 'error')
+    }
   }
 
-  const save = () => {
-    const id = store.createPlaylist({ title: proposal.title, description: `Tạo bởi AI từ mô tả: “${prompt.trim()}”`, trackIds: proposal.tracks.map((track) => track.id), cover: 'violet' })
-    store.toast('Đã lưu playlist AI vào thư viện.')
-    navigate(`/playlist/${id}`)
+  const save = async () => {
+    try {
+      const id = await store.createPlaylist({ title: proposal.title, description: `Tạo bởi AI từ mô tả: “${prompt.trim()}”`, trackIds: proposal.tracks.map((track) => track.id), cover: 'violet' })
+      store.toast('Đã lưu playlist AI vào thư viện.')
+      navigate(`/playlist/${id}`)
+    } catch (error) { store.toast(error.message, 'error') }
   }
 
   const move = (from, to) => setProposal((current) => {
@@ -70,7 +89,10 @@ export default function AIPlaylistPage() {
           </div>
         )}
 
-        {status === 'ready' && proposal && (
+        {status === 'no-match' && <p role="status" className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-300">Chưa tìm thấy bài hát phù hợp. Hãy thử mô tả khác hoặc tạo playlist thủ công.</p>}
+        {status === 'error' && <p role="alert" className="mt-6 text-sm text-rose-300">Không thể tạo đề xuất lúc này. Bạn có thể thử lại.</p>}
+
+        {proposal && status !== 'loading' && (
           <section className="mt-8">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div className="min-w-0 flex-1">

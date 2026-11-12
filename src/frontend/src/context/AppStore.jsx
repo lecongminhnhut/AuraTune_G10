@@ -2,7 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { authApi, configureAuthContext } from '../services/sessionApiClient.js'
 import { logoutFirebase } from '../services/firebaseAuth.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
-import { getDurationSeconds } from '../utils/playback.js'
+import { formatTime, getDurationSeconds } from '../utils/playback.js'
+import { playlistApi } from '../services/playlistApi.js'
 
 // Toàn bộ dữ liệu ở đây là dữ liệu demo lưu trong localStorage của trình duyệt.
 // Khi có backend, các hàm trong store sẽ được thay bằng lời gọi API tương ứng.
@@ -68,6 +69,20 @@ const loadState = () => {
 }
 
 const uid = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
+const fromApiPlaylist = (playlist) => ({
+  ...playlist,
+  id: String(playlist.id),
+  title: playlist.title || playlist.name || '',
+  cover: playlist.cover || 'aurora',
+  songs: (playlist.songs || []).map((song) => ({ ...song, id: String(song.song_id ?? song.id), artist: song.artist || song.artist_name || '', cover: song.cover || 'aurora', duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), addedByName: song.added_by?.display_name || (song.added_by_user_id ? 'Thành viên trước đây' : null) })),
+  trackIds: playlist.trackIds || playlist.songs?.map((song) => String(song.song_id ?? song.id)) || [],
+  collaborators: (playlist.collaborators || []).map((user) => typeof user === 'string' ? user : user.id),
+  collaboratorDetails: (playlist.collaborators || []).filter((user) => typeof user === 'object'),
+  duration: typeof playlist.duration === 'number' ? formatTotalDuration(playlist.duration) : playlist.duration,
+  owner: playlist.owner || 'AuraTune listener',
+  saved: Boolean(playlist.isBookmarked),
+  label: playlist.isCollaborative ? 'PLAYLIST CỘNG TÁC' : 'PLAYLIST CỦA BẠN',
+})
 const normalizeEmail = (value) => value.trim().toLowerCase()
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 export const isStrongPassword = (value) => {
@@ -94,6 +109,8 @@ export const formatTotalDuration = (seconds) => {
     const [sessionRestoring, setSessionRestoring] = useState(true)
     const [toasts, setToasts] = useState([])
     const [ui, setUi] = useState({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
+    const [remotePlaylists, setRemotePlaylists] = useState(null)
+    const [remoteLikedIds, setRemoteLikedIds] = useState(null)
     const stateRef = useRef(state)
     stateRef.current = state
 
@@ -267,6 +284,27 @@ export const formatTotalDuration = (seconds) => {
     (currentUser && state.libraries[currentUser.id]) ||
     emptyLibrary()
 
+  const refreshRemoteLibrary = useCallback(async () => {
+    try {
+      const [playlists, likedIds] = await Promise.all([playlistApi.list(), playlistApi.liked()])
+      setRemotePlaylists((playlists || []).map(fromApiPlaylist))
+      setRemoteLikedIds(likedIds || [])
+      return true
+    } catch (error) {
+      toast(error.message || 'Không tải được playlist.', 'error')
+      return false
+    }
+  }, [toast])
+
+  useEffect(() => {
+    if (state.session?.source !== 'backend' || !currentUser) {
+      setRemotePlaylists(null)
+      setRemoteLikedIds(null)
+      return
+    }
+    refreshRemoteLibrary()
+  }, [state.session?.source, state.session?.userId, currentUser?.id, refreshRemoteLibrary])
+
   const updateLibrary = useCallback((updater) => {
     setState((previous) => {
       const userId = previous.session?.userId
@@ -292,10 +330,11 @@ export const formatTotalDuration = (seconds) => {
 
   const userPlaylistsVisible = useMemo(() => {
     if (!currentUser) return []
+    if (remotePlaylists) return remotePlaylists
     return Object.entries(state.libraries).flatMap(([ownerId, ownerLibrary]) => ownerLibrary.playlists
       .filter((playlist) => ownerId === currentUser.id || playlist.collaborators?.includes(currentUser.id))
       .map((playlist) => ({ ...playlist, ownerId })))
-  }, [state.libraries, currentUser])
+  }, [state.libraries, currentUser, remotePlaylists])
 
   const likedPlaylist = useMemo(() => currentUser ? ({
     id: LIKED_PLAYLIST_ID,
@@ -304,11 +343,11 @@ export const formatTotalDuration = (seconds) => {
     owner: currentUser.displayName,
     cover: 'violet',
     label: 'PLAYLIST',
-    trackIds: [...library.likedIds].reverse(),
+    trackIds: [...(remoteLikedIds ?? library.likedIds)].reverse(),
     isLiked: true,
-  }) : null, [currentUser, library.likedIds])
+  }) : null, [currentUser, library.likedIds, remoteLikedIds])
 
-  const getPlaylistTracks = useCallback((playlist) => (playlist?.trackIds ?? []).map(findTrack).filter((track) => track && isPlayable(track.id)), [findTrack, isPlayable])
+  const getPlaylistTracks = useCallback((playlist) => (playlist?.trackIds ?? []).map((id) => findTrack(id) ?? playlist?.songs?.find((song) => String(song.id ?? song.song_id) === String(id))).filter((track) => track && isPlayable(track.id)), [findTrack, isPlayable])
 
   const describePlaylist = useCallback((playlist) => {
     if (!playlist) return null
@@ -553,24 +592,46 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [currentUser])
   // ---------- Thư viện cá nhân ----------
-  const isLiked = (trackId) => library.likedIds.includes(trackId)
+  const isLiked = (trackId) => (remoteLikedIds ?? library.likedIds).includes(trackId)
   const toggleLike = useCallback((trackId) => {
     if (!stateRef.current.session) return false
+    if (stateRef.current.session.source === 'backend') {
+      const previousIds = remoteLikedIds ?? []
+      const currentlyLiked = previousIds.includes(trackId)
+      const next = currentlyLiked ? previousIds.filter((id) => id !== trackId) : [...previousIds, trackId]
+      setRemoteLikedIds(next)
+      playlistApi.setLiked(trackId, !currentlyLiked).then((ids) => setRemoteLikedIds(ids)).catch((error) => {
+        setRemoteLikedIds((current) => current?.includes(trackId) === !currentlyLiked ? previousIds : current)
+        toast(error.message, 'error')
+      })
+      return true
+    }
     updateLibrary((current) => ({
       ...current,
       likedIds: current.likedIds.includes(trackId) ? current.likedIds.filter((id) => id !== trackId) : [...current.likedIds, trackId],
     }))
     return true
-  }, [updateLibrary])
+  }, [updateLibrary, remoteLikedIds, toast])
 
-  const createPlaylist = useCallback(({ title, description = '', trackIds = [], cover = 'aurora', isCollaborative = false }) => {
+  const createPlaylist = useCallback(async ({ title, description = '', trackIds = [], cover = 'aurora', isCollaborative = false }) => {
+    if (stateRef.current.session?.source === 'backend') {
+      const playlist = fromApiPlaylist(await playlistApi.create({ title, description, cover }))
+      try {
+        if (trackIds.length) await playlistApi.addSongs(playlist.id, trackIds)
+      } catch (error) {
+        await playlistApi.remove(playlist.id).catch(() => {})
+        throw error
+      }
+      await refreshRemoteLibrary()
+      return playlist.id
+    }
     const id = uid('pl')
     updateLibrary((current) => ({
       ...current,
       playlists: [{ id, title: title.trim(), description: description.trim(), trackIds, cover, label: 'PLAYLIST CỦA BẠN', owner: currentUser?.displayName ?? 'Bạn', isCollaborative, collaborators: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, ...current.playlists],
     }))
     return id
-  }, [updateLibrary, currentUser])
+  }, [updateLibrary, currentUser, refreshRemoteLibrary])
 
   // Playlist cộng tác có thể thuộc thư viện của người khác, nên cập nhật theo chủ sở hữu.
   const updateOwnedPlaylist = useCallback((playlistId, updater) => {
@@ -587,42 +648,97 @@ export const formatTotalDuration = (seconds) => {
     })
   }, [])
 
-  const updatePlaylist = useCallback((playlistId, patch) => updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, ...patch })), [updateOwnedPlaylist])
-  const deletePlaylist = useCallback((playlistId) => updateOwnedPlaylist(playlistId, () => null), [updateOwnedPlaylist])
+  const updatePlaylist = useCallback(async (playlistId, patch) => {
+    if (stateRef.current.session?.source === 'backend') {
+      if (typeof patch.isCollaborative === 'boolean') await playlistApi.setCollaboration(playlistId, patch.isCollaborative)
+      const metadata = { title: patch.title, description: patch.description, cover: patch.cover, coverUrl: patch.coverUrl || null, status: patch.status }
+      if (Object.values(metadata).some((value) => value !== undefined)) await playlistApi.update(playlistId, metadata)
+      await refreshRemoteLibrary()
+      return true
+    }
+    updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, ...patch }))
+    return true
+  }, [updateOwnedPlaylist, refreshRemoteLibrary])
+  const deletePlaylist = useCallback(async (playlistId) => {
+    if (stateRef.current.session?.source === 'backend') {
+      await playlistApi.remove(playlistId)
+      setRemotePlaylists((items) => (items || []).filter((playlist) => playlist.id !== playlistId))
+      return true
+    }
+    updateOwnedPlaylist(playlistId, () => null)
+    return true
+  }, [updateOwnedPlaylist])
+
+  const bookmarkPlaylist = useCallback(async (playlistId) => {
+    if (stateRef.current.session?.source === 'backend') {
+      await playlistApi.bookmark(playlistId)
+      await refreshRemoteLibrary()
+      return true
+    }
+    updateLibrary((current) => ({ ...current, savedPlaylistIds: [...new Set([...(current.savedPlaylistIds || []), playlistId])] }))
+    return true
+  }, [refreshRemoteLibrary, updateLibrary])
 
   const addTrackToPlaylist = useCallback((playlistId, trackId) => {
     if (playlistId === LIKED_PLAYLIST_ID) {
-      if (!stateRef.current.libraries[stateRef.current.session?.userId]?.likedIds.includes(trackId)) toggleLike(trackId)
+      const likedIds = stateRef.current.session?.source === 'backend' ? (remoteLikedIds ?? []) : (stateRef.current.libraries[stateRef.current.session?.userId]?.likedIds ?? [])
+      if (!likedIds.includes(trackId)) toggleLike(trackId)
       return true
+    }
+    if (stateRef.current.session?.source === 'backend') {
+      return playlistApi.addSongs(playlistId, [trackId]).then(async (playlist) => { await refreshRemoteLibrary(); return playlist.trackIds?.includes(trackId) ?? true }).catch((error) => { toast(error.message, 'error'); return false })
     }
     const existing = Object.values(stateRef.current.libraries).flatMap((ownerLibrary) => ownerLibrary.playlists).find((playlist) => playlist.id === playlistId)
     if (!existing || existing.trackIds.includes(trackId)) return false
     updateOwnedPlaylist(playlistId, (playlist) => playlist.trackIds.includes(trackId) ? playlist : { ...playlist, trackIds: [...playlist.trackIds, trackId] })
     return true
-  }, [updateOwnedPlaylist, toggleLike])
+  }, [updateOwnedPlaylist, toggleLike, refreshRemoteLibrary, toast, remoteLikedIds])
 
   const removeTrackFromPlaylist = useCallback((playlistId, trackId) => {
     if (playlistId === LIKED_PLAYLIST_ID) return toggleLike(trackId)
+    if (stateRef.current.session?.source === 'backend') return playlistApi.removeSong(playlistId, trackId).then(refreshRemoteLibrary).catch((error) => { toast(error.message, 'error'); return false })
     updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, trackIds: playlist.trackIds.filter((id) => id !== trackId) }))
     return true
-  }, [updateOwnedPlaylist, toggleLike])
+  }, [updateOwnedPlaylist, toggleLike, refreshRemoteLibrary, toast])
 
-  const moveTrackInPlaylist = useCallback((playlistId, from, to) => updateOwnedPlaylist(playlistId, (playlist) => {
+  const moveTrackInPlaylist = useCallback((playlistId, from, to) => {
+    if (stateRef.current.session?.source === 'backend') {
+      const playlist = remotePlaylists?.find((item) => item.id === playlistId)
+      if (!playlist) return false
+      const trackIds = [...playlist.trackIds]
+      const [moved] = trackIds.splice(from, 1)
+      trackIds.splice(to, 0, moved)
+      setRemotePlaylists((items) => items.map((item) => item.id === playlistId ? { ...item, trackIds } : item))
+      return playlistApi.reorder(playlistId, trackIds).then(refreshRemoteLibrary).catch(async (error) => { toast(error.message, 'error'); await refreshRemoteLibrary(); return false })
+    }
+    return updateOwnedPlaylist(playlistId, (playlist) => {
     const trackIds = [...playlist.trackIds]
     const [moved] = trackIds.splice(from, 1)
     trackIds.splice(to, 0, moved)
     return { ...playlist, trackIds }
-  }), [updateOwnedPlaylist])
+    })
+  }, [updateOwnedPlaylist, remotePlaylists, refreshRemoteLibrary, toast])
 
   const addCollaborator = useCallback((playlistId, email) => {
+    if (stateRef.current.session?.source === 'backend') return (async () => {
+      const playlist = remotePlaylists?.find((item) => item.id === playlistId)
+      if (!playlist?.isCollaborative) await playlistApi.setCollaboration(playlistId, true)
+      const user = await playlistApi.invite(playlistId, email)
+      await refreshRemoteLibrary()
+      return { ok: true, user: { ...user, displayName: user.display_name } }
+    })().catch((error) => ({ ok: false, error: error.message }))
     const user = stateRef.current.users.find((item) => item.email === normalizeEmail(email))
     if (!user) return { ok: false, error: 'Không tìm thấy người dùng AuraTune với email này.' }
     if (user.id === stateRef.current.session?.userId) return { ok: false, error: 'Bạn đã là chủ sở hữu playlist này.' }
     updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, isCollaborative: true, collaborators: [...new Set([...(playlist.collaborators ?? []), user.id])] }))
     return { ok: true, user }
-  }, [updateOwnedPlaylist])
+  }, [updateOwnedPlaylist, remotePlaylists, refreshRemoteLibrary])
 
-  const removeCollaborator = useCallback((playlistId, userId) => updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, collaborators: (playlist.collaborators ?? []).filter((id) => id !== userId) })), [updateOwnedPlaylist])
+  const removeCollaborator = useCallback((playlistId, userId) => {
+    if (stateRef.current.session?.source === 'backend') return playlistApi.removeCollaborator(playlistId, userId).then(refreshRemoteLibrary).catch((error) => { toast(error.message, 'error'); return false })
+    updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, collaborators: (playlist.collaborators ?? []).filter((id) => id !== userId) }))
+    return true
+  }, [updateOwnedPlaylist, refreshRemoteLibrary, toast])
 
   const toggleSaveAlbum = useCallback((albumId) => {
     if (!stateRef.current.session) return false
@@ -720,7 +836,7 @@ export const formatTotalDuration = (seconds) => {
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
     register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
-    isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
+    isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, bookmarkPlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
     setFollow, isFollowing,
     recordPlay, updateListened, clearHistory,

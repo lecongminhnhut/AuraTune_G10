@@ -16,17 +16,21 @@ export function PlaylistFormDialog() {
   const [cover, setCover] = useState(editing?.cover ?? 'aurora')
   const [error, setError] = useState('')
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault()
     if (!title.trim()) { setError('Vui lòng đặt tên cho playlist.'); return }
     if (title.trim().length > 80) { setError('Tên playlist tối đa 80 ký tự.'); return }
     if (editing) {
-      store.updatePlaylist(editing.id, { title: title.trim(), description: description.trim(), cover })
-      store.toast('Đã cập nhật playlist.')
+      try {
+        await store.updatePlaylist(editing.id, { title: title.trim(), description: description.trim(), cover })
+        store.toast('Đã cập nhật playlist.')
+      } catch (submitError) { setError(submitError.message); return }
     } else {
-      const id = store.createPlaylist({ title, description, cover, trackIds: dialog.initialTrackId ? [dialog.initialTrackId] : [] })
-      store.toast(dialog.initialTrackId ? `Đã tạo “${title.trim()}” và thêm bài hát.` : `Đã tạo playlist “${title.trim()}”.`)
-      navigate(`/playlist/${id}`)
+      try {
+        const id = await store.createPlaylist({ title, description, cover, trackIds: dialog.initialTrackId ? [dialog.initialTrackId] : [] })
+        store.toast(dialog.initialTrackId ? `Đã tạo “${title.trim()}” và thêm bài hát.` : `Đã tạo playlist “${title.trim()}”.`)
+        navigate(`/playlist/${id}`)
+      } catch (submitError) { setError(submitError.message); return }
     }
     store.closePlaylistDialog()
   }
@@ -66,11 +70,11 @@ export function PlaylistFormDialog() {
 export function AddToPlaylistDialog() {
   const store = useStore()
   const track = store.ui.addToPlaylistTrack
-  const editable = store.userPlaylists
+  const editable = store.userPlaylists.filter((playlist) => playlist.ownerId === store.currentUser?.id || playlist.collaborators?.includes(store.currentUser?.id))
   const liked = store.isLiked(track.id)
 
-  const add = (playlist) => {
-    const added = playlist.id === LIKED_PLAYLIST_ID && liked ? false : store.addTrackToPlaylist(playlist.id, track.id)
+  const add = async (playlist) => {
+    const added = playlist.id === LIKED_PLAYLIST_ID && liked ? false : await store.addTrackToPlaylist(playlist.id, track.id)
     store.toast(added ? `Đã thêm “${track.title}” vào ${playlist.title}.` : `“${track.title}” đã có trong ${playlist.title}.`)
     store.closeAddToPlaylist()
   }
@@ -84,7 +88,7 @@ export function AddToPlaylistDialog() {
         </button>
         <button type="button" onClick={() => add({ id: LIKED_PLAYLIST_ID, title: 'Bài hát đã thích' })} className="flex w-full items-center gap-3 rounded-lg p-2 text-left transition hover:bg-white/[0.06]">
           <span className="grid h-11 w-11 place-items-center rounded-md bg-gradient-to-br from-violet-500 to-fuchsia-800"><Heart size={18} className="fill-current" /></span>
-          <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-white">Bài hát đã thích</span><span className="text-[11px] text-zinc-500">{store.library.likedIds.length} bài hát</span></span>
+          <span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-white">Bài hát đã thích</span><span className="text-[11px] text-zinc-500">{store.likedPlaylist?.trackIds.length ?? store.library.likedIds.length} bài hát</span></span>
           {liked && <Check size={16} className="text-violet-300" aria-label="Đã có" />}
         </button>
         {editable.map((playlist) => {

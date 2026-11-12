@@ -19,7 +19,7 @@ const playerThemes = {
 
 const repeatLabels = { off: 'Bật lặp lại', all: 'Lặp lại danh sách', one: 'Lặp lại một bài' }
 
-export default function FullScreenPlayer({ isOpen, onClose, player, liked, onToggleLike, onOpenQueue, onAddToPlaylist, onAddToQueue, onShare }) {
+export default function FullScreenPlayer({ isOpen, onClose, player, playlistContext, liked, onToggleLike, onOpenQueue, onAddToPlaylist, onAddToQueue, onShare }) {
   const [panel, setPanel] = useState('lyrics')
   const panelRef = useRef(null)
   const closeRef = useRef(null)
@@ -79,6 +79,7 @@ export default function FullScreenPlayer({ isOpen, onClose, player, liked, onTog
             <div className="now-playing-metadata text-center">
               <h1 id="now-playing-title" className="text-2xl font-semibold tracking-[-0.025em] drop-shadow-sm sm:text-[28px] lg:text-[34px]">{track.title}</h1>
               <p className="mt-1.5 text-[15px] font-normal tracking-wide text-white/70">{track.artist}</p>
+              {playlistContext && <p className="mt-1 text-xs text-white/60">Đang phát từ {playlistContext}</p>}
             </div>
           </div>
 

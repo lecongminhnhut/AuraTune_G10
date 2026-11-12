@@ -4,7 +4,7 @@ import CoverArt from '../playlist/CoverArt.jsx'
 import WaveformSeekBar from './WaveformSeekBar.jsx'
 import PlaybackAlert from './PlaybackAlert.jsx'
 
-export default function BottomPlayer({ player, liked, onToggleLike, onDownloadTrack, onOpenChat, chatOpen, onExpand, fullScreenOpen, onTogglePlayback, onOpenQueue, queueOpen }) {
+export default function BottomPlayer({ player, playlistContext, liked, onToggleLike, onDownloadTrack, onOpenChat, chatOpen, onExpand, fullScreenOpen, onTogglePlayback, onOpenQueue, queueOpen }) {
   const { track, isPlaying, elapsed, duration, shuffle, repeatMode, volume, muted, status, error, isBuffering } = player
 
   return (
@@ -21,6 +21,7 @@ export default function BottomPlayer({ player, liked, onToggleLike, onDownloadTr
             <div className="min-w-0">
               <p className="truncate text-xs font-semibold text-white sm:text-sm">{track.title}</p>
               <p className="mt-1 truncate text-[11px] text-zinc-400">{track.artist}</p>
+              {playlistContext && <p className="truncate text-[10px] text-violet-200">{playlistContext}</p>}
             </div>
           </button>
           <button onClick={onToggleLike} aria-label={liked ? 'Bỏ thích bài hát' : 'Thích bài hát'} aria-pressed={liked} className={`ml-1 hidden transition sm:inline-flex ${liked ? 'text-violet-300' : 'text-zinc-500 hover:text-white'}`}><Icon name="heart" size={17} className={liked ? 'fill-current' : ''} /></button>

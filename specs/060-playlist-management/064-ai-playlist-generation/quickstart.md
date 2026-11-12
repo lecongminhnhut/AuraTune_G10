@@ -4,6 +4,9 @@
 
 ## Prerequisites
 
+- Apply `src/database/migrations/003_playlist_management.sql` in Supabase.
+- Run the backend and internal AI service; configure matching `AI_INTERNAL_SECRET` values for both processes.
+
 - Start the frontend and backend; configure the internal AI service locally as specified by its approved setup.
 - Resolve service and catalog gates in [research.md](./research.md).
 - Review [generation contract](./contracts/ai-playlist-generation.md) and [data model](./data-model.md).
