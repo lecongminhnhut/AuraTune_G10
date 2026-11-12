@@ -39,10 +39,10 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 **Purpose**: Initialize intent analyzer configuration, regular expression patterns for entities and PII sanitization, response envelope helpers, and mock fixtures.
 
-- [ ] T001 Configure intent analyzer environment thresholds (`AI_INTENT_SERVICE_URL`, `INTENT_TIMEOUT_MS=1200`, `INTENT_CONFIDENCE_THRESHOLD=0.7`) in `src/backend/config/intentConfig.js`.
-- [ ] T002 [P] Define core intent category enumeration (`play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`, `unknown`) and regex pattern dictionaries in `src/backend/constants/intentConstants.js`.
-- [ ] T003 [P] Implement response envelope formatter in `src/backend/utils/intentResponse.js` enforcing schema `{ success, message, data: MusicIntentResult, error }` per `contracts/music-intent-understanding-api.json`.
-- [ ] T004 [P] Create mock intent response fixtures in `src/frontend/src/utils/aiMockData.js` representing sample intent classification payloads across all 5 categories for standalone demo mode (`VITE_USE_MOCKS=true`).
+- [X] T001 Configure intent analyzer environment thresholds (`AI_INTENT_SERVICE_URL`, `INTENT_TIMEOUT_MS=1200`, `INTENT_CONFIDENCE_THRESHOLD=0.7`) in `src/backend/config/intentConfig.js`.
+- [X] T002 [P] Define core intent category enumeration (`play_music`, `search_music`, `query_music_info`, `manage_library`, `general_chitchat`, `unknown`) and regex pattern dictionaries in `src/backend/constants/intentConstants.js`.
+- [X] T003 [P] Implement response envelope formatter in `src/backend/utils/intentResponse.js` enforcing schema `{ success, message, data: MusicIntentResult, error }` per `contracts/music-intent-understanding-api.json`.
+- [X] T004 [P] Create mock intent response fixtures in `src/frontend/src/utils/aiMockData.js` representing sample intent classification payloads across all 5 categories for standalone demo mode (`VITE_USE_MOCKS=true`).
 
 ---
 
@@ -52,11 +52,11 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 **⚠️ CRITICAL**: No user story implementation can proceed until this phase is verified.
 
-- [ ] T005 Create intent analysis routing module in `src/backend/routes/intentRoutes.js` and mount `/api/v1/agent/intent` in `src/backend/server.js`.
-- [ ] T006 [P] Verify and adapt JWT authentication middleware in `src/backend/middleware/authMiddleware.js` to protect `/api/v1/agent/intent/analyze`, rejecting unauthenticated requests with HTTP 401 (`UNAUTHORIZED`) per FR-009.
-- [ ] T007 [P] Implement backend PII sanitizer service in `src/backend/services/piiSanitizerService.js` stripping emails (`[EMAIL_REDACTED]`), phone numbers (`[PHONE_REDACTED]`), and credentials from raw prompt text before external processing (FR-008).
-- [ ] T008 [P] Implement client-side edge PII sanitizer utility in `src/frontend/src/utils/piiSanitizer.js` to sanitize prompts locally before dispatching over the network.
-- [ ] T009 [P] Implement compound clause decomposition service in `src/backend/services/clauseDecompositionService.js` splitting multi-action prompts on conjunction delimiters (`rồi`, `sau đó`, `tiếp theo`, `,`, `;`) into ordered `IntentClause` fragments (FR-005).
+- [X] T005 Create intent analysis routing module in `src/backend/routes/intentRoutes.js` and mount `/api/v1/agent/intent` in `src/backend/server.js`.
+- [X] T006 [P] Verify and adapt JWT authentication middleware in `src/backend/middleware/authMiddleware.js` to protect `/api/v1/agent/intent/analyze`, rejecting unauthenticated requests with HTTP 401 (`UNAUTHORIZED`) per FR-009.
+- [X] T007 [P] Implement backend PII sanitizer service in `src/backend/services/piiSanitizerService.js` stripping emails (`[EMAIL_REDACTED]`), phone numbers (`[PHONE_REDACTED]`), and credentials from raw prompt text before external processing (FR-008).
+- [X] T008 [P] Implement client-side edge PII sanitizer utility in `src/frontend/src/utils/piiSanitizer.js` to sanitize prompts locally before dispatching over the network.
+- [X] T009 [P] Implement compound clause decomposition service in `src/backend/services/clauseDecompositionService.js` splitting multi-action prompts on conjunction delimiters (`rồi`, `sau đó`, `tiếp theo`, `,`, `;`) into ordered `IntentClause` fragments (FR-005).
 
 **Checkpoint**: Foundation ready — routing module, auth guard, PII scrubbers, and clause splitter are established.
 
@@ -72,15 +72,15 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before implementing services and controllers.**
 
-- [ ] T010 [P] [US1] Create unit test suite in `src/backend/tests/services/intentPlaybackExtraction.test.js` evaluating classification accuracy of `play_music` and extraction of song titles, artist names, and direct control actions (play, pause, next, volume) (FR-002, FR-003).
-- [ ] T011 [P] [US1] Create contract test suite in `src/backend/tests/contracts/intentAnalyzePlaybackContract.test.js` validating `POST /api/v1/agent/intent/analyze` returns valid `MusicIntentResultEnvelope` for playback prompts per OpenAPI schema in `contracts/music-intent-understanding-api.json`.
+- [X] T010 [P] [US1] Create unit test suite in `src/backend/tests/services/intentPlaybackExtraction.test.js` evaluating classification accuracy of `play_music` and extraction of song titles, artist names, and direct control actions (play, pause, next, volume) (FR-002, FR-003).
+- [X] T011 [P] [US1] Create contract test suite in `src/backend/tests/contracts/intentAnalyzePlaybackContract.test.js` validating `POST /api/v1/agent/intent/analyze` returns valid `MusicIntentResultEnvelope` for playback prompts per OpenAPI schema in `contracts/music-intent-understanding-api.json`.
 
 ### Implementation for User Story 1
 
-- [ ] T012 [US1] Implement playback intent classifier and slot extractor in `src/backend/services/intentUnderstandingService.js` matching track playback, artist playback, and playback controls (`controlAction`, `volumeLevel`).
-- [ ] T013 [US1] Implement controller handler `analyzeMusicIntent` in `src/backend/controllers/intentController.js` validating prompt length (1-500 characters, rejecting empty with HTTP 400 `VALIDATION_ERROR`) and returning standard envelope.
-- [ ] T014 [US1] Register route handler `router.post('/analyze', authenticateToken, intentController.analyzeMusicIntent)` in `src/backend/routes/intentRoutes.js`.
-- [ ] T015 [P] [US1] Upgrade client-side rule matcher `planClause` in `src/frontend/src/utils/agentService.js` to extract playback intent, target track, artist, and volume controls as Tier-2 fallback parser.
+- [X] T012 [US1] Implement playback intent classifier and slot extractor in `src/backend/services/intentUnderstandingService.js` matching track playback, artist playback, and playback controls (`controlAction`, `volumeLevel`).
+- [X] T013 [US1] Implement controller handler `analyzeMusicIntent` in `src/backend/controllers/intentController.js` validating prompt length (1-500 characters, rejecting empty with HTTP 400 `VALIDATION_ERROR`) and returning standard envelope.
+- [X] T014 [US1] Register route handler `router.post('/analyze', authenticateToken, intentController.analyzeMusicIntent)` in `src/backend/routes/intentRoutes.js`.
+- [X] T015 [P] [US1] Upgrade client-side rule matcher `planClause` in `src/frontend/src/utils/agentService.js` to extract playback intent, target track, artist, and volume controls as Tier-2 fallback parser.
 
 **Checkpoint**: User Story 1 complete as initial MVP milestone. Direct playback and playback control commands are recognized accurately.
 
@@ -96,13 +96,13 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before implementing extraction logic.**
 
-- [ ] T016 [P] [US2] Create unit test suite in `src/backend/tests/services/intentSearchExtraction.test.js` evaluating extraction of `mood`, `activity`, `genre`, album title, and `lyricsSnippet` tokens from discovery queries (FR-002, FR-003).
-- [ ] T017 [P] [US2] Create client unit test in `src/frontend/tests/utils/agentServiceSearchPlan.test.js` verifying Tier-2 fallback extraction of mood tags and lyrics fragments in `src/frontend/src/utils/agentService.js`.
+- [X] T016 [P] [US2] Create unit test suite in `src/backend/tests/services/intentSearchExtraction.test.js` evaluating extraction of `mood`, `activity`, `genre`, album title, and `lyricsSnippet` tokens from discovery queries (FR-002, FR-003).
+- [X] T017 [P] [US2] Create client unit test in `src/frontend/tests/utils/agentServiceSearchPlan.test.js` verifying Tier-2 fallback extraction of mood tags and lyrics fragments in `src/frontend/src/utils/agentService.js`.
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Implement search & discovery intent extractor in `src/backend/services/intentUnderstandingService.js` extracting `mood`, `activity`, `genre`, `albumTitle`, and `lyricsSnippet` slots and mapping to `suggestedAction: "search_service"` or `"recommendation_service"`.
-- [ ] T019 [US2] Extend Tier-2 client rule matcher in `src/frontend/src/utils/agentService.js` to recognize mood discovery keywords (`chill`, `lofi`, `tập trung`, `sôi động`, `buồn`) and lyrics snippets (FR-003).
+- [X] T018 [US2] Implement search & discovery intent extractor in `src/backend/services/intentUnderstandingService.js` extracting `mood`, `activity`, `genre`, `albumTitle`, and `lyricsSnippet` slots and mapping to `suggestedAction: "search_service"` or `"recommendation_service"`.
+- [X] T019 [US2] Extend Tier-2 client rule matcher in `src/frontend/src/utils/agentService.js` to recognize mood discovery keywords (`chill`, `lofi`, `tập trung`, `sôi động`, `buồn`) and lyrics snippets (FR-003).
 
 **Checkpoint**: User Story 2 complete. Music discovery queries by mood, context, genre, and lyrics are recognized and structured accurately.
 
@@ -116,14 +116,14 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 ### Tests for User Story 3
 
-- [ ] T020 [P] [US3] Create unit test suite in `src/backend/tests/services/intentContextResolution.test.js` validating deictic pronoun resolution ("bài này", "ca sĩ này", "tiếp theo") against `currentTrack` in `PlaybackContextSnapshot` (FR-004).
-- [ ] T021 [P] [US3] Create contract test in `src/backend/tests/contracts/intentTrackQueryContract.test.js` verifying `query_music_info` response with `targetTrackId` and `dialogue_response` action per OpenAPI schema.
+- [X] T020 [P] [US3] Create unit test suite in `src/backend/tests/services/intentContextResolution.test.js` validating deictic pronoun resolution ("bài này", "ca sĩ này", "tiếp theo") against `currentTrack` in `PlaybackContextSnapshot` (FR-004).
+- [X] T021 [P] [US3] Create contract test in `src/backend/tests/contracts/intentTrackQueryContract.test.js` verifying `query_music_info` response with `targetTrackId` and `dialogue_response` action per OpenAPI schema.
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Implement contextual reference resolver in `src/backend/services/intentUnderstandingService.js` inspecting `context.currentTrack` and binding pronouns ("bài này", "bài đang phát", "ca sĩ này") to canonical IDs and artist names (FR-004).
-- [ ] T023 [US3] Implement relative volume resolver in `src/backend/services/intentUnderstandingService.js` calculating `max(0, context.volume - 20)` for "nhỏ lại" and `min(100, context.volume + 20)` for "to lên" (FR-004).
-- [ ] T024 [P] [US3] Integrate contextual track and volume resolution into `planClause` in `src/frontend/src/utils/agentService.js` using active `context` parameter.
+- [X] T022 [US3] Implement contextual reference resolver in `src/backend/services/intentUnderstandingService.js` inspecting `context.currentTrack` and binding pronouns ("bài này", "bài đang phát", "ca sĩ này") to canonical IDs and artist names (FR-004).
+- [X] T023 [US3] Implement relative volume resolver in `src/backend/services/intentUnderstandingService.js` calculating `max(0, context.volume - 20)` for "nhỏ lại" and `min(100, context.volume + 20)` for "to lên" (FR-004).
+- [X] T024 [P] [US3] Integrate contextual track and volume resolution into `planClause` in `src/frontend/src/utils/agentService.js` using active `context` parameter.
 
 **Checkpoint**: User Story 3 complete. Conversational questions about current playback and artist information are resolved accurately via context snapshots.
 
@@ -137,15 +137,15 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 ### Tests for User Story 4
 
-- [ ] T025 [P] [US4] Create unit test suite in `src/backend/tests/services/intentAmbiguityAndChitchat.test.js` evaluating smart defaults on vague commands, compound clause array generation, and safe classification of non-music messages to `general_chitchat` (FR-002, FR-005, SC-004).
-- [ ] T026 [P] [US4] Create integration test in `src/backend/tests/integration/intentCompoundClauses.test.js` sending compound prompt `"phát nhạc chill rồi giảm âm lượng 40%"`, verifying `clauses.length === 2` with sequential execution indices 0 and 1.
+- [X] T025 [P] [US4] Create unit test suite in `src/backend/tests/services/intentAmbiguityAndChitchat.test.js` evaluating smart defaults on vague commands, compound clause array generation, and safe classification of non-music messages to `general_chitchat` (FR-002, FR-005, SC-004).
+- [X] T026 [P] [US4] Create integration test in `src/backend/tests/integration/intentCompoundClauses.test.js` sending compound prompt `"phát nhạc chill rồi giảm âm lượng 40%"`, verifying `clauses.length === 2` with sequential execution indices 0 and 1.
 
 ### Implementation for User Story 4
 
-- [ ] T027 [US4] Implement smart heuristic default assigner in `src/backend/services/intentUnderstandingService.js` setting `completenessStatus: "missing_parameters"` and `inferredDefaults.default_source: "personalized_or_trending"` when playback intent lacks track/artist slots (FR-005).
-- [ ] T028 [US4] Integrate `clauseDecompositionService` in `src/backend/services/intentUnderstandingService.js` to map each decomposed clause to an individual `IntentClause` record preserving sequential left-to-right order (FR-005).
-- [ ] T029 [US4] Implement non-music chit-chat classifier in `src/backend/services/intentUnderstandingService.js` categorizing conversational banter and out-of-scope queries into `general_chitchat` with `suggestedAction: "dialogue_response"` (FR-002, SC-004).
-- [ ] T030 [P] [US4] Implement compound clause chaining and smart defaults in `src/frontend/src/utils/agentService.js` (`splitClauses` and default fallback handling).
+- [X] T027 [US4] Implement smart heuristic default assigner in `src/backend/services/intentUnderstandingService.js` setting `completenessStatus: "missing_parameters"` and `inferredDefaults.default_source: "personalized_or_trending"` when playback intent lacks track/artist slots (FR-005).
+- [X] T028 [US4] Integrate `clauseDecompositionService` in `src/backend/services/intentUnderstandingService.js` to map each decomposed clause to an individual `IntentClause` record preserving sequential left-to-right order (FR-005).
+- [X] T029 [US4] Implement non-music chit-chat classifier in `src/backend/services/intentUnderstandingService.js` categorizing conversational banter and out-of-scope queries into `general_chitchat` with `suggestedAction: "dialogue_response"` (FR-002, SC-004).
+- [X] T030 [P] [US4] Implement compound clause chaining and smart defaults in `src/frontend/src/utils/agentService.js` (`splitClauses` and default fallback handling).
 
 **Checkpoint**: User Story 4 complete. Compound commands are decomposed sequentially, vague prompts get instant defaults, and chit-chat is isolated safely.
 
@@ -159,14 +159,14 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 ### Tests for User Story 5
 
-- [ ] T031 [P] [US5] Create security unit test suite in `src/backend/tests/security/piiSanitizerService.test.js` verifying 100% detection and masking of Vietnamese phone numbers, international phone formats, RFC 5322 emails, and password patterns (FR-008, SC-003).
-- [ ] T032 [P] [US5] Create client-side edge security test in `src/frontend/tests/utils/piiSanitizer.test.js` validating that `src/frontend/src/utils/piiSanitizer.js` redacts emails and phones before network transmission.
+- [X] T031 [P] [US5] Create security unit test suite in `src/backend/tests/security/piiSanitizerService.test.js` verifying 100% detection and masking of Vietnamese phone numbers, international phone formats, RFC 5322 emails, and password patterns (FR-008, SC-003).
+- [X] T032 [P] [US5] Create client-side edge security test in `src/frontend/tests/utils/piiSanitizer.test.js` validating that `src/frontend/src/utils/piiSanitizer.js` redacts emails and phones before network transmission.
 
 ### Implementation for User Story 5
 
-- [ ] T033 [US5] Integrate `piiSanitizerService` as the mandatory first step of `intentUnderstandingService.js` before calling external AI parsing service (FR-008, SC-003).
-- [ ] T034 [US5] Wire `piiSanitizer.js` into client prompt preparation in `src/frontend/src/utils/agentService.js` ensuring edge redaction prior to HTTP dispatch.
-- [ ] T035 [US5] Enforce authenticated session scoping in `src/backend/controllers/intentController.js` binding `requestId` and processing strictly to `req.user.id`, ensuring analytical logs never persist unmasked PII (FR-009).
+- [X] T033 [US5] Integrate `piiSanitizerService` as the mandatory first step of `intentUnderstandingService.js` before calling external AI parsing service (FR-008, SC-003).
+- [X] T034 [US5] Wire `piiSanitizer.js` into client prompt preparation in `src/frontend/src/utils/agentService.js` ensuring edge redaction prior to HTTP dispatch.
+- [X] T035 [US5] Enforce authenticated session scoping in `src/backend/controllers/intentController.js` binding `requestId` and processing strictly to `req.user.id`, ensuring analytical logs never persist unmasked PII (FR-009).
 
 **Checkpoint**: User Story 5 complete. PII is scrubbed with 100% reliability at both client edge and backend service layers.
 
@@ -176,11 +176,11 @@ description: "Actionable, dependency-ordered tasks for Feature 122: Music Intent
 
 **Purpose**: Tier-1 timeout enforcement (1,200ms) with seamless Tier-2 fallback, benchmark evaluation (>= 90% accuracy), contract documentation, and quickstart scenario validation.
 
-- [ ] T036 [P] Implement strict 1,200ms `AbortController` timeout wrapper in `src/backend/services/intentUnderstandingService.js` that catches timeout / 5xx from Tier 1 and seamlessly falls back to Tier 2 deterministic rule parser without error (FR-010, SC-002, SC-005).
-- [ ] T037 [P] Create automated benchmark evaluation script in `src/backend/tests/benchmarks/intentAccuracyBenchmark.test.js` running 50+ diverse test cases across all 5 intent categories to assert classification accuracy >= 90% (SC-001).
-- [ ] T038 [P] Implement latency benchmark test in `src/backend/tests/benchmarks/intentLatencyBenchmark.test.js` verifying intent evaluation finishes within 1,200ms under simulated network conditions (SC-002).
-- [ ] T039 [P] Update contract documentation and integration guide in `specs/120-ai-conversational-agent/122-music-intent-understanding/contracts/README.md` reflecting endpoints, request payload, `MusicIntentResult` envelope, and error schemas.
-- [ ] T040 Execute end-to-end verification covering all 8 validation scenarios in `specs/120-ai-conversational-agent/122-music-intent-understanding/quickstart.md` (Scenario 1: Playback, Scenario 2: Track query & relative volume, Scenario 3: Discovery by mood, Scenario 4: Compound clauses, Scenario 5: Vague defaults, Scenario 6: Chit-chat, Scenario 7: PII scrubbing, Scenario 8: Fallback on AI outage).
+- [X] T036 [P] Implement strict 1,200ms `AbortController` timeout wrapper in `src/backend/services/intentUnderstandingService.js` that catches timeout / 5xx from Tier 1 and seamlessly falls back to Tier 2 deterministic rule parser without error (FR-010, SC-002, SC-005).
+- [X] T037 [P] Create automated benchmark evaluation script in `src/backend/tests/benchmarks/intentAccuracyBenchmark.test.js` running 50+ diverse test cases across all 5 intent categories to assert classification accuracy >= 90% (SC-001).
+- [X] T038 [P] Implement latency benchmark test in `src/backend/tests/benchmarks/intentLatencyBenchmark.test.js` verifying intent evaluation finishes within 1,200ms under simulated network conditions (SC-002).
+- [X] T039 [P] Update contract documentation and integration guide in `specs/120-ai-conversational-agent/122-music-intent-understanding/contracts/README.md` reflecting endpoints, request payload, `MusicIntentResult` envelope, and error schemas.
+- [X] T040 Execute end-to-end verification covering all 8 validation scenarios in `specs/120-ai-conversational-agent/122-music-intent-understanding/quickstart.md` (Scenario 1: Playback, Scenario 2: Track query & relative volume, Scenario 3: Discovery by mood, Scenario 4: Compound clauses, Scenario 5: Vague defaults, Scenario 6: Chit-chat, Scenario 7: PII scrubbing, Scenario 8: Fallback on AI outage).
 
 ---
 

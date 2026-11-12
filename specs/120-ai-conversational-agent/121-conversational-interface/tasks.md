@@ -41,10 +41,10 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 **Purpose**: Initialize agent backend configuration, Server-Sent Events (SSE) response helpers, safe Markdown rendering utility, and client mock generators.
 
-- [ ] T001 Configure AI agent microservice environment settings and timeout thresholds (`AI_AGENT_SERVICE_URL`, `AGENT_TIMEOUT_MS=15000`) in `src/backend/config/agentConfig.js`.
-- [ ] T002 [P] Implement Server-Sent Events (SSE) stream helper and event formatter (`event: thinking`, `event: text`, `event: error`, `event: done`) in `src/backend/utils/sseResponse.js` enforcing schema in `contracts/conversational-interface-api.json`.
-- [ ] T003 [P] Implement safe Markdown rendering component in `src/frontend/src/components/chat/MarkdownRenderer.jsx` supporting bold (`**`), italics (`*`), bullet lists, code blocks, and sanitized hyperlinks (`http:`, `https:`, `/`) with `target="_blank"` and `rel="noopener noreferrer"` per FR-007.
-- [ ] T004 [P] Implement client-side async generator mock adapter in `src/frontend/src/utils/aiMockData.js` yielding realistic thinking states and Markdown delta chunks for zero-dependency standalone demo mode (`VITE_USE_MOCKS=true`).
+- [X] T001 Configure AI agent microservice environment settings and timeout thresholds (`AI_AGENT_SERVICE_URL`, `AGENT_TIMEOUT_MS=15000`) in `src/backend/config/agentConfig.js`.
+- [X] T002 [P] Implement Server-Sent Events (SSE) stream helper and event formatter (`event: thinking`, `event: text`, `event: error`, `event: done`) in `src/backend/utils/sseResponse.js` enforcing schema in `contracts/conversational-interface-api.json`.
+- [X] T003 [P] Implement safe Markdown rendering component in `src/frontend/src/components/chat/MarkdownRenderer.jsx` supporting bold (`**`), italics (`*`), bullet lists, code blocks, and sanitized hyperlinks (`http:`, `https:`, `/`) with `target="_blank"` and `rel="noopener noreferrer"` per FR-007.
+- [X] T004 [P] Implement client-side async generator mock adapter in `src/frontend/src/utils/aiMockData.js` yielding realistic thinking states and Markdown delta chunks for zero-dependency standalone demo mode (`VITE_USE_MOCKS=true`).
 
 ---
 
@@ -54,10 +54,10 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 **⚠️ CRITICAL**: No user story implementation can proceed until this phase is verified.
 
-- [ ] T005 Create agent conversation routing module in `src/backend/routes/agentRoutes.js` and mount `/api/v1/agent` in `src/backend/server.js`.
-- [ ] T006 [P] Verify and adapt JWT authentication middleware in `src/backend/middleware/authMiddleware.js` to protect `/api/v1/agent/chat`, rejecting unauthenticated requests with HTTP 401 (`UNAUTHORIZED`) per FR-001.
-- [ ] T007 [P] Implement agent conversation service coordinator in `src/backend/services/agentConversationService.js` managing LLM/provider streaming connection and token dispatching.
-- [ ] T008 [P] Implement frontend SSE stream client adapter in `src/frontend/src/utils/agentService.js` consuming `ReadableStream` from `POST /api/v1/agent/chat` with `AbortController` cancellation and fallback to `aiMockData.js` when `import.meta.env.VITE_USE_MOCKS === 'true'`.
+- [X] T005 Create agent conversation routing module in `src/backend/routes/agentRoutes.js` and mount `/api/v1/agent` in `src/backend/server.js`.
+- [X] T006 [P] Verify and adapt JWT authentication middleware in `src/backend/middleware/authMiddleware.js` to protect `/api/v1/agent/chat`, rejecting unauthenticated requests with HTTP 401 (`UNAUTHORIZED`) per FR-001.
+- [X] T007 [P] Implement agent conversation service coordinator in `src/backend/services/agentConversationService.js` managing LLM/provider streaming connection and token dispatching.
+- [X] T008 [P] Implement frontend SSE stream client adapter in `src/frontend/src/utils/agentService.js` consuming `ReadableStream` from `POST /api/v1/agent/chat` with `AbortController` cancellation and fallback to `aiMockData.js` when `import.meta.env.VITE_USE_MOCKS === 'true'`.
 
 **Checkpoint**: Foundation ready — routing module, auth guard, backend streaming service, and client SSE reader are established.
 
@@ -73,15 +73,15 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before implementing component updates and controller routes.**
 
-- [ ] T009 [P] [US1] Create component test suite in `src/frontend/tests/components/AIHostChatOpen.test.jsx` verifying terminal panel mounting, header status rendering (`● online`), welcome banner appearance, and keyboard accessibility (Esc closing and focus restoration).
-- [ ] T010 [P] [US1] Create contract test suite in `src/backend/tests/contracts/agentHealthContract.test.js` validating `GET /api/v1/agent/health` returns HTTP 200 with `{ status: "online", latencyMs }` matching OpenAPI schema in `contracts/conversational-interface-api.json`.
+- [X] T009 [P] [US1] Create component test suite in `src/frontend/tests/components/AIHostChatOpen.test.jsx` verifying terminal panel mounting, header status rendering (`● online`), welcome banner appearance, and keyboard accessibility (Esc closing and focus restoration).
+- [X] T010 [P] [US1] Create contract test suite in `src/backend/tests/contracts/agentHealthContract.test.js` validating `GET /api/v1/agent/health` returns HTTP 200 with `{ status: "online", latencyMs }` matching OpenAPI schema in `contracts/conversational-interface-api.json`.
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Implement health check handler `getAgentHealth` in `src/backend/controllers/agentController.js` and register `GET /health` in `src/backend/routes/agentRoutes.js`.
-- [ ] T012 [US1] Refactor container layout and header in `src/frontend/src/components/chat/AIHostChat.jsx` anchoring floating panel (`bottom-[96px] right-2 top-2`, max-width 460px), dark CLI theme, and dynamic status badge (`~/auratune · ● online` in emerald).
-- [ ] T013 [P] [US1] Implement welcome banner entry renderer (`BannerEntry`) and suggestion chips bar in `src/frontend/src/components/chat/AIHostChat.jsx` displaying intro bullets and quick starter prompts.
-- [ ] T014 [US1] Implement accessibility focus trap and global toggle triggers in `src/frontend/src/components/chat/AIHostChat.jsx` connecting to `chatOpen` state in `src/frontend/src/context/AppStore.jsx`.
+- [X] T011 [US1] Implement health check handler `getAgentHealth` in `src/backend/controllers/agentController.js` and register `GET /health` in `src/backend/routes/agentRoutes.js`.
+- [X] T012 [US1] Refactor container layout and header in `src/frontend/src/components/chat/AIHostChat.jsx` anchoring floating panel (`bottom-[96px] right-2 top-2`, max-width 460px), dark CLI theme, and dynamic status badge (`~/auratune · ● online` in emerald).
+- [X] T013 [P] [US1] Implement welcome banner entry renderer (`BannerEntry`) and suggestion chips bar in `src/frontend/src/components/chat/AIHostChat.jsx` displaying intro bullets and quick starter prompts.
+- [X] T014 [US1] Implement accessibility focus trap and global toggle triggers in `src/frontend/src/components/chat/AIHostChat.jsx` connecting to `chatOpen` state in `src/frontend/src/context/AppStore.jsx`.
 
 **Checkpoint**: User Story 1 complete as initial MVP milestone. Panel opens cleanly with terminal theme and welcome state.
 
@@ -97,19 +97,19 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before implementing streaming handlers.**
 
-- [ ] T015 [P] [US2] Create unit test suite in `src/backend/tests/services/agentConversationService.test.js` validating prompt length validation (1-500 chars), whitespace trimming, rejection of empty prompts with HTTP 400 (`VALIDATION_ERROR`), and chunked token dispatching (FR-006).
-- [ ] T016 [P] [US2] Create contract test suite in `src/backend/tests/contracts/agentChatStreamingContract.test.js` validating that `POST /api/v1/agent/chat` opens a valid `text/event-stream` returning sequential `thinking`, `text`, and `done` events per `contracts/conversational-interface-api.json`.
-- [ ] T017 [P] [US2] Create frontend unit test suite in `src/frontend/tests/components/MarkdownRenderer.test.jsx` verifying safe rendering of bold, italics, bullet lists, code blocks, and sanitization of malicious script/javascript links (FR-007).
+- [X] T015 [P] [US2] Create unit test suite in `src/backend/tests/services/agentConversationService.test.js` validating prompt length validation (1-500 chars), whitespace trimming, rejection of empty prompts with HTTP 400 (`VALIDATION_ERROR`), and chunked token dispatching (FR-006).
+- [X] T016 [P] [US2] Create contract test suite in `src/backend/tests/contracts/agentChatStreamingContract.test.js` validating that `POST /api/v1/agent/chat` opens a valid `text/event-stream` returning sequential `thinking`, `text`, and `done` events per `contracts/conversational-interface-api.json`.
+- [X] T017 [P] [US2] Create frontend unit test suite in `src/frontend/tests/components/MarkdownRenderer.test.jsx` verifying safe rendering of bold, italics, bullet lists, code blocks, and sanitization of malicious script/javascript links (FR-007).
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Implement streaming endpoint handler `streamAgentChat` in `src/backend/controllers/agentController.js` validating input prompt (non-empty, 1-500 characters), extracting `currentTrack`, `isPlaying`, `volume` from request body, and setting SSE headers (`Content-Type: text/event-stream`, `Cache-Control: no-cache`, `Connection: keep-alive`).
-- [ ] T019 [US2] Implement token and thinking state streaming pipeline in `src/backend/services/agentConversationService.js` emitting SSE events (`event: thinking`, `event: text`, `event: done` with `totalDurationMs`).
-- [ ] T020 [US2] Register streaming route `router.post('/chat', authenticateToken, agentController.streamAgentChat)` in `src/backend/routes/agentRoutes.js`.
-- [ ] T021 [P] [US2] Implement prompt submission handler, input validation, and duplicate submission locking in `src/frontend/src/components/chat/AIHostChat.jsx` immediately appending `UserMessageEntry` with chevron `❯` and clearing textarea (FR-005, FR-006).
-- [ ] T022 [P] [US2] Implement animated processing indicator in `src/frontend/src/components/chat/AIHostChat.jsx` featuring rotating braille spinner `⠋⠙⠹...`, cycling thinking verbs, and real-time elapsed seconds timer (SC-002).
-- [ ] T023 [US2] Implement expandable reasoning trace accordion (`AgentRunEntry`) in `src/frontend/src/components/chat/AIHostChat.jsx` with toggle button (`✻ Đã suy nghĩ [N]s >`) displaying internal thinking lines.
-- [ ] T024 [US2] Integrate `MarkdownRenderer.jsx` and streaming text delta accumulation in `src/frontend/src/components/chat/AIHostChat.jsx` displaying pulsating cursor `█` during generation and auto-scrolling log view to bottom (FR-007, FR-012).
+- [X] T018 [US2] Implement streaming endpoint handler `streamAgentChat` in `src/backend/controllers/agentController.js` validating input prompt (non-empty, 1-500 characters), extracting `currentTrack`, `isPlaying`, `volume` from request body, and setting SSE headers (`Content-Type: text/event-stream`, `Cache-Control: no-cache`, `Connection: keep-alive`).
+- [X] T019 [US2] Implement token and thinking state streaming pipeline in `src/backend/services/agentConversationService.js` emitting SSE events (`event: thinking`, `event: text`, `event: done` with `totalDurationMs`).
+- [X] T020 [US2] Register streaming route `router.post('/chat', authenticateToken, agentController.streamAgentChat)` in `src/backend/routes/agentRoutes.js`.
+- [X] T021 [P] [US2] Implement prompt submission handler, input validation, and duplicate submission locking in `src/frontend/src/components/chat/AIHostChat.jsx` immediately appending `UserMessageEntry` with chevron `❯` and clearing textarea (FR-005, FR-006).
+- [X] T022 [P] [US2] Implement animated processing indicator in `src/frontend/src/components/chat/AIHostChat.jsx` featuring rotating braille spinner `⠋⠙⠹...`, cycling thinking verbs, and real-time elapsed seconds timer (SC-002).
+- [X] T023 [US2] Implement expandable reasoning trace accordion (`AgentRunEntry`) in `src/frontend/src/components/chat/AIHostChat.jsx` with toggle button (`✻ Đã suy nghĩ [N]s >`) displaying internal thinking lines.
+- [X] T024 [US2] Integrate `MarkdownRenderer.jsx` and streaming text delta accumulation in `src/frontend/src/components/chat/AIHostChat.jsx` displaying pulsating cursor `█` during generation and auto-scrolling log view to bottom (FR-007, FR-012).
 
 **Checkpoint**: User Story 2 complete. Core streaming dialogue is fully functional with rich Markdown responses and live reasoning states.
 
@@ -123,15 +123,15 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 ### Tests for User Story 3
 
-- [ ] T025 [P] [US3] Create resilience integration test in `src/frontend/tests/integration/agentAudioIsolation.test.jsx` verifying that simulated SSE stream network failures, HTTP 503 errors, and chat crashes do NOT pause, mutate, or interrupt active audio in `PlayerContext` (FR-011, SC-005).
-- [ ] T026 [P] [US3] Create frontend test in `src/frontend/tests/components/AIHostChatRetry.test.jsx` verifying inline error state rendering and "Thử lại" button re-dispatching the exact original prompt without retyping.
+- [X] T025 [P] [US3] Create resilience integration test in `src/frontend/tests/integration/agentAudioIsolation.test.jsx` verifying that simulated SSE stream network failures, HTTP 503 errors, and chat crashes do NOT pause, mutate, or interrupt active audio in `PlayerContext` (FR-011, SC-005).
+- [X] T026 [P] [US3] Create frontend test in `src/frontend/tests/components/AIHostChatRetry.test.jsx` verifying inline error state rendering and "Thử lại" button re-dispatching the exact original prompt without retyping.
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Implement HTTP 503 (`AI_SERVICE_UNAVAILABLE`) error handler in `src/backend/controllers/agentController.js` and SSE `event: error` emitter when AI provider is unreachable or times out (> 15s).
-- [ ] T028 [US3] Implement inline failure status and "Thử lại" (Retry) handler in `src/frontend/src/components/chat/AIHostChat.jsx` preserving `retryPrompt` on failed turn and re-dispatching via `runPrompt()` on button click (FR-009).
-- [ ] T029 [P] [US3] Implement AI suspension state handling in `src/frontend/src/components/chat/AIHostChat.jsx` reading `aiAvailable` from `AppStore`, rendering status badge `~/auratune · ● tạm ngưng` (amber), inline explanatory notice, and disabling textarea input without stopping background music (FR-009, FR-011).
-- [ ] T030 [US3] Wrap `AIHostChat` component with a dedicated React `ErrorBoundary` in `src/frontend/src/components/chat/AIHostChat.jsx` isolating all chat render crashes completely from `PlayerContext` and the main application shell (FR-011).
+- [X] T027 [US3] Implement HTTP 503 (`AI_SERVICE_UNAVAILABLE`) error handler in `src/backend/controllers/agentController.js` and SSE `event: error` emitter when AI provider is unreachable or times out (> 15s).
+- [X] T028 [US3] Implement inline failure status and "Thử lại" (Retry) handler in `src/frontend/src/components/chat/AIHostChat.jsx` preserving `retryPrompt` on failed turn and re-dispatching via `runPrompt()` on button click (FR-009).
+- [X] T029 [P] [US3] Implement AI suspension state handling in `src/frontend/src/components/chat/AIHostChat.jsx` reading `aiAvailable` from `AppStore`, rendering status badge `~/auratune · ● tạm ngưng` (amber), inline explanatory notice, and disabling textarea input without stopping background music (FR-009, FR-011).
+- [X] T030 [US3] Wrap `AIHostChat` component with a dedicated React `ErrorBoundary` in `src/frontend/src/components/chat/AIHostChat.jsx` isolating all chat render crashes completely from `PlayerContext` and the main application shell (FR-011).
 
 **Checkpoint**: User Story 3 complete. System handles offline AI and connection drops with inline retries and complete audio playback isolation.
 
@@ -145,14 +145,14 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 ### Tests for User Story 4
 
-- [ ] T031 [P] [US4] Create security test suite in `src/backend/tests/security/agentAuthIsolation.test.js` validating that requests to `POST /api/v1/agent/chat` without a valid Bearer JWT return HTTP 401 `UNAUTHORIZED` (FR-001, FR-010, SC-004).
-- [ ] T032 [P] [US4] Create account isolation test in `src/frontend/tests/security/agentSessionPurge.test.jsx` verifying that logging out immediately resets `AIHostChat` entries to `BannerEntry` and clears the 30-item command history ring buffer.
+- [X] T031 [P] [US4] Create security test suite in `src/backend/tests/security/agentAuthIsolation.test.js` validating that requests to `POST /api/v1/agent/chat` without a valid Bearer JWT return HTTP 401 `UNAUTHORIZED` (FR-001, FR-010, SC-004).
+- [X] T032 [P] [US4] Create account isolation test in `src/frontend/tests/security/agentSessionPurge.test.jsx` verifying that logging out immediately resets `AIHostChat` entries to `BannerEntry` and clears the 30-item command history ring buffer.
 
 ### Implementation for User Story 4
 
-- [ ] T033 [US4] Enforce `authenticateToken` JWT guard on `src/backend/routes/agentRoutes.js`, extracting `req.user.id` and rejecting invalid or expired tokens with standard error envelope `{ success: false, message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn", error: { code: "UNAUTHORIZED" } }`.
-- [ ] T034 [US4] Implement unauthenticated visitor challenge handler in `src/frontend/src/components/chat/AIHostChat.jsx` prompting login and blocking chat dispatch for unauthenticated users (FR-001).
-- [ ] T035 [US4] Implement session wipe hook in `src/frontend/src/components/chat/AIHostChat.jsx` listening to `currentUser` changes in `src/frontend/src/context/AppStore.jsx`, automatically resetting `entries` to initial welcome banner and clearing `historyRef` on logout (FR-010).
+- [X] T033 [US4] Enforce `authenticateToken` JWT guard on `src/backend/routes/agentRoutes.js`, extracting `req.user.id` and rejecting invalid or expired tokens with standard error envelope `{ success: false, message: "Phiên đăng nhập không hợp lệ hoặc đã hết hạn", error: { code: "UNAUTHORIZED" } }`.
+- [X] T034 [US4] Implement unauthenticated visitor challenge handler in `src/frontend/src/components/chat/AIHostChat.jsx` prompting login and blocking chat dispatch for unauthenticated users (FR-001).
+- [X] T035 [US4] Implement session wipe hook in `src/frontend/src/components/chat/AIHostChat.jsx` listening to `currentUser` changes in `src/frontend/src/context/AppStore.jsx`, automatically resetting `entries` to initial welcome banner and clearing `historyRef` on logout (FR-010).
 
 **Checkpoint**: User Story 4 complete. Account isolation and privacy are enforced at API middleware and client lifecycle layers.
 
@@ -162,12 +162,12 @@ description: "Actionable, dependency-ordered tasks for Feature 121: Conversation
 
 **Purpose**: Offline terminal commands (`/clear`, `/help`), 30-item command history ring buffer, in-flight cancellation via Esc, and quickstart scenario validation.
 
-- [ ] T036 [P] Implement `/clear` command interceptor in `src/frontend/src/components/chat/AIHostChat.jsx` resetting `entries` state to initial `BannerEntry` locally with zero network dispatch per FR-008.
-- [ ] T037 [P] Implement `/help` command handler in `src/frontend/src/components/chat/AIHostChat.jsx` rendering offline cheat sheet table (`/help`, `/clear`, `↑ ↓`, `esc`, `y / n`) without calling backend API.
-- [ ] T038 [P] Implement 30-item command history ring buffer in `src/frontend/src/components/chat/AIHostChat.jsx` supporting `ArrowUp` (older) and `ArrowDown` (newer) navigation, restoring empty input when navigating past index 0 (FR-008).
-- [ ] T039 [P] Implement in-flight turn abort via `Escape` key in `src/frontend/src/components/chat/AIHostChat.jsx` triggering `AbortController`, halting SSE reader, setting turn status to `■ Đã dừng`, and immediately re-enabling prompt input.
-- [ ] T040 [P] Update contract documentation and integration guide in `specs/120-ai-conversational-agent/121-conversational-interface/contracts/README.md` reflecting endpoints, request payload, SSE event schemas, error envelopes, and mock testing steps.
-- [ ] T041 Execute end-to-end verification covering all 8 validation scenarios in `specs/120-ai-conversational-agent/121-conversational-interface/quickstart.md` (Scenario 1: Authenticated open, Scenario 2: Send & stream, Scenario 3: Arrow history, Scenario 4: `/clear`, Scenario 5: `/help`, Scenario 6: `Esc` abort, Scenario 7: Outage handling, Scenario 8: Account isolation).
+- [X] T036 [P] Implement `/clear` command interceptor in `src/frontend/src/components/chat/AIHostChat.jsx` resetting `entries` state to initial `BannerEntry` locally with zero network dispatch per FR-008.
+- [X] T037 [P] Implement `/help` command handler in `src/frontend/src/components/chat/AIHostChat.jsx` rendering offline cheat sheet table (`/help`, `/clear`, `↑ ↓`, `esc`, `y / n`) without calling backend API.
+- [X] T038 [P] Implement 30-item command history ring buffer in `src/frontend/src/components/chat/AIHostChat.jsx` supporting `ArrowUp` (older) and `ArrowDown` (newer) navigation, restoring empty input when navigating past index 0 (FR-008).
+- [X] T039 [P] Implement in-flight turn abort via `Escape` key in `src/frontend/src/components/chat/AIHostChat.jsx` triggering `AbortController`, halting SSE reader, setting turn status to `■ Đã dừng`, and immediately re-enabling prompt input.
+- [X] T040 [P] Update contract documentation and integration guide in `specs/120-ai-conversational-agent/121-conversational-interface/contracts/README.md` reflecting endpoints, request payload, SSE event schemas, error envelopes, and mock testing steps.
+- [X] T041 Execute end-to-end verification covering all 8 validation scenarios in `specs/120-ai-conversational-agent/121-conversational-interface/quickstart.md` (Scenario 1: Authenticated open, Scenario 2: Send & stream, Scenario 3: Arrow history, Scenario 4: `/clear`, Scenario 5: `/help`, Scenario 6: `Esc` abort, Scenario 7: Outage handling, Scenario 8: Account isolation).
 
 ---
 

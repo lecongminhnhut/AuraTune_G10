@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { AudioLines, ChevronDown, Heart, ListEnd, ListMusic, ListPlus, MessageCircle, Pause, Play, Repeat, Repeat1, Share2, Shuffle, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react'
+import { AudioLines, ChevronDown, Heart, ListEnd, ListMusic, ListPlus, Loader2, MessageCircle, Pause, Play, Repeat, Repeat1, Share2, Shuffle, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react'
 import RecordDeck from './RecordDeck.jsx'
 import WaveformSeekBar from './WaveformSeekBar.jsx'
 import TrackComments from './TrackComments.jsx'
+import LyricsPanel from './LyricsPanel.jsx'
+import PlaybackAlert from './PlaybackAlert.jsx'
 import { Link } from '../../utils/navigation.jsx'
 
 const playerThemes = {
@@ -23,9 +25,8 @@ export default function FullScreenPlayer({ isOpen, onClose, player, liked, onTog
   const closeRef = useRef(null)
   const closeActionRef = useRef(onClose)
   closeActionRef.current = onClose
-  const { track, isPlaying, elapsed, shuffle, repeatMode, volume, muted } = player
+  const { track, isPlaying, elapsed, duration, shuffle, repeatMode, volume, muted, status, error, isBuffering } = player
   const theme = track.playerTheme ?? playerThemes[track.cover] ?? playerThemes.ocean
-  const activeLyric = Math.max(0, (track.lyrics?.findLastIndex((line) => elapsed >= line.time) ?? 0))
   const RepeatIcon = repeatMode === 'one' ? Repeat1 : Repeat
 
   useEffect(() => {
@@ -87,12 +88,7 @@ export default function FullScreenPlayer({ isOpen, onClose, player, liked, onTog
               <button type="button" role="tab" aria-selected={panel === 'comments'} onClick={() => setPanel('comments')} className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold transition ${panel === 'comments' ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white'}`}><MessageCircle size={12} aria-hidden="true" /> Bình luận</button>
             </div>
             {panel === 'lyrics' ? (
-              <div className="now-playing-lyrics text-center" aria-label="Lời bài hát" aria-live="polite">
-                <p className="mb-7 hidden text-[10px] font-semibold uppercase tracking-[0.28em] text-white/40 lg:block">Trong khoảnh khắc này</p>
-                {track.lyrics?.[activeLyric - 1] && <p className="mb-2.5 text-[14px] leading-6 text-white/30">{track.lyrics[activeLyric - 1].text}</p>}
-                <p className="mx-auto max-w-[360px] bg-gradient-to-b from-white via-white to-white/55 bg-clip-text text-[19px] font-semibold leading-[1.35] tracking-[-0.02em] text-transparent lg:text-[25px]">{track.lyrics?.[activeLyric]?.text ?? 'Thả lỏng một chút, để âm nhạc dẫn lối.'}</p>
-                <p className="mt-2.5 text-[14px] leading-6 tracking-[0.01em] text-white/40">{track.lyrics?.[activeLyric + 1]?.text ?? (track.lyrics ? 'Đang đồng hành cùng giai điệu của bạn.' : 'Bản xem trước này chưa có lời bài hát.')}</p>
-              </div>
+              <LyricsPanel track={track} elapsed={elapsed} onSeekLine={player.playFrom} />
             ) : (
               <TrackComments track={track} onNavigateAway={onClose} />
             )}
@@ -101,11 +97,12 @@ export default function FullScreenPlayer({ isOpen, onClose, player, liked, onTog
               <div className="mb-3 flex items-center justify-between">
                 <button type="button" onClick={player.toggleShuffle} aria-label="Phát ngẫu nhiên" aria-pressed={shuffle} className={`player-icon-button relative ${shuffle ? 'bg-white/15' : ''}`}><Shuffle size={19} strokeWidth={1.8} />{shuffle && <span className="absolute bottom-1 h-1 w-1 rounded-full bg-white" />}</button>
                 <button type="button" onClick={player.previousTrack} aria-label="Bài trước" className="player-icon-button"><SkipBack size={21} fill="currentColor" strokeWidth={1.7} /></button>
-                <button type="button" onClick={player.togglePlayback} aria-label={isPlaying ? 'Tạm dừng' : 'Phát'} className="grid h-[54px] w-[54px] shrink-0 place-items-center rounded-[15px] border border-white/80 bg-white text-[#111a20] shadow-[0_1px_4px_rgba(0,0,0,0.4)] transition hover:scale-105 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-95">{isPlaying ? <Pause size={22} fill="currentColor" strokeWidth={0} /> : <Play size={23} fill="currentColor" strokeWidth={0} className="ml-0.5" />}</button>
+                <button type="button" onClick={player.togglePlayback} aria-label={isPlaying ? 'Tạm dừng' : 'Phát'} aria-busy={isBuffering || undefined} className="grid h-[54px] w-[54px] shrink-0 place-items-center rounded-[15px] border border-white/80 bg-white text-[#111a20] shadow-[0_1px_4px_rgba(0,0,0,0.4)] transition hover:scale-105 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent active:scale-95">{isBuffering ? <Loader2 size={22} className="animate-spin" aria-hidden="true" /> : isPlaying ? <Pause size={22} fill="currentColor" strokeWidth={0} /> : <Play size={23} fill="currentColor" strokeWidth={0} className="ml-0.5" />}</button>
                 <button type="button" onClick={player.nextTrack} aria-label="Bài tiếp theo" className="player-icon-button"><SkipForward size={21} fill="currentColor" strokeWidth={1.7} /></button>
                 <button type="button" onClick={player.cycleRepeat} aria-label={repeatLabels[repeatMode]} aria-pressed={repeatMode !== 'off'} className={`player-icon-button relative ${repeatMode !== 'off' ? 'bg-white/15' : ''}`}><RepeatIcon size={20} strokeWidth={1.8} />{repeatMode !== 'off' && <span className="absolute bottom-1 h-1 w-1 rounded-full bg-white" />}</button>
               </div>
-              <WaveformSeekBar track={track} elapsed={elapsed} onSeek={player.seek} />
+              {status === 'error' && <div className="mb-3"><PlaybackAlert message={error} onRetry={player.retry} onSkip={player.nextTrack} /></div>}
+              <WaveformSeekBar track={track} elapsed={elapsed} duration={duration} buffering={isBuffering} onSeek={player.seek} />
               <div className="mt-3 flex items-center justify-between gap-2 border-t border-white/10 pt-3">
                 <div className="flex items-center gap-1">
                   <button type="button" onClick={() => onAddToPlaylist(track)} aria-label="Thêm vào playlist" title="Thêm vào playlist" className="player-icon-button h-9 w-9"><ListPlus size={18} /></button>
@@ -119,7 +116,7 @@ export default function FullScreenPlayer({ isOpen, onClose, player, liked, onTog
                 </div>
               </div>
             </div>
-            <p className="mt-4 hidden text-center text-[10px] tracking-wide text-white/30 lg:block">AuraTune · Bản phát mô phỏng</p>
+            <p className="mt-4 hidden text-center text-[10px] tracking-wide text-white/30 lg:block">AuraTune · Phát trực tuyến</p>
           </div>
         </div>
       </div>

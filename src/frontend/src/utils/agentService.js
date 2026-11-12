@@ -1,125 +1,486 @@
-import { getMockRecommendations, normalizeText } from './aiMockData.js'
+import { mockAgentStream } from './aiMockData.js';
+import { sanitizeClientPrompt } from './piiSanitizer.js';
 
-/*
- * Lớp kết nối AI Host agent. Đây là bản GIẢ LẬP. Backend thay hàm runAgent bằng lời gọi API thật,
- * ví dụ POST /api/agent trả về luồng Server-Sent Events, mỗi sự kiện là một object JSON như dưới đây.
- *
- * runAgent(prompt, { context, signal }) là async iterator, lần lượt phát ra các sự kiện:
- *   { type: 'thinking', text }                                     một dòng suy nghĩ (hiện trong khối "Đang suy nghĩ")
- *   { type: 'tool_call', id, name, args, label, confirm? }         yêu cầu giao diện thực hiện một hành động
- *                                                                  (danh sách tool: components/chat/agentTools.js).
- *                                                                  confirm: câu hỏi xác nhận [y/N] trước khi chạy
- *   { type: 'text', delta }                                        một đoạn câu trả lời, được nối dần (streaming)
- *   { type: 'playlist', playlistId }                               đính kèm thẻ playlist dưới câu trả lời
- *   { type: 'error', message }                                     lỗi, hiện bằng chữ đỏ
- *   { type: 'done' }
- *
- * context gửi kèm: { currentTrack: { id, title, artist }, isPlaying, volume, user: { id, role } | null }.
+/**
+ * Splits compound prompt into clauses at client edge (FR-005)
  */
+export function splitClauses(prompt) {
+  if (!prompt || typeof prompt !== 'string') return [];
+  const delimiterRegex = /\s*(?:[,;]\s*(?:rồi|sau đó|tiếp theo)?|\s+rồi\s+|\s+sau đó\s+|\s+tiếp theo\s+)\s*/i;
+  const segments = prompt
+    .trim()
+    .split(delimiterRegex)
+    .map((s) => s.replace(/^(?:rồi|sau đó|tiếp theo)\s+/i, '').trim())
+    .filter(Boolean);
+  return segments.length > 0 ? segments : [prompt.trim()];
+}
 
-const wait = (ms, signal) => new Promise((resolve, reject) => {
-  const timer = window.setTimeout(resolve, ms)
-  signal?.addEventListener('abort', () => { window.clearTimeout(timer); reject(new DOMException('Đã dừng', 'AbortError')) }, { once: true })
-})
+/**
+ * Tier-2 client-side deterministic rule matcher for a single clause
+ * (FR-002, FR-003, FR-004, FR-010)
+ */
+export function planClause(clauseText, context = {}) {
+  const sanitized = sanitizeClientPrompt(clauseText || '').trim();
+  const lower = sanitized.toLowerCase();
 
-const pages = [
-  [['trang chu', 'home'], '/', 'Trang chủ'],
-  [['bang xep hang', 'xep hang', 'top'], '/charts', 'Bảng xếp hạng'],
-  [['kham pha'], '/explore', 'Khám phá'],
-  [['thu vien'], '/library', 'Thư viện'],
-  [['lich su', 'thong ke'], '/history', 'Lịch sử & thống kê'],
-  [['ai playlist'], '/ai-playlist', 'AI Playlist'],
-  [['tim kiem'], '/search', 'Tìm kiếm'],
-]
+  const currentVolume = typeof context?.volume === 'number' ? context.volume : 50;
 
-let callId = 0
-const call = (name, args, label, extra = {}) => ({ type: 'tool_call', id: `call_${++callId}`, name, args, label, ...extra })
+  const slots = {
+    songTitle: null,
+    artistName: null,
+    albumTitle: null,
+    genre: null,
+    mood: null,
+    activity: null,
+    lyricsSnippet: null,
+    controlAction: null,
+    volumeLevel: null,
+    playlistName: null,
+    targetTrackId: null,
+  };
 
-// Kịch bản giả lập cho từng mệnh đề. Chỉ để demo giao diện; backend sẽ tự quyết định suy nghĩ, tool và câu trả lời.
-function planClause(text, context) {
-  const n = normalizeText(text)
-  const track = context.currentTrack
-
-  if (/(bai (nay|dang phat) (la )?(bai )?gi|dang phat (bai )?gi|ai hat|ca si nao)/.test(n)) {
-    return { thinking: ['Đọc trạng thái trình phát hiện tại'], text: `Đang phát “${track.title}” của ${track.artist.replace(/\.$/, '')}.` }
-  }
-  const volume = n.match(/(?:am luong|volume)\D{0,10}(\d{1,3})/)
-  if (volume) {
-    const value = Math.min(100, Number(volume[1]))
-    return { thinking: [`Người dùng muốn đặt âm lượng ${value}%`], calls: [call('set_volume', { value }, `set_volume(${value})`)], text: `Đã chỉnh âm lượng về ${value}%.` }
-  }
-  if (/(giam am luong|nho lai|nho xuong)/.test(n)) return { calls: [call('set_volume', { value: Math.max(0, context.volume - 20) }, `set_volume(${Math.max(0, context.volume - 20)})`)], text: 'Đã giảm âm lượng.' }
-  if (/(tang am luong|to len|lon len)/.test(n)) return { calls: [call('set_volume', { value: Math.min(100, context.volume + 20) }, `set_volume(${Math.min(100, context.volume + 20)})`)], text: 'Đã tăng âm lượng.' }
-  if (/^(tam dung|dung|pause|ngung)( nhac| phat)?$/.test(n)) return { calls: [call('playback', { action: 'pause' }, 'playback("pause")')], text: 'Đã tạm dừng.' }
-  if (/^(tiep tuc|phat tiep|resume)( phat| nghe)?$/.test(n)) return { calls: [call('playback', { action: 'resume' }, 'playback("resume")')], text: 'Tiếp tục phát nhé.' }
-  if (/^(bai tiep( theo)?|chuyen bai( tiep( theo)?)?|qua bai( tiep)?|next|skip)$/.test(n)) return { calls: [call('playback', { action: 'next' }, 'playback("next")')], text: 'Đã chuyển sang bài tiếp theo.' }
-  if (/^(bai truoc|quay lai bai truoc|previous)$/.test(n)) return { calls: [call('playback', { action: 'previous' }, 'playback("previous")')], text: 'Đã quay lại bài trước.' }
-  if (/^(thich|tha tim|like|luu)( bai nay| bai dang phat)?$/.test(n)) return { calls: [call('like_track', { trackId: track.id }, `like_track("${track.id}")`)], text: `Đã thêm “${track.title}” vào Bài hát đã thích.` }
-  if (/(xoa|don) (het )?(hang cho|danh sach cho|queue)/.test(n)) {
-    return { thinking: ['Hành động này không hoàn tác được, cần hỏi lại người dùng'], calls: [call('clear_queue', {}, 'clear_queue()', { confirm: 'Xóa tất cả bài trong hàng chờ?' })], text: 'Hàng chờ đã trống.' }
-  }
-  const page = pages.find(([words]) => words.some((word) => n.includes(word)))
-  if (page && /^(mo|vao|xem|di toi|chuyen sang)\b/.test(n)) return { calls: [call('navigate', { path: page[1] }, `navigate("${page[1]}")`)], text: `Đã mở ${page[2]}.` }
-
-  const recommendation = getMockRecommendations(text)
-  const playlist = recommendation.playlists[0]
-  if (/(hang cho|danh sach cho|queue)/.test(n)) {
+  // Direct controls
+  if (/^(?:tạm dừng|dừng lại|pause|stop|ngưng nhạc|tắt nhạc)(?:\s+lại)?(?:\s+nhạc|\s+bài)?$/i.test(lower)) {
+    slots.controlAction = 'pause';
     return {
-      thinking: ['Phân tích tâm trạng trong yêu cầu', `Chọn playlist “${playlist.title}” (${playlist.trackIds.length} bài)`],
-      calls: [call('queue_add', { trackIds: playlist.trackIds }, `queue_add(${playlist.trackIds.length} bài)`)],
-      text: `Mình chọn các bài trong “${playlist.title}” cho hàng chờ. ${recommendation.reason}`,
-    }
+      intentType: 'play_music',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
   }
-  if (/^(phat|mo|nghe|bat|play|cho (toi|minh|tui) nghe|muon nghe)\b/.test(n)) {
+
+  if (/^(?:tiếp tục|resume|phát tiếp|chơi tiếp)(?:\s+nhạc|\s+bài)?$/i.test(lower)) {
+    slots.controlAction = 'resume';
     return {
-      thinking: ['Phân tích tâm trạng trong yêu cầu', `Tìm trong thư viện: 3 playlist phù hợp`, `Chọn “${playlist.title}”`],
-      calls: [call('play_playlist', { playlistId: playlist.id }, `play_playlist("${playlist.id}")`)],
-      text: `Đang phát “${playlist.title}”. ${recommendation.reason}`,
-      playlistId: playlist.id,
+      intentType: 'play_music',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  if (/^(?:chuyển bài|tiếp theo|next|qua bài|bài tiếp|bỏ qua|skip)(?:\s+khác)?$/i.test(lower)) {
+    slots.controlAction = 'next';
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  if (/^(?:quay lại|previous|prev|bài trước|lui lại)$/i.test(lower)) {
+    slots.controlAction = 'previous';
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  // Volume controls
+  const volExplicit = /(?:âm lượng|volume)\s*(?:về|thành|lên|xuống)?\s*(\d{1,3})%?/i.exec(sanitized);
+  if (volExplicit) {
+    slots.controlAction = 'set_volume';
+    slots.volumeLevel = Math.min(100, Math.max(0, parseInt(volExplicit[1], 10)));
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  if (/(?:giảm âm lượng|nhỏ lại|cho nhỏ lại|bật nhỏ|bé hơn|giảm volume)/i.test(sanitized)) {
+    slots.controlAction = 'set_volume';
+    slots.volumeLevel = Math.max(0, currentVolume - 20);
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.92,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  if (/(?:tăng âm lượng|to lên|cho to lên|bật to|lớn hơn|tăng volume)/i.test(sanitized)) {
+    slots.controlAction = 'set_volume';
+    slots.volumeLevel = Math.min(100, currentVolume + 20);
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.92,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  // Current track query (FR-004)
+  if (/(?:bài (?:này|đang phát|đang nghe|gì đây|gì thế)|tên bài (?:này|hát)|ai đang hát|đây là bài gì)/i.test(sanitized)) {
+    if (context?.currentTrack) {
+      slots.targetTrackId = context.currentTrack.id || null;
+      slots.songTitle = context.currentTrack.title || null;
+      slots.artistName = context.currentTrack.artist || null;
+    }
+    return {
+      intentType: 'query_music_info',
+      confidenceScore: 0.92,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'dialogue_response',
+    };
+  }
+
+  // Moods & discovery
+  const moodMatch = sanitized.match(/\b(chill|thư giãn|lofi|tập trung|buồn|vui|sôi động|lãng mạn|relax)\b/i);
+  if (moodMatch) {
+    slots.mood = moodMatch[1].toLowerCase();
+  }
+
+  const activityMatch = sanitized.match(/\b(học bài|làm việc|chạy bộ|tập gym|đi ngủ|đọc sách)(?:\s+đêm(?:\s+khuya)?)?\b/i);
+  if (activityMatch) {
+    slots.activity = activityMatch[0].toLowerCase();
+    if (/đêm|khuya/i.test(sanitized) && !slots.activity.includes('đêm')) {
+      slots.activity += ' đêm khuya';
     }
   }
-  return null
-}
 
-export async function* runAgent(prompt, { context, signal }) {
-  const clauses = prompt.normalize('NFC').split(/\s*(?:[,;]|\s+rồi\s+|\s+sau đó\s+)\s*/i).filter(Boolean)
-  const plans = clauses.map((clause) => planClause(clause, context)).filter(Boolean)
-
-  yield { type: 'thinking', text: 'Đọc yêu cầu' }
-  await wait(500, signal)
-
-  // Không nhận ra hành động nào: trả lời như trò chuyện bình thường.
-  if (!plans.length) {
-    const recommendation = getMockRecommendations(prompt)
-    yield { type: 'thinking', text: 'Không cần hành động, chỉ trả lời' }
-    await wait(700, signal)
-    yield* streamText(`Mình nghe bạn rồi. ${recommendation.reason} Bạn có thể nói “phát ${recommendation.playlists[0].title}” để mình bật ngay.`, signal)
-    yield { type: 'playlist', playlistId: recommendation.playlists[0].id }
-    yield { type: 'done' }
-    return
+  // Lyrics snippet
+  const lyricsMatch = /(?:lời bài hát|lời có câu|lời là|có câu hát|có đoạn|ca từ)\s*[:"']?([^"']+)["']?/i.exec(sanitized);
+  if (lyricsMatch) {
+    slots.lyricsSnippet = lyricsMatch[1].trim();
   }
 
-  for (const plan of plans) {
-    for (const line of plan.thinking ?? []) {
-      yield { type: 'thinking', text: line }
-      await wait(450 + Math.random() * 400, signal)
+  // Album search
+  const albumMatch = /(?:tìm|kiếm)\s+album\s+(.+?)(?:\s+của\s+(.+))?$/i.exec(sanitized);
+  if (albumMatch) {
+    slots.albumTitle = albumMatch[1].trim();
+    if (albumMatch[2]) {
+      slots.artistName = albumMatch[2].trim();
     }
   }
-  for (const plan of plans) {
-    for (const toolCall of plan.calls ?? []) {
-      yield toolCall
-      await wait(350, signal)
+
+  // Explicit search song title
+  const searchSongMatch = /^(?:tìm|tìm kiếm|kiếm)\s+(?:bài hát|bài)\s+(.+)/i.exec(sanitized);
+  if (searchSongMatch && !slots.lyricsSnippet && !slots.mood && !slots.activity) {
+    slots.songTitle = searchSongMatch[1].trim();
+  }
+
+  if (/^(?:tìm|tìm kiếm|search|gợi ý|recommend|cho mình mấy bài|muốn nghe)/i.test(sanitized)) {
+    return {
+      intentType: 'search_music',
+      confidenceScore: 0.92,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: slots.mood || slots.activity ? 'recommendation_service' : 'search_service',
+    };
+  }
+
+  // General Chit-chat
+  if (/(?:thời tiết|ăn gì|chào bạn|hello|(?:^|\s+)hi(?:\s+|$|[!?,])|bạn là ai|mấy giờ|hôm nay thế nào)/i.test(sanitized)) {
+    return {
+      intentType: 'general_chitchat',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'dialogue_response',
+    };
+  }
+
+  // Song title and artist
+  const playPrefixMatch = /^(?:bật|phát|mở|nghe|chơi)\s+(?:bài|bài hát)?\s*/i.exec(sanitized);
+  if (playPrefixMatch) {
+    const afterPrefix = sanitized.slice(playPrefixMatch[0].length).trim();
+    const lastCuaIndex = afterPrefix.toLowerCase().lastIndexOf(' của ');
+    if (lastCuaIndex !== -1) {
+      const candidateTitle = afterPrefix.slice(0, lastCuaIndex).trim().replace(/^bài\s+/i, '');
+      const candidateArtist = afterPrefix.slice(lastCuaIndex + 5).trim().replace(/^(?:ca sĩ|nghệ sĩ)\s+/i, '');
+      if (candidateTitle && candidateArtist) {
+        slots.songTitle = candidateTitle;
+        slots.artistName = candidateArtist;
+        slots.controlAction = 'play';
+        return {
+          intentType: 'play_music',
+          confidenceScore: 0.95,
+          completenessStatus: 'complete',
+          extractedEntities: slots,
+          suggestedAction: 'real_time_assistance',
+        };
+      }
     }
   }
-  yield* streamText(plans.map((plan) => plan.text).join(' '), signal)
-  const withPlaylist = plans.find((plan) => plan.playlistId)
-  if (withPlaylist) yield { type: 'playlist', playlistId: withPlaylist.playlistId }
-  yield { type: 'done' }
+
+  const titleAndArtist = /(?:bật|phát|mở|nghe|chơi)\s+(?:bài|bài hát)?\s*(.+?)\s+của\s+(.+)/i.exec(sanitized);
+  if (titleAndArtist) {
+    slots.songTitle = titleAndArtist[1].trim().replace(/^bài\s+/i, '');
+    slots.artistName = titleAndArtist[2].trim();
+    slots.controlAction = 'play';
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.95,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  const titleOnly = /(?:bật|phát|mở|nghe|chơi)\s+(?:bài|bài hát)\s+(.+)/i.exec(sanitized);
+  if (titleOnly && !moodMatch) {
+    slots.songTitle = titleOnly[1].trim();
+    slots.controlAction = 'play';
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.93,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  const artistOnly = /(?:bật|phát|mở|nghe|chơi)\s+(?:nhạc|ca sĩ)\s+(.+)/i.exec(sanitized);
+  if (artistOnly && !moodMatch && !/nhạc\s*(?:lên|đi)?$/i.test(artistOnly[1])) {
+    slots.artistName = artistOnly[1].trim();
+    slots.controlAction = 'play';
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.92,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+    };
+  }
+
+  // Vague playback (FR-005)
+  if (/^(?:phát|bật|chơi|play|mở|nghe)\s*(?:nhạc\s+lên|nhạc\s+đi|nhạc|bài\s+hát|gì\s+đó|lên|đi)?$/i.test(sanitized)) {
+    return {
+      intentType: 'play_music',
+      confidenceScore: 0.88,
+      completenessStatus: 'missing_parameters',
+      extractedEntities: slots,
+      suggestedAction: 'real_time_assistance',
+      inferredDefaults: { default_source: 'personalized_or_trending' },
+    };
+  }
+
+  if (slots.mood || slots.activity) {
+    return {
+      intentType: 'search_music',
+      confidenceScore: 0.88,
+      completenessStatus: 'complete',
+      extractedEntities: slots,
+      suggestedAction: 'recommendation_service',
+    };
+  }
+
+  return {
+    intentType: 'unknown',
+    confidenceScore: 0.4,
+    completenessStatus: 'ambiguous',
+    extractedEntities: slots,
+    suggestedAction: 'unrecognized_fallback',
+  };
 }
 
-async function* streamText(text, signal) {
-  for (const word of text.split(/(\s+)/)) {
-    yield { type: 'text', delta: word }
-    if (word.trim()) await wait(28, signal)
+/**
+ * Parses raw SSE text chunk into an array of parsed event objects
+ */
+function parseSSEChunks(chunkText) {
+  const events = [];
+  const rawEvents = chunkText.split('\n\n');
+
+  for (const raw of rawEvents) {
+    if (!raw.trim()) continue;
+    const lines = raw.split('\n');
+    let eventType = 'message';
+    let dataStr = '';
+
+    for (const line of lines) {
+      if (line.startsWith('event:')) {
+        eventType = line.slice(6).trim();
+      } else if (line.startsWith('data:')) {
+        dataStr = line.slice(5).trim();
+      }
+    }
+
+    if (dataStr) {
+      try {
+        const parsed = JSON.parse(dataStr);
+        events.push({ eventType, data: parsed });
+      } catch {
+        events.push({ eventType, data: { type: eventType, text: dataStr } });
+      }
+    }
+  }
+
+  return events;
+}
+
+/**
+ * Main agent runner connecting to backend SSE endpoint with fallback to mock data
+ */
+export async function* runAgent(prompt, { context = {}, signal } = {}) {
+  // Edge PII sanitization (FR-008, SC-003)
+  const sanitizedPrompt = sanitizeClientPrompt(prompt);
+
+  const useMocks =
+    typeof import.meta !== 'undefined' &&
+    import.meta.env &&
+    import.meta.env.VITE_USE_MOCKS === 'true';
+
+  if (useMocks) {
+    yield* mockAgentStream(sanitizedPrompt, { context, signal });
+    return;
+  }
+
+  // Determine token from context or storage
+  const token =
+    context?.token ||
+    context?.user?.token ||
+    context?.store?.session?.token ||
+    (typeof localStorage !== 'undefined' &&
+      JSON.parse(localStorage.getItem('auratune_session') || '{}')?.token) ||
+    '';
+
+  const rawApiUrl =
+    (typeof import.meta !== 'undefined' &&
+      import.meta.env &&
+      (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL)) ||
+    '';
+  const cleanApiBase = rawApiUrl.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '');
+  const chatEndpoint = cleanApiBase ? `${cleanApiBase}/api/v1/agent/chat` : '/api/v1/agent/chat';
+
+  let response;
+  try {
+    response = await fetch(chatEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/event-stream',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+      },
+      body: JSON.stringify({
+        prompt: sanitizedPrompt,
+        context: {
+          currentTrack: context.currentTrack || null,
+          isPlaying: Boolean(context.isPlaying),
+          volume: typeof context.volume === 'number' ? context.volume : 80
+        }
+      }),
+      signal
+    });
+
+    // If 404 on relative path, attempt direct localhost:5000 fallback
+    if (response.status === 404 && !cleanApiBase) {
+      const directEndpoint = 'http://localhost:5000/api/v1/agent/chat';
+      const retryRes = await fetch(directEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({
+          prompt: sanitizedPrompt,
+          context: {
+            currentTrack: context.currentTrack || null,
+            isPlaying: Boolean(context.isPlaying),
+            volume: typeof context.volume === 'number' ? context.volume : 80
+          }
+        }),
+        signal
+      });
+      if (retryRes.ok) {
+        response = retryRes;
+      }
+    }
+  } catch (err) {
+    if (signal?.aborted || err.name === 'AbortError') {
+      const abortError = new Error('Đã dừng');
+      abortError.name = 'AbortError';
+      throw abortError;
+    }
+
+    // If fetch failed due to offline/mock environment, fallback to mockAgentStream
+    console.warn('Backend SSE fetch failed, falling back to mock generator:', err.message);
+    yield* mockAgentStream(prompt, { context, signal });
+    return;
+  }
+
+  if (!response.ok) {
+    // If backend 401 (unauthenticated/expired session), 404 or 503,
+    // seamlessly fallback to local assistant generator for uninterrupted music experience (Zero Audio Disruption Invariant)
+    if (response.status === 401 || response.status === 403 || response.status === 404 || response.status === 503) {
+      console.warn(`Backend chat endpoint responded with HTTP ${response.status}. Seamlessly falling back to local assistant generator.`);
+      yield* mockAgentStream(prompt, { context, signal });
+      return;
+    }
+
+    let errorMessage = `Lỗi máy chủ (${response.status})`;
+    try {
+      const errorJson = await response.json();
+      errorMessage = errorJson.message || errorMessage;
+    } catch {
+      // ignore
+    }
+    yield { type: 'error', message: errorMessage };
+    return;
+  }
+
+  if (!response.body) {
+    yield* mockAgentStream(prompt, { context, signal });
+    return;
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      if (signal?.aborted) {
+        await reader.cancel();
+        break;
+      }
+
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lastDoubleNewline = buffer.lastIndexOf('\n\n');
+
+      if (lastDoubleNewline !== -1) {
+        const completeChunk = buffer.slice(0, lastDoubleNewline + 2);
+        buffer = buffer.slice(lastDoubleNewline + 2);
+
+        const events = parseSSEChunks(completeChunk);
+        for (const ev of events) {
+          if (signal?.aborted) break;
+          yield ev.data;
+        }
+      }
+    }
+
+    if (buffer.trim()) {
+      const remainingEvents = parseSSEChunks(buffer);
+      for (const ev of remainingEvents) {
+        if (signal?.aborted) break;
+        yield ev.data;
+      }
+    }
+  } finally {
+    reader.releaseLock();
   }
 }
+
+export default {
+  runAgent,
+  splitClauses,
+  planClause,
+};
