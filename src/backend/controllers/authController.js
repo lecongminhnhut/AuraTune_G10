@@ -455,7 +455,8 @@ export async function forgotPassword(req, res) {
     return res.status(400).json({ success: false, message: 'Vui lòng nhập địa chỉ email hợp lệ.' });
   }
   // Keep the response identical for known and unknown addresses to prevent account discovery.
-  const accepted = { success: true, message: 'Nếu email đã đăng ký, hướng dẫn đặt lại mật khẩu sẽ được gửi đến hộp thư của bạn.' };
+  const accepted = { success: true, message: 'Nếu tài khoản có mật khẩu AuraTune và email hợp lệ, hướng dẫn đặt lại sẽ được gửi đến hộp thư.' };
+  let pendingTokenHash = null;
   try {
     const user = await db.findUserByEmail(email);
     if (!user?.password_hash || !process.env.RESEND_API_KEY || !process.env.MAIL_FROM) return res.status(200).json(accepted);
@@ -463,6 +464,7 @@ export async function forgotPassword(req, res) {
     const tokenHash = hashToken(token);
     await db.deletePasswordResetTokensForUser(user.id);
     await db.createPasswordResetToken({ user_id: user.id, token_hash: tokenHash, expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString() });
+    pendingTokenHash = tokenHash;
     const appUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
     const resetUrl = `${appUrl}/reset-password?token=${encodeURIComponent(token)}`;
     const delivery = await fetch('https://api.resend.com/emails', {
@@ -472,9 +474,19 @@ export async function forgotPassword(req, res) {
     });
     if (!delivery.ok) {
       await db.consumePasswordResetToken(tokenHash);
+      pendingTokenHash = null;
       console.error('Password reset email delivery failed:', delivery.status);
+    } else {
+      pendingTokenHash = null;
     }
   } catch (error) {
+    if (pendingTokenHash) {
+      try {
+        await db.consumePasswordResetToken(pendingTokenHash);
+      } catch (cleanupError) {
+        console.error('Failed to clean up undelivered password reset token:', cleanupError.message);
+      }
+    }
     console.error('Password recovery request failed:', error.message);
   }
   return res.status(200).json(accepted);

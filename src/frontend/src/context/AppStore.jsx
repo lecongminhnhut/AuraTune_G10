@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { authApi, configureAuthContext } from '../services/sessionApiClient.js'
+import { logoutFirebase } from '../services/firebaseAuth.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 
@@ -387,26 +388,27 @@ export const formatTotalDuration = (seconds) => {
       }))
       return { ok: true, user }
     } catch (error) {
-      return { ok: false, locked: error.status === 423, error: error.message || 'Không thể kết nối dịch vụ xác thực.' }
+      return {
+        ok: false,
+        locked: error.status === 423,
+        error: error.name === 'TypeError'
+          ? 'Không thể kết nối tới máy chủ đăng nhập. Hãy kiểm tra backend rồi thử lại.'
+          : error.message || 'Đăng nhập thất bại. Vui lòng thử lại.'
+      }
     }
   }, [])
   const logout = useCallback(async () => {
-    try {
-      await authApi.logout()
-    } catch {
-      // Clear the in-memory session even if the server is unreachable.
-    }
+    await Promise.allSettled([authApi.logout(), logoutFirebase()])
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
   }, [])
 
   const logoutFromAllDevices = useCallback(async () => {
-    try {
-      const token = stateRef.current.session?.token
-      if (token) await authApi.logoutAll(token)
-    } catch {
-      // Clear the in-memory session even if the server is unreachable.
-    }
+    const token = stateRef.current.session?.token
+    await Promise.allSettled([
+      token ? authApi.logoutAll(token) : Promise.resolve(),
+      logoutFirebase(),
+    ])
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
   }, [])
@@ -426,7 +428,7 @@ export const formatTotalDuration = (seconds) => {
 
   // Firebase Authentication -> AuraTune Session
   const loginWithFirebase = useCallback(
-    async ({ firebaseUser, termsAccepted = false }) => {
+    async ({ firebaseUser, termsAccepted = false, displayName }) => {
       try {
         if (!firebaseUser) {
           return {
@@ -439,7 +441,8 @@ export const formatTotalDuration = (seconds) => {
 
         const response = await authApi.firebaseExchange(
           firebaseIdToken,
-          termsAccepted
+          termsAccepted,
+          displayName
         )
 
         if (!response.success || !response.data?.session?.access_token) {
@@ -492,6 +495,7 @@ export const formatTotalDuration = (seconds) => {
         return {
           ok: false,
           code: error.code || null,
+          status: error.status || null,
           error: error.message || 'Firebase Authentication failed.'
         }
       }
@@ -513,7 +517,7 @@ export const formatTotalDuration = (seconds) => {
     try {
       const firebaseIdToken = await firebaseUser.getIdToken(true)
       const response = await authApi.linkFacebook(firebaseIdToken, accessToken)
-      if (!response.success) return { ok: false, error: response.message || 'Could not link Facebook.' }
+      if (!response.success) return { ok: false, code: response.code || null, error: response.message || 'Could not link Facebook.' }
 
       setState((previous) => ({
         ...previous,
@@ -523,7 +527,7 @@ export const formatTotalDuration = (seconds) => {
       }))
       return { ok: true, message: response.message }
     } catch (error) {
-      return { ok: false, error: error.message || 'Could not link Facebook.' }
+      return { ok: false, code: error.code || null, status: error.status || null, error: error.message || 'Could not link Facebook.' }
     }
   }, [])
 
