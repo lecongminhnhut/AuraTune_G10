@@ -24,6 +24,12 @@ export async function authenticateToken(req, res, next) {
     req.originalUrl?.includes('/recommendations') ||
     req.path?.includes('/recommendations');
 
+  const isPlaylistRoute =
+    req.originalUrl?.startsWith('/api/v1/playlists') ||
+    req.originalUrl?.startsWith('/api/v1/users/me/playlists') ||
+    req.originalUrl?.startsWith('/api/v1/users/me/liked-songs') ||
+    req.originalUrl?.startsWith('/api/v1/songs/');
+
   const sendUnauthorized = (legacyMsg) => {
     if (isMoodRoute) {
       return res.status(401).json({
@@ -68,6 +74,9 @@ export async function authenticateToken(req, res, next) {
           details: []
         }
       });
+    }
+    if (isPlaylistRoute) {
+      return res.status(401).json({ success: false, message: 'Authentication is required.', data: null, error: { code: 'UNAUTHORIZED', details: [] } });
     }
     return res.status(401).json({
       status: 'error',

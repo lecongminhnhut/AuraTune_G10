@@ -48,6 +48,7 @@ export default function SongRow({ track, index, onPlay, onDownloadTrack, compact
           <p className="mt-0.5 truncate text-xs text-zinc-400">
             {track.artistId ? <Link to={`/artist/${track.artistId}`} className="hover:text-white hover:underline">{track.artist}</Link> : track.artist}
           </p>
+          {track.addedByName && <p className="mt-0.5 truncate text-[10px] text-zinc-500">Thêm bởi {track.addedByName}</p>}
         </div>
       </div>
       <span className="hidden truncate text-xs text-zinc-400 md:block">

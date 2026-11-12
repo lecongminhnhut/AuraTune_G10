@@ -13,14 +13,10 @@
 
 Every mutation checks current server-side membership. Revocation takes effect on subsequent requests. Disable collaboration revokes collaborator access and keeps contributed tracks.
 
-## Endpoint Boundary
+## Implemented Endpoint Boundary
 
-Shared API contract lists no collaboration endpoints. Route/method/body/response details for toggle, invite, roster, revoke, and contributor reads require approval. Invitations target registered AuraTune users by email and grant immediate access per spec. Use standard JSON envelope and common status/error rules.
-
-## Approval Required
-
-- Decide owner representation and whether role is stored or derived.
-- Decide atomic mapping among `is_collaborative`, `status`, and public visibility when enabling/disabling.
-- Confirm schema for membership timestamp and `added_by_user_id` with 062/database owner.
-- Define duplicate/unknown email behavior and exact public-read/mutation error statuses.
-- Select initial synchronization method; sockets are optional and not required by the feature.
+- `PUT /playlists/:id/collaboration` accepts `{ "enabled": boolean }`. Enabling makes the playlist public; disabling makes it private and revokes collaborator memberships while preserving tracks.
+- `POST /playlists/:id/collaborators` accepts `{ "email": "..." }`, requires an existing account and grants immediate access. Duplicate invitation is idempotent.
+- `DELETE /playlists/:id/collaborators/:userId` revokes membership. `GET /playlists/:id` returns a collaborator roster; emails are visible only to the owner.
+- Owner identity is derived from `user_id_creator`; `playlist_shared_users` rows store collaborators and `joined_at`.
+- `playlist_songs.added_by_user_id` records track contribution. Playlist detail polls every 10 seconds; authorization is always rechecked by the backend on mutations.

@@ -10,16 +10,16 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Inspect auth identity, playlist membership persistence, backend patterns, and prototype collaborator dialog/state in `src/backend/`, `src/database/`, and `src/frontend/src/`.
-- [ ] T002 [P] Confirm verification commands in `package.json`, `src/frontend/package.json`, and `src/backend/package.json`, and identify existing authorization conventions without adding a new test runner.
+- [X] T001 Inspect auth identity, playlist membership persistence, backend patterns, and prototype collaborator dialog/state in `src/backend/`, `src/database/`, and `src/frontend/src/`.
+- [X] T002 [P] Confirm verification commands in `package.json`, `src/frontend/package.json`, and `src/backend/package.json`, and identify existing authorization conventions without adding a new test runner.
 
 ## Phase 2: Foundational Collaboration Decisions
 
-- [ ] T003 Approve collaboration flag, `status` visibility transition, and disable behavior in `specs/060-playlist-management/065-collaborative-playlists/data-model.md`.
-- [ ] T004 Approve owner representation, membership role/timestamp, email invitation edge cases, and revocation rules in `specs/060-playlist-management/065-collaborative-playlists/data-model.md`.
-- [ ] T005 Align contributor field and shared track-edit authorization with 062 in `specs/060-playlist-management/065-collaborative-playlists/contracts/collaborative-playlists.md` and `specs/060-playlist-management/062-playlist-song-management/data-model.md`.
-- [ ] T006 Approve toggle/invite/list/revoke API contract in `specs/060-playlist-management/065-collaborative-playlists/contracts/collaborative-playlists.md` and `docs/analysis-and-design/api-contract.md`.
-- [ ] T007 Implement only approved collaboration schema changes, including the 062-coordinated contributor field, in `src/database/migrations/004_playlist_collaboration.sql`.
+- [X] T003 Approve collaboration flag, `status` visibility transition, and disable behavior in `specs/060-playlist-management/065-collaborative-playlists/data-model.md`.
+- [X] T004 Approve owner representation, membership role/timestamp, email invitation edge cases, and revocation rules in `specs/060-playlist-management/065-collaborative-playlists/data-model.md`.
+- [X] T005 Align contributor field and shared track-edit authorization with 062 in `specs/060-playlist-management/065-collaborative-playlists/contracts/collaborative-playlists.md` and `specs/060-playlist-management/062-playlist-song-management/data-model.md`.
+- [X] T006 Approve toggle/invite/list/revoke API contract in `specs/060-playlist-management/065-collaborative-playlists/contracts/collaborative-playlists.md` and `docs/analysis-and-design/api-contract.md`.
+- [X] T007 Implement approved collaboration schema changes, including the 062-coordinated contributor field, in `src/database/migrations/003_playlist_management.sql`.
 
 ## Phase 3: User Story 1 - Create and Share Collaborative Playlist (Priority: P1)
 
@@ -27,11 +27,11 @@
 
 **Independent Test**: Enable collaboration, invite a registered user, and verify membership/access; disable and verify access is revoked while tracks remain.
 
-- [ ] T008 [US1] Implement owner-authorized collaboration enable/disable operation and approved visibility transition in `src/backend/controllers/collaborationController.js` and `src/backend/services/collaborationService.js`.
-- [ ] T009 [US1] Implement registered-user lookup and duplicate-safe invitation by normalized email in `src/backend/services/collaborationService.js`.
-- [ ] T010 [US1] Persist collaborator membership through approved `playlist_shared_users` representation in `src/backend/repositories/collaborationRepository.js`.
-- [ ] T011 [US1] Connect collaboration toggle and email invite form in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` (including its `CollaboratorsDialog`) to the approved API.
-- [ ] T012 [US1] Update listener library state for newly invited collaborator and owner feedback in `src/frontend/src/context/AppStore.jsx` and collaborator dialog.
+- [X] T008 [US1] Implement owner-authorized collaboration enable/disable and visibility transition in `src/backend/controllers/playlistController.js` and `src/backend/services/playlistService.js`.
+- [X] T009 [US1] Implement registered-user lookup and duplicate-safe invitation by normalized email in `src/backend/services/playlistService.js`.
+- [X] T010 [US1] Persist collaborator membership through `playlist_shared_users` in `src/backend/services/playlistService.js`.
+- [X] T011 [US1] Connect collaboration toggle and email invite form in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` (including its `CollaboratorsDialog`) to the approved API.
+- [X] T012 [US1] Update listener library state for newly invited collaborator and owner feedback in `src/frontend/src/context/AppStore.jsx` and collaborator dialog.
 
 ## Phase 4: User Story 2 - Collaborative Content Management (Priority: P1)
 
@@ -39,11 +39,11 @@
 
 **Independent Test**: Collaborator adds a track; verify contributor identity and updated order/content from another member session after the agreed refresh/sync.
 
-- [ ] T013 [US2] Extend `src/backend/services/playlistAuthorizationService.js` from feature 062 to allow owner and active collaborators to add/remove/reorder while rejecting non-members.
-- [ ] T014 [US2] Persist `added_by_user_id` and return contributor identity using approved schema/contract in `src/backend/repositories/playlistSongRepository.js` and `src/backend/services/playlistSongService.js`.
-- [ ] T015 [US2] Ensure collaborative playlist detail reads expose public content while track mutation remains membership-protected in `src/backend/routes/playlistRoutes.js` and `src/backend/services/playlistService.js`.
-- [ ] T016 [US2] Render contributor identity and collaborator edit controls in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and playlist track row components.
-- [ ] T017 [US2] Refresh collaborative content using the approved initial synchronization pattern in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/context/AppStore.jsx`.
+- [X] T013 [US2] Enforce owner and active-collaborator track mutations in `src/backend/services/playlistService.js`.
+- [X] T014 [US2] Persist `added_by_user_id` and return contributor identity in `src/backend/repositories/playlistRepository.js` and `src/backend/services/playlistService.js`.
+- [X] T015 [US2] Ensure collaborative playlist detail reads expose public content while track mutation remains membership-protected in `src/backend/routes/playlistRoutes.js` and `src/backend/services/playlistService.js`.
+- [X] T016 [US2] Render contributor identity and collaborator edit controls in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and playlist track row components.
+- [X] T017 [US2] Refresh collaborative content using the approved initial synchronization pattern in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/context/AppStore.jsx`.
 
 ## Phase 5: User Story 3 - Member Management and Roles (Priority: P2)
 
@@ -51,10 +51,10 @@
 
 **Independent Test**: Owner views roster and removes a collaborator; verify the member's next edit is denied within one second.
 
-- [ ] T018 [US3] Implement owner-only collaborator list and revoke operations in `src/backend/controllers/collaborationController.js` and `src/backend/services/collaborationService.js`.
-- [ ] T019 [US3] Enforce owner-only metadata edit, deletion, invitation, and revocation in `src/backend/services/playlistAuthorizationService.js`, retaining collaborator-only track rights.
-- [ ] T020 [US3] Connect member roster and remove action to server state in the `CollaboratorsDialog` component in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx`.
-- [ ] T021 [US3] Reconcile member list and deny stale client edits after revoke/disable in `src/frontend/src/context/AppStore.jsx` and playlist detail UI.
+- [X] T018 [US3] Implement owner-only collaborator list and revoke operations in `src/backend/controllers/playlistController.js` and `src/backend/services/playlistService.js`.
+- [X] T019 [US3] Enforce owner-only metadata edit, deletion, invitation and revocation in `src/backend/services/playlistService.js`, retaining collaborator-only track rights.
+- [X] T020 [US3] Connect member roster and remove action to server state in the `CollaboratorsDialog` component in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx`.
+- [X] T021 [US3] Reconcile member list and deny stale client edits after revoke/disable in `src/frontend/src/context/AppStore.jsx` and playlist detail UI.
 
 ## Phase 6: User Story 4 - Visual Contribution Indicators (Priority: P3)
 
@@ -62,13 +62,13 @@
 
 **Independent Test**: View a playlist with tracks from two members and verify each row shows its recorded contributor; former member handling follows approved data rules.
 
-- [ ] T022 [US4] Include contributor name/avatar fields in collaborative playlist read response using approved privacy rules in `src/backend/services/playlistService.js`.
-- [ ] T023 [US4] Render contributor display on collaborative track rows in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/components/song/SongRow.jsx`.
-- [ ] T024 [US4] Apply approved fallback label for deleted/former members without deleting their contributed tracks in `src/backend/services/playlistService.js` and `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx`.
+- [X] T022 [US4] Include contributor name/avatar fields in collaborative playlist read response using approved privacy rules in `src/backend/services/playlistService.js`.
+- [X] T023 [US4] Render contributor display on collaborative track rows in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/components/song/SongRow.jsx`.
+- [X] T024 [US4] Apply approved fallback label for deleted/former members without deleting their contributed tracks in `src/backend/services/playlistService.js` and `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx`.
 
 ## Phase 7: Polish and Acceptance
 
-- [ ] T025 Update shared API/database documentation when approved collaboration schema or endpoint behavior changes in `docs/analysis-and-design/api-contract.md` and `docs/design/database/`.
+- [X] T025 Update shared API/database documentation when approved collaboration schema or endpoint behavior changes in `docs/analysis-and-design/api-contract.md` and `docs/design/database/`.
 - [ ] T026 Execute owner, collaborator, non-member, public visitor, revoke, disable, contribution, and concurrent-edit scenarios in `specs/060-playlist-management/065-collaborative-playlists/quickstart.md`.
 
 ## Dependencies and Execution Order

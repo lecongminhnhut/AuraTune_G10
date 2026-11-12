@@ -26,6 +26,8 @@ export default function App() {
 function AppShell() {
   const store = useStore()
   const player = useAudioPlayer({ findTrack: store.findTrack, isPlayable: store.isPlayable })
+  const activePlaylist = player.playlistId ? store.findPlaylistById(player.playlistId) : null
+  const playlistContext = activePlaylist && activePlaylist.trackIds?.includes(player.track.id) ? activePlaylist.title : (player.playlistId ? 'Danh sách chờ' : null)
   const [chatOpen, setChatOpen] = useState(false)
   const [fullScreenOpen, setFullScreenOpen] = useState(false)
   const queueOpen = store.ui.queueOpen
@@ -163,6 +165,7 @@ function AppShell() {
           <MobileNav onOpenChat={openChat} chatOpen={chatOpen} />
           <BottomPlayer
             player={player}
+            playlistContext={playlistContext}
             liked={store.isLiked(player.track.id)}
             onToggleLike={toggleCurrentLike}
             onDownloadTrack={downloadTrack}
@@ -181,6 +184,7 @@ function AppShell() {
           isOpen={fullScreenOpen}
           onClose={closeFullScreen}
           player={player}
+          playlistContext={playlistContext}
           liked={store.isLiked(player.track.id)}
           onToggleLike={toggleCurrentLike}
           onOpenQueue={openQueue}

@@ -3,11 +3,12 @@ AuraTune AI Brain Service - FastAPI Application.
 Provides streaming SSE chat with Gemini-driven Music Orchestration.
 """
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Header, HTTPException
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List
+import unicodedata
 
 from config import settings
 from agent import stream_agent
@@ -41,6 +42,38 @@ class RecommendRequest(BaseModel):
     signals: Optional[PreferenceSignals] = Field(default_factory=PreferenceSignals)
     requested_types: List[str] = Field(default=["song", "album", "artist", "playlist"])
     limit: int = Field(default=30, ge=1, le=50)
+
+class PlaylistGenerateRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=200)
+
+@app.post("/ai/playlist/generate")
+async def generate_playlist(req: PlaylistGenerateRequest, x_internal_secret: Optional[str] = Header(default=None)):
+    if x_internal_secret != settings.AI_INTERNAL_SECRET:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    prompt = req.prompt.strip().lower()
+    normalized = "".join(char for char in unicodedata.normalize("NFD", prompt.replace("đ", "d")) if unicodedata.category(char) != "Mn")
+    words = set(normalized.split())
+    keyword_groups = {
+        "focus": {"focus", "hoc", "study", "code", "lam", "viec", "tap", "trung"},
+        "chill": {"chill", "lofi", "mua", "rain", "thu", "gian", "nhe"},
+        "indie": {"indie", "viet", "di", "du", "lich", "chuyen"},
+        "energy": {"chay", "workout", "nang", "luong", "vui", "nhay"},
+    }
+    matched = next((name for name, terms in keyword_groups.items() if words & terms or any(term in normalized for term in terms)), None)
+    if not matched:
+        return {"title": req.prompt.strip()[:80], "reason": "Chưa tìm thấy nhóm nhạc phù hợp với mô tả này.", "tracks": []}
+    order = {
+        "focus": ["t10", "t8", "t9", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
+        "chill": ["t8", "t9", "t10", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
+        "indie": ["t2", "t5", "t7", "t1", "t3", "t4", "t6", "t8", "t9", "t10"],
+        "energy": ["t4", "t5", "t3", "t7", "t6", "t1", "t2", "t8", "t9", "t10"],
+    }[matched]
+    tracks = [{"song_id": song_id, **CATALOG_TRACKS[song_id]} for song_id in order if song_id in CATALOG_TRACKS]
+    return {
+        "title": req.prompt.strip()[:80],
+        "reason": f"Đề xuất theo ngữ cảnh {matched}, kết hợp nhạc phù hợp từ danh mục AuraTune.",
+        "tracks": tracks[:10],
+    }
 
 @app.get("/")
 @app.get("/health")

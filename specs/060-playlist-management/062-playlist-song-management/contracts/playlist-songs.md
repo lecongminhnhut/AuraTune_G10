@@ -9,14 +9,11 @@
 - Authenticated owner or active collaborator may add/remove/reorder; backend performs authorization on every request.
 - Duplicate playlist-song membership is prohibited. Like state is per user/song. Responses follow the common JSON envelope.
 
-## Unresolved Endpoint Schema
+## Implemented Endpoint Schema
 
-The shared API document does not define playlist-song or liked-song endpoints. Approve methods, request bodies, batch behavior, reorder payload, response aggregates, duplicate behavior/status, and error details before implementation. Do not infer fields from mock objects.
-
-## Approval Required
-
-- Position field and reorder semantics, including concurrent update behavior.
-- Add/remove transaction and count/duration response semantics.
-- Liked Songs API and its projection into the library.
-- Contributor identity field returned for collaborative tracks (coordinate 065).
-- Authentication/error mapping and treatment of unavailable/deleted song IDs.
+- `POST /playlists/:id/songs` accepts `{ "songIds": ["..."] }`; duplicate membership is idempotently ignored and invalid catalog IDs are not inserted.
+- `DELETE /playlists/:id/songs/:songId` removes membership and compacts ordering.
+- `PUT /playlists/:id/songs/order` accepts the complete `{ "songIds": [...] }` order and rejects missing, duplicate, or extra IDs.
+- `PUT` / `DELETE /songs/:songId/like` update `user_liked_songs`; `GET /users/me/liked-songs` returns song IDs.
+- Detail responses derive count/duration from active songs and return contributor display data when available.
+- Every mutation authorizes the owner or active collaborator. Database constraints prevent duplicate songs and duplicate positions.

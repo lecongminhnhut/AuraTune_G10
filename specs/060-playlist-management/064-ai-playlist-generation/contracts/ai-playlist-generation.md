@@ -11,10 +11,13 @@
 - AI unavailable maps to shared 503 / `AI_SERVICE_UNAVAILABLE` behavior where applicable.
 - Save uses standard private playlist and song-membership operations from 061/062.
 
-## Unresolved Schema
+## Implemented Schema
 
-Neither public route/payload nor internal request/response schema is defined in the shared contract. Approve method/path, prompt field, response title/rationale/song identifiers/order/playability fields, timeout, internal auth, and error mapping before implementing either adapter. Do not expose `/ai/*` to the browser.
+- Public `POST /playlists/ai-generate` accepts `{ "prompt": "..." }` and requires the authenticated listener.
+- The backend calls internal `POST /ai/playlist/generate` with `X-Internal-Secret` and the configured AI timeout. The internal endpoint validates the secret.
+- AI response: `{ "title": string, "reason": string, "tracks": [{ "song_id": string, ... }] }`. The backend hydrates IDs from `songs`, filters inactive, deleted or restricted rows, and only returns a proposal with 10–20 available tracks; zero eligible matches return `{ noMatch: true }`.
+- AI service errors map to `503 AI_SERVICE_UNAVAILABLE` without internal diagnostics. `/ai/*` is never called by the browser.
 
 ## Save Boundary
 
-Proposal is transient. Define how backend/client coordinates playlist create and ordered song insertion and handles partial failure. Do not invent a transaction or compensation strategy across service boundaries.
+Proposal is transient. The client creates a standard private playlist, then inserts its edited track IDs in final order. If insertion fails, the client attempts to delete the newly created playlist and reports failure; it does not show success unless both operations complete.
