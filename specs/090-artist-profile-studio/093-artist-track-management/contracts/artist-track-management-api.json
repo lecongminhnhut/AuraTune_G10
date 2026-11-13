@@ -1,0 +1,1183 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune 093 protected Studio read slice",
+    "version": "0.1.0",
+    "description": "Read-only implementation. Does not authorize upload/edit/visibility/delete or claim full 093 acceptance."
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "paths": {
+    "/studio/me": {
+      "get": {
+        "summary": "Current linked Artist identity, including hidden profiles.",
+        "description": "No query parameters or request body. Identity is resolved from current authenticated principal, never from a browser artist selector.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed read; each section can fail independently. Cache-Control: private, no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+                          "description": "Canonical signed int64 decimal; server verifies bounds; never JavaScript number."
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "imageUrl": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "profileVisibility": {
+                          "type": "string",
+                          "enum": [
+                            "public",
+                            "hidden",
+                            "unreviewed"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "imageUrl",
+                        "profileVisibility"
+                      ]
+                    },
+                    "error": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query selectors are not accepted.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired, revoked or mismatched session.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Banned, non-Artist or unlinked account.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Storage/source unavailable; never empty/zero fallback.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studio/me/tracks": {
+      "get": {
+        "summary": "Complete explicit-owner catalog; no legacy album-derived grant.",
+        "description": "No query parameters or request body. Identity is resolved from current authenticated principal, never from a browser artist selector.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed read; each section can fail independently. Cache-Control: private, no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "artistId": {
+                          "type": "string",
+                          "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+                          "description": "Canonical signed int64 decimal; server verifies bounds; never JavaScript number."
+                        },
+                        "complete": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "tracks": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+                                "description": "Canonical signed int64 decimal; server verifies bounds; never JavaScript number."
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "album": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+                                    "description": "Canonical signed int64 decimal; server verifies bounds; never JavaScript number."
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title"
+                                ],
+                                "nullable": true
+                              },
+                              "genre": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "durationSeconds": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "nullable": true
+                              },
+                              "totalPlays": {
+                                "type": "string",
+                                "pattern": "^(0|[1-9][0-9]*)$",
+                                "nullable": true
+                              },
+                              "artistPreference": {
+                                "type": "string",
+                                "enum": [
+                                  "active",
+                                  "hidden"
+                                ]
+                              },
+                              "adminRestricted": {
+                                "type": "boolean"
+                              },
+                              "coverUrl": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Unavailable in current read slice; null."
+                              },
+                              "fileName": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Unavailable in current read slice; null."
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "title",
+                              "album",
+                              "genre",
+                              "durationSeconds",
+                              "totalPlays",
+                              "artistPreference",
+                              "adminRestricted",
+                              "coverUrl",
+                              "fileName"
+                            ]
+                          },
+                          "description": "Complete own nondeleted catalog; song bigint ID ASC. No pagination/row-cap truncation."
+                        }
+                      },
+                      "required": [
+                        "artistId",
+                        "complete",
+                        "tracks"
+                      ]
+                    },
+                    "error": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query selectors are not accepted.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired, revoked or mismatched session.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Banned, non-Artist or unlinked account.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Storage/source unavailable; never empty/zero fallback.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/studio/me/stats": {
+      "get": {
+        "summary": "Stored historical counters include deleted owned rows. Unknown counters fail instead of becoming zero.",
+        "description": "No query parameters or request body. Identity is resolved from current authenticated principal, never from a browser artist selector.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Confirmed read; each section can fail independently. Cache-Control: private, no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "artistId": {
+                          "type": "string",
+                          "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+                          "description": "Canonical signed int64 decimal; server verifies bounds; never JavaScript number."
+                        },
+                        "totalTracks": {
+                          "type": "string",
+                          "pattern": "^(0|[1-9][0-9]*)$"
+                        },
+                        "activeTracks": {
+                          "type": "string",
+                          "pattern": "^(0|[1-9][0-9]*)$"
+                        },
+                        "historicalPlays": {
+                          "type": "string",
+                          "pattern": "^(0|[1-9][0-9]*)$"
+                        }
+                      },
+                      "required": [
+                        "artistId",
+                        "totalTracks",
+                        "activeTracks",
+                        "historicalPlays"
+                      ]
+                    },
+                    "error": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Query selectors are not accepted.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired, revoked or mismatched session.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Banned, non-Artist or unlinked account.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Storage/source unavailable; never empty/zero fallback.",
+            "headers": {
+              "Cache-Control": {
+                "description": "private, no-store",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "success",
+                    "message",
+                    "data",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "nullable": true,
+                      "enum": [
+                        null
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "enum": [
+                            "VALIDATION_ERROR",
+                            "UNAUTHORIZED",
+                            "TOKEN_EXPIRED",
+                            "USER_BANNED",
+                            "FORBIDDEN",
+                            "INTERNAL_ERROR"
+                          ]
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Heart, Plus, Sparkles } from 'lucide-react'
 import PlaylistCard from '../../components/playlist/PlaylistCard.jsx'
 import { AlbumCard, ArtistCard } from '../../components/playlist/MediaCards.jsx'
-import { EmptyState, LoginRequired, PageHeader, SectionHeading, chipClass, primaryButton, secondaryButton } from '../../components/common/ui.jsx'
+import { EmptyState, ErrorState, LoginRequired, PageHeader, SectionHeading, chipClass, primaryButton, secondaryButton } from '../../components/common/ui.jsx'
 import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import { getArtist } from '../../utils/mockData.js'
@@ -21,7 +21,7 @@ export default function LibraryPage() {
 
   const playlists = [store.likedPlaylist, ...store.userPlaylists].filter(Boolean).map((playlist) => store.findPlaylistById(playlist.id) ?? playlist)
   const albums = store.library.savedAlbumIds.map(store.getAlbum).filter(Boolean)
-  const artists = store.library.follows.map((item) => getArtist(item.artistId)).filter((artist) => artist?.isPublic)
+  const artists = store.followingList.artists
 
   if (!store.currentUser) return <LoginRequired description="Đăng nhập để xem playlist, album đã lưu và nghệ sĩ bạn theo dõi." />
 
@@ -60,7 +60,7 @@ export default function LibraryPage() {
         {(filter === 'all' || filter === 'artists') && (
           <section className="mt-10">
             <SectionHeading title="Nghệ sĩ đang theo dõi" action="Xem tất cả" actionTo="/following" />
-            {shownArtists.length ? <div className={grid}>{shownArtists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div> : <div className="mt-4"><EmptyState compact title="Chưa theo dõi nghệ sĩ nào" /></div>}
+            {store.followingList.status === 'loading' ? <p role="status" className="py-4 text-zinc-400">Đang tải nghệ sĩ…</p> : store.followingList.status !== 'confirmed' ? <ErrorState compact onRetry={store.followingList.retry} /> : shownArtists.length ? <div className={grid}>{shownArtists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div> : <div className="mt-4"><EmptyState compact title="Chưa theo dõi nghệ sĩ nào phù hợp" /></div>}
           </section>
         )}
       </div>

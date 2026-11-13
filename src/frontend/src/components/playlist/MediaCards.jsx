@@ -1,4 +1,5 @@
 import { UserRound } from 'lucide-react'
+import { useState } from 'react'
 import Icon from '../common/Icon.jsx'
 import CoverArt from './CoverArt.jsx'
 import { Link } from '../../utils/navigation.jsx'
@@ -7,6 +8,10 @@ export const releaseYear = (date) => date?.slice(0, 4) ?? ''
 
 // Ảnh đại diện nghệ sĩ; khi không có ảnh dùng biểu tượng trung tính (spec 091 FR-004).
 export function ArtistAvatar({ artist, className = 'h-full w-full' }) {
+  const [failedSource, setFailedSource] = useState(null)
+  let imageUrl = null
+  try { const url = new URL(artist?.imageUrl); if (['http:', 'https:'].includes(url.protocol)) imageUrl = url.href } catch {}
+  if (imageUrl && failedSource !== imageUrl) return <img src={imageUrl} alt={`Ảnh nghệ sĩ ${artist.name}`} referrerPolicy="no-referrer" onError={() => setFailedSource(imageUrl)} className={`rounded-full object-cover ${className}`} />
   if (!artist?.cover) {
     return (
       <div role="img" aria-label="Ảnh nghệ sĩ chưa được cung cấp" className={`grid place-items-center rounded-full bg-zinc-800 text-zinc-500 ${className}`}>

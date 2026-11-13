@@ -34,7 +34,7 @@ export default function Sidebar() {
     ? [store.likedPlaylist, ...store.userPlaylists].filter((playlist) => playlist && matches(playlist.title)).map((playlist) => ({ id: playlist.id, href: `/playlist/${playlist.id}`, title: playlist.title, subtitle: playlist.id === 'liked' ? `${playlist.trackIds.length} bài hát` : `Playlist · ${playlist.isCollaborative ? 'Cộng tác' : playlist.owner}`, cover: playlist.cover, liked: playlist.id === 'liked' }))
     : filter === 'albums'
       ? store.library.savedAlbumIds.map(store.getAlbum).filter((album) => album && matches(album.title)).map((album) => ({ id: album.id, href: `/album/${album.id}`, title: album.title, subtitle: `Album · ${getArtist(album.artistId)?.name ?? ''}`, cover: album.cover }))
-      : store.library.follows.map((item) => getArtist(item.artistId)).filter((artist) => artist?.isPublic && matches(artist.name)).map((artist) => ({ id: artist.id, href: `/artist/${artist.id}`, title: artist.name, subtitle: 'Nghệ sĩ', artist }))
+      : store.followingList.artists.filter((artist) => matches(artist.name)).map((artist) => ({ id: artist.id, href: `/artist/${artist.id}`, title: artist.name, subtitle: 'Nghệ sĩ', artist }))
 
   const accountLinks = [
     user && { label: 'Lịch sử & thống kê', icon: History, href: '/history' },
@@ -100,7 +100,7 @@ export default function Sidebar() {
                   </div>
                 </Link>
               ))}
-              {!items.length && <p className="px-2 py-4 text-xs leading-5 text-zinc-500">{needle ? 'Không có mục nào phù hợp.' : filter === 'playlists' ? 'Tạo playlist đầu tiên bằng nút +.' : filter === 'albums' ? 'Album bạn lưu sẽ hiện ở đây.' : 'Nghệ sĩ bạn theo dõi sẽ hiện ở đây.'}</p>}
+              {filter === 'artists' && store.followingList.status !== 'confirmed' ? <p role="status" className="px-2 py-4 text-xs text-zinc-500">{store.followingList.status === 'loading' ? 'Đang tải nghệ sĩ…' : <button type="button" onClick={store.followingList.retry} className="underline">Không tải được. Thử lại</button>}</p> : !items.length && <p className="px-2 py-4 text-xs leading-5 text-zinc-500">{needle ? 'Không có mục nào phù hợp.' : filter === 'playlists' ? 'Tạo playlist đầu tiên bằng nút +.' : filter === 'albums' ? 'Album bạn lưu sẽ hiện ở đây.' : 'Nghệ sĩ bạn theo dõi sẽ hiện ở đây.'}</p>}
             </div>
           </>
         ) : (
