@@ -40,6 +40,9 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 34  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 122 – Music Intent Understanding bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 | 35  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 123 – Real-Time Music Assistance bằng `/speckit-implement`                         | 12 – AI Conversational Agent                      |
 | 36  | 2026-11-11 | Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)                           | 12 – AI Conversational Agent                      |
+| 37  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 101 – Listening History Analysis bằng `/speckit-implement`                         | 10 – AI Recommendations                           |
+| 38  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 102 – Personalized Recommendations bằng `/speckit-implement`                       | 10 – AI Recommendations                           |
+| 39  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`                     | 10 – AI Recommendations                           |
 
 ---
 
@@ -5902,12 +5905,12 @@ Yêu cầu chi tiết và các ràng buộc kỹ thuật:
 
 ## Mục 36: Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)
 
-| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                          |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                        |
-| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                              |
-| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Kiến trúc Microservice AI Service (`src/ai-service`) kết nối Group 120 (Features 121, 122, 123)                                                                                                                                                                                                                                    |
-| Công cụ AI               | Antigravity CLI (Gemini 2.5 Flash), Python FastAPI, Google GenAI SDK (`v1beta`)                                                                                                                                                                                                                                                                                   |
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                   |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                         |
+| Nhóm tính năng liên quan | 12 – AI Conversational Agent, Kiến trúc Microservice AI Service (`src/ai-service`) kết nối Group 120 (Features 121, 122, 123)                                                                                                                                                                                                                                |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Flash), Python FastAPI, Google GenAI SDK (`v1beta`)                                                                                                                                                                                                                                                                              |
 | Mục đích                 | Xây dựng và tích hợp trọn vẹn "Bộ não AI" độc lập (AI Brain Agent Service) bằng Python FastAPI kết hợp Google Gemini API (`gemini-2.5-flash`), hỗ trợ ReAct / Function Calling điều khiển trình phát nhạc thời gian thực qua luồng Server-Sent Events (SSE) theo kiến trúc chuẩn của AuraTune, kết nối xuyên suốt Web Client, Node.js Backend và AI Service. |
 
 ### Prompt đã dùng
@@ -5947,7 +5950,7 @@ Các yêu cầu kỹ thuật và nguyên tắc kiến trúc bắt buộc:
   - Thiết kế kiến trúc Microservice độc lập tại `src/ai-service` chạy cổng 8000 theo đúng quy chuẩn kiến trúc của AuraTune.
   - Áp dụng kiến trúc ReAct / Function Calling: AI tự do đàm thoại, tự suy nghĩ (thinking), tự quyết định gọi công cụ điều khiển nhạc, và stream kết quả về client theo thời gian thực.
 - **Xây dựng module công cụ và ánh xạ danh mục hệ thống (`src/ai-service/tools.py`)**:
-  - Ánh xạ đầy đủ danh mục bài hát thực tế của AuraTune (`t1` đến `t10`: *Nàng thơ*, *Bước qua mùa cô đơn*, *Có em*, *Thích em hơi nhiều*, *Chuyện rằng*, *Midnight Coffee*, v.v.).
+  - Ánh xạ đầy đủ danh mục bài hát thực tế của AuraTune (`t1` đến `t10`: _Nàng thơ_, _Bước qua mùa cô đơn_, _Có em_, _Thích em hơi nhiều_, _Chuyện rằng_, _Midnight Coffee_, v.v.).
   - Ánh xạ danh mục danh sách phát (`lofi-chill`, `deep-focus`, `aura-mix`, `indie-viet`, `dem-thanh-pho`, `nang-len`).
   - Cài đặt lớp `ToolCollector` hỗ trợ 7 công cụ Function Calling cho Gemini:
     - `play_playlist(playlist_id)`: Phát tuyển tập danh sách phát theo chủ đề.
@@ -5982,13 +5985,13 @@ Các yêu cầu kỹ thuật và nguyên tắc kiến trúc bắt buộc:
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần                                                         | Quyết định   | Lý do                                                                                                                                                    |
-| :----------------------------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mô hình `gemini-2.5-flash` qua SDK `google-genai`            | Dùng toàn bộ | Model chính thức tối ưu về tốc độ, hỗ trợ tiếng Việt xuất sắc, tương thích Function Calling qua API version `v1beta`.                                    |
-| Kiến trúc Microservice FastAPI độc lập (`src/ai-service`)    | Dùng toàn bộ | Tuân thủ quy chuẩn kiến trúc của dự án AuraTune, tách biệt module AI bằng Python chuyên dụng mà không can thiệp logic nghiệp vụ Node.js Backend.        |
-| Giao thức Server-Sent Events (SSE) thời gian thực            | Dùng toàn bộ | Đảm bảo tính liên tục của luồng hội thoại, hiển thị trạng thái suy nghĩ (`thinking`), chỉ thị thực thi (`tool_call`) và câu trả lời (`text`).           |
-| Cơ chế Safe Local NLU Fallback                               | Dùng toàn bộ | Tuân thủ nguyên tắc bất biến Zero Audio Disruption Invariant: nếu dịch vụ đám mây gặp sự cố, hệ thống tự động fallback xử lý mà không làm ngắt nhạc.   |
-| Cấu trúc Free-Threaded build (Python 3.13t)                  | Bỏ           | Gặp lỗi không tương thích với các module C-extensions (`pydantic_core`, `cffi`). Chuyển sang sử dụng Python 3.13 standard build (`py -3.13`) ổn định.   |
+| Phần                                                      | Quyết định   | Lý do                                                                                                                                                 |
+| :-------------------------------------------------------- | :----------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mô hình `gemini-2.5-flash` qua SDK `google-genai`         | Dùng toàn bộ | Model chính thức tối ưu về tốc độ, hỗ trợ tiếng Việt xuất sắc, tương thích Function Calling qua API version `v1beta`.                                 |
+| Kiến trúc Microservice FastAPI độc lập (`src/ai-service`) | Dùng toàn bộ | Tuân thủ quy chuẩn kiến trúc của dự án AuraTune, tách biệt module AI bằng Python chuyên dụng mà không can thiệp logic nghiệp vụ Node.js Backend.      |
+| Giao thức Server-Sent Events (SSE) thời gian thực         | Dùng toàn bộ | Đảm bảo tính liên tục của luồng hội thoại, hiển thị trạng thái suy nghĩ (`thinking`), chỉ thị thực thi (`tool_call`) và câu trả lời (`text`).         |
+| Cơ chế Safe Local NLU Fallback                            | Dùng toàn bộ | Tuân thủ nguyên tắc bất biến Zero Audio Disruption Invariant: nếu dịch vụ đám mây gặp sự cố, hệ thống tự động fallback xử lý mà không làm ngắt nhạc.  |
+| Cấu trúc Free-Threaded build (Python 3.13t)               | Bỏ           | Gặp lỗi không tương thích với các module C-extensions (`pydantic_core`, `cffi`). Chuyển sang sử dụng Python 3.13 standard build (`py -3.13`) ổn định. |
 
 ### Cách kiểm chứng
 
@@ -5997,3 +6000,373 @@ Các yêu cầu kỹ thuật và nguyên tắc kiến trúc bắt buộc:
 - [x] **Kiểm tra tự động Backend Tests:** Chạy `npm --prefix src/backend test`, kết quả: **107/107 tests passed** (26 suites, 0 failures), cơ chế fallback khi AI service offline hoạt động chính xác.
 - [x] **Kiểm tra tự động Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **64/64 tests passed** (23 suites, 0 failures), bộ công cụ `agentTools.js` và giao diện `AIHostChat.jsx` tương thích hoàn toàn.
 - [x] **Kiểm tra Production Build:** Chạy `npm --prefix src/frontend run build`, thành công trong 7.47s (0 errors).
+
+---
+
+## Mục 37: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 101 – Listening History Analysis bằng `/speckit-implement`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                                |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 101: Listening History Analysis (`specs/100-ai-recommendations/101-listening-history-analysis/`)                                                                                                                                                                                                                                                                         |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro / Advanced Agentic Coding), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                 |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 29 nhiệm vụ kỹ thuật (T001 – T029) thuộc 6 Phase cho Feature 101 (Listening History Analysis) trên nhánh `101-listening-history-analysis`, hiện thực hóa cơ chế tổng hợp thống kê xác định (SQL Aggregation), chuẩn hóa ranh giới miền dữ liệu với Group 070, cô lập dữ liệu người dùng tuyệt đối theo Nghị định 13/2023/NĐ-CP, và xử lý hiển thị trạng thái thiếu dữ liệu. |
+
+### Prompt đã dùng
+
+```text
+Bạn hãy đóng vai trò Fullstack Senior Engineer triển khai trọn vẹn Feature 101 (Listening History Analysis) thuộc Group 100 (AI Recommendations) trên nhánh `101-listening-history-analysis` của dự án AuraTune.
+
+Hãy nghiên cứu kỹ các tài liệu thiết kế sau trước khi viết mã:
+- Đặc tả: `specs/100-ai-recommendations/101-listening-history-analysis/spec.md`
+- Kế hoạch: `specs/100-ai-recommendations/101-listening-history-analysis/plan.md`
+- Danh sách task: `specs/100-ai-recommendations/101-listening-history-analysis/tasks.md`
+- Mô hình dữ liệu: `specs/100-ai-recommendations/101-listening-history-analysis/data-model.md`
+- API Contract: `specs/100-ai-recommendations/101-listening-history-analysis/contracts/listening-analysis-api.json`
+- Kịch bản nghiệm thu: `specs/100-ai-recommendations/101-listening-history-analysis/quickstart.md`
+- Use Case: `docs/requirements/use-cases/100-ai-recommendations/UC-100-001-view-listening-history-analysis.md`
+- File UI hiện tại: `src/frontend/src/pages/History/HistoryPage.jsx`
+
+Các nguyên tắc kỹ thuật bắt buộc (Invariants):
+1. Thuần túy thống kê xác định (FR-009): Tính toán trực tiếp bằng SQL Aggregation từ PostgreSQL, TUYỆT ĐỐI KHÔNG dùng AI hay gọi Python AI service.
+2. Ranh giới module (FR-004, FR-011): Feature 101 CHỈ sở hữu Tổng thời lượng nghe và Top thể loại. Trong `HistoryPage.jsx`, phải XÓA BỎ phần UI và tính toán của "Nghệ sĩ nghe nhiều nhất" và "Bài hát nghe nhiều nhất" (dòng 133–163) vì thuộc sở hữu của Group 070.
+3. Nguồn dữ liệu duy nhất (FR-003): Chỉ dùng `listening_history` join `songs`. Loại bỏ bản ghi có `user_id` null, `song_id` null, hoặc `duration <= 0`. Không dùng likes, follows hay `user_listening_stats`.
+4. Quy tắc xếp hạng thể loại (FR-014): Xếp theo thời lượng tích lũy (`accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`). Tính `percentage` theo tổng thời lượng thể loại.
+5. Thiếu dữ liệu (FR-007, FR-012, SC-002): Cần tối thiểu 1 bản ghi hợp lệ. Nếu ít hơn, trả về `hasSufficientData: false`, hiển thị thẻ Empty State *"Chưa có đủ dữ liệu để phân tích"* kèm nút CTA *"Khám phá nhạc"*. Tuyệt đối không bịa đặt số liệu giả mạo.
+6. Bảo mật & Cô lập tài khoản (Nghị định 13/2023/NĐ-CP): Bắt buộc Bearer JWT token. SQL query lọc `WHERE lh.user_id = $authenticated_user_id`. Không có token trả về HTTP 401 code `"UNAUTHORIZED"`.
+7. Bộ lọc thời gian: Hỗ trợ query parameter `range` với 3 giá trị `'7'`, `'30'`, `'all'` (mặc định `'all'`).
+8. Cập nhật động (FR-013): Tính lại số liệu mỗi khi người dùng mở lại tab "Thống kê".
+
+Hãy thực hiện đầy đủ các task từ T001 đến T029 theo 6 Phase trong `tasks.md`:
+- Setup migration index `(user_id, played_at)`, response envelope, test harness dependencies.
+- Foundational repository helper, JWT auth guard, stats router mounting, statsService adapter.
+- Playback duration & top genres dynamic calculation (US1 - MVP).
+- Insufficient data handling (< 1 record) & database error 500 (US2).
+- Privacy & account isolation verification (US3).
+- Final Polish: Document update, component test, và xác minh 4 kịch bản trong `quickstart.md`.
+
+Sau khi hoàn tất, hãy báo cáo danh sách file đã tạo/sửa đổi, kết quả chạy test và các kịch bản nghiệm thu đã đạt.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Kiểm tra môi trường và tiếp nhận artifact thiết kế**:
+  - Xác nhận nhánh hiện tại `101-listening-history-analysis`.
+  - Khảo sát kỹ lưỡng các tài liệu thiết kế: `spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/listening-analysis-api.json`, `quickstart.md`, use case `UC-100-001`.
+- **Thực thi tuần tự toàn bộ 29 nhiệm vụ kỹ thuật (T001 – T029) qua 6 Phase**:
+  - **Phase 1: Setup Infrastructure & Environment (T001 – T004)**:
+    - Bổ sung cấu hình `vitest`, `supertest` vào `devDependencies` trong `src/backend/package.json` (T001).
+    - Tạo migration `src/database/migrations/002_listening_history_index.sql` tạo compound index `idx_listening_history_user_played` trên `listening_history(user_id, played_at)` tối ưu truy vấn dưới 1.5s cho 10,000 bản ghi (T002).
+    - Tạo mock stats service `src/frontend/src/services/mock/mockStatsService.js` với phương thức `getMockListeningAnalysis(range)` bám sát OpenAPI schema (T003).
+    - Tạo helper `src/backend/utils/statsResponse.js` định dạng response envelope `{ success, message, data, error }` theo API contract (T004).
+  - **Phase 2: Foundational Prerequisites (T005 – T008)**:
+    - Tạo repository helper `src/backend/repositories/historyRepository.js` thực thi SQL aggregation động kết nối `listening_history` join `songs`, hỗ trợ in-memory fallback và mô phỏng lỗi DB (T005).
+    - Cập nhật `src/backend/middleware/authMiddleware.js` hỗ trợ chuẩn hóa lỗi 401 envelope `UNAUTHORIZED` cho các route `/stats` (T006).
+    - Tạo router `src/backend/routes/statsRoutes.js` và mount route `/api/v1/users/me/stats` trong `src/backend/server.js` (T007).
+    - Tạo frontend API adapter `src/frontend/src/services/statsService.js` hỗ trợ chuyển đổi linh hoạt giữa Live Backend và Mock qua cờ `VITE_USE_MOCKS` (T008).
+  - **Phase 3: User Story 1 - Review Listening Insights (T009 – T017) 🎯 MVP**:
+    - Viết unit test `src/backend/tests/services/listeningAnalysisService.test.js` kiểm tra format duration (`0s` -> `"0 phút"`, `45s` -> `"1 phút"`, `3660s` -> `"1 giờ 1 phút"`, `48250s` -> `"13 giờ 24 phút"`), tính tổng thời lượng, và tie-breaking 3 bậc (`accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`) (T009).
+    - Viết contract test `src/backend/tests/contracts/listeningAnalysisContract.test.js` xác thực tính tương thích với OpenAPI schema (T010).
+    - Hoàn thiện truy vấn `findListeningAnalysis(userId, range)` trong `historyRepository.js` lọc nghiêm ngặt `user_id = $1`, `duration > 0`, non-null references (T011).
+    - Cài đặt `calculateListeningAnalysis(userId, range)` trong `src/backend/services/listeningAnalysisService.js` tính tỉ lệ `percentage = (accumulated_seconds / total_genre_duration) * 100` và loại bỏ bài hát không có `genre` khỏi xếp hạng nhưng vẫn giữ thời lượng trong tổng số (T012).
+    - Cài đặt controller `getListeningAnalysis` trong `src/backend/controllers/statsController.js` validate `range` enum `['7', '30', 'all']` (T013).
+    - Đăng ký route `GET /listening-analysis` với guard `authenticateToken` (T014).
+    - Cài đặt phương thức `getListeningAnalysis(range)` trong `statsService.js` gửi kèm header `Authorization: Bearer <token>` (T015).
+    - Cài đặt in-memory fallback trong `mockStatsService.js` phục vụ chế độ demo (T016).
+    - Tái cấu trúc tab "Thống kê" trong `src/frontend/src/pages/History/HistoryPage.jsx`: Xóa bỏ 100% phần UI và tính toán "Nghệ sĩ nghe nhiều nhất" và "Bài hát nghe nhiều nhất" (dòng 133–163 cũ) để bảo vệ ranh giới sở hữu của Group 070 (FR-004, FR-011); kết nối `statsService`, render 3 thẻ Stat và thanh tiến độ thể loại tỷ lệ trực quan (T017).
+  - **Phase 4: User Story 2 - Understand Insufficient or Unavailable Data (T018 – T022)**:
+    - Viết unit test `src/backend/tests/services/insufficientData.test.js` kiểm tra trường hợp tài khoản có 0 bản ghi hoặc bản ghi không hợp lệ, và lỗi DB 500 (T018).
+    - Bổ sung đánh giá ngưỡng `< 1` bản ghi hợp lệ trả về `hasSufficientData: false`, `topGenres: []`, `totalDurationSeconds: 0` trong `listeningAnalysisService.js` (T019).
+    - Bổ sung khối catch lỗi cơ sở dữ liệu / timeout trả về HTTP 500 mã `"DATABASE_ERROR"` trong `statsController.js` (T020).
+    - Cài đặt điều kiện 0-record trong `mockStatsService.js` (T021).
+    - Cập nhật hiển thị Empty State trong `HistoryPage.jsx` với tiêu đề _"Chưa có đủ dữ liệu để phân tích"_ kèm nút CTA _"Khám phá nhạc"_ và toast thông báo khi xảy ra lỗi 500 mà không làm crash giao diện (T022).
+  - **Phase 5: User Story 3 - Privacy and Account Data Isolation (T023 – T026)**:
+    - Viết integration test `src/backend/tests/security/accountIsolation.test.js` kiểm thử request thiếu Bearer token, token hết hạn, cô lập dữ liệu User A vs User B, và ngăn chặn spoofing `user_id` qua query parameter (T023).
+    - Khóa chặt tham số truy vấn `$1` với `req.user.user_id` trong `historyRepository.js`, cấm hoàn toàn ghi đè `user_id` từ client (T024).
+    - Áp dụng middleware `authenticateToken` chặn request chưa đăng nhập ngay từ router trả về HTTP 401 code `"UNAUTHORIZED"` (T025).
+    - Bổ sung guard `LoginRequired` trong `HistoryPage.jsx` khi `store.currentUser` là null (T026).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T027 – T029)**:
+    - Cập nhật tài liệu hợp đồng `specs/100-ai-recommendations/101-listening-history-analysis/contracts/README.md` (T027).
+    - Viết component test `src/frontend/src/pages/History/__tests__/HistoryPage.test.jsx` kiểm thử format thời gian, tính toán mock aggregation, lọc time range và kiểm tra domain boundary (T028).
+    - Viết test tích hợp `src/backend/tests/integration/listeningQuickstartScenarios.test.js` và xác thực toàn diện cả 4 kịch bản nghiệm thu trong `quickstart.md` (T029).
+    - Đánh dấu hoàn thành toàn bộ `[X]` cho 29 task trong `tasks.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                | Quyết định   | Lý do                                                                                                                                                                            |
+| :------------------------------------------------------------------ | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Thuần túy thống kê xác định (Deterministic SQL Aggregation)         | Dùng toàn bộ | Tuân thủ Invariant 1 và FR-009: tính toán trực tiếp bằng SQL Aggregation từ cơ sở dữ liệu PostgreSQL, tuyệt đối không dùng AI hoặc gọi Python AI service.                        |
+| Ranh giới miền dữ liệu Module (Domain Boundaries với Group 070)     | Dùng toàn bộ | Tuân thủ Invariant 2, FR-004, FR-011: Feature 101 chỉ sở hữu Tổng thời lượng nghe và Top thể loại. Đã xóa bỏ toàn bộ UI và tính toán Top Artists và Top Songs trong HistoryPage. |
+| Nguồn dữ liệu duy nhất `listening_history` join `songs`             | Dùng toàn bộ | Tuân thủ Invariant 3 và FR-003: loại bỏ bản ghi có `user_id` null, `song_id` null, hoặc `duration <= 0`. Tuyệt đối không đọc `user_listening_stats`, likes hay follows.          |
+| Quy tắc xếp hạng thể loại 3 bậc & Tỉ lệ phần trăm                   | Dùng toàn bộ | Tuân thủ Invariant 4 và FR-014: xếp theo `accumulated_seconds DESC` -> `plays_count DESC` -> `genre_name ASC`. Tính `percentage` trên tổng thời lượng thể loại hợp lệ.           |
+| Trạng thái thiếu dữ liệu (Truthful Empty State khi < 1 bản ghi)     | Dùng toàn bộ | Tuân thủ Invariant 5, FR-007, FR-012, SC-002: trả về `hasSufficientData: false`, hiển thị thẻ Empty State kèm CTA "Khám phá nhạc", tuyệt đối không tạo số liệu giả mạo.          |
+| Bảo mật & Cô lập dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP       | Dùng toàn bộ | Tuân thủ Invariant 6, FR-005, FR-006: yêu cầu Bearer JWT token, SQL filter `WHERE user_id = $1`, cấm client override `user_id` qua query parameters.                             |
+| Bộ lọc thời gian động (`'7'`, `'30'`, `'all'`)                      | Dùng toàn bộ | Tuân thủ Invariant 7 và FR-013: hỗ trợ chuyển đổi khoảng thời gian và tính toán lại tức thì mỗi khi mở lại tab "Thống kê".                                                       |
+| Gọi Python AI service hoặc mô hình Machine Learning cho Feature 101 | Bỏ tuyệt đối | Tuân thủ nghiêm ngặt FR-009: Feature 101 là tính năng thống kê số liệu thuần túy, không có thành phần dự đoán hay sinh nội dung bằng AI.                                         |
+| Phần UI Top Artists và Top Tracks trên trang History                | Bỏ tuyệt đối | Đảm bảo ranh giới nghiệp vụ của dự án: các chức năng này thuộc quyền sở hữu độc quyền của Group 070 (History).                                                                   |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Feature 101 Tests:** Chạy `node --test` trên 5 test suites (`listeningAnalysisService.test.js`, `listeningAnalysisContract.test.js`, `insufficientData.test.js`, `accountIsolation.test.js`, `listeningQuickstartScenarios.test.js`), kết quả: **23/23 tests passed** (8 suites, 0 failures).
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **69/69 tests passed** (26 suites, 0 failures), component test `HistoryPage.test.jsx` và mock service hoạt động hoàn hảo trong 2.2s.
+- [x] **Kiểm tra 4 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Happy Path - Review Insights): Đạt (`hasSufficientData: true`, format thời lượng chuẩn tiếng Việt, Top thể loại sắp xếp giảm dần theo thời lượng).
+  - Scenario 2 (Insufficient History State): Đạt (tài khoản < 1 bản ghi trả về `hasSufficientData: false`, hiển thị Empty State kèm nút CTA "Khám phá nhạc", không bịa đặt số liệu).
+  - Scenario 3 (Account Isolation & Privacy): Đạt (yêu cầu JWT token, trả về HTTP 401 `UNAUTHORIZED` khi thiếu token, cô lập tuyệt đối dữ liệu User A và User B, cấm query param spoofing).
+  - Scenario 4 (Dynamic Refresh on New Playback Events): Đạt (tính toán lại tức thì số liệu và bổ sung thể loại mới khi người dùng ghi nhận lượt phát mới).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **29/29 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 38: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 102 – Personalized Recommendations bằng `/speckit-implement`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations/`)                                                                                                                                                                                                                                                                                                                               |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 34 nhiệm vụ kỹ thuật (T001 – T034) thuộc 7 Phase cho Feature 102 (Personalized Recommendations) trên nhánh `102-personalized-recommendations`, hiện thực hóa cơ chế gợi ý đa thực thể (Songs, Albums, Artists, Playlists) kết nối với Python AI microservice kèm cơ chế timeout 2.5s và graceful degradation, xử lý Cold-Start mượt mà cho tài khoản mới hoặc vừa xóa lịch sử nghe, và cô lập tài khoản theo Nghị định 13/2023/NĐ-CP. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement Bạn hãy đóng vai trò Senior Fullstack & AI Engineer triển khai trọn vẹn Feature 102 (Personalized Recommendations) thuộc Group 100 (AI Recommendations) trên nhánh `102-personalized-recommendations` của dự án AuraTune.
+
+Hãy nghiên cứu kỹ các tài liệu thiết kế sau trước khi viết mã:
+- Đặc tả: `specs/100-ai-recommendations/102-personalized-recommendations/spec.md`
+- Kế hoạch: `specs/100-ai-recommendations/102-personalized-recommendations/plan.md`
+- Danh sách task: `specs/100-ai-recommendations/102-personalized-recommendations/tasks.md`
+- Mô hình dữ liệu: `specs/100-ai-recommendations/102-personalized-recommendations/data-model.md`
+- API Contract: `specs/100-ai-recommendations/102-personalized-recommendations/contracts/personalized-recommendations-api.json`
+- Kịch bản nghiệm thu: `specs/100-ai-recommendations/102-personalized-recommendations/quickstart.md`
+- Use Case: `docs/requirements/use-cases/100-ai-recommendations/UC-100-002-receive-personalized-recommendations.md`
+- Giao diện hiện tại: `src/frontend/src/pages/Home/HomePage.jsx`
+
+Các nguyên tắc bất biến (Invariants) bắt buộc tuân thủ:
+1. Đa thực thể & Tương tác 1-Click (FR-002, FR-007, SC-004): Gợi ý gồm 4 loại thực thể (Songs, Albums, Artists, Playlists). Click vào Song phát ngay qua `PlayerContext.playTrack()`; click vào Album/Artist/Playlist chuyển ngay sang trang chi tiết (`/album/:id`, `/artist/:id`, `/playlist/:id`).
+2. Tín hiệu đầu vào chuẩn (FR-009): Chỉ lấy các lượt nghe >= 30 giây từ `listening_history`, các bài thích từ `user_liked_songs`, và nghệ sĩ theo dõi từ `user_follows_artist`. Bỏ qua bản ghi có ID null.
+3. Cold-Start Fallback (FR-005, SC-002): Nếu tài khoản có < 3 lượt nghe qualifying hoặc vừa xóa lịch sử nghe, lập tức trả về bài hát phổ biến và playlist chính thức với badge "Phổ biến" / "Thịnh hành" (`is_fallback: true`, `fallback_reason: "COLD_START"`). Tuyệt đối không để màn hình trống hay báo lỗi.
+4. Chịu lỗi AI & Timeout 2.5s (FR-006, SC-003, EF-01): Lời gọi sang Python AI service phải bọc timeout 2.5 giây. Nếu quá 2.5s hoặc lỗi 5xx, backend PHẢI bắt lỗi và trả về HTTP 200 nội dung thịnh hành (`fallback_reason: "AI_SERVICE_UNAVAILABLE"`). Frontend hiển thị `FallbackNoticeBanner` nhẹ nhàng, không làm sập Trang chủ.
+5. Hydration & Khử trùng lặp (FR-008, FR-015): Lọc bỏ hoàn toàn các thực thể đã bị xóa/vô hiệu hóa trong catalog. Khử trùng lặp theo cặp `(type, id)`.
+6. Bảo mật & Cô lập tài khoản (Nghị định 13/2023/NĐ-CP): Bắt buộc Bearer JWT token. SQL query lọc `WHERE user_id = :auth_user_id`. Chưa đăng nhập trả về HTTP 401 code "UNAUTHORIZED".
+7. Ranh giới module: Không tính thống kê thời lượng/thể loại (thuộc 101), không gợi ý mood/context (thuộc 103), không làm chat AI (thuộc 120).
+
+Hãy thực hiện đầy đủ các task từ T001 đến T034 theo 7 Phase trong `tasks.md`:
+- Setup config timeout 2.5s, AI client, response helper, mock skeleton.
+- Foundational signal repository, catalog repository, catalog hydration service, recommendationRoutes.
+- Personalized multi-entity workflow, controller, RecommendedItemCard, RecommendationFeed nhúng vào HomePage (US1 - MVP).
+- Cold-Start detection (< 3 plays) & popular fallback (US2).
+- AI downtime resilience & FallbackNoticeBanner (US3).
+- Privacy & JWT account isolation (US4).
+- Final Polish: Contract doc, component test, và xác minh 5 kịch bản trong `quickstart.md`.
+
+Sau khi hoàn tất, hãy báo cáo danh sách file đã tạo/sửa đổi, kết quả chạy test và các kịch bản nghiệm thu đã đạt.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Khởi tạo và kiểm tra tiền điều kiện:**
+  - Kiểm tra branch làm việc `102-personalized-recommendations`, working tree sạch sẽ.
+  - Rà soát toàn bộ các tài liệu thiết kế: `spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/personalized-recommendations-api.json`, `quickstart.md`, `UC-100-002` và checklist chất lượng `checklists/requirements.md` (16/16 mục checked).
+
+- **Thực thi đầy đủ 34 nhiệm vụ kỹ thuật (T001 – T034) qua 7 Phase:**
+  - **Phase 1: Setup Infrastructure & Client Configuration (T001 – T004):**
+    - Tạo `src/backend/config/aiConfig.js` cấu hình URL microservice AI và strict timeout 2.5s (`AI_SERVICE_TIMEOUT_MS = 2500`) (T001).
+    - Tạo `src/backend/clients/aiServiceClient.js` gọi `POST /ai/recommend` với cơ chế bọc `AbortController` timeout 2500ms (T002).
+    - Tạo mock skeleton `src/frontend/src/services/mock/mockRecommendationService.js` chứa dữ liệu mẫu đa thực thể theo đúng schema OpenAPI (T003).
+    - Tạo helper `src/backend/utils/recommendationResponse.js` chuẩn hóa envelope `{ success, message, data, error }` (T004).
+    - Bổ sung endpoint `POST /ai/recommend` trong `src/ai-service/main.py` nhận tín hiệu sở thích và trả về danh sách ứng viên (candidates).
+  - **Phase 2: Foundational Prerequisites (T005 – T009):**
+    - Tạo `src/backend/repositories/preferenceSignalRepository.js` lọc lịch sử nghe đủ chuẩn ($\ge 30$s), bài hát yêu thích và nghệ sĩ theo dõi, gắn chặt với định danh người dùng authenticated caller (T005).
+    - Tạo `src/backend/repositories/catalogRepository.js` truy vấn thực thể catalog hoạt động (`is_active = true` và `deleted_at IS NULL`), bài hát phổ biến (`total_plays DESC`) và official starter playlists (T006).
+    - Tạo `src/backend/services/catalogHydrationService.js` hydrate metadata hiển thị (`title`, `subtitle`, `image_url`, `badge`, `target_id`, `extra`), tự động loại bỏ thực thể bị xóa/inactive và khử trùng lặp `(type, id)` (T007).
+    - Tạo router `src/backend/routes/recommendationRoutes.js` và mount `/api/v1/recommendations` trong `src/backend/server.js` (T008).
+    - Tạo frontend API adapter `src/frontend/src/services/recommendationService.js` hỗ trợ chuyển đổi linh hoạt giữa Live Backend và Mock qua cờ `VITE_USE_MOCKS` (T009).
+  - **Phase 3: User Story 1 - Personalized Multi-Entity Recommendations & 1-Click Interaction (T010 – T018) 🎯 MVP:**
+    - Viết unit test `src/backend/tests/services/recommendationService.test.js` kiểm tra hydration 4 loại thực thể, lọc bỏ thực thể đã xóa (FR-008), và khử trùng lặp `(type, id)` (T010).
+    - Viết contract test `src/backend/tests/contracts/personalizedRecommendationsContract.test.js` xác thực tính tương thích với OpenAPI schema cho `/personalized` và alias `/songs` (T011).
+    - Cài đặt pipeline gợi ý cá nhân hóa hoàn chỉnh trong `src/backend/services/recommendationService.js` (T012).
+    - Cài đặt controller `getPersonalizedRecommendations` và `getRecommendedSongs` trong `src/backend/controllers/recommendationController.js` validate query params `type` và `limit` (1..50) (T013).
+    - Đăng ký route handlers kèm guard `authenticateToken` trong `recommendationRoutes.js` (T014).
+    - Hoàn thiện phương thức `getPersonalizedRecommendations` gửi kèm Bearer JWT header trong client frontend (T015).
+    - Xây dựng component `src/frontend/src/components/recommendation/RecommendedItemCard.jsx` hiển thị card đa thực thể kèm tương tác 1-click: bài hát phát ngay qua `player.playTrack()`, album/artist/playlist điều hướng tới `/album/:id`, `/artist/:id`, `/playlist/:id` (T016).
+    - Xây dựng container feed `src/frontend/src/components/recommendation/RecommendationFeed.jsx` quản lý loading skeleton, empty states và responsive grid (T017).
+    - Nhúng `RecommendationFeed` vào section "Có thể bạn sẽ thích" trong `src/frontend/src/pages/Home/HomePage.jsx` (T018).
+  - **Phase 4: User Story 2 - Cold-Start Experience (T019 – T023):**
+    - Viết unit test `src/backend/tests/services/coldStartEvaluation.test.js` kiểm tra tài khoản có 0 lượt nghe, < 3 lượt nghe qualifying hoặc vừa xóa lịch sử nghe (T019).
+    - Tích hợp điều kiện phát hiện Cold-Start trong `recommendationService.js` ngay lập tức phục vụ nội dung thịnh hành (T020).
+    - Gán nhãn badge `"Phổ biến"` cho bài hát và `"Thịnh hành"` cho playlist trong `catalogHydrationService.js` khi ở chế độ fallback (T021).
+    - Cài đặt mock generator cold-start trong `mockRecommendationService.js` (T022).
+    - Xác minh `RecommendationFeed.jsx` và `RecommendedItemCard.jsx` hiển thị đúng badge không để màn hình trắng hay báo lỗi (T023).
+  - **Phase 5: User Story 3 - Resilient Handling of AI Downtime (T024 – T027):**
+    - Viết resilience test `src/backend/tests/faultTolerance/aiDowntimeResilience.test.js` mô phỏng mất kết nối mạng, lỗi AI 500 và AI phản hồi chậm quá 2.5s (T024).
+    - Bọc khối `try...catch` fault-tolerance quanh lời gọi `aiServiceClient.getRecommendations()` trong `recommendationService.js`: tự động bắt lỗi và trả về HTTP 200 nội dung thịnh hành kèm message bảo trì trong 2.6s (T025).
+    - Xây dựng component banner `src/frontend/src/components/recommendation/FallbackNoticeBanner.jsx` hiển thị thông báo nhẹ nhàng (T026).
+    - Gắn `FallbackNoticeBanner` trong `RecommendationFeed.jsx` phía trên grid khi `fallback_reason === "AI_SERVICE_UNAVAILABLE"`, không gây cản trở trải nghiệm nghe nhạc (T027).
+  - **Phase 6: User Story 4 - Private and Isolated Recommendation Access (T028 – T031):**
+    - Viết security & privacy test `src/backend/tests/security/recommendationPrivacy.test.js` kiểm thử chặn 401 khi thiếu token, token giả mạo, chặn 403 khi tài khoản bị khóa, và cô lập dữ liệu User A vs User B (T028).
+    - Khóa chặt tham số truy vấn với `req.user.user_id`, cấm spoofing qua query parameter `?user_id=` (T029).
+    - Cập nhật middleware `authenticateToken` trong `authMiddleware.js` trả về HTTP 401 `UNAUTHORIZED` và HTTP 403 `ACCOUNT_BANNED` chuẩn OpenAPI envelope (T030).
+    - Cập nhật `RecommendationFeed.jsx` hiển thị nội dung phổ biến cho khách vãng lai chưa đăng nhập mà không gọi API riêng tư (T031).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T032 – T034):**
+    - Cập nhật tài liệu hợp đồng `specs/100-ai-recommendations/102-personalized-recommendations/contracts/README.md` (T032).
+    - Viết component test `src/frontend/tests/components/RecommendationFeed.test.jsx` kiểm thử hiển thị card, tương tác 1-click, badge và fallback banner (T033).
+    - Viết test tích hợp `src/backend/tests/integration/recommendationQuickstartScenarios.test.js` xác thực toàn diện cả 5 kịch bản nghiệm thu trong `quickstart.md` (T034).
+    - Đánh dấu hoàn tất toàn bộ 34/34 tasks trong `tasks.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                            | Quyết định   | Lý do                                                                                                                                                                                                                              |
+| :-------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Gợi ý Đa thực thể (Multi-Entity: Song, Album, Artist, Playlist) | Dùng toàn bộ | Tuân thủ Invariant 1, FR-002: người nghe nhận gợi ý phong phú gồm cả bài hát, tuyển tập, nghệ sĩ và album.                                                                                                                         |
+| Tương tác 1-Click (1-Click Interaction Dispatch)                | Dùng toàn bộ | Tuân thủ Invariant 1, FR-007, SC-004: click Song phát ngay qua `player.playTrack()`; click Album/Artist/Playlist điều hướng ngay sang trang chi tiết.                                                                              |
+| Chuẩn hóa tín hiệu đầu vào ($\ge 30$s, likes, follows)          | Dùng toàn bộ | Tuân thủ Invariant 2, FR-009: chỉ lấy lượt nghe $\ge 30$ giây từ `listening_history`, bài hát thích và nghệ sĩ theo dõi của chính caller. Loại bỏ bản ghi có ID null.                                                              |
+| Cơ chế Cold-Start Fallback (< 3 plays, purged history)          | Dùng toàn bộ | Tuân thủ Invariant 3, FR-005, SC-002: tài khoản mới hoặc vừa xóa lịch sử nghe lập tức nhận bài hát phổ biến và playlist chính thức với badge "Phổ biến" / "Thịnh hành", không để màn hình trống hay báo lỗi.                       |
+| Chịu lỗi AI & Strict Timeout 2.5s (Graceful Degradation)        | Dùng toàn bộ | Tuân thủ Invariant 4, FR-006, SC-003, EF-01: bọc `AbortController` 2500ms; khi timeout hoặc 5xx, backend bắt lỗi trả về HTTP 200 nội dung thịnh hành, frontend hiển thị `FallbackNoticeBanner` nhẹ nhàng, không làm sập Trang chủ. |
+| Catalog Hydration & Khử trùng lặp `(type, id)`                  | Dùng toàn bộ | Tuân thủ Invariant 5, FR-008, FR-015: lọc bỏ hoàn toàn thực thể bị xóa/inactive trong database catalog, khử trùng lặp các cặp `(type, id)` giống nhau.                                                                             |
+| Cô lập dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP             | Dùng toàn bộ | Tuân thủ Invariant 6, FR-003, FR-004, SC-001: bắt buộc Bearer JWT token, lọc dữ liệu theo `WHERE user_id = :auth_user_id`, chặn tuyệt đối việc client spoofing `user_id` qua query parameter.                                      |
+| Giới hạn phạm vi Module (Domain Boundary)                       | Dùng toàn bộ | Tuân thủ Invariant 7: không tính toán thống kê lịch sử (thuộc 101), không gợi ý ngữ cảnh/tâm trạng (thuộc 103), không làm chatbox hội thoại AI (thuộc 120).                                                                        |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Feature 102 Tests:** Chạy `node --test` trên 6 test suites (`recommendationService.test.js`, `personalizedRecommendationsContract.test.js`, `coldStartEvaluation.test.js`, `aiDowntimeResilience.test.js`, `recommendationPrivacy.test.js`, `recommendationQuickstartScenarios.test.js`), kết quả: **27/27 tests passed** (9 suites, 0 failures) trong 7.5s.
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **77/77 tests passed** (30 suites, 0 failures), component test `RecommendationFeed.test.jsx` và mock service hoạt động hoàn hảo trong 2.4s.
+- [x] **Kiểm tra hồi quy toàn bộ Backend Test Suite:** Chạy `node --test "src/backend/tests/**/*.test.js"`, kết quả: **157/157 tests passed** (40 suites, 0 failures) trong 14.7s.
+- [x] **Kiểm tra 5 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Standard Feed & 1-Click Interaction - US1): Đạt (`is_fallback: false`, gợi ý đa thực thể không trùng lặp, click bài hát phát ngay, click album/artist/playlist chuyển trang chi tiết).
+  - Scenario 2 (Cold-Start Fallback - US2): Đạt (tài khoản < 3 lượt nghe hoặc 0 bản ghi nhận HTTP 200 `is_fallback: true`, `fallback_reason: "COLD_START"`, hiển thị badge "Phổ biến" và "Thịnh hành").
+  - Scenario 3 (AI Service Downtime & Graceful Degradation - US3): Đạt (khi microservice AI mất kết nối hoặc quá 2.5s, backend bắt lỗi trả về HTTP 200 trong 2.6s, frontend hiển thị `FallbackNoticeBanner` nhẹ nhàng).
+  - Scenario 4 (Account Privacy & Boundary Isolation - US4): Đạt (chặn 401 khi thiếu token, token User A không thể đọc dữ liệu User B, query param spoofing bị vô hiệu hóa hoàn toàn).
+  - Scenario 5 (Transition to Cold-Start Following History Purge - AF-03): Đạt (sau khi xóa lịch sử nghe ở Group 070, request gợi ý lập tức chuyển về baseline Cold-Start).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **34/34 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 39: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`
+
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations/`)                                                                                                                                                                                                                                                                                                                                                                            |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Mục đích                 | Triển khai hoàn chỉnh toàn bộ 37 nhiệm vụ kỹ thuật (T001 – T037) thuộc 7 Phase cho Feature 103 (Mood and Context Recommendations) trên nhánh `103-mood-and-context-recommendations` theo chuẩn Test-Driven Development (TDD), giới hạn nghiêm ngặt taxonomy đúng 8 preset tags chuẩn, hạn chế thực thể trả về chỉ gồm Songs và Curated Mood Playlists, bọc timeout cứng 2.5s khi gọi Python AI service kèm graceful degradation về catalog cục bộ, xử lý empty state với 2-3 gợi ý thay thế, và cô lập tài khoản. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement Bạn là Kỹ sư Full-stack cao cấp cho dự án AuraTune (Node.js/Express + React/Vite). Hãy triển khai hoàn chỉnh Feature 103: Mood and Context Recommendations thuộc Group 100 theo tiêu chuẩn Test-Driven Development (TDD).
+
+Vui lòng đọc và tuân thủ tuyệt đối các file sau:
+1. specs/100-ai-recommendations/103-mood-and-context-recommendations/spec.md
+2. specs/100-ai-recommendations/103-mood-and-context-recommendations/plan.md
+3. specs/100-ai-recommendations/103-mood-and-context-recommendations/tasks.md
+4. specs/100-ai-recommendations/103-mood-and-context-recommendations/data-model.md
+5. specs/100-ai-recommendations/103-mood-and-context-recommendations/contracts/mood-context-recommendations-api.json
+6. specs/100-ai-recommendations/103-mood-and-context-recommendations/quickstart.md
+7. docs/requirements/use-cases/100-ai-recommendations/UC-100-003-discover-music-by-mood-and-context.md
+
+Các nguyên tắc bất biến (Non-negotiables):
+- TAXONOMY: Chỉ hỗ trợ đúng 8 tags chuẩn: 4 moods (chill, energetic, melancholy, focus) và 4 contexts (study_work, workout, late_night, travel_commute). Bất kỳ tag nào khác phải bị chặn với HTTP 400 INVALID_MOOD_TAG.
+- THỰC THỂ: Chỉ trả về individual songs và curated mood playlists. Tuyệt đối KHÔNG trả về albums hay artists.
+- RANH GIỚI: Không nhầm lẫn với thống kê nghe nhạc (101), gu tổng thể (102), search text (030), hay chat bot (120).
+- RESILIENCE: Cuộc gọi AI Service có timeout cứng 2.5s. Nếu timeout hoặc AI chết, fallback về local playlist trong DB kèm cờ `is_service_degraded: true`. Không được trả về lỗi 500.
+- EMPTY STATE: Tag không có nhạc trả về HTTP 200 với mảng items rỗng và 2-3 `alternative_suggestions`.
+- UI/UX: Single-select tag; dùng AbortController chống race condition khi switch tag nhanh; in-memory cache TTL 5 phút để chuyển đổi < 50ms.
+- BẢO MẬT: Bắt buộc Bearer JWT (HTTP 401 nếu thiếu); tuân thủ Nghị định 13/2023/NĐ-CP (lựa chọn mood chỉ mang tính tạm thời theo phiên).
+
+Kế hoạch thực hiện:
+Lần lượt hoàn thành toàn bộ 37 tasks từ T001 đến T037 qua 7 phases:
+- Phase 1: Setup & Environment Configuration (T001 - T003)
+- Phase 2: Foundational Components & Taxonomy Setup (T004 - T009)
+- Phase 3: User Story 1 - Discover Music by Selected Mood/Context Tag (MVP Core) (T010 - T019)
+- Phase 4: User Story 2 - Empty Results & Active Alternative Suggestions (T020 - T023)
+- Phase 5: User Story 3 - AI Service Outage & 2.5s Timeout Graceful Degradation (T024 - T028)
+- Phase 6: User Story 4 - Data Privacy & Account Isolation (T029 - T031)
+- Phase 7: Polish, Quality Assurance & Quickstart Verification (T032 - T037)
+
+Sau khi hoàn thành, hãy chạy toàn bộ test suite và đối chiếu với 5 kịch bản trong quickstart.md để chứng minh tính năng hoạt động 100% hoàn hảo.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Khởi tạo và kiểm tra tiền điều kiện:**
+  - Khởi tạo và checkout sang nhánh làm việc `103-mood-and-context-recommendations`.
+  - Kiểm tra `.specify/extensions.yml` (không tồn tại, bỏ qua hook an toàn).
+  - Rà soát toàn bộ các tài liệu thiết kế: `spec.md`, `plan.md`, `tasks.md`, `data-model.md`, `contracts/mood-context-recommendations-api.json`, `quickstart.md`, `UC-100-003` và checklist chất lượng `checklists/requirements.md` (16/16 mục đạt yêu cầu).
+
+- **Thực thi tuần tự toàn bộ 37 nhiệm vụ kỹ thuật (T001 – T037) qua 7 Phase:**
+  - **Phase 1: Setup Infrastructure & Taxonomy Configuration (T001 – T005):**
+    - Cấu hình cài đặt kết nối và timeout microservice AI (`AI_SERVICE_URL`, `AI_SERVICE_TIMEOUT_MS = 2500`) trong `src/backend/config/aiConfig.js` (T001).
+    - Tạo hằng số taxonomy 8 preset tags chuẩn (`chill`, `energetic`, `melancholy`, `focus`, `study_work`, `workout`, `late_night`, `travel_commute`) phân theo 2 nhóm (`mood`, `context`) kèm icon và gradient màu trong `src/backend/constants/moodTaxonomy.js` (T002).
+    - Bổ sung phương thức client nội bộ `getMoodRecommendations` trong `src/backend/clients/aiServiceClient.js` gọi `POST /ai/recommend/mood` với `AbortController` timeout cứng 2.5s; đồng thời bổ sung endpoint `POST /ai/recommend/mood` trong `src/ai-service/main.py` (T003).
+    - Tạo helper `src/backend/utils/moodResponse.js` chuẩn hóa envelope `{ success, message, data, error }` theo OpenAPI contract (T004).
+    - Tạo mock service skeleton `src/frontend/src/services/mock/mockMoodRecommendationService.js` với 8 tags và dữ liệu giả lập đa hình (`song`, `playlist`) (T005).
+  - **Phase 2: Foundational Prerequisites (T006 – T009):**
+    - Tạo `src/backend/repositories/moodCatalogRepository.js` truy vấn songs đang hoạt động (`is_active = true` và `deleted_at IS NULL`) và public mood playlists (`status = 'Public'`) theo tag (T006).
+    - Tạo `src/backend/services/moodCatalogHydrationService.js` hydrate metadata hiển thị, khử trùng lặp `(type, id)`, và lọc bỏ triệt để các thực thể album, artist, private playlist hoặc bài hát bị xóa (T007).
+    - Tạo router `src/backend/routes/moodRecommendationRoutes.js` và mount `/api/v1/recommendations/mood-context` trong `src/backend/server.js` (T008).
+    - Tạo frontend API adapter `src/frontend/src/services/moodRecommendationService.js` hỗ trợ chuyển đổi linh hoạt Mock/Live qua `VITE_USE_MOCKS`, tích hợp `AbortController` chống race condition và bộ đệm in-memory cache TTL 5 phút (T009).
+  - **Phase 3: User Story 1 - Discover Music by Mood or Context (T010 – T019) 🎯 MVP:**
+    - Viết unit test `src/backend/tests/services/moodRecommendationService.test.js` kiểm thử tag resolution, entity restriction (chỉ song và playlist), khử trùng lặp `(type, id)`, và lọc entity type (`song`/`playlist`) (T010).
+    - Viết contract test `src/backend/tests/contracts/moodContextRecommendationsContract.test.js` xác thực tính tương thích với OpenAPI schema cho `GET /tags` và `GET /` (T011).
+    - Cài đặt workflow điều phối gợi ý theo tâm trạng trong `src/backend/services/moodRecommendationService.js` (T012).
+    - Cài đặt controller `getMoodContextTags` và `getMoodContextRecommendations` trong `src/backend/controllers/moodRecommendationController.js` validate query params `tag`, `type` và `limit` (T013).
+    - Đăng ký endpoint `router.get('/tags')` và `router.get('/')` kèm guard `authenticateToken` trong `moodRecommendationRoutes.js` (T014).
+    - Cài đặt các phương thức client frontend gửi kèm Bearer JWT token (T015).
+    - Xây dựng component thanh cuộn ngang `src/frontend/src/components/mood/MoodChipBar.jsx` render 8 chips với trạng thái active, icon và visual gradient tokens (T016).
+    - Xây dựng component card `src/frontend/src/components/mood/MoodItemCard.jsx` hiển thị artwork, title, subtitle, badge và tương tác 1-click: bài hát phát ngay qua `player.playTrack()`, playlist chuyển sang `/playlist/:id` (T017).
+    - Xây dựng container `src/frontend/src/components/mood/MoodDiscoverySection.jsx` phối hợp chip bar, card grid, loading skeleton và player context (T018).
+    - Tạo trang `src/frontend/src/pages/Discovery/MoodDiscoveryPage.jsx` và nhúng `MoodDiscoverySection` trực tiếp vào luồng khám phá Trang chủ `src/frontend/src/pages/Home/HomePage.jsx` với tag mặc định ban đầu là `"chill"` (T019).
+  - **Phase 4: User Story 2 - Handle Unrecognized Inputs or Empty Results (T020 – T024):**
+    - Viết unit test `src/backend/tests/services/moodValidationAndAlternatives.test.js` kiểm tra whitelist 8 tags (chặn chuỗi ngoài danh mục) và thuật toán sinh 2–3 gợi ý thay thế (T020).
+    - Cài đặt kiểm tra whitelist trong controller trả về HTTP 400 mã `INVALID_MOOD_TAG` liệt kê danh sách các tag hợp lệ (T021).
+    - Cài đặt bộ sinh gợi ý thay thế trong `moodRecommendationService.js`: khi số lượng items sau hydration bằng 0, trả về `total_items: 0`, `items: []` kèm `alternative_suggestions` (T022).
+    - Xây dựng component `src/frontend/src/components/mood/MoodEmptyState.jsx` hiển thị thông điệp thân thiện kèm các chip gợi ý thay thế có thể click để đổi tag ngay (T023).
+    - Tích hợp `MoodEmptyState` vào `MoodDiscoverySection.jsx` hiển thị khi kết quả rỗng (T024).
+  - **Phase 5: User Story 3 - Resilient Handling of AI Service Outage (T025 – T028):**
+    - Viết integration test `src/backend/tests/integration/moodDegradationResilience.test.js` mô phỏng AI timeout (> 2.5s) và AI báo lỗi 500, xác thực hệ thống phản hồi HTTP 200 trong 52ms với `is_service_degraded: true` (T025).
+    - Cài đặt khối bọc `try...catch` trong `moodRecommendationService.js`: khi AI gặp sự cố hoặc timeout, tự động truy vấn public playlist và songs từ local catalog, gán `is_service_degraded: true` và bổ sung `fallback_shortcuts` (T026).
+    - Xây dựng component banner `src/frontend/src/components/mood/MoodDegradedBanner.jsx` hiển thị thông báo bảo trì nhẹ nhàng kèm lối tắt điều hướng (T027).
+    - Tích hợp `MoodDegradedBanner` vào `MoodDiscoverySection.jsx` khi `data.is_service_degraded === true`, bảo toàn 100% trải nghiệm nghe nhạc liên tục (T028).
+  - **Phase 6: User Story 4 - Account Isolation and Privacy (T029 – T032):**
+    - Viết security test `src/backend/tests/security/moodAccountIsolation.test.js` kiểm thử chặn 401 khi thiếu Bearer token, token sai lệch, cô lập phiên đồng thời giữa User A và User B, và đảm bảo không lộ PII trong response (T029).
+    - Áp dụng middleware `authenticateToken` trong `moodRecommendationRoutes.js` và chuẩn hóa thông báo 401 `"Yêu cầu đăng nhập để nhận gợi ý theo tâm trạng"` trong `authMiddleware.js` (T030).
+    - Đảm bảo phiên truy vấn tâm trạng mang tính tạm thời theo session, không ghi nhận vĩnh viễn dữ liệu nhạy cảm theo Nghị định 13/2023/NĐ-CP (T031).
+    - Bổ sung giao diện yêu cầu đăng nhập thân thiện trong `MoodDiscoverySection.jsx` khi nhận lỗi 401 (T032).
+  - **Final Phase: Polish & Cross-Cutting Concerns (T033 – T037):**
+    - Tích hợp bộ nhớ đệm in-memory client-side cache TTL 5 phút trong `moodRecommendationService.js`, phản hồi lại chip cũ trong $< 50$ms (T033).
+    - Triệt tiêu race condition bằng `AbortController` tự động hủy bỏ request cũ khi người dùng bấm đổi chip liên tục (T034).
+    - Viết component unit tests `src/frontend/tests/components/MoodChipBar.test.jsx` và `src/frontend/tests/components/MoodDiscoverySection.test.jsx` kiểm thử render, 1-click play, empty state, degraded banner và cache (T035).
+    - Cập nhật tài liệu hợp đồng tích hợp `specs/100-ai-recommendations/103-mood-and-context-recommendations/contracts/README.md` (T036).
+    - Viết test tích hợp `src/backend/tests/integration/moodQuickstartScenarios.test.js` và xác thực toàn diện cả 5 kịch bản nghiệm thu trong `quickstart.md` (T037).
+    - Đánh dấu hoàn tất `[X]` cho toàn bộ 37 tasks trong `tasks.md`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                         | Quyết định   | Lý do                                                                                                                                                                                            |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Taxonomy đúng 8 tags chuẩn (4 Moods + 4 Contexts)            | Dùng toàn bộ | Tuân thủ FR-002, SC-003: chỉ cho phép 8 tags được phê duyệt. Mọi tag khác bị từ chối bằng HTTP 400 `INVALID_MOOD_TAG`.                                                                        |
+| Giới hạn thực thể nghiêm ngặt (Chỉ Songs và Playlists)       | Dùng toàn bộ | Tuân thủ Invariant 2, FR-003: chỉ trả về bài hát và danh sách phát theo chủ đề. Lọc bỏ hoàn toàn các thực thể Albums và Artists tại tầng repository và hydration service.                       |
+| Tương tác 1-Click (1-Click Play & Navigate)                  | Dùng toàn bộ | Tuân thủ FR-007, SC-004: click bài hát phát ngay lập tức thông qua `PlayerContext.playTrack()`; click danh sách phát chuyển hướng ngay tới `/playlist/:id`.                                     |
+| Chịu lỗi AI & Timeout 2.5s (Graceful Degradation)            | Dùng toàn bộ | Tuân thủ FR-004, EF-01, SC-003: bọc `AbortController` 2500ms; khi AI chết hoặc timeout, tự động fallback về catalog local với `is_service_degraded: true`, HTTP 200, không bao giờ trả lỗi 500. |
+| Empty State & 2–3 Gợi ý thay thế chủ động                    | Dùng toàn bộ | Tuân thủ FR-004, AF-02: khi không có nội dung khớp, trả về mảng rỗng kèm 2–3 `alternative_suggestions` và UI hiển thị chip chuyển tag tức thì.                                                |
+| Bộ nhớ đệm in-memory (< 50ms) & AbortController              | Dùng toàn bộ | Tuân thủ AF-01: hủy bỏ yêu cầu đang bay khi chuyển tag nhanh để tránh race condition; cache in-memory 5 phút giúp mở lại tag đã xem tức thì không cần gọi mạng.                                |
+| Bảo mật & Cô lập tài khoản theo Nghị định 13/2023/NĐ-CP      | Dùng toàn bộ | Tuân thủ FR-005, FR-006, SC-001: bắt buộc Bearer JWT token, chưa đăng nhập trả về HTTP 401 `UNAUTHORIZED`. Lựa chọn tâm trạng chỉ mang tính tạm thời, không lộ chéo giữa các tài khoản.        |
+| Thực thể Albums và Artists trong kết quả gợi ý Feature 103  | Bỏ tuyệt đối | Đảm bảo ranh giới thiết kế của Feature 103: chỉ tập trung vào Songs và Curated Mood Playlists, không gợi ý Albums/Artists (vốn thuộc Feature 102).                                              |
+| Tính toán thống kê lịch sử nghe hoặc gu nghe nhạc tổng quát | Bỏ tuyệt đối | Phân định ranh giới module rõ ràng: thống kê nghe nhạc thuộc Feature 101, gu nghe nhạc cá nhân hóa tổng quát thuộc Feature 102.                                                                  |
+
+### Cách kiểm chứng
+
+- [x] **Kiểm tra tự động toàn bộ Backend Feature 103 Tests:** Chạy `node --test` trên 5 test suites (`moodRecommendationService.test.js`, `moodValidationAndAlternatives.test.js`, `moodDegradationResilience.test.js`, `moodAccountIsolation.test.js`, `moodContextRecommendationsContract.test.js`, `moodQuickstartScenarios.test.js`), kết quả: **21/21 tests passed** (0 failures).
+- [x] **Kiểm tra tự động toàn bộ Frontend Tests:** Chạy `npm --prefix src/frontend test`, kết quả: **84/84 tests passed** (36 suites, 0 failures), các component test `MoodChipBar.test.jsx` và `MoodDiscoverySection.test.jsx` pass 100%.
+- [x] **Kiểm tra hồi quy toàn bộ Backend Test Suite:** Chạy `npm --prefix src/backend test`, kết quả: **178/178 tests passed** (49 suites, 0 failures) trong 18.5s.
+- [x] **Kiểm tra 5 Kịch bản Nghiệm thu trong `quickstart.md`:**
+  - Scenario 1 (Standard Mood Stream - US1): Đạt (`is_service_degraded: false`, trả về các bài hát và playlist chính thức, 0 duplicate, 0 album/artist, click phát nhạc ngay).
+  - Scenario 2 (Empty Matches with Alternative Suggestions - US2): Đạt (khi tag không có kết quả, trả về HTTP 200 `total_items: 0`, `items: []` và 2–3 `alternative_suggestions`, UI hiển thị chip chuyển tag).
+  - Scenario 3 (AI Service Downtime & Graceful Degradation - US3): Đạt (khi AI microservice offline hoặc quá 2.5s, backend bắt lỗi trả về HTTP 200 trong 52ms kèm `fallback_shortcuts` và banner bảo trì nhẹ nhàng).
+  - Scenario 4 (Account Privacy & Boundary Isolation - US4): Đạt (chặn 401 khi thiếu token, chặn 400 mã `INVALID_MOOD_TAG` khi tag không thuộc 8 preset tags, cô lập hoàn toàn giữa User A và User B).
+  - Scenario 5 (Rapid Tag Switching & Cache - AF-01): Đạt (`AbortController` hủy bỏ request đang bay khi bấm đổi chip liên tục; bộ đệm in-memory trả về tag cũ trong $< 50$ms).
+- [x] **Kiểm tra danh mục tasks.md:** Đạt **37/37 tasks** đã hoàn thành và được đánh dấu `[X]`.

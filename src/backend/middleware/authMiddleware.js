@@ -4,14 +4,62 @@ import { db } from '../repositories/authRepository.js';
 import { db as memDb } from '../db.js';
 
 export async function authenticateToken(req, res, next) {
+  const isStatsRoute =
+    req.baseUrl?.startsWith('/api/v1/users/me/stats') ||
+    req.originalUrl?.includes('/stats') ||
+    req.path?.includes('/stats');
+
   const isAgentRoute =
     req.baseUrl?.startsWith('/api/v1/agent') ||
     req.originalUrl?.includes('/agent') ||
     req.path?.includes('/agent');
   const isAlbumSaveRoute = /\/(?:users\/me\/saved-albums|albums\/[^/]+\/save)(?:$|\?)/.test(req.originalUrl || '');
 
+  const isMoodRoute =
+    req.baseUrl?.includes('/mood-context') ||
+    req.originalUrl?.includes('/mood-context') ||
+    req.path?.includes('/mood-context');
+
+  const isRecommendationRoute =
+    req.baseUrl?.startsWith('/api/v1/recommendations') ||
+    req.originalUrl?.includes('/recommendations') ||
+    req.path?.includes('/recommendations');
+
   const sendUnauthorized = (legacyMsg) => {
-    if (isAgentRoute || isAlbumSaveRoute) {
+    if (isMoodRoute) {
+      return res.status(401).json({
+        success: false,
+        message: 'Yêu cầu đăng nhập để nhận gợi ý theo tâm trạng',
+        data: null,
+        error: {
+          code: 'UNAUTHORIZED',
+          details: []
+        }
+      });
+    }
+    if (isRecommendationRoute) {
+      return res.status(401).json({
+        success: false,
+        message: 'Yêu cầu đăng nhập để nhận gợi ý cá nhân hóa',
+        data: null,
+        error: {
+          code: 'UNAUTHORIZED',
+          details: []
+        }
+      });
+    }
+    if (isStatsRoute) {
+      return res.status(401).json({
+        success: false,
+        message: 'Yêu cầu đăng nhập để truy cập thông tin phân tích',
+        data: null,
+        error: {
+          code: 'UNAUTHORIZED',
+          details: []
+        }
+      });
+    }
+    if (isAgentRoute) {
       return res.status(401).json({
         success: false,
         message: 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn',
@@ -80,11 +128,22 @@ export async function authenticateToken(req, res, next) {
     ) {
       return sendUnauthorized('Session is invalid, expired or revoked');
     }
-  } else if (sessionId && !session && !isAgentRoute) {
+  } else if (sessionId && !session && !isAgentRoute && !isStatsRoute && !isRecommendationRoute) {
     return sendUnauthorized('Session is invalid, expired or revoked');
   }
 
   if (user && user.is_banned) {
+    if (isRecommendationRoute) {
+      return res.status(403).json({
+        success: false,
+        message: 'Tài khoản của bạn đã bị khóa',
+        data: null,
+        error: {
+          code: 'ACCOUNT_BANNED',
+          details: []
+        }
+      });
+    }
     return sendUnauthorized('Account is unavailable');
   }
 

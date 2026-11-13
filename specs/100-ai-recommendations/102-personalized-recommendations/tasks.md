@@ -42,10 +42,10 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 **Purpose**: Initialize external AI service connection configuration, timeout abort controllers, and common response/mock utilities.
 
-- [ ] T001 Configure AI microservice connection settings and environment variables (`AI_SERVICE_URL`, `AI_SERVICE_TIMEOUT_MS=2500`) in `src/backend/config/aiConfig.js`.
-- [ ] T002 [P] Implement internal AI microservice HTTP client in `src/backend/clients/aiServiceClient.js` calling `POST /ai/recommend` with a strict 2.5-second `AbortController` timeout per `plan.md`.
-- [ ] T003 [P] Create mock recommendation service file skeleton in `src/frontend/src/services/mock/mockRecommendationService.js` with stubbed multi-entity fixtures (`song`, `album`, `artist`, `playlist`) matching OpenAPI schema.
-- [ ] T004 [P] Implement response helper and envelope formatter in `src/backend/utils/recommendationResponse.js` enforcing standard response envelope `{ success, message, data, error }` per `contracts/personalized-recommendations-api.json`.
+- [X] T001 Configure AI microservice connection settings and environment variables (`AI_SERVICE_URL`, `AI_SERVICE_TIMEOUT_MS=2500`) in `src/backend/config/aiConfig.js`.
+- [X] T002 [P] Implement internal AI microservice HTTP client in `src/backend/clients/aiServiceClient.js` calling `POST /ai/recommend` with a strict 2.5-second `AbortController` timeout per `plan.md`.
+- [X] T003 [P] Create mock recommendation service file skeleton in `src/frontend/src/services/mock/mockRecommendationService.js` with stubbed multi-entity fixtures (`song`, `album`, `artist`, `playlist`) matching OpenAPI schema.
+- [X] T004 [P] Implement response helper and envelope formatter in `src/backend/utils/recommendationResponse.js` enforcing standard response envelope `{ success, message, data, error }` per `contracts/personalized-recommendations-api.json`.
 
 ---
 
@@ -55,11 +55,11 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 **⚠️ CRITICAL**: No user story implementation can proceed until this phase is verified.
 
-- [ ] T005 Implement user preference signal repository in `src/backend/repositories/preferenceSignalRepository.js` querying qualifying `listening_history` entries (`listened_duration >= 30` seconds, `user_id IS NOT NULL`, `song_id IS NOT NULL`), `user_liked_songs`, and `user_follows_artist` strictly scoped to the authenticated caller (FR-009).
-- [ ] T006 [P] Implement catalog repository in `src/backend/repositories/catalogRepository.js` querying active catalog entities from `songs`, `albums`, `artists`, `playlists` (`is_active = true` and `deleted_at IS NULL`) and querying platform-wide popular songs (ordered by `total_plays DESC`) and official starter playlists (`is_official = true`) for fallback.
-- [ ] T007 [P] Implement catalog hydration service in `src/backend/services/catalogHydrationService.js` to hydrate candidate entity IDs with display metadata (`title`, `subtitle`, `image_url`, `badge`, `target_id`, `extra`) and silently filter out any deactivated, deleted, or missing catalog entities (FR-008).
-- [ ] T008 [P] Create recommendation router module in `src/backend/routes/recommendationRoutes.js` and mount `/api/v1/recommendations` in `src/backend/server.js`.
-- [ ] T009 [P] Create frontend API client adapter in `src/frontend/src/services/recommendationService.js` supporting dynamic toggle between live API calls and mock adapter based on `import.meta.env.VITE_USE_MOCKS`.
+- [X] T005 Implement user preference signal repository in `src/backend/repositories/preferenceSignalRepository.js` querying qualifying `listening_history` entries (`listened_duration >= 30` seconds, `user_id IS NOT NULL`, `song_id IS NOT NULL`), `user_liked_songs`, and `user_follows_artist` strictly scoped to the authenticated caller (FR-009).
+- [X] T006 [P] Implement catalog repository in `src/backend/repositories/catalogRepository.js` querying active catalog entities from `songs`, `albums`, `artists`, `playlists` (`is_active = true` and `deleted_at IS NULL`) and querying platform-wide popular songs (ordered by `total_plays DESC`) and official starter playlists (`is_official = true`) for fallback.
+- [X] T007 [P] Implement catalog hydration service in `src/backend/services/catalogHydrationService.js` to hydrate candidate entity IDs with display metadata (`title`, `subtitle`, `image_url`, `badge`, `target_id`, `extra`) and silently filter out any deactivated, deleted, or missing catalog entities (FR-008).
+- [X] T008 [P] Create recommendation router module in `src/backend/routes/recommendationRoutes.js` and mount `/api/v1/recommendations` in `src/backend/server.js`.
+- [X] T009 [P] Create frontend API client adapter in `src/frontend/src/services/recommendationService.js` supporting dynamic toggle between live API calls and mock adapter based on `import.meta.env.VITE_USE_MOCKS`.
 
 **Checkpoint**: Foundation ready — signal extraction, catalog hydration, popular fallback repository, and route mounting are established.
 
@@ -75,18 +75,18 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 > **NOTE: Write these tests FIRST and ensure they FAIL before implementing services and controllers.**
 
-- [ ] T010 [P] [US1] Create unit test suite in `src/backend/tests/services/recommendationService.test.js` validating candidate hydration, multi-entity routing, and deduplication eliminating identical `(type, id)` pairs (FR-015).
-- [ ] T011 [P] [US1] Create contract test in `src/backend/tests/contracts/personalizedRecommendationsContract.test.js` validating that `GET /api/v1/recommendations/personalized` and alias `GET /api/v1/recommendations/songs` conform to `RecommendationApiResponse` in `contracts/personalized-recommendations-api.json`.
+- [X] T010 [P] [US1] Create unit test suite in `src/backend/tests/services/recommendationService.test.js` validating candidate hydration, multi-entity routing, and deduplication eliminating identical `(type, id)` pairs (FR-015).
+- [X] T011 [P] [US1] Create contract test in `src/backend/tests/contracts/personalizedRecommendationsContract.test.js` validating that `GET /api/v1/recommendations/personalized` and alias `GET /api/v1/recommendations/songs` conform to `RecommendationApiResponse` in `contracts/personalized-recommendations-api.json`.
 
 ### Implementation for User Story 1
 
-- [ ] T012 [US1] Implement core personalized recommendation workflow in `src/backend/services/recommendationService.js` passing extracted preference signals (`played_song_ids`, `liked_song_ids`, `followed_artist_ids`) to `aiServiceClient.getRecommendations()`, validating active entities via `catalogHydrationService`, and deduplicating items by `type:id` (FR-002, FR-015).
-- [ ] T013 [US1] Implement controller handler `getPersonalizedRecommendations` and alias `getRecommendedSongs` in `src/backend/controllers/recommendationController.js` validating query params `type` (enum: `["all", "song", "album", "artist", "playlist"]`, default `"all"`) and `limit` (integer 1-50, default 20).
-- [ ] T014 [US1] Register route handlers for `router.get('/personalized', authenticateToken, recommendationController.getPersonalizedRecommendations)` and `router.get('/songs', authenticateToken, recommendationController.getRecommendedSongs)` in `src/backend/routes/recommendationRoutes.js`.
-- [ ] T015 [P] [US1] Implement frontend HTTP client method `getPersonalizedRecommendations({ type = 'all', limit = 20 })` in `src/frontend/src/services/recommendationService.js` sending Bearer JWT header.
-- [ ] T016 [P] [US1] Implement polymorphic card component `src/frontend/src/components/recommendation/RecommendedItemCard.jsx` rendering artwork, title, subtitle, badge ("Gợi ý"), and handling 1-click interactions: playing songs via `player.playTrack(song)` or navigating to `/album/:id`, `/artist/:id`, `/playlist/:id` (FR-007, SC-004).
-- [ ] T017 [US1] Implement recommendation feed container `src/frontend/src/components/recommendation/RecommendationFeed.jsx` managing loading skeleton, empty states, and responsive grid layout of `RecommendedItemCard` components.
-- [ ] T018 [US1] Embed `RecommendationFeed` into the "Có thể bạn sẽ thích" / "Gợi ý cho bạn" section of `src/frontend/src/pages/Home/HomePage.jsx` delegating song playback to `PlayerContext` and navigation to app router.
+- [X] T012 [US1] Implement core personalized recommendation workflow in `src/backend/services/recommendationService.js` passing extracted preference signals (`played_song_ids`, `liked_song_ids`, `followed_artist_ids`) to `aiServiceClient.getRecommendations()`, validating active entities via `catalogHydrationService`, and deduplicating items by `type:id` (FR-002, FR-015).
+- [X] T013 [US1] Implement controller handler `getPersonalizedRecommendations` and alias `getRecommendedSongs` in `src/backend/controllers/recommendationController.js` validating query params `type` (enum: `["all", "song", "album", "artist", "playlist"]`, default `"all"`) and `limit` (integer 1-50, default 20).
+- [X] T014 [US1] Register route handlers for `router.get('/personalized', authenticateToken, recommendationController.getPersonalizedRecommendations)` and `router.get('/songs', authenticateToken, recommendationController.getRecommendedSongs)` in `src/backend/routes/recommendationRoutes.js`.
+- [X] T015 [P] [US1] Implement frontend HTTP client method `getPersonalizedRecommendations({ type = 'all', limit = 20 })` in `src/frontend/src/services/recommendationService.js` sending Bearer JWT header.
+- [X] T016 [P] [US1] Implement polymorphic card component `src/frontend/src/components/recommendation/RecommendedItemCard.jsx` rendering artwork, title, subtitle, badge ("Gợi ý"), and handling 1-click interactions: playing songs via `player.playTrack(song)` or navigating to `/album/:id`, `/artist/:id`, `/playlist/:id` (FR-007, SC-004).
+- [X] T017 [US1] Implement recommendation feed container `src/frontend/src/components/recommendation/RecommendationFeed.jsx` managing loading skeleton, empty states, and responsive grid layout of `RecommendedItemCard` components.
+- [X] T018 [US1] Embed `RecommendationFeed` into the "Có thể bạn sẽ thích" / "Gợi ý cho bạn" section of `src/frontend/src/pages/Home/HomePage.jsx` delegating song playback to `PlayerContext` and navigation to app router.
 
 **Checkpoint**: User Story 1 is fully functional as the MVP increment. Authenticated listeners with history receive personalized multi-entity recommendations on Home Dashboard.
 
@@ -100,14 +100,14 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 ### Tests for User Story 2
 
-- [ ] T019 [P] [US2] Create unit test in `src/backend/tests/services/coldStartEvaluation.test.js` validating that users with zero qualifying plays, zero likes, zero follows, or purged history trigger cold-start fallback returning `is_fallback: true` and `fallback_reason: "COLD_START"`.
+- [X] T019 [P] [US2] Create unit test in `src/backend/tests/services/coldStartEvaluation.test.js` validating that users with zero qualifying plays, zero likes, zero follows, or purged history trigger cold-start fallback returning `is_fallback: true` and `fallback_reason: "COLD_START"`.
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Implement cold-start detection logic in `src/backend/services/recommendationService.js`: if qualifying playback count `< 3` AND liked songs count `=== 0` AND followed artists count `=== 0`, bypass internal AI service and immediately query platform popular songs and official playlists from `catalogRepository` (FR-005, FR-009).
-- [ ] T021 [US2] Ensure popular fallback items in `src/backend/services/catalogHydrationService.js` are assigned badges `"Phổ biến"` or `"Thịnh hành"` and response payload sets `is_fallback: true` with `fallback_reason: "COLD_START"`.
-- [ ] T022 [P] [US2] Implement mock cold-start data generator in `src/frontend/src/services/mock/mockRecommendationService.js` returning popular fallback fixtures when user profile has zero history.
-- [ ] T023 [US2] Verify `RecommendationFeed.jsx` and `RecommendedItemCard.jsx` in `src/frontend/src/components/recommendation/` render `"Phổ biến"` / `"Thịnh hành"` badges without displaying error banners or blank states when `is_fallback === true` and `fallback_reason === "COLD_START"`.
+- [X] T020 [US2] Implement cold-start detection logic in `src/backend/services/recommendationService.js`: if qualifying playback count `< 3` AND liked songs count `=== 0` AND followed artists count `=== 0`, bypass internal AI service and immediately query platform popular songs and official playlists from `catalogRepository` (FR-005, FR-009).
+- [X] T021 [US2] Ensure popular fallback items in `src/backend/services/catalogHydrationService.js` are assigned badges `"Phổ biến"` or `"Thịnh hành"` and response payload sets `is_fallback: true` with `fallback_reason: "COLD_START"`.
+- [X] T022 [P] [US2] Implement mock cold-start data generator in `src/frontend/src/services/mock/mockRecommendationService.js` returning popular fallback fixtures when user profile has zero history.
+- [X] T023 [US2] Verify `RecommendationFeed.jsx` and `RecommendedItemCard.jsx` in `src/frontend/src/components/recommendation/` render `"Phổ biến"` / `"Thịnh hành"` badges without displaying error banners or blank states when `is_fallback === true` and `fallback_reason === "COLD_START"`.
 
 **Checkpoint**: User Stories 1 and 2 operate smoothly. New listeners immediately discover popular music on Home Dashboard without blank containers.
 
@@ -121,13 +121,13 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 ### Tests for User Story 3
 
-- [ ] T024 [P] [US3] Create resilience test in `src/backend/tests/faultTolerance/aiDowntimeResilience.test.js` simulating AI service network failure, 500 error, and 3000ms delay, verifying backend returns HTTP 200 within 2.6s with `is_fallback: true`, `fallback_reason: "AI_SERVICE_UNAVAILABLE"`, and banner message.
+- [X] T024 [P] [US3] Create resilience test in `src/backend/tests/faultTolerance/aiDowntimeResilience.test.js` simulating AI service network failure, 500 error, and 3000ms delay, verifying backend returns HTTP 200 within 2.6s with `is_fallback: true`, `fallback_reason: "AI_SERVICE_UNAVAILABLE"`, and banner message.
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Implement `try...catch` fault-tolerance block in `src/backend/services/recommendationService.js` around `aiServiceClient.getRecommendations()`: on `AbortError` (timeout > 2.5s) or HTTP 5xx from AI service, log warning, fallback to popular items, set `is_fallback: true`, `fallback_reason: "AI_SERVICE_UNAVAILABLE"`, and attach message `"Hiển thị nội dung thịnh hành do hệ thống gợi ý đang bảo trì"` (FR-006, EF-01).
-- [ ] T026 [P] [US3] Implement subtle alert banner component `src/frontend/src/components/recommendation/FallbackNoticeBanner.jsx` displaying the non-intrusive maintenance notice when `fallback_reason === "AI_SERVICE_UNAVAILABLE"`.
-- [ ] T027 [US3] Connect `FallbackNoticeBanner` inside `src/frontend/src/components/recommendation/RecommendationFeed.jsx` above the cards grid when `is_fallback === true` and `fallback_reason === "AI_SERVICE_UNAVAILABLE"`, ensuring card grid remains playable without blocking home navigation.
+- [X] T025 [US3] Implement `try...catch` fault-tolerance block in `src/backend/services/recommendationService.js` around `aiServiceClient.getRecommendations()`: on `AbortError` (timeout > 2.5s) or HTTP 5xx from AI service, log warning, fallback to popular items, set `is_fallback: true`, `fallback_reason: "AI_SERVICE_UNAVAILABLE"`, and attach message `"Hiển thị nội dung thịnh hành do hệ thống gợi ý đang bảo trì"` (FR-006, EF-01).
+- [X] T026 [P] [US3] Implement subtle alert banner component `src/frontend/src/components/recommendation/FallbackNoticeBanner.jsx` displaying the non-intrusive maintenance notice when `fallback_reason === "AI_SERVICE_UNAVAILABLE"`.
+- [X] T027 [US3] Connect `FallbackNoticeBanner` inside `src/frontend/src/components/recommendation/RecommendationFeed.jsx` above the cards grid when `is_fallback === true` and `fallback_reason === "AI_SERVICE_UNAVAILABLE"`, ensuring card grid remains playable without blocking home navigation.
 
 **Checkpoint**: User Stories 1, 2, and 3 are complete. AI microservice outages cause zero dashboard downtime or 5xx crashes.
 
@@ -141,13 +141,13 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 ### Tests for User Story 4
 
-- [ ] T028 [P] [US4] Create security and account isolation test suite in `src/backend/tests/security/recommendationPrivacy.test.js` validating that requests without Bearer token return HTTP 401 code `"UNAUTHORIZED"`, and User A's signals/feed cannot be accessed by User B.
+- [X] T028 [P] [US4] Create security and account isolation test suite in `src/backend/tests/security/recommendationPrivacy.test.js` validating that requests without Bearer token return HTTP 401 code `"UNAUTHORIZED"`, and User A's signals/feed cannot be accessed by User B.
 
 ### Implementation for User Story 4
 
-- [ ] T029 [US4] Enforce strict account parameterization in `src/backend/repositories/preferenceSignalRepository.js` binding query parameters exclusively to `req.user.user_id`, prohibiting any client-supplied `user_id` in query params or headers (FR-003, FR-004).
-- [ ] T030 [US4] Apply `authenticateToken` middleware to all routes in `src/backend/routes/recommendationRoutes.js` returning HTTP 401 with standard envelope `{ success: false, message: "Yêu cầu đăng nhập để nhận gợi ý cá nhân hóa", data: null, error: { code: "UNAUTHORIZED", details: [] } }` conforming to `contracts/personalized-recommendations-api.json`.
-- [ ] T031 [P] [US4] Update `src/frontend/src/components/recommendation/RecommendationFeed.jsx` to check `currentUser` from `AppStore`: if unauthenticated, display public trending content or prompt for sign-in without calling private personalized endpoint.
+- [X] T029 [US4] Enforce strict account parameterization in `src/backend/repositories/preferenceSignalRepository.js` binding query parameters exclusively to `req.user.user_id`, prohibiting any client-supplied `user_id` in query params or headers (FR-003, FR-004).
+- [X] T030 [US4] Apply `authenticateToken` middleware to all routes in `src/backend/routes/recommendationRoutes.js` returning HTTP 401 with standard envelope `{ success: false, message: "Yêu cầu đăng nhập để nhận gợi ý cá nhân hóa", data: null, error: { code: "UNAUTHORIZED", details: [] } }` conforming to `contracts/personalized-recommendations-api.json`.
+- [X] T031 [P] [US4] Update `src/frontend/src/components/recommendation/RecommendationFeed.jsx` to check `currentUser` from `AppStore`: if unauthenticated, display public trending content or prompt for sign-in without calling private personalized endpoint.
 
 **Checkpoint**: All User Stories 1 to 4 are complete. Private listener signals and recommendations are strictly isolated end-to-end.
 
@@ -157,9 +157,9 @@ description: "Actionable, dependency-ordered tasks for Feature 102: Personalized
 
 **Purpose**: Documentation synchronization, frontend component tests, and verification of all 5 scenarios from `quickstart.md`.
 
-- [ ] T032 [P] Update API integration documentation in `specs/100-ai-recommendations/102-personalized-recommendations/contracts/README.md` reflecting endpoints, parameters, fallback semantics, and error schemas.
-- [ ] T033 [P] Implement frontend unit & component tests in `src/frontend/tests/components/RecommendationFeed.test.jsx` verifying 1-click playback, navigation routing, cold-start badge display, and notice banner rendering.
-- [ ] T034 Validate all 5 scenarios from `specs/100-ai-recommendations/102-personalized-recommendations/quickstart.md`: Scenario 1 (Standard Feed & 1-Click Interaction), Scenario 2 (Cold-Start Fallback), Scenario 3 (AI Downtime & Graceful Degradation), Scenario 4 (Account Privacy & Boundary Isolation), and Scenario 5 (Transition to Cold-Start Following History Purge).
+- [X] T032 [P] Update API integration documentation in `specs/100-ai-recommendations/102-personalized-recommendations/contracts/README.md` reflecting endpoints, parameters, fallback semantics, and error schemas.
+- [X] T033 [P] Implement frontend unit & component tests in `src/frontend/tests/components/RecommendationFeed.test.jsx` verifying 1-click playback, navigation routing, cold-start badge display, and notice banner rendering.
+- [X] T034 Validate all 5 scenarios from `specs/100-ai-recommendations/102-personalized-recommendations/quickstart.md`: Scenario 1 (Standard Feed & 1-Click Interaction), Scenario 2 (Cold-Start Fallback), Scenario 3 (AI Downtime & Graceful Degradation), Scenario 4 (Account Privacy & Boundary Isolation), and Scenario 5 (Transition to Cold-Start Following History Purge).
 
 ---
 

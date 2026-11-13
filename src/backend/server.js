@@ -10,6 +10,9 @@ import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
 import assistanceRoutes from './routes/assistanceRoutes.js';
 import albumRoutes from './routes/albumRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
+import recommendationRoutes from './routes/recommendationRoutes.js';
+import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
 
 dotenv.config();
 
@@ -63,6 +66,11 @@ app.use('/api/v1/agent/intent', intentRoutes);
 app.use('/api/v1/agent/assistance', assistanceRoutes);
 // Feature 083 Album Save and Share routes
 app.use('/api/v1', albumRoutes);
+// Group 100 AI Recommendations: Feature 101 (Listening History Analysis)
+app.use('/api/v1/users/me/stats', statsRoutes);
+// Group 100 AI Recommendations: Feature 102 (Personalized Recommendations)
+app.use('/api/v1/recommendations/mood-context', moodRecommendationRoutes);
+app.use('/api/v1/recommendations', recommendationRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
