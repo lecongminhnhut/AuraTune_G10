@@ -47,6 +47,8 @@ export default function SongTable({ songs, onPlayTrack, onDownloadTrack, showPla
               onDrop: (event) => { event.preventDefault(); if (dragIndex !== null && dragIndex !== index) onMove(dragIndex, index); setDragIndex(null); setOverIndex(null) },
               className: `${dragIndex === index ? 'opacity-40' : ''} ${overIndex === index && dragIndex !== index ? 'ring-1 ring-violet-300/50' : ''}`,
             } : undefined}
+            disabled={track.isPlayable === false}
+            disabledReason={track.unavailableReason}
           />
         ))}
       </div>

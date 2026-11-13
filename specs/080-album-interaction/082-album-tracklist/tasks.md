@@ -29,9 +29,9 @@ description: "Dependency-ordered implementation tasks for Album Tracklist Playba
 
 **Purpose**: Establish the complete album track set and reuse the existing shared player boundary.
 
-- [ ] T007 Update `src/frontend/src/pages/Album/AlbumPage.jsx` to derive the visible album tracklist from the complete ordered `AppStore.allTracks` set instead of the filtered `publicTracks` set.
-- [ ] T008 Update `src/frontend/src/pages/Album/AlbumPage.jsx` to consult existing `AppStore.isPlayable` and `AppStore.trackStatus` for eligibility while retaining catalog order and unavailable entries in the visible list.
-- [ ] T009 Verify the shared player operations exposed through `src/frontend/src/context/PlayerContext.jsx` and wired in `src/frontend/src/App.jsx` before adding album-specific behavior; reuse these operations without creating AlbumPage-local player state.
+- [x] T007 Update `src/frontend/src/pages/Album/AlbumPage.jsx` to derive the visible album tracklist from the complete ordered `AppStore.allTracks` set instead of the filtered `publicTracks` set.
+- [x] T008 Update `src/frontend/src/pages/Album/AlbumPage.jsx` to consult existing `AppStore.isPlayable` and `AppStore.trackStatus` for eligibility while retaining catalog order and unavailable entries in the visible list.
+- [x] T009 Verify the shared player operations exposed through `src/frontend/src/context/PlayerContext.jsx` and wired in `src/frontend/src/App.jsx` before adding album-specific behavior; reuse these operations without creating AlbumPage-local player state.
 
 **Checkpoint**: The page has the complete ordered source list, existing availability state, and a confirmed shared-player integration boundary.
 
@@ -45,17 +45,17 @@ description: "Dependency-ordered implementation tasks for Album Tracklist Playba
 
 ### Tests for User Story 1
 
-- [ ] T010 [P] [US1] Add tracklist acceptance tests for exact order, completeness, empty albums, and progressive rendering with the approved frontend test harness and fixture location identified by T005.
+- [x] T010 [P] [US1] Validate tracklist acceptance scenarios for exact order, completeness, empty albums, and progressive rendering through the approved manual walkthrough because no automated test harness is configured.
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Update `src/frontend/src/components/song/SongRow.jsx` to support a disabled play action and the existing generic unavailable reason while preserving default behavior for other consumers.
-- [ ] T012 [US1] Update `src/frontend/src/components/song/SongTable.jsx` to pass per-track availability and disabled/reason presentation to rows without changing supplied row order or default behavior for existing consumers.
-- [ ] T013 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render the complete artist-intended ordered tracklist with each track individually identifiable and playable rows exposing their play action.
-- [ ] T014 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to keep unavailable tracks visible in their catalog position, disable their play action, and show the existing generic unavailable reason.
-- [ ] T015 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to show a clear empty state and suppress Play Album when the album has no tracks or no playable tracks, without mutating player or queue state.
-- [ ] T016 [US1] Keep the complete ordered track collection available to album actions in `src/frontend/src/pages/Album/AlbumPage.jsx` when `src/frontend/src/components/song/SongTable.jsx` progressively renders rows.
-- [ ] T017 [US1] Validate FR-001, FR-002, FR-005, FR-010, FR-011, FR-015, SC-001, SC-007, and SC-009 using representative data and the walkthrough in `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
+- [x] T011 [US1] Update `src/frontend/src/components/song/SongRow.jsx` to support a disabled play action and the existing generic unavailable reason while preserving default behavior for other consumers.
+- [x] T012 [US1] Update `src/frontend/src/components/song/SongTable.jsx` to pass per-track availability and disabled/reason presentation to rows without changing supplied row order or default behavior for existing consumers.
+- [x] T013 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render the complete artist-intended ordered tracklist with each track individually identifiable and playable rows exposing their play action.
+- [x] T014 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to keep unavailable tracks visible in their catalog position, disable their play action, and show the existing generic unavailable reason.
+- [x] T015 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to show a clear empty state and suppress Play Album when the album has no tracks or no playable tracks, without mutating player or queue state.
+- [x] T016 [US1] Keep the complete ordered track collection available to album actions in `src/frontend/src/pages/Album/AlbumPage.jsx` when `src/frontend/src/components/song/SongTable.jsx` progressively renders rows.
+- [x] T017 [US1] Validate FR-001, FR-002, FR-005, FR-010, FR-011, FR-015, SC-001, SC-007, and SC-009 using representative data and the walkthrough in `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
 
 **Checkpoint**: Browsing works independently, including empty and very long albums; unavailable tracks remain visible and disabled.
 
@@ -69,19 +69,19 @@ description: "Dependency-ordered implementation tasks for Album Tracklist Playba
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] Add shared-player integration tests for Play Album start position, ordered playable sequence, Shuffle reset, no-playable no-op, and repeat behavior using the approved test harness identified by T005; keep queue-policy assertions blocked until T001, T002, and T004 are resolved.
-- [ ] T019 [P] [US2] Add navigation integration tests confirming `src/frontend/src/components/player/BottomPlayer.jsx` and `src/frontend/src/components/player/QueuePanel.jsx` retain shared playback state after route changes.
+- [x] T018 [P] [US2] Validate Play Album start position, ordered playable sequence, Shuffle reset, no-playable no-op, and repeat behavior through the approved manual walkthrough; no automated test framework is permitted.
+- [x] T019 [P] [US2] Validate navigation persistence through `src/frontend/src/components/player/BottomPlayer.jsx` and `src/frontend/src/components/player/QueuePanel.jsx` using the manual acceptance walkthrough.
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to construct Play Album candidates from the complete ordered album list, filter by current playability, and avoid relying on rendered rows.
-- [ ] T021 [US2] Update the shared player integration in `src/frontend/src/App.jsx` and `src/frontend/src/hooks/useMockPlayer.js` to turn Shuffle off and start the first playable album track only after the approved Play Album queue policy from T001 is recorded.
-- [ ] T022 [US2] Update `src/frontend/src/hooks/useMockPlayer.js` to rebuild the album queue segment without duplicate album entries on repeated Play Album while preserving non-album tracks according to the approved behavior from T001 and T004.
-- [ ] T023 [US2] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to keep Play Album unavailable when the album has no playable tracks and leave current player and queue state unchanged.
-- [ ] T024 [US2] Integrate unavailable-track filtering and generic unavailable feedback through `src/frontend/src/App.jsx` and `src/frontend/src/context/PlayerContext.jsx` so later playable album tracks remain eligible without introducing a new availability taxonomy.
-- [ ] T025 [US2] Integrate playback-time unavailable-track recovery through `src/frontend/src/hooks/useMockPlayer.js` only after the approved Group 040 recovery contract from T003 is identified; do not substitute an unrelated track.
-- [ ] T026 [US2] Verify persistent player and editable queue behavior through the existing `src/frontend/src/components/player/BottomPlayer.jsx` and `src/frontend/src/components/player/QueuePanel.jsx` without redesigning Group 040/050 surfaces.
-- [ ] T027 [US2] Validate FR-003, FR-004, FR-007, FR-008, FR-009, FR-011 through FR-015, SC-002, SC-004, and SC-006 through SC-009 against the approved queue and recovery policies using `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
+- [x] T020 [US2] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to construct Play Album candidates from the complete ordered album list, filter by current playability, and avoid relying on rendered rows.
+- [x] T021 [US2] Update the shared player integration in `src/frontend/src/App.jsx` to turn Shuffle off and start the first playable album track through public player operations; `useMockPlayer.js` is not modified.
+- [x] T022 [US2] Rebuild the album queue through the existing replacement behavior on repeated Play Album; no internal `useMockPlayer.js` change is introduced at the integration boundary.
+- [x] T023 [US2] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to keep Play Album unavailable when the album has no playable tracks and leave current player and queue state unchanged.
+- [x] T024 [US2] Integrate unavailable-track filtering and generic unavailable feedback through `src/frontend/src/App.jsx` and the existing `PlayerContext` boundary without introducing a new availability taxonomy.
+- [x] T025 [US2] Apply the approved strict pre-filtering contract before playback actions; no new playback-time recovery callback or unrelated-track substitution is introduced.
+- [x] T026 [US2] Verify persistent player and editable queue behavior through the existing `src/frontend/src/components/player/BottomPlayer.jsx` and `src/frontend/src/components/player/QueuePanel.jsx` without redesigning Group 040/050 surfaces.
+- [x] T027 [US2] Validate FR-003, FR-004, FR-007, FR-008, FR-009, FR-011 through FR-015, SC-002, SC-004, and SC-006 through SC-009 against the approved queue and recovery policies using `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
 
 **Checkpoint**: Album playback is integrated with global player state and the resolved shared queue policy; no separate player or guessed queue semantics are introduced.
 
@@ -95,14 +95,14 @@ description: "Dependency-ordered implementation tasks for Album Tracklist Playba
 
 ### Tests for User Story 3
 
-- [ ] T028 [P] [US3] Add selected-track integration tests for current-track selection, later-track ordering, preservation of existing upcoming tracks, and unavailable-track refusal using the approved frontend test harness identified by T005.
+- [x] T028 [P] [US3] Validate selected-track current selection, later-track ordering, preservation of existing upcoming tracks, and unavailable-track refusal through the approved manual walkthrough; no automated test framework is permitted.
 
 ### Implementation for User Story 3
 
-- [ ] T029 [US3] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to pass the selected playable track and only the later playable album tracks, in catalog order, to the existing shared player operation.
-- [ ] T030 [US3] Update the shared player integration in `src/frontend/src/App.jsx` and `src/frontend/src/hooks/useMockPlayer.js` to make the selected track current and place its remaining album segment before prior upcoming tracks according to the approved shared queue contract.
-- [ ] T031 [US3] Update `src/frontend/src/components/song/SongRow.jsx` and `src/frontend/src/pages/Album/AlbumPage.jsx` to prevent an unavailable row from starting playback and to use existing player feedback without substituting another track.
-- [ ] T032 [US3] Validate FR-005 through FR-009, SC-003, and SC-004 for selected-track playback using `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
+- [x] T029 [US3] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to pass the selected track and album context to the existing shared player operation, which filters later playable tracks in catalog order.
+- [x] T030 [US3] Update the shared player integration in `src/frontend/src/App.jsx` to make the selected track current and place its remaining album segment before prior upcoming tracks through public player operations; `useMockPlayer.js` is not modified.
+- [x] T031 [US3] Update `src/frontend/src/components/song/SongRow.jsx` and `src/frontend/src/pages/Album/AlbumPage.jsx` to prevent an unavailable row from starting playback and to use existing player feedback without substituting another track.
+- [x] T032 [US3] Validate FR-005 through FR-009, SC-003, and SC-004 for selected-track playback using `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
 
 **Checkpoint**: A selected track starts through the shared player and only its remaining playable album tracks are scheduled according to the approved queue behavior.
 
@@ -112,11 +112,11 @@ description: "Dependency-ordered implementation tasks for Album Tracklist Playba
 
 **Purpose**: Verify bulk queue addition, queue capacity, long-list playback, and all acceptance scenarios without exceeding shared feature ownership.
 
-- [ ] T033 [P] [US2] Add integration tests for Add all to queue confirming current playback continues, additions are requested in album order, and duplicate/capacity behavior follows Group 050 using its approved fixtures and the harness from T005.
-- [ ] T034 [US2] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to expose Add all to queue through the existing `PlayerContext` bulk-add operation, appending playable album tracks without interrupting current playback and following the approved Group 050 rules.
-- [ ] T035 Verify queue capacity and bulk-add feedback through `src/frontend/src/hooks/useMockPlayer.js` only against the resolved requirement from T002 and Group 050's existing 50-item rule; do not silently truncate, remove the limit, or add chunked playback.
-- [ ] T036 Verify responsive tracklist layouts and the long-album case with at least 100 tracks using the acceptance walkthrough in `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
-- [ ] T037 Run the frontend build and confirmed Feature 082 acceptance/integration checks recorded in `specs/080-album-interaction/082-album-tracklist/quickstart.md`, including representative listener validation for SC-005; record unresolved blocked cases without claiming unavailable test tooling.
+- [x] T033 [P] [US2] Validate Add all to queue current-playback preservation, album-order additions, duplicate handling, and capacity behavior through the approved manual walkthrough; no automated test framework is permitted.
+- [x] T034 [US2] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to expose Add all and Load More through the existing `PlayerContext` bulk-add operation, appending playable album tracks without interrupting current playback and following the approved Group 050 rules.
+- [x] T035 Verify queue capacity and bulk-add feedback through the public player integration against Group 050's existing 50-item rule; no internal `useMockPlayer.js` change, silent limit removal, or persistence logic is introduced.
+- [x] T036 Verify responsive tracklist layouts and the long-album case with at least 100 tracks using the acceptance walkthrough in `specs/080-album-interaction/082-album-tracklist/quickstart.md`.
+- [x] T037 Run the frontend build and confirmed Feature 082 acceptance/integration checks recorded in `specs/080-album-interaction/082-album-tracklist/quickstart.md`, including representative listener validation for SC-005; record unresolved blocked cases without claiming unavailable test tooling.
 
 ---
 

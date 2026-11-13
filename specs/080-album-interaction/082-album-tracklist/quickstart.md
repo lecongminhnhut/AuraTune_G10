@@ -27,6 +27,8 @@ npm run build
 
 The frontend package currently declares Vite `dev`, `build`, and `preview` scripts. The backend package declares `start` and `dev`; Feature 082 currently uses mock catalog/player state and adds no backend endpoint.
 
+In the current managed Windows workspace, `npm.cmd run build` is blocked before Vite loads the configuration because esbuild reports `Cannot read directory "../../../../..": Access is denied` while resolving `src/frontend/vite.config.js`. This is an environment permission issue and must be cleared before build status can be considered successful.
+
 ## Acceptance walkthrough
 
 1. Open an album with a known ordered track list. Verify every track appears once and in catalog order.
