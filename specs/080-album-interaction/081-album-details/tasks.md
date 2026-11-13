@@ -16,9 +16,9 @@ description: "Dependency-ordered implementation tasks for Album Details"
 
 **Purpose**: Confirm the external and repository prerequisites without inventing an API contract, catalog source, or test framework.
 
-- [ ] T001 Identify the approved public `GET /albums/:id` contract owner and source of truth, including the service provider, route/base-path alignment, response mapping, and complete ordered track-list guarantee; record the confirmed reference in `specs/080-album-interaction/081-album-details/contracts/README.md`.
-- [ ] T002 Confirm which existing approved catalog source supplies other albums by artist; keep the finding or unresolved blocker in `specs/080-album-interaction/081-album-details/research.md` and do not add album-detail response fields.
-- [ ] T003 Identify the repository-approved frontend component/interaction test harness and available API fixtures from package manifests and test configuration; record runnable commands and test locations in `specs/080-album-interaction/081-album-details/quickstart.md` without adding dependencies.
+- [x] T001 Identify the approved public `GET /albums/:id` contract owner and source of truth, including the service provider, route/base-path alignment, response mapping, and complete ordered track-list guarantee; record the confirmed reference in `specs/080-album-interaction/081-album-details/contracts/README.md`.
+- [x] T002 Confirm which existing approved catalog source supplies other albums by artist; keep the finding or unresolved blocker in `specs/080-album-interaction/081-album-details/research.md` and do not add album-detail response fields.
+- [x] T003 Identify the repository-approved frontend component/interaction test harness and available API fixtures from package manifests and test configuration; record runnable commands and test locations in `specs/080-album-interaction/081-album-details/quickstart.md` without adding dependencies.
 
 ---
 
@@ -26,9 +26,9 @@ description: "Dependency-ordered implementation tasks for Album Details"
 
 **Purpose**: Establish contract-backed frontend access and same-ID shared cache behavior used by the stories.
 
-- [ ] T004 Implement a frontend album-details service in `src/frontend/src/services/albumDetailsService.js` that calls only the approved public `GET /albums/:id` route and maps only fields defined by its confirmed contract; do not create a backend route or infer a payload schema.
-- [ ] T005 Extend `src/frontend/src/context/AppStore.jsx` to retain successful album-detail responses in the existing in-memory store keyed by album ID, without adding persistence or a cache TTL.
-- [ ] T006 Add album request coordination in `src/frontend/src/context/AppStore.jsx` so each response is associated with its requested album ID and stale cross-ID results cannot replace the current album; preserve same-ID cached details while refresh is pending or fails.
+- [x] T004 Implement a frontend album-details service in `src/frontend/src/services/albumDetailsService.js` that calls only the approved public `GET /albums/:id` route and maps only fields defined by its confirmed contract; do not create a backend route or infer a payload schema.
+- [x] T005 Extend `src/frontend/src/context/AppStore.jsx` to retain successful album-detail responses in the existing in-memory store keyed by album ID, without adding persistence or a cache TTL.
+- [x] T006 Add album request coordination in `src/frontend/src/context/AppStore.jsx` so each response is associated with its requested album ID and stale cross-ID results cannot replace the current album; preserve same-ID cached details while refresh is pending or fails.
 
 **Checkpoint**: The approved API and related-album catalog source are confirmed, the service uses that contract, and same-ID cache identity is available before story work.
 
@@ -47,13 +47,13 @@ description: "Dependency-ordered implementation tasks for Album Details"
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to load the route's current album ID through the album-details service and render loading and success states without showing another album's data as current.
-- [ ] T010 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render available title, artist, release year, cover art, and a `Single` badge for one track or `Album` badge for two or more tracks, preserving the existing route in `src/frontend/src/routes/AppRouter.jsx`.
-- [ ] T011 [US1] Update `src/frontend/src/components/playlist/CoverArt.jsx` to render supplied cover art inside the existing responsive frame and retain its placeholder when the image is unavailable.
-- [ ] T012 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render one flat track list in API response order without requiring disc metadata or changing the complete response.
-- [ ] T013 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to calculate total duration from all known durations in the complete response, independent of progressive row rendering, and show it as unavailable when no duration is known.
-- [ ] T014 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to display "More from [Artist]" using the confirmed existing catalog source, filtering to the same artist and excluding the current album without extending the detail API.
-- [ ] T015 [US1] Add a loading presentation for Album Details using existing shared UI in `src/frontend/src/components/common/ui.jsx` and `src/frontend/src/pages/Album/AlbumPage.jsx`.
+- [x] T009 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to load the route's current album ID through the album-details service and render loading and success states without showing another album's data as current.
+- [x] T010 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render available title, artist, release year, cover art, and a `Single` badge for one track or `Album` badge for two or more tracks, preserving the existing route in `src/frontend/src/routes/AppRouter.jsx`.
+- [x] T011 [US1] Update `src/frontend/src/components/playlist/CoverArt.jsx` to render supplied cover art inside the existing responsive frame and retain its placeholder when the image is unavailable.
+- [x] T012 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render one flat track list in API response order without requiring disc metadata or changing the complete response.
+- [x] T013 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to calculate total duration from all known durations in the complete response, independent of progressive row rendering, and show it as unavailable when no duration is known.
+- [x] T014 [US1] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to display "More from [Artist]" using the confirmed existing catalog source, filtering to the same artist and excluding the current album without extending the detail API.
+- [x] T015 [US1] Add a loading presentation for Album Details using existing shared UI in `src/frontend/src/components/common/ui.jsx` and `src/frontend/src/pages/Album/AlbumPage.jsx`.
 - [ ] T016 [US1] Verify the User Story 1 acceptance scenarios and SC-001, SC-005, and SC-006 using representative fixtures and commands recorded in `specs/080-album-interaction/081-album-details/quickstart.md`.
 
 **Checkpoint**: User Story 1 displays current-album metadata, complete ordered track data, derived duration, related releases, and correct cached-return behavior independently.
@@ -72,9 +72,9 @@ description: "Dependency-ordered implementation tasks for Album Details"
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Update `src/frontend/src/components/song/SongRow.jsx` to format available durations as `m:ss` below one hour and `h:mm:ss` at or above one hour, while displaying an em dash for unavailable durations.
-- [ ] T019 [US2] Update `src/frontend/src/components/song/SongRow.jsx` to display each track's own non-negative whole-number play count with locale grouping, preserve zero, and display an em dash instead of converting missing counts to zero.
-- [ ] T020 [US2] Update `src/frontend/src/components/song/SongTable.jsx` and `src/frontend/src/pages/Album/AlbumPage.jsx` to pass each response track's own count and duration to its row without changing API order or assigning another track's values.
+- [x] T018 [US2] Update `src/frontend/src/components/song/SongRow.jsx` to format available durations as `m:ss` below one hour and `h:mm:ss` at or above one hour, while displaying an em dash for unavailable durations.
+- [x] T019 [US2] Update `src/frontend/src/components/song/SongRow.jsx` to display each track's own non-negative whole-number play count with locale grouping, preserve zero, and display an em dash instead of converting missing counts to zero.
+- [x] T020 [US2] Update `src/frontend/src/components/song/SongTable.jsx` and `src/frontend/src/pages/Album/AlbumPage.jsx` to pass each response track's own count and duration to its row without changing API order or assigning another track's values.
 - [ ] T021 [US2] Verify the User Story 2 acceptance scenarios and SC-002 through SC-004 using representative known, zero, and unavailable count values recorded in `specs/080-album-interaction/081-album-details/quickstart.md`.
 
 **Checkpoint**: Every displayed track retains its own accurately formatted count and duration, including explicit zero and unavailable values.
@@ -93,9 +93,9 @@ description: "Dependency-ordered implementation tasks for Album Details"
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to distinguish the approved API's not-found response from network/service failures and render the existing shared not-found or error presentation from `src/frontend/src/components/common/ui.jsx`.
-- [ ] T024 [US3] Add a retry action for network/service failures in `src/frontend/src/pages/Album/AlbumPage.jsx`; when refreshing cached data fails, retain only same-ID details and show a clear refresh-failure indication.
-- [ ] T025 [US3] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render the empty-track state and avoid inventing unavailable metadata, cover art, or total duration when no duration is known.
+- [x] T023 [US3] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to distinguish the approved API's not-found response from network/service failures and render the existing shared not-found or error presentation from `src/frontend/src/components/common/ui.jsx`.
+- [x] T024 [US3] Add a retry action for network/service failures in `src/frontend/src/pages/Album/AlbumPage.jsx`; when refreshing cached data fails, retain only same-ID details and show a clear refresh-failure indication.
+- [x] T025 [US3] Update `src/frontend/src/pages/Album/AlbumPage.jsx` to render the empty-track state and avoid inventing unavailable metadata, cover art, or total duration when no duration is known.
 - [ ] T026 [US3] Verify the User Story 3 acceptance scenarios and SC-005 with not-found, service-failure/retry, empty-list, and missing-field fixtures in `specs/080-album-interaction/081-album-details/quickstart.md`.
 
 **Checkpoint**: Missing albums, temporary failures, retries, and empty or incomplete details produce clear states without unrelated or invented data.

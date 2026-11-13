@@ -13,6 +13,7 @@ export async function authenticateToken(req, res, next) {
     req.baseUrl?.startsWith('/api/v1/agent') ||
     req.originalUrl?.includes('/agent') ||
     req.path?.includes('/agent');
+  const isAlbumSaveRoute = /\/(?:users\/me\/saved-albums|albums\/[^/]+\/save)(?:$|\?)/.test(req.originalUrl || '');
 
   const isMoodRoute =
     req.baseUrl?.includes('/mood-context') ||

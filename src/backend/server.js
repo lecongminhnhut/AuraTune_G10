@@ -9,6 +9,7 @@ import songRoutes from './routes/songRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
 import assistanceRoutes from './routes/assistanceRoutes.js';
+import albumRoutes from './routes/albumRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
 import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
@@ -63,6 +64,8 @@ app.use('/api/v1/agent', agentRoutes);
 app.use('/api/v1/agent/intent', intentRoutes);
 // Group 120 AI Conversational Agent: Feature 123 (Real-Time Music Assistance)
 app.use('/api/v1/agent/assistance', assistanceRoutes);
+// Feature 083 Album Save and Share routes
+app.use('/api/v1', albumRoutes);
 // Group 100 AI Recommendations: Feature 101 (Listening History Analysis)
 app.use('/api/v1/users/me/stats', statsRoutes);
 // Group 100 AI Recommendations: Feature 102 (Personalized Recommendations)

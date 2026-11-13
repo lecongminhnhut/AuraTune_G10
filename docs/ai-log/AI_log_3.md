@@ -36,6 +36,9 @@
 | 32 | 2026-11-09 | Phân rã công việc cho spec 081 bằng Spec Kit `/speckit-tasks` | 08 Album Interaction |
 | 33 | 2026-11-09 | Phân rã công việc cho spec 082 bằng Spec Kit `/speckit-tasks` | 08 Album Interaction |
 | 34 | 2026-11-09 | Phân rã công việc cho spec 083 bằng Spec Kit `/speckit-tasks` | 08 Album Interaction |
+| 35 | 2026-11-11 | Thực thi implement cho spec 081 bằng Spec Kit `/speckit-implement` | 08 Album Interaction |
+| 36 | 2026-11-13 | Thực thi implement cho spec 082 bằng Spec Kit `/speckit-implement` | 08 Album Interaction |
+| 37 | 2026-11-13 | Thực thi implement cho spec 083 bằng Spec Kit `/speckit-implement` | 08 Album Interaction |
 
 ---
 
@@ -3416,3 +3419,217 @@ Completion criteria: Chỉ thực hiện phân rã và xuất file tasks.md cho 
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
 
 **Kết quả kiểm chứng:** Đạt. Danh sách công việc cho Feature 083 đã hoàn chỉnh. Yêu cầu phối hợp với API Owner và Tech Lead để tháo gỡ các prerequisites trước khi code.
+
+## Mục 35: Thực thi implement cho spec 081 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-09 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 081: Album Details |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Thực thi lệnh `/speckit-implement` để tiến hành viết mã nguồn (source code) cho Frontend của tính năng xem chi tiết Album, bao gồm tích hợp API, quản lý State/Cache và cập nhật UI component dựa trên kế hoạch kỹ thuật đã duyệt. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement
+
+**Mục tiêu (Objective)**:
+Thực hiện implement cho Feature 081 (Album Details). Giai đoạn 1 (Phase 1: Tasks T001-T003) đã hoàn thành và được document đầy đủ. Hãy bắt đầu implement từ Giai đoạn 2 (Phase 2: Task T004) và thực hiện tuần tự đến hết Giai đoạn 5 (Phase 5).
+
+**Yêu cầu về Ngôn ngữ (STRICT Language Directive)**:
+- Hãy giao tiếp, giải thích, báo cáo tiến độ và tương tác với tôi hoàn toàn bằng **Tiếng Việt**.
+- Tuy nhiên, TOÀN BỘ mã nguồn (source code), chú thích trong code (comments), tên biến, commit messages, và các cập nhật vào file tài liệu (như việc đổi `[ ]` thành `[x]` trong `tasks.md`) bắt buộc phải được viết bằng **Tiếng Anh**. Tuyệt đối không dùng tiếng Việt trong code hay markdown files.
+
+**Tài liệu tham chiếu cốt lõi (Core Reference Documents)**:
+1. `specs/080-album-interaction/081-album-details/tasks.md`: Đây là lộ trình chính của bạn. Chỉ thực hiện các task đang được đánh dấu `[ ]` bắt đầu từ T004.
+2. `specs/080-album-interaction/081-album-details/spec.md`: Nguồn chuẩn xác định hành vi UI, các giá trị phái sinh (tính tổng thời lượng), và xử lý ngoại lệ (thiếu dữ liệu).
+3. `api-contract.md` & `specs/080-album-interaction/081-album-details/contracts/album-details-api.json`: Nguồn chuẩn cho API schema. Tất cả response phải tuân theo cấu trúc bọc (envelope) toàn cục của dự án: `{ success, message, data, error }`.
+4. Quy chuẩn API & Kiến trúc: `docs/design/api/api-conventions.md`, `docs/design/architecture/system-architecture.md`
+5. Team Contract & Git Workflow: `docs/management/team-contract.md`, `docs/management/git-workflow.md`
+
+**Phạm vi & Trọng tâm (Scope & Focus Areas)**:
+- **Frontend Service Integration**: Implement `src/frontend/src/services/albumDetailsService.js` sử dụng `fetch` hoặc `axios` (chuẩn ES Modules).
+- **State Management**: Mở rộng `AppStore.jsx` hiện tại để lưu cache dữ liệu album trên RAM (in-memory) theo `albumId`. Đảm bảo quản lý ID request để tránh race conditions khi user chuyển trang quá nhanh.
+- **UI Data Binding**: Cập nhật `AlbumPage.jsx`, `SongTable.jsx`, `SongRow.jsx`, và `CoverArt.jsx` để sử dụng dữ liệu bất đồng bộ từ API thay vì dữ liệu mock đồng bộ.
+- **Derived Metrics**: Tính toán `totalDuration` (tổng thời lượng) của album hoàn toàn ở client-side bằng cách cộng dồn các giá trị `duration` khả dụng từ mảng `tracks` trả về.
+
+**Ràng buộc & Quy tắc (Constraints - DOs & DON'Ts)**:
+- **DO**: Kiểm tra cờ `success` trong API envelope trước khi lấy `data`. Map các mã `error.code` (`NOT_FOUND`, `INTERNAL_ERROR`) sang các trạng thái lỗi UI tương ứng.
+- **DO**: Xử lý rành mạch giá trị trống: Render dấu gạch ngang (`—`) nếu `duration` hoặc `playCount` trả về `null`. Phải render số `0` rõ ràng nếu API trả về một số `0` hợp lệ.
+- **DO**: Format thời lượng track dưới định dạng `m:ss` (dưới 1 giờ) và `h:mm:ss` (từ 1 giờ trở lên).
+- **DO**: Lấy danh sách "More from [Artist]" bằng cách dùng các endpoint danh mục có sẵn (`GET /api/v1/artists/{id}/albums` hoặc `GET /api/v1/albums?artistId={id}`). Tách `artist.id` ra từ response của chi tiết album chính.
+- **DON'T**: Tuyệt đối KHÔNG sửa backend routes, KHÔNG tạo endpoint mới, và KHÔNG thay đổi schema của Supabase. Tính năng này hoàn toàn là read-only ở frontend.
+- **DON'T**: Tuyệt đối KHÔNG thêm các framework tự động test (như Vitest/Jest) hay tạo các file test (`.test.jsx`). Giai đoạn này chỉ nghiệm thu thủ công qua giao diện `npm run dev` theo như Task T003 đã chốt.
+
+**Chỉ thị thực thi (Execution Directive)**:
+Thực thi các task một cách tuần tự. Hãy dừng lại, báo cáo bằng tiếng Việt, và tự động cập nhật file `tasks.md` (chuyển `[ ]` thành `[x]` bằng tiếng Anh) sau khi implement thành công mỗi cụm task. Bắt đầu ngay với Phase 2 (T004).
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác nhận File & Thư mục:** Đã đọc các tài liệu hướng dẫn (`Team Contract`, `SpecKit workflow`, `API Contract`) và xác định rõ phạm vi từ T004 đến hết Phase 5 của Feature 081.
+- **Cập nhật Service & Store:** Hoàn tất file `albumDetailsService.js` sử dụng fetch với API envelope chuẩn (`success/error`); mở rộng `AppStore.jsx` để lưu cache theo `albumId` và ngăn chặn kết quả cũ (stale response/race conditions).
+- **Cập nhật Component:** Chỉnh sửa `SongTable.jsx`, `SongRow.jsx`, `CoverArt.jsx` và `ui.jsx` để hiển thị đúng trạng thái khuyết dữ liệu (dùng dấu `—` và số `0`), format duration chuẩn, fallback cover art và loading UI.
+- **Cập nhật Page:** Viết lại hoàn toàn `AlbumPage.jsx` để chuyển từ dữ liệu mock sang dữ liệu bất đồng bộ từ API; xử lý async state (loading, retry, not-found, empty state), tự tính tổng thời lượng và gọi danh sách related albums (More from Artist).
+- **Build & Kiểm thử:** Quá trình build với Vite gặp lỗi sandbox hệ điều hành nhưng dev server đã chạy thành công ngoài sandbox. Tuân thủ không viết test framework mới; cập nhật các checkbox trong `tasks.md` (để trống các task test tự động) và ghi kết quả validation vào `quickstart.md` bằng tiếng Anh.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Bỏ qua việc viết test tự động | Dùng | Tuân thủ tuyệt đối ràng buộc `DON'T` trong prompt là không cài đặt hay thêm framework Vitest/Jest. |
+| Xóa file `AlbumPage.jsx` cũ và tạo mới | Dùng | File cũ sử dụng dữ liệu đồng bộ (mock data). Việc đập đi xây lại giúp làm sạch luồng async state và cache request. |
+| Format trực tiếp `duration` & `playCount` trên component | Dùng | Đảm bảo tính linh hoạt cho UI, giúp phân biệt rành mạch số 0 hợp lệ và dữ liệu null theo đúng spec. |
+
+### Cách kiểm chứng
+
+- [x] Khởi chạy dev server (`npm run dev`) để kiểm tra smoke test qua giao diện.
+- [x] Đối chiếu hành vi giao diện với `quickstart.md` và `album-details-api.json`.
+- [x] Kiểm tra tính đúng đắn khi catalog service chưa chạy (phải hiện loading và sau đó là lỗi retryable/Album not found).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Phần mã nguồn cho Feature 081 đã được viết thành công, tích hợp đúng API contract và xử lý chuẩn các trạng thái giao diện khi không có dữ liệu.
+
+## Mục 36: Thực thi implement cho spec 082 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-13 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 082: Album Tracklist Playback |
+| Công cụ AI | GPT-5.6-Luna |
+| Mục đích | Thực thi lệnh `/speckit-implement` để tiến hành viết mã nguồn (source code) cho Frontend của tính năng phát danh sách bài hát trong Album, bao gồm các chính sách hàng đợi, giới hạn hiển thị, và xử lý trạng thái bài hát. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement 
+
+Bạn hãy đóng vai trò Fullstack Senior Engineer triển khai hoàn chỉnh Feature 082 (Album Tracklist Playback) thuộc Group 080 (Album Interaction) trên nhánh `feat/082-album-tracklist` của dự án AuraTune.
+
+Giai đoạn 1 (Phase 1: Tasks T001-T006) đã được phê duyệt và giải quyết hoàn toàn. Hãy bắt đầu implement từ Giai đoạn 2 (Phase 2: Task T007) và thực hiện tuần tự đến hết Giai đoạn 6.
+
+Trước khi viết mã, bạn hãy đọc và tuân thủ tuyệt đối các tài liệu nguồn sau:
+- Đặc tả: `specs/080-album-interaction/082-album-tracklist/spec.md`
+- Kế hoạch: `specs/080-album-interaction/082-album-tracklist/plan.md`
+- Danh sách task: `specs/080-album-interaction/082-album-tracklist/tasks.md`
+- Mô hình dữ liệu: `specs/080-album-interaction/082-album-tracklist/data-model.md`
+- Hợp đồng tích hợp: `specs/080-album-interaction/082-album-tracklist/contracts/README.md`
+- Kịch bản nghiệm thu: `specs/080-album-interaction/082-album-tracklist/quickstart.md`
+- Kiến trúc hệ thống: `docs/design/architecture/system-architecture.md`
+- Team Contract & Git Workflow: `docs/management/team-contract.md`, `docs/management/git-workflow.md`
+
+**Yêu cầu về Ngôn ngữ (STRICT Language Directive)**:
+- Hãy giao tiếp, giải thích, báo cáo tiến độ và tương tác với tôi hoàn toàn bằng **Tiếng Việt**.
+- Tuy nhiên, TOÀN BỘ mã nguồn (source code), chú thích trong code (comments), tên biến, commit messages, và các cập nhật vào file tài liệu (như việc đổi `[ ]` thành `[x]` trong `tasks.md`) BẮT BUỘC phải được viết bằng **Tiếng Anh**. Tuyệt đối không dùng tiếng Việt trong code.
+
+**Các nguyên tắc bất biến và Ràng buộc (Invariants - DOs & DON'Ts)**:
+1. **Strict Pre-filtering (DO)**: Sử dụng `AppStore.allTracks` làm nguồn dữ liệu UI để hiển thị trọn vẹn danh sách bài hát. Trước khi truyền dữ liệu vào `PlayerContext` để phát, bắt buộc phải dùng `AppStore.isPlayable` để lọc bỏ các bài hát bị lỗi. Các bài lỗi vẫn phải hiển thị mờ đi (disabled) trên giao diện kèm lý do.
+2. **Queue Replacement (DO)**: Khi người dùng nhấn nút "Play Album", hệ thống phải THAY THẾ (replace) toàn bộ hàng đợi hiện tại bằng danh sách của album và tự động tắt chế độ Shuffle.
+3. **Queue Capacity & Pagination (DO)**: Tuân thủ nghiêm ngặt giới hạn 50 bài hát của hàng đợi (thuộc Group 050). Đối với các album > 50 bài, giao diện (AlbumPage) phải triển khai nút "Load More" (Tải thêm) ở cuối danh sách. Khi click, nạp thêm tối đa chunk 50 bài tiếp theo vào UI và chèn thêm (append) vào hàng đợi.
+4. **Deduplication (DO)**: Khi thao tác "Play Album" được lặp lại (album đã có trong hàng đợi), phải xóa sạch các track có cùng `albumId` khỏi hàng đợi trước khi nạp lại album từ đầu (giữ nguyên các bài của album khác).
+5. **Integration Boundary (DON'T)**: Tuyệt đối KHÔNG tạo thêm một trình phát nhạc mới, KHÔNG sửa đổi nội bộ file `useMockPlayer.js` (thuộc Group 040). Chỉ được phép gọi các hàm public từ `PlayerContext`. 
+6. **Persistence & Testing (DON'T)**: Tuyệt đối KHÔNG viết logic lưu `localStorage` (trách nhiệm này thuộc Group 050). Tuyệt đối KHÔNG cài đặt hay viết thêm các framework test tự động như Vitest/Jest (dự án chỉ nghiệm thu thủ công theo `quickstart.md`).
+
+**Chỉ thị thực thi (Execution Directive)**:
+Hãy thực hiện tuần tự các task từ T007 (Phase 2) đến T037 (Phase 6). Sau khi hoàn thành mỗi Phase, hãy dừng lại, báo cáo ngắn gọn danh sách file đã thay đổi bằng tiếng Việt, và tự động cập nhật file `tasks.md` (chuyển `[ ]` thành `[x]`) sau đó bắt đầu phase tiếp theo cho đến hết.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Xác nhận File & Thư mục:** Đã đọc các tài liệu hướng dẫn và xác định rõ phạm vi triển khai từ T007 đến T037 của Feature 082. Không tạo nhánh mới do lỗi Git trong môi trường nhưng vẫn bảo toàn mã nguồn hiện tại.
+- **Cập nhật Giao diện & Hiển thị:** Chỉnh sửa `AlbumPage.jsx` và `SongRow.jsx` để hiển thị toàn bộ danh sách bài hát từ `allTracks`, làm mờ (disabled) các bài hát lỗi và áp dụng hiển thị theo từng phần 50 bài (chunk) với nút "Load More".
+- **Tích hợp Trình phát & Hàng đợi:** Cập nhật `App.jsx` để thực thi chính sách thay thế (replace) toàn bộ hàng đợi khi Play Album, tắt chế độ Shuffle và lọc các bài hát bằng `isPlayable`. Áp dụng cơ chế loại bỏ bài hát trùng lặp (deduplication) khi Play Album được lặp lại.
+- **Tuân thủ Ranh giới:** Tuân thủ tuyệt đối không sửa đổi `useMockPlayer.js`, không tạo bộ nhớ cục bộ mới (localStorage) và không cài đặt test tự động (bỏ qua cập nhật các task test trong `tasks.md`).
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sử dụng `allTracks` và `isPlayable` | Dùng | Đảm bảo UI hiển thị đúng trạng thái của mọi bài hát, kể cả bài bị lỗi, nhưng ngăn chặn việc truyền bài lỗi vào trình phát. |
+| Cơ chế "Load More" cho Album lớn | Dùng | Giữ đúng giới hạn 50 bài của Queue nhưng vẫn cho phép người dùng nạp dần các bài hát của album > 100 bài. |
+| Bỏ qua task test tự động | Dùng | Tuân thủ tuyệt đối lệnh không cài thêm Vitest/Jest; chỉ nghiệm thu thủ công. |
+
+### Cách kiểm chứng
+
+- [x] Khởi chạy dev server (`npm run dev`) để kiểm tra smoke test.
+- [x] Đối chiếu hành vi của nút Play Album (thay thế queue, tắt Shuffle).
+- [x] Kiểm tra hiển thị của các bài hát lỗi (bị mờ, không phát được).
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+**Kết quả kiểm chứng:** Đạt. Mã nguồn cho Feature 082 đã được cập nhật thành công, xử lý đúng các yêu cầu khắt khe về hàng đợi và trạng thái khả dụng.
+
+---
+
+## Mục 37: Thực thi implement cho spec 083 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-13 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 080 – Album Interaction, Feature 083: Save and Share Album |
+| Công cụ AI | GPT-6-Luna |
+| Mục đích | Thực thi triển khai hoàn chỉnh mã nguồn cho Feature 083 từ Phase 2 đến Phase 5, bao gồm việc tích hợp các API lưu album, quản lý trạng thái UI không dùng Optimistic UI, và thiết lập các URL intent chia sẻ mạng xã hội. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement 
+
+Bạn hãy đóng vai trò Fullstack Senior Engineer triển khai hoàn chỉnh Feature 083 (Save and Share Albums) thuộc Group 080 (Album Interaction) trên nhánh `feat/083-save-and-share-album` của dự án AuraTune.
+
+Giai đoạn 1 (Phase 1: Tasks T001-T004) đã được phê duyệt và giải quyết hoàn toàn. Hãy bắt đầu implement từ Giai đoạn 2 (Phase 2: Task T005) và thực hiện tuần tự đến hết Giai đoạn 5 (Phase 5).
+
+Trước khi viết mã, bạn hãy đọc và tuân thủ tuyệt đối các tài liệu nguồn sau:
+- Đặc tả: `specs/080-album-interaction/083-save-and-share-album/spec.md`
+- Kế hoạch: `specs/080-album-interaction/083-save-and-share-album/plan.md`
+- Danh sách task: `specs/080-album-interaction/083-save-and-share-album/tasks.md`
+- Mô hình dữ liệu: `specs/080-album-interaction/083-save-and-share-album/data-model.md`
+- Hợp đồng tích hợp: `specs/080-album-interaction/083-save-and-share-album/contracts/album-save-share.md` và API Schema: `specs/080-album-interaction/083-save-and-share-album/contracts/album-save-share-api.json`
+- Kịch bản nghiệm thu: `specs/080-album-interaction/083-save-and-share-album/quickstart.md`
+- Kiến trúc hệ thống: `docs/design/architecture/system-architecture.md`
+- Team Contract & Git Workflow: `docs/management/team-contract.md`, `docs/management/git-workflow.md`
+
+**Yêu cầu về Ngôn ngữ (STRICT Language Directive)**:
+- Hãy giao tiếp, giải thích, báo cáo tiến độ và tương tác với tôi hoàn toàn bằng **Tiếng Việt**.
+- Tuy nhiên, TOÀN BỘ mã nguồn (source code), chú thích trong code (comments), tên biến, và các cập nhật vào file tài liệu (như việc đổi `[ ]` thành `[x]` trong `tasks.md`) BẮT BUỘC phải được viết bằng **Tiếng Anh**. Tuyệt đối không dùng tiếng Việt trong code.
+
+**Các nguyên tắc bất biến và Ràng buộc (Invariants - DOs & DON'Ts)**:
+1. **API Integration (DO)**: Sử dụng các endpoint `GET /users/me/saved-albums`, `PUT /albums/:id/save`, và `DELETE /albums/:id/save` qua module `sessionApiClient`. Mọi phản hồi (response) phải được parse theo cấu trúc `{ success, message, data, error }` (với dữ liệu lấy từ mảng `savedAlbumIds`) đã được định nghĩa trong file `album-save-share-api.json`.
+2. **State Management & Pending UI (DO)**: Quản lý danh sách Saved Albums bằng React State nội bộ. Tuyệt đối KHÔNG sử dụng Optimistic UI. Khi gọi API `DELETE` hoặc `PUT`, phải vô hiệu hóa nút bấm và làm mờ (pending) item trên giao diện. Chỉ dùng hàm `filter()` xóa/thêm item khỏi giao diện nếu API trả về `success: true`. Nếu lỗi, giữ nguyên item/nút và hiển thị thông báo lỗi nội tuyến (inline error).
+3. **Social Sharing Buttons (DO)**: Xây dựng 4 nút chia sẻ riêng biệt bằng các **URL Intent (Sharer Links)**:
+   - Facebook: `https://www.facebook.com/sharer/sharer.php?u={url}`
+   - X (Twitter): `https://twitter.com/intent/tweet?url={url}`
+   - Zalo: `https://share.zalo.me/?url={url}`
+   - Riêng Instagram, hãy gọi hàm Copy Link và hiển thị thông báo toast: "Đã sao chép liên kết, hãy dán vào Instagram".
+4. **Third-party SDKs (DON'T)**: Tuyệt đối KHÔNG cài đặt bất kỳ thư viện NPM bên ngoài nào (như `react-share` hay Facebook SDK) cho các nút chia sẻ mạng xã hội. 
+5. **Testing (DON'T)**: Tuyệt đối KHÔNG viết logic lưu localStorage. Tuyệt đối KHÔNG cài đặt hay viết thêm các framework test tự động như Vitest/Jest (dự án chỉ nghiệm thu thủ công theo `quickstart.md`).
+
+**Chỉ thị thực thi (Execution Directive)**:
+Hãy thực hiện tuần tự các task từ T005 (Phase 2) đến T030 (Phase 5). Sau khi hoàn thành mỗi Phase, hãy dừng lại, báo cáo ngắn gọn danh sách file đã thay đổi bằng tiếng Việt, và tự động cập nhật file `tasks.md` (chuyển `[ ]` thành `[x]`) sau đó tiếp tục với phase tiếp theo cho đến hết.
+```
+
+### Tóm tắt phản hồi của AI
+
+*   **Đọc tài liệu và đánh giá mã nguồn:** AI bắt đầu bằng việc đọc toàn bộ tài liệu nguồn (specs, tasks, plan, schema) và kiểm tra các tệp hiện tại của backend/frontend thông qua terminal.
+*   **Triển khai API (Phase 1 & 2):** Xác nhận backend thiếu route nên đã tiến hành viết 3 endpoint `PUT`, `DELETE` và `GET` tại `albumRoutes.js` và `server.js` kèm chuẩn phản hồi `{ success, message, data, error }`. Ở frontend, `sessionApiClient` và `AppStore.jsx` được cập nhật để hydrate dữ liệu lưu album qua API (loại bỏ localStorage).
+*   **Quản lý giao diện (Phase 3):** Cập nhật `AlbumPage.jsx` và `LibraryPage.jsx` nhằm xử lý trạng thái đang chờ (pending state), vô hiệu hóa nút khi gọi API, và chặn cập nhật Optimistic UI. Lỗi từ server được hiển thị bằng thông báo nội tuyến.
+*   **Tích hợp chia sẻ (Phase 4 & 5):** Viết logic chia sẻ tại `share.js` sử dụng URL Intents cho Facebook, X, Zalo và helper sao chép link cho Instagram. URL canonical được cấu hình đúng về `origin/album/:id`.
+*   **Hoàn tất và kiểm thử:** Toàn bộ 30 task trong `tasks.md` được đánh dấu hoàn tất. AI đã chạy `node --check` và các chẩn đoán lỗi, ghi nhận mã không có lỗi cú pháp, tuân thủ đúng yêu cầu không cài thêm SDK bên ngoài.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Triển khai 3 API endpoint với envelope chuẩn | Dùng | Đảm bảo hệ thống backend có đủ chức năng giao tiếp với frontend theo đúng cấu trúc phản hồi quy định trong API schema. |
+| Xử lý trạng thái Pending và Inline Error (Không Optimistic UI) | Dùng | Tuân thủ tuyệt đối ràng buộc tính nhất quán dữ liệu, ngăn chặn việc hiển thị sai lệch khi server bị lỗi hoặc phản hồi chậm. |
+| Tạo 4 nút chia sẻ thông qua URL Intent (Sharer Links) | Dùng | Tránh việc cài đặt thêm các thư viện NPM bên thứ ba không cần thiết, giúp tối ưu hiệu suất và đáp ứng chính xác chỉ thị kỹ thuật. |
+
+### Cách kiểm chứng
+
+- [x] Chạy kiểm tra bằng công cụ chẩn đoán (`node --check`) trên terminal.
+- [x] Đối chiếu hành vi mã nguồn với tài liệu chính thức và API schema.
+- [x] Kiểm tra tính bảo mật, các trạng thái ngoại lệ (lỗi nội tuyến) và không có SDK ngoài phạm vi.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.

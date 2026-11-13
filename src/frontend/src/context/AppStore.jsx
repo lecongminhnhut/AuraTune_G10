@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { authApi, configureAuthContext } from '../services/sessionApiClient.js'
+import { albumApi, authApi, configureAuthContext } from '../services/sessionApiClient.js'
+import { getAlbumDetails, getArtistAlbums } from '../services/albumDetailsService.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { getDurationSeconds } from '../utils/playback.js'
 
@@ -93,6 +94,13 @@ export const formatTotalDuration = (seconds) => {
     const [sessionRestoring, setSessionRestoring] = useState(true)
     const [toasts, setToasts] = useState([])
     const [ui, setUi] = useState({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
+    const [albumDetailsById, setAlbumDetailsById] = useState({})
+    const albumRequestSequence = useRef(0)
+    const albumRequestIds = useRef(new Map())
+    const savedAlbumsRequestSequence = useRef(0)
+    const [savedAlbumIdsByUser, setSavedAlbumIdsByUser] = useState({})
+    const [savedAlbumsLoading, setSavedAlbumsLoading] = useState(false)
+    const [savedAlbumsError, setSavedAlbumsError] = useState(null)
     const stateRef = useRef(state)
     stateRef.current = state
 
@@ -262,9 +270,46 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [sessionRestoring, state.session, currentUser])
 
-  const library =
+  useEffect(() => {
+    const userId = currentUser?.id
+    const requestId = ++savedAlbumsRequestSequence.current
+
+    setSavedAlbumsError(null)
+    if (!userId) {
+      setSavedAlbumIdsByUser({})
+      setSavedAlbumsLoading(false)
+      return undefined
+    }
+
+    setSavedAlbumIdsByUser({})
+    setSavedAlbumsLoading(true)
+    albumApi.getSavedAlbums()
+      .then((response) => {
+        if (requestId !== savedAlbumsRequestSequence.current || !response.success) {
+          throw new Error(response.message || 'Could not load saved albums.')
+        }
+        const savedAlbumIds = Array.isArray(response.data?.savedAlbumIds) ? response.data.savedAlbumIds : []
+        setSavedAlbumIdsByUser({ [userId]: savedAlbumIds })
+      })
+      .catch((error) => {
+        if (requestId === savedAlbumsRequestSequence.current) {
+          setSavedAlbumsError(error.message || 'Could not load saved albums.')
+        }
+      })
+      .finally(() => {
+        if (requestId === savedAlbumsRequestSequence.current) setSavedAlbumsLoading(false)
+      })
+
+    return undefined
+  }, [currentUser?.id])
+
+  const storedLibrary =
     (currentUser && state.libraries[currentUser.id]) ||
     emptyLibrary()
+  const library = {
+    ...storedLibrary,
+    savedAlbumIds: currentUser ? (savedAlbumIdsByUser[currentUser.id] ?? []) : [],
+  }
 
   const updateLibrary = useCallback((updater) => {
     setState((previous) => {
@@ -288,6 +333,38 @@ export const formatTotalDuration = (seconds) => {
   const publicTracks = useMemo(() => allTracks.filter((track) => (state.trackStatus[track.id] ?? 'active') === 'active'), [allTracks, state.trackStatus])
   const findTrack = useCallback((id) => allTracks.find((track) => track.id === id) ?? null, [allTracks])
   const isPlayable = useCallback((trackId) => (state.trackStatus[trackId] ?? 'active') === 'active', [state.trackStatus])
+
+  const loadAlbumDetails = useCallback(async (albumId) => {
+    const requestId = ++albumRequestSequence.current
+    albumRequestIds.current.set(albumId, requestId)
+    setAlbumDetailsById((previous) => ({
+      ...previous,
+      [albumId]: { ...previous[albumId], status: 'loading', error: null },
+    }))
+
+    try {
+      const details = await getAlbumDetails(albumId)
+      if (albumRequestIds.current.get(albumId) !== requestId) return { stale: true, data: details }
+
+      setAlbumDetailsById((previous) => ({
+        ...previous,
+        [albumId]: { status: 'success', data: details, error: null },
+      }))
+      return { stale: false, data: details }
+    } catch (error) {
+      if (albumRequestIds.current.get(albumId) !== requestId) return { stale: true, error }
+
+      setAlbumDetailsById((previous) => ({
+        ...previous,
+        [albumId]: { ...previous[albumId], status: 'error', error },
+      }))
+      throw error
+    }
+  }, [])
+
+  const getAlbumDetailsCache = useCallback((albumId) => albumDetailsById[albumId]?.data ?? null, [albumDetailsById])
+  const getAlbumDetailsStatus = useCallback((albumId) => albumDetailsById[albumId] ?? { status: 'idle', data: null, error: null }, [albumDetailsById])
+  const loadArtistAlbums = useCallback((artistId) => getArtistAlbums(artistId), [])
 
   const userPlaylistsVisible = useMemo(() => {
     if (!currentUser) return []
@@ -620,11 +697,45 @@ export const formatTotalDuration = (seconds) => {
 
   const removeCollaborator = useCallback((playlistId, userId) => updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, collaborators: (playlist.collaborators ?? []).filter((id) => id !== userId) })), [updateOwnedPlaylist])
 
-  const toggleSaveAlbum = useCallback((albumId) => {
-    if (!stateRef.current.session) return false
-    updateLibrary((current) => ({ ...current, savedAlbumIds: current.savedAlbumIds.includes(albumId) ? current.savedAlbumIds.filter((id) => id !== albumId) : [albumId, ...current.savedAlbumIds] }))
-    return true
-  }, [updateLibrary])
+  const saveAlbum = useCallback(async (albumId) => {
+    const userId = stateRef.current.session?.userId
+    if (!userId) return { ok: false, code: 'UNAUTHORIZED', error: 'Please sign in to save this album.' }
+
+    try {
+      const response = await albumApi.saveAlbum(albumId)
+      if (!response.success) return { ok: false, code: response.error?.code, error: response.message || 'Could not save this album.' }
+      if (stateRef.current.session?.userId === userId) {
+        setSavedAlbumIdsByUser((previous) => ({
+          ...previous,
+          [userId]: [...new Set([...(previous[userId] ?? []), albumId])],
+        }))
+      }
+      return { ok: true, message: response.message }
+    } catch (error) {
+      return { ok: false, error: error.message || 'Could not save this album.' }
+    }
+  }, [])
+
+  const removeSavedAlbum = useCallback(async (albumId) => {
+    const userId = stateRef.current.session?.userId
+    if (!userId) return { ok: false, code: 'UNAUTHORIZED', error: 'Please sign in to manage saved albums.' }
+
+    try {
+      const response = await albumApi.removeSavedAlbum(albumId)
+      if (!response.success) return { ok: false, code: response.error?.code, error: response.message || 'Could not remove this album.' }
+      if (stateRef.current.session?.userId === userId) {
+        setSavedAlbumIdsByUser((previous) => ({
+          ...previous,
+          [userId]: (previous[userId] ?? []).filter((id) => id !== albumId),
+        }))
+      }
+      return { ok: true, message: response.message }
+    } catch (error) {
+      return { ok: false, error: error.message || 'Could not remove this album.' }
+    }
+  }, [])
+
+  const isAlbumSaved = useCallback((albumId) => library.savedAlbumIds.includes(albumId), [library.savedAlbumIds])
 
   // ---------- Theo dõi nghệ sĩ (spec 092) ----------
   // Mô phỏng một lời gọi mạng để giao diện có trạng thái "đang cập nhật".
@@ -714,10 +825,11 @@ export const formatTotalDuration = (seconds) => {
   const value = {
     state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
+    loadAlbumDetails, getAlbumDetailsCache, getAlbumDetailsStatus, loadArtistAlbums,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
     register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
-    toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
+    saveAlbum, removeSavedAlbum, savedAlbumsLoading, savedAlbumsError, isAlbumSaved, getAlbum,
     setFollow, isFollowing,
     recordPlay, updateListened, clearHistory,
     comments: state.comments, addComment, deleteComment,

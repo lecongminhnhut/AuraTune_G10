@@ -14,6 +14,16 @@ export async function shareLink(path, title) {
   }
 }
 
+export async function copyLink(path) {
+  const url = new URL(path, window.location.origin).toString()
+  try {
+    await navigator.clipboard.writeText(url)
+    return 'copied'
+  } catch {
+    return 'failed'
+  }
+}
+
 export const shareMessage = (result) => ({
   shared: 'Đã mở hộp thoại chia sẻ.',
   copied: 'Đã sao chép liên kết vào bộ nhớ tạm.',

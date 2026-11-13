@@ -28,3 +28,5 @@ Use the existing `sessionApiClient` base URL and authentication/refresh handling
 - Keep a Saved Albums item visible until removal is confirmed; on failure it remains visible.
 - A signed-out visitor cannot mutate saved state; sharing remains available without authentication.
 - A share cancellation/failure must not be reported as successful and must not mutate library state.
+
+*Note: The explicit response schemas for these endpoints have been approved and are defined in [`album-save-share-api.json`](./album-save-share-api.json) in OpenAPI 3 format.*
