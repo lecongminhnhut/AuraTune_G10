@@ -77,6 +77,9 @@ export async function firebaseExchange(req, res) {
       : signInProvider === 'facebook.com'
         ? 'facebook'
         : 'firebase';
+    const requestedDisplayName = typeof req.body?.display_name === 'string'
+      ? req.body.display_name.trim().slice(0, 50)
+      : '';
 
     // Facebook sign-in is accepted only for an explicitly linked Facebook identity.
     const facebookLink = provider === 'facebook' ? await db.findOAuthLink('facebook', firebaseUid) : null;
@@ -111,6 +114,13 @@ export async function firebaseExchange(req, res) {
       } else {
         // Firebase sign-in alone does not imply consent for new accounts
         if (req.body?.terms_accepted !== true) {
+          if (provider === 'google') {
+            return res.status(404).json({
+              success: false,
+              code: 'GOOGLE_ACCOUNT_NOT_REGISTERED',
+              message: 'Tài khoản Google này chưa có tài khoản AuraTune. Hãy đăng ký trước.'
+            });
+          }
           return res.status(400).json({
             success: false,
             code: 'TERMS_ACCEPTANCE_REQUIRED',
@@ -118,10 +128,9 @@ export async function firebaseExchange(req, res) {
           });
         }
 
-        const displayName =
-          typeof decoded.name === 'string' && decoded.name.trim()
-            ? decoded.name.trim().slice(0, 100)
-            : email.split('@')[0];
+        const displayName = (requestedDisplayName
+          || (typeof decoded.name === 'string' ? decoded.name.trim() : '')
+          || email.split('@')[0]).slice(0, 50);
 
         // 4. Create AuraTune user with minimum privilege
         user = await db.createUser({
@@ -142,6 +151,7 @@ export async function firebaseExchange(req, res) {
     if (user.is_banned) {
       return res.status(403).json({
         success: false,
+        code: 'ACCOUNT_DISABLED',
         message: 'AuraTune account is disabled'
       });
     }
@@ -152,13 +162,19 @@ export async function firebaseExchange(req, res) {
     ) {
       return res.status(403).json({
         success: false,
+        code: 'ACCOUNT_TEMPORARILY_LOCKED',
         message: 'AuraTune account is temporarily locked'
       });
     }
 
     const profileUpdates = {};
-    if (typeof decoded.name === 'string' && decoded.name.trim()) {
-      profileUpdates.display_name = decoded.name.trim().slice(0, 100);
+    // An explicit registration submission can update a profile created during
+    // an earlier incomplete attempt. Normal Google sign-ins must preserve the
+    // user's AuraTune display name and only fill it for legacy profiles missing one.
+    if (req.body?.terms_accepted === true && requestedDisplayName) {
+      profileUpdates.display_name = requestedDisplayName;
+    } else if (!user.display_name && typeof decoded.name === 'string' && decoded.name.trim()) {
+      profileUpdates.display_name = decoded.name.trim().slice(0, 50);
     }
     if (typeof decoded.picture === 'string' && decoded.picture.trim()) {
       profileUpdates.avatar_url = decoded.picture.trim();
@@ -219,12 +235,12 @@ export async function firebaseExchange(req, res) {
 export async function linkFacebook(req, res) {
   const userId = req.user?.user_id || req.user?.id;
   if (!userId || !await db.findUserById(userId)) {
-    return res.status(401).json({ success: false, message: 'An authenticated AuraTune account is required.' });
+    return res.status(401).json({ success: false, code: 'UNAUTHENTICATED', message: 'Hãy đăng nhập AuraTune trước khi liên kết Facebook.' });
   }
 
   const firebaseIdToken = req.headers['x-firebase-id-token'];
   if (typeof firebaseIdToken !== 'string' || !firebaseIdToken.trim()) {
-    return res.status(401).json({ success: false, message: 'Missing Facebook identity token.' });
+    return res.status(401).json({ success: false, code: 'FACEBOOK_TOKEN_REQUIRED', message: 'Thiếu thông tin xác thực Facebook. Hãy thử lại.' });
   }
 
   try {
@@ -232,24 +248,29 @@ export async function linkFacebook(req, res) {
     const hasFacebookIdentity = decoded.firebase?.sign_in_provider === 'facebook.com'
       || Boolean(decoded.firebase?.identities?.['facebook.com']?.length);
     if (!hasFacebookIdentity || !decoded.uid) {
-      return res.status(403).json({ success: false, code: 'FACEBOOK_IDENTITY_REQUIRED', message: 'Authenticate with Facebook before linking it.' });
+      return res.status(403).json({ success: false, code: 'FACEBOOK_IDENTITY_REQUIRED', message: 'Hãy xác thực bằng Facebook trước khi liên kết.' });
     }
 
     const identityOwner = await db.findOAuthLink('facebook', decoded.uid);
     if (identityOwner && identityOwner.user_id !== userId) {
-      return res.status(409).json({ success: false, code: 'FACEBOOK_ALREADY_LINKED', message: 'This Facebook identity is already linked to another AuraTune account.' });
+      return res.status(409).json({ success: false, code: 'FACEBOOK_ALREADY_LINKED', message: 'Tài khoản Facebook này đã được liên kết với tài khoản AuraTune khác.' });
+    }
+
+    const firebaseAccountOwner = await db.findUserByFirebaseUid(decoded.uid);
+    if (firebaseAccountOwner && firebaseAccountOwner.id !== userId) {
+      return res.status(409).json({ success: false, code: 'FACEBOOK_IDENTITY_LINK_CONFLICT', message: 'Danh tính Firebase này thuộc tài khoản AuraTune khác. Hãy đăng nhập đúng tài khoản rồi thử lại.' });
     }
 
     await db.addOAuthLink(userId, 'facebook', decoded.uid);
-    return res.status(200).json({ success: true, provider: 'facebook', message: 'Facebook account linked successfully.' });
+    return res.status(200).json({ success: true, provider: 'facebook', message: 'Liên kết Facebook thành công.' });
   } catch (error) {
     if (error.message?.includes('different identity')) {
-      return res.status(409).json({ success: false, code: 'FACEBOOK_ALREADY_LINKED', message: 'A different Facebook identity is already linked to this AuraTune account.' });
+      return res.status(409).json({ success: false, code: 'FACEBOOK_ALREADY_LINKED', message: 'Tài khoản AuraTune này đã liên kết với một tài khoản Facebook khác.' });
     }
     if (error.code?.startsWith('auth/')) {
-      return res.status(401).json({ success: false, message: 'Facebook identity token is invalid or expired.' });
+      return res.status(401).json({ success: false, code: 'FACEBOOK_TOKEN_INVALID', message: 'Phiên xác thực Facebook không hợp lệ hoặc đã hết hạn. Hãy thử lại.' });
     }
     console.error('Facebook link error:', error.code || error.message);
-    return res.status(500).json({ success: false, message: 'Could not link the Facebook account.' });
+    return res.status(500).json({ success: false, code: 'FACEBOOK_LINK_FAILED', message: 'Không thể liên kết Facebook lúc này. Hãy thử lại sau.' });
   }
 }

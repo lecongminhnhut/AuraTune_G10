@@ -10,13 +10,9 @@
 - Validation: name required and max 80 characters; description max 300; new status defaults private.
 - Delete is permanent after client confirmation. Bookmark is a read-only reference.
 
-## Endpoint Boundary
+## Implemented Endpoints
 
-The shared API contract does not list playlist CRUD routes or exact payloads. Candidate resource naming follows `/playlists` and nested resources per API conventions, but method, route, pagination, payload/response fields, error codes, and bookmark endpoint require approval before implementation. Do not treat candidate paths as a finalized contract.
-
-## Approval Required
-
-1. Confirm create/list/detail/update/delete and bookmark route/method/body/response schemas.
-2. Confirm whether an inaccessible bookmarked playlist is hidden, removed from library, or returned as unavailable.
-3. Confirm deployed `playlists` columns, detail aggregates, default cover, uniqueness/foreign keys, and permanent-delete dependent-row behavior.
-4. Confirm privacy-safe handling for private playlist IDs (403 versus 404) in line with the shared API contract.
+- `GET /users/me/playlists`, `POST /playlists`, `GET /playlists/:id`, `PUT /playlists/:id`, `DELETE /playlists/:id`.
+- `PUT /playlists/:id/bookmark` stores a duplicate-safe read-only reference; no unbookmark operation is exposed per Q-060-03.
+- Responses use the shared JSON envelope. Private playlist reads return `404` to non-members; owner-only writes return `403` to other authenticated users.
+- PostgreSQL migration `003_playlist_management.sql` uses `playlists.id`, `user_id_creator`, a private default and a cover key. Delete cascades playlist-owned memberships and references.

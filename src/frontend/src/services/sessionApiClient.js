@@ -76,7 +76,7 @@ export const authApi = {
     return res.json();
   },
 
-  async firebaseExchange(firebaseIdToken, termsAccepted = false) {
+  async firebaseExchange(firebaseIdToken, termsAccepted = false, displayName) {
     if (!firebaseIdToken) {
       throw new Error('Firebase ID Token is required');
     }
@@ -87,7 +87,8 @@ export const authApi = {
         Authorization: `Bearer ${firebaseIdToken}`
       },
       body: JSON.stringify({
-        terms_accepted: termsAccepted === true
+        terms_accepted: termsAccepted === true,
+        display_name: typeof displayName === 'string' ? displayName.trim() : undefined,
       })
     });
 

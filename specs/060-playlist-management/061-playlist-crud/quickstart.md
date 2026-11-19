@@ -6,7 +6,7 @@
 
 - Run the existing backend and frontend using the commands documented in the repository root `package.json`.
 - Configure local backend/database credentials using the project setup; never commit secrets.
-- Resolve the bookmark and deployed-schema approval gates in [research.md](./research.md) before persistence scenarios.
+- Apply `src/database/migrations/003_playlist_management.sql` in the Supabase SQL editor after `001_auth_tables.sql` and verify `songs.song_id` matches the configured catalog schema.
 - API and entity expectations: [playlist CRUD contract](./contracts/playlist-crud.md), [data model](./data-model.md).
 
 ## Validation Scenarios

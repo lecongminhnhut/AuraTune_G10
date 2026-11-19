@@ -18,6 +18,7 @@ class Settings:
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     AI_SERVICE_HOST: str = os.getenv("AI_SERVICE_HOST", "0.0.0.0")
     AI_SERVICE_PORT: int = int(os.getenv("AI_SERVICE_PORT", "8000"))
+    AI_INTERNAL_SECRET: str = os.getenv("AI_INTERNAL_SECRET", "auratune-internal-secret-2026")
     CORS_ORIGINS: list[str] = ["*"]
 
 settings = Settings()

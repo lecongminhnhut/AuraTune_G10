@@ -116,7 +116,38 @@ export async function getMoodRecommendations({
   }
 }
 
+export async function getPlaylistGeneration({
+  prompt,
+  timeoutMs = aiConfig.aiServiceTimeoutMs,
+  baseUrl = aiConfig.aiServiceUrl,
+  fetchImpl = fetch,
+} = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetchImpl(`${baseUrl}/ai/playlist/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Internal-Secret': aiConfig.internalSecret },
+      body: JSON.stringify({ prompt }),
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`AI Service returned HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      const timeoutError = new Error(`AI Service request timed out after ${timeoutMs}ms`);
+      timeoutError.name = 'TimeoutError';
+      timeoutError.code = 'ETIMEDOUT';
+      throw timeoutError;
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export default {
   getRecommendations,
   getMoodRecommendations,
+  getPlaylistGeneration,
 };
