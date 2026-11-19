@@ -1,0 +1,512 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune AI Lyrics Search API",
+    "description": "Approved API contract for Feature 032: AI Lyrics Search (Group 030 - Search). Searches songs from incomplete remembered lyric fragments via Express backend proxy to the internal AI service, with automatic normalized-lyrics keyword fallback on HTTP 503 or 3-second timeout.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base (Express caller-facing boundary)"
+    }
+  ],
+  "paths": {
+    "/search/lyrics": {
+      "get": {
+        "summary": "Search songs by remembered lyric fragment with automatic keyword fallback",
+        "description": "Public caller-facing endpoint owned by the AuraTune Express backend. Validates the trimmed lyric fragment (at least 3 words and at most 200 characters) and forwards POST /ai/search/lyrics to the internal Python AI Service with an enforced 3000ms timeout. If the internal AI service returns HTTP 503 or times out after 3 seconds, Express automatically executes normalized lyrics-only keyword fallback against its cached Cloudinary lyric index (public.songs.lyrics_url) and returns 200 OK with meta.search_mode = 'keyword_fallback'. HTTP 429 and other errors do not trigger fallback.",
+        "operationId": "searchLyrics",
+        "security": [],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Remembered lyric fragment. Leading/trailing whitespace is trimmed and repeated whitespace is collapsed before validation; must contain at least 3 words and at most 200 characters after trimming.",
+            "schema": {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 200
+            },
+            "example": "thanh pho ngu chi con tieng mua"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of song results to return in this batch (1-50; default 20).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Zero-based starting result position for Load More pagination.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lyrics search results retrieved (either via AI semantic match or automatic keyword fallback)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LyricsSearchApiResponse"
+                },
+                "examples": {
+                  "aiModeSuccess": {
+                    "summary": "Successful AI semantic lyrics match",
+                    "value": {
+                      "success": true,
+                      "message": "Lyrics search results retrieved",
+                      "data": [
+                        {
+                          "id": "101",
+                          "type": "track",
+                          "title": "Midnight Coffee",
+                          "artist": "AuraTune Studio",
+                          "artist_id": "12",
+                          "album": "Lofi bên cửa sổ",
+                          "album_id": "5",
+                          "genre": "lofi",
+                          "release_date": "2026-01-15",
+                          "duration_seconds": 210,
+                          "play_count": 204000,
+                          "cover_url": "https://res.cloudinary.com/auratune/image/upload/v1/covers/101.jpg",
+                          "matched_lyric": "Thành phố ngủ, chỉ còn tiếng mưa"
+                        }
+                      ],
+                      "pagination": {
+                        "limit": 20,
+                        "offset": 0,
+                        "next_offset": null,
+                        "has_more": false
+                      },
+                      "meta": {
+                        "search_mode": "ai"
+                      },
+                      "error": null
+                    }
+                  },
+                  "keywordFallbackSuccess": {
+                    "summary": "Automatic normalized-lyrics keyword fallback after AI 503 or 3-second timeout",
+                    "value": {
+                      "success": true,
+                      "message": "Lyrics search results retrieved via keyword fallback",
+                      "data": [
+                        {
+                          "id": "101",
+                          "type": "track",
+                          "title": "Midnight Coffee",
+                          "artist": "AuraTune Studio",
+                          "artist_id": "12",
+                          "album": "Lofi bên cửa sổ",
+                          "album_id": "5",
+                          "genre": "lofi",
+                          "release_date": "2026-01-15",
+                          "duration_seconds": 210,
+                          "play_count": 204000,
+                          "cover_url": "https://res.cloudinary.com/auratune/image/upload/v1/covers/101.jpg",
+                          "matched_lyric": "Thành phố ngủ, chỉ còn tiếng mưa"
+                        }
+                      ],
+                      "pagination": {
+                        "limit": 20,
+                        "offset": 0,
+                        "next_offset": null,
+                        "has_more": false
+                      },
+                      "meta": {
+                        "search_mode": "keyword_fallback"
+                      },
+                      "error": null
+                    }
+                  },
+                  "emptyResults": {
+                    "summary": "No matching song lyrics found",
+                    "value": {
+                      "success": true,
+                      "message": "Lyrics search results retrieved",
+                      "data": [],
+                      "pagination": {
+                        "limit": 20,
+                        "offset": 0,
+                        "next_offset": null,
+                        "has_more": false
+                      },
+                      "meta": {
+                        "search_mode": "ai"
+                      },
+                      "error": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid lyric fragment (< 3 words or > 200 characters after trimming), invalid pagination params, or unknown query parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "examples": {
+                  "tooFewWords": {
+                    "summary": "Fragment contains fewer than 3 words",
+                    "value": {
+                      "success": false,
+                      "message": "Lyric search query is invalid",
+                      "data": null,
+                      "error": {
+                        "code": "VALIDATION_ERROR",
+                        "details": [
+                          {
+                            "field": "q",
+                            "issue": "Must contain at least 3 words and at most 200 characters after trimming"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded (retryable; does NOT trigger keyword fallback)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Quá nhiều yêu cầu, vui lòng thử lại sau",
+                  "data": null,
+                  "error": {
+                    "code": "RATE_LIMITED",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Both internal AI service and keyword fallback execution are unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Dịch vụ tìm kiếm lời bài hát tạm thời không khả dụng, vui lòng thử lại sau",
+                  "data": null,
+                  "error": {
+                    "code": "AI_SERVICE_UNAVAILABLE",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected catalog, lyric cache, or internal server failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Đã xảy ra lỗi hệ thống khi tìm kiếm lời bài hát",
+                  "data": null,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "details": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InternalAiLyricsSearchRequest": {
+        "type": "object",
+        "description": "Internal payload forwarded by Express backend to POST /ai/search/lyrics (authenticated via X-Internal-Api-Key; never called directly by browsers).",
+        "required": [
+          "query",
+          "limit",
+          "offset"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 200,
+            "example": "thanh pho ngu chi con tieng mua"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "LyricsSearchApiResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "pagination",
+          "meta",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Lyrics search results retrieved"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LyricTrackResult"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/LyricsSearchMeta"
+          },
+          "error": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "LyricTrackResult": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "artist",
+          "matched_lyric"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stringified public.songs.song_id",
+            "example": "101"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "track"
+            ],
+            "example": "track"
+          },
+          "title": {
+            "type": "string",
+            "example": "Midnight Coffee"
+          },
+          "artist": {
+            "type": "string",
+            "example": "AuraTune Studio"
+          },
+          "artist_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "12"
+          },
+          "album": {
+            "type": "string",
+            "nullable": true,
+            "example": "Lofi bên cửa sổ"
+          },
+          "album_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "5"
+          },
+          "genre": {
+            "type": "string",
+            "nullable": true,
+            "example": "lofi"
+          },
+          "release_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2026-01-15"
+          },
+          "duration_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "example": 210
+          },
+          "play_count": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "example": 204000
+          },
+          "cover_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://res.cloudinary.com/auratune/image/upload/v1/covers/101.jpg"
+          },
+          "matched_lyric": {
+            "type": "string",
+            "nullable": true,
+            "description": "Best matching plain lyric snippet or line (LRC timestamps stripped) for UI display context.",
+            "example": "Thành phố ngủ, chỉ còn tiếng mưa"
+          }
+        }
+      },
+      "LyricsSearchMeta": {
+        "type": "object",
+        "required": [
+          "search_mode"
+        ],
+        "properties": {
+          "search_mode": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "keyword_fallback"
+            ],
+            "description": "Indicates whether results came from the AI semantic service ('ai') or automatic normalized-lyrics keyword fallback ('keyword_fallback').",
+            "example": "ai"
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "required": [
+          "limit",
+          "offset",
+          "next_offset",
+          "has_more"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "example": 20
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "next_offset": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true,
+            "example": null
+          },
+          "has_more": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "ValidationErrorDetail": {
+        "type": "object",
+        "required": [
+          "field",
+          "issue"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "example": "q"
+          },
+          "issue": {
+            "type": "string",
+            "example": "Must contain at least 3 words and at most 200 characters after trimming"
+          }
+        }
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Lyric search query is invalid"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "details"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR",
+                  "RATE_LIMITED",
+                  "AI_SERVICE_UNAVAILABLE",
+                  "INTERNAL_ERROR"
+                ],
+                "example": "VALIDATION_ERROR"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ValidationErrorDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -12,9 +12,9 @@
 
 **Purpose**: Verify prerequisites explicitly left open by the implementation plan without changing approved feature scope.
 
-- [ ] T001 Verify deployed PostgreSQL catalog tables and field mappings against the approved result projections in `specs/030-search/031-metadata-search/data-model.md`; record the mapping before implementing the search repository and do not add a feature schema or migration.
-- [ ] T002 Confirm an available test approach for backend/API and frontend feature coverage in `src/backend/package.json` and `src/frontend/package.json` before adding any test dependencies.
-- [ ] T003 Verify whether `.specify/memory/constitution.md` has been ratified and record the governance gap for the implementation review; do not claim constitutional compliance while it remains a placeholder.
+- [x] T001 Verify deployed PostgreSQL catalog tables and field mappings against the approved result projections in `specs/030-search/031-metadata-search/data-model.md`; record the mapping before implementing the search repository and do not add a feature schema or migration.
+- [x] T002 Confirm an available test approach for backend/API and frontend feature coverage in `src/backend/package.json` and `src/frontend/package.json` before adding any test dependencies.
+- [x] T003 Verify whether `.specify/memory/constitution.md` has been ratified and record the governance gap for the implementation review; do not claim constitutional compliance while it remains a placeholder.
 
 ---
 

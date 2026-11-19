@@ -11,18 +11,50 @@
 - Approved AI/vector service, catalog data containing available search dimensions, and safe local profile/artist-name test fixtures.
 - Controlled test credentials/configuration supplied locally; do not commit secrets or PII fixtures.
 
-## Start Existing Applications
+## Start Existing Applications & Automated Tests
 
-From the repository root, start the backend:
+Start the backend (in PowerShell):
 
-```sh
-npm run dev:backend
+```powershell
+Set-Location src/backend
+npm install
+npm run dev
 ```
 
 In a second terminal, start the frontend:
 
-```sh
-npm run dev:frontend
+```powershell
+Set-Location src/frontend
+npm install
+npm run dev
+```
+
+Automated Test Commands (T010 Resolved)
+Both src/backend/package.json and src/frontend/package.json already include configured test runners; no additional test dependencies are required:
+
+
+# Backend unit, privacy guard, ranking, and route contract tests:
+```powershell
+Set-Location src/backend
+npm test
+```
+
+# Frontend query validation, hook, component, and acceptance tests:
+```powershell
+Set-Location src/frontend
+npm test
+```
+
+# Frontend production build check:
+```powershell
+Set-Location src/frontend
+npm run build
+```
+
+Smoke-Test the Approved Endpoint (GET /api/v1/search?mode=semantic)
+```powershell
+curl.exe -i "http://localhost:5000/api/v1/search?q=lofi%20chill%20de%20code&mode=semantic&limit=20&offset=0"
+curl.exe -i "http://localhost:5000/api/v1/search?q=   &mode=semantic"
 ```
 
 The repository currently has no semantic-search-specific test command. The root `npm run test:backend` exercises authentication smoke tests and is not evidence of semantic search behavior. Select feature-level test tooling before treating these scenarios as automated coverage.

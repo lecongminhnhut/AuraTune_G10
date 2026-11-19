@@ -16,7 +16,7 @@ The repository has a prototype lyrics tab and mock lyric fixtures, but no produc
 
 **Primary Dependencies**: Existing React, Vite, Tailwind, Express, and shared AuraTune API conventions. No AI SDK, provider, model, embedding technique, vector database, or scoring formula is selected.
 
-**Storage**: No feature-specific schema change is justified by the spec or current source. The current frontend fixtures are demo data, not an approved production lyrics source. Canonical lyric catalog ownership and retrieval are **NEEDS CLARIFICATION**.
+**Storage**: No feature-specific database table or migration is required. Canonical raw lyric files (`.lrc`/`.txt`) are stored on Cloudinary and referenced via `public.songs.lyrics_url` in Supabase PostgreSQL, indexed into an in-memory/local cache by the backend/AI service for fast retrieval and fallback.
 
 **Testing**: Existing frontend scripts provide `dev`, `build`, and `preview`; the root backend test script targets authentication. No feature-specific test runner or lyrics-search tests currently exist. Plan focused unit, component, contract/integration, and acceptance coverage using the test tooling selected by implementation, without assuming a runner.
 
@@ -140,13 +140,13 @@ AI or fallback batch -> current-request check -> Lyrics results -> existing play
 
 ## Open Clarifications
 
-1. Is the caller-facing endpoint the public `GET /search/lyrics`, with Express proxying to internal `POST /ai/search/lyrics`, or is another approved routing design intended?
-2. What are the exact approved request and response data schemas, including song identity/lyric context and the continuation mechanism for 20-item batches?
-3. Which service owns the public route and internal AI call, and what runtime/provider/authentication are approved?
-4. What is the approved production lyric source/index and its song identity mapping?
-5. What deterministic tie-breaker applies when fallback candidates have equal phrase/query-word rank?
-6. Should the response carry an explicit search/fallback mode, or should the UI derive fallback mode from the local 503/timeout transition?
-7. Confirm the 3-second clarification supersedes the remaining 5-second text in `spec.md` and reconcile that text before implementation.
+1. ~~Is the caller-facing endpoint the public `GET /search/lyrics`, with Express proxying to internal `POST /ai/search/lyrics`?~~ *(Resolved in T001: Frontend calls public `GET /api/v1/search/lyrics`; Express proxies to internal Python AI service `POST /ai/search/lyrics` with a 3-second timeout and handles automatic keyword fallback.)*
+2. ~~What are the exact approved request and response data schemas?~~ *(Resolved in T002: Documented in `contracts/lyrics-search.md`, aligned with Feature 031 track fields plus `matched_lyric` and `{ limit, offset, next_offset, has_more }` pagination.)*
+3. ~~Which service owns the public route and internal AI call, and what runtime/provider/authentication are approved?~~ *(Resolved in T003: Express backend `src/backend` owns `/api/v1/search/lyrics` and calls the Python FastAPI service `src/ai-service` authenticated via `INTERNAL_API_KEY` from backend `.env`.)*
+4. ~~What is the approved production lyric source/index and its song identity mapping?~~ *(Resolved in T004: Cloudinary `.lrc`/`.txt` files referenced by `public.songs.lyrics_url`, stripped of timestamps into an in-memory cache and mapped via `songs.song_id`.)*
+5. ~~What deterministic tie-breaker applies when fallback candidates have equal phrase/query-word rank?~~ *(Resolved in T007: Normalization trims whitespace, lowercases, strips Unicode NFD diacritics, and removes punctuation. Fallback ranks: (1) exact normalized phrase match, (2) higher matched query-word count, (3) deterministic tie-breaker `songs.total_plays DESC, songs.song_id ASC`.)*
+6. ~~Should the response carry an explicit search/fallback mode?~~ *(Resolved in T005: Yes, top-level `meta.search_mode` (`"ai"` | `"keyword_fallback"`), while frontend also guards against client-side 3s timeout / 503 transitions.)*
+7. ~~Confirm the 3-second clarification supersedes the remaining 5-second text in `spec.md`?~~ *(Resolved in T006: Unified 3-second threshold confirmed across `spec.md`, `plan.md`, and `contracts/lyrics-search.md`.)*
 
 ## Complexity Tracking
 

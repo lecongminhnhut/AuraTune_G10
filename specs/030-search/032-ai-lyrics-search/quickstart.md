@@ -16,13 +16,13 @@
 From the repository root, start the backend:
 
 ```sh
-npm run dev:backend
+cd src/backend && npm test
 ```
 
 In a second terminal, start the frontend:
 
 ```sh
-npm run dev:frontend
+cd src/frontend && npm test
 ```
 
 The repository currently provides no feature-specific frontend test command. The root `npm run test:backend` exercises existing backend authentication behavior and is not a lyrics-search validation suite.

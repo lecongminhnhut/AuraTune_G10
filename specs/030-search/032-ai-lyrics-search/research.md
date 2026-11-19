@@ -29,7 +29,7 @@
 ### Searchable lyric source
 
 - **Finding**: The frontend mock catalog has lyric text for a small set of demo tracks; the repository does not identify a canonical production lyric store/index or its relationship to song IDs and playback metadata.
-- **Decision**: Use mock data only as a local UI/test fixture. Keep production source, indexing, and identity mapping unresolved; do not add a database schema.
+- **Decision**: Confirmed that production lyric files are hosted on Cloudinary and linked via `public.songs.lyrics_url` in Supabase PostgreSQL. The backend/AI service indexes plain text from these URLs into an in-memory/local cache on startup and song updates. Frontend mock data remains a local test fixture only.
 - **Rationale**: The feature spec assumes an available lyric source but does not specify a schema, and the current mock data is not evidence of production persistence.
 - **Alternatives considered**: Creating a new PostgreSQL/Supabase schema or treating browser mock data as the production catalog was rejected as unsupported by the feature design.
 

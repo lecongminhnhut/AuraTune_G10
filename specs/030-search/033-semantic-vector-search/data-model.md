@@ -3,9 +3,14 @@
 **Feature**: [033 Semantic Vector Music Search](./spec.md)
 **Status**: Logical model only; no persistence schema, catalog ingestion process, or vector-index implementation is approved.
 
-## Persistence Decision
+## Persistence Decision (Resolved - T005)
 
-No database migration or semantic index schema is proposed. The feature spec identifies what content dimensions must be searchable, but the repository does not establish the production catalog source, audio-field availability, vector storage, or index lifecycle. Project-plan ED-06 and ED-08 also leave catalog selection and AI/vector technology decisions outstanding. Resolve those decisions before creating persistence or ingestion work.
+No new PostgreSQL table, column migration, or vector database schema is added to Supabase.
+
+* **Metadata Source:** Sourced from `public.songs` (`song_id`, `title`, `genre`, `total_plays`, `image_url`) joined with `public.albums` (`title`, `release_date`, `image_url`) and `public.artists` (`artist_id`, `name`) via `src/database/supabaseClient.js`.
+* **Lyrics Source:** Sourced from plain lyric text extracted and cached from Cloudinary assets referenced by `public.songs.lyrics_url` (aligned with Feature 032). Songs with `lyrics_url IS NULL` remain eligible for search with the lyric dimension marked unavailable.
+* **Audio Characteristics Source:** `public.songs.duration` is sourced directly from PostgreSQL. The remaining 12 extended audio attributes (`tempo/BPM`, `key`, `mode`, `energy`, `valence`, `danceability`, `acousticness`, `instrumentalness`, `speechiness`, `loudness`, `liveness`, `time_signature`) are currently unpopulated in the deployed schema and are treated as absent dimensions rather than fabricated values; weights automatically re-normalize across available dimensions (`metadata` and `lyrics`/`duration`).
+* **Index Lifecycle:** The Python AI service (`src/ai-service`) builds and persists its local vector index from the Supabase catalog and cached Cloudinary lyrics on startup and refreshes incrementally when songs are created or updated.
 
 ## Logical Entities
 
@@ -64,14 +69,11 @@ Semantic request -> AI-service HTTP 429 -> Keyword Fallback
 Any pending request -> New Query (older response ignored)
 ```
 
-## Open Data Decisions
+## Open Data Decisions (All Resolved in Phase 1)
 
-- Canonical searchable catalog and stable song/playback identity mapping.
-- Availability and source for each audio-characteristic field.
-- Index/vector representation, dimensions, generation, persistence, and update lifecycle.
-- Exact normalized query behavior and score ownership (client/service).
-- API response fields, explanation policy, semantic/fallback mode indicator, and tie-breaking rule.
-- Trusted source of profile identity and catalog artist names for local privacy detection.
-- Provider, embedding/vector representation, persistence, and index generation/update lifecycle.
-
-An HTTP 429 from the internal AI dependency follows the feature's AI-unavailability fallback behavior. This logical model does not define retries or change how the public API handles its own rate limit.
+* ~~Canonical searchable catalog and stable song/playback identity mapping.~~ *(Resolved in T005: `public.songs` -> `albums` -> `artists` on Supabase.)*
+* ~~Availability and source for each audio-characteristic field.~~ *(Resolved in T005: `songs.duration` is used; unpopulated audio fields are treated as absent dimensions with automatic weight re-normalization.)*
+* ~~Index/vector representation, dimensions, generation, persistence, and update lifecycle.~~ *(Resolved in T002 & T005: Local ChromaDB / in-memory vector index in `src/ai-service` synced from Supabase + Cloudinary lyric cache.)*
+* ~~Exact normalized query behavior and score ownership.~~ *(Resolved in T004: Meaning-preserving normalization in Express/Frontend; 30/40/30 ensemble computed in Python AI service.)*
+* ~~API response fields, explanation policy, semantic/fallback mode indicator, and tie-breaking rule.~~ *(Resolved in T007: Documented in `contracts/semantic-search.md`.)*
+* ~~Trusted source of profile identity and catalog artist names for local privacy detection.~~ *(Resolved in T006: Authenticated `public.users` session profile + cached `public.artists.name` whitelist.)*

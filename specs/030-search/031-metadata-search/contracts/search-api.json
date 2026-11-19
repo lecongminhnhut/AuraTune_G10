@@ -1,0 +1,623 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Metadata Search API",
+    "description": "API contract for Feature 031: Metadata Search (Group 030 - Search). Searches tracks, artists, albums, and public playlists across the PostgreSQL/Supabase catalog.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base"
+    }
+  ],
+  "paths": {
+    "/search": {
+      "get": {
+        "summary": "Search catalog metadata across tracks, artists, albums, and playlists",
+        "description": "Public endpoint that searches normalized catalog text fields (track title, artist name, album title, and public playlist name) with case-, diacritic-, and punctuation-insensitive matching. Unknown query parameters or inapplicable filter/sort combinations are rejected with 400 VALIDATION_ERROR.",
+        "operationId": "searchMetadata",
+        "security": [],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Search query string. Surrounding whitespace is trimmed before validation; must contain 2-100 characters after trimming.",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            },
+            "example": "co em"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Category filter. When set to 'all', results are grouped in fixed order: tracks, artists, albums, playlists.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "tracks",
+                "artists",
+                "albums",
+                "playlists"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return in this batch (1-50).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Zero-based starting result position for pagination.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "required": false,
+            "description": "Canonical genre ID from the approved catalog (e.g., vpop, indie, rnb, lofi, ballad, chill). Applies only to tracks and albums. When type=all, artists and playlists are omitted. Supplying with type=artists or type=playlists returns 400 VALIDATION_ERROR.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "lofi"
+          },
+          {
+            "name": "release_year",
+            "in": "query",
+            "required": false,
+            "description": "Four-digit calendar year matching the year portion of release_date. Applies only to tracks and albums. When type=all, artists and playlists are omitted. Supplying with type=artists or type=playlists returns 400 VALIDATION_ERROR.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 9999
+            },
+            "example": 2026
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Ordering mode within each applicable result group. 'relevance' and 'title' apply to all types; 'plays' applies only to type=all and type=tracks; 'newest' applies only to type=all, type=tracks, and type=albums. Inapplicable non-default sort returns 400 VALIDATION_ERROR.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "relevance",
+                "plays",
+                "newest",
+                "title"
+              ],
+              "default": "relevance"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchApiResponse"
+                },
+                "examples": {
+                  "mixedAllResults": {
+                    "summary": "Grouped results for type=all",
+                    "value": {
+                      "success": true,
+                      "message": "Search results retrieved",
+                      "data": [
+                        {
+                          "id": "t3",
+                          "type": "track",
+                          "title": "Có em",
+                          "artist": "Madihu, Low G",
+                          "artist_id": "madihu",
+                          "album": "Có em",
+                          "album_id": "al-co-em",
+                          "genre": "rnb",
+                          "release_date": "2023-04-21",
+                          "duration_seconds": 224,
+                          "play_count": 842000,
+                          "cover_url": "https://cdn.example.test/covers/t3.jpg"
+                        }
+                      ],
+                      "pagination": {
+                        "limit": 20,
+                        "offset": 0,
+                        "next_offset": null,
+                        "has_more": false
+                      },
+                      "error": null
+                    }
+                  },
+                  "emptyResults": {
+                    "summary": "Successful search with no matching catalog items",
+                    "value": {
+                      "success": true,
+                      "message": "Search results retrieved",
+                      "data": [],
+                      "pagination": {
+                        "limit": 20,
+                        "offset": 0,
+                        "next_offset": null,
+                        "has_more": false
+                      },
+                      "error": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameter, unknown parameter, or inapplicable filter/sort combination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "examples": {
+                  "invalidQueryLength": {
+                    "summary": "Query length outside 2-100 characters after trimming",
+                    "value": {
+                      "success": false,
+                      "message": "Search query is invalid",
+                      "data": null,
+                      "error": {
+                        "code": "VALIDATION_ERROR",
+                        "details": [
+                          {
+                            "field": "q",
+                            "issue": "Must contain between 2 and 100 characters after trimming"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "inapplicableFilter": {
+                    "summary": "Filter or sort not applicable to the selected type",
+                    "value": {
+                      "success": false,
+                      "message": "Search query is invalid",
+                      "data": null,
+                      "error": {
+                        "code": "VALIDATION_ERROR",
+                        "details": [
+                          {
+                            "field": "genre",
+                            "issue": "Filter 'genre' is not applicable when type is 'artists'"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded by shared backend middleware",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Quá nhiều yêu cầu, vui lòng thử lại sau",
+                  "data": null,
+                  "error": {
+                    "code": "RATE_LIMITED",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected search or catalog access failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Dịch vụ tìm kiếm tạm thời không khả dụng, vui lòng thử lại sau",
+                  "data": null,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "details": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SearchApiResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "pagination",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Search results retrieved"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TrackSearchResult"
+                },
+                {
+                  "$ref": "#/components/schemas/ArtistSearchResult"
+                },
+                {
+                  "$ref": "#/components/schemas/AlbumSearchResult"
+                },
+                {
+                  "$ref": "#/components/schemas/PlaylistSearchResult"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "track": "#/components/schemas/TrackSearchResult",
+                  "artist": "#/components/schemas/ArtistSearchResult",
+                  "album": "#/components/schemas/AlbumSearchResult",
+                  "playlist": "#/components/schemas/PlaylistSearchResult"
+                }
+              }
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "error": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "TrackSearchResult": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "artist"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "t3"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "track"
+            ],
+            "example": "track"
+          },
+          "title": {
+            "type": "string",
+            "example": "Có em"
+          },
+          "artist": {
+            "type": "string",
+            "example": "Madihu, Low G"
+          },
+          "artist_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "madihu"
+          },
+          "album": {
+            "type": "string",
+            "nullable": true,
+            "example": "Có em"
+          },
+          "album_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "al-co-em"
+          },
+          "genre": {
+            "type": "string",
+            "nullable": true,
+            "example": "rnb"
+          },
+          "release_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2023-04-21"
+          },
+          "duration_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "example": 224
+          },
+          "play_count": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "example": 842000
+          },
+          "cover_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://cdn.example.test/covers/t3.jpg"
+          }
+        }
+      },
+      "ArtistSearchResult": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "a1"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "artist"
+            ],
+            "example": "artist"
+          },
+          "name": {
+            "type": "string",
+            "example": "Vũ."
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "example": "artist"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://cdn.example.test/avatars/a1.jpg"
+          }
+        }
+      },
+      "AlbumSearchResult": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "artist"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "al-co-em"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "album"
+            ],
+            "example": "album"
+          },
+          "title": {
+            "type": "string",
+            "example": "Có em"
+          },
+          "artist": {
+            "type": "string",
+            "example": "Madihu"
+          },
+          "artist_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "madihu"
+          },
+          "genre": {
+            "type": "string",
+            "nullable": true,
+            "example": "rnb"
+          },
+          "release_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2023-04-21"
+          },
+          "cover_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://cdn.example.test/covers/al-co-em.jpg"
+          }
+        }
+      },
+      "PlaylistSearchResult": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "pl-chill"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "playlist"
+            ],
+            "example": "playlist"
+          },
+          "title": {
+            "type": "string",
+            "example": "Chill cuối tuần"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "owner": {
+            "type": "string",
+            "nullable": true,
+            "example": "AuraTune"
+          },
+          "track_count": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "example": 18
+          },
+          "cover_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "required": [
+          "limit",
+          "offset",
+          "next_offset",
+          "has_more"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "example": 20
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0
+          },
+          "next_offset": {
+            "type": "integer",
+            "minimum": 1,
+            "nullable": true,
+            "example": null
+          },
+          "has_more": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "ValidationErrorDetail": {
+        "type": "object",
+        "required": [
+          "field",
+          "issue"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "example": "q"
+          },
+          "issue": {
+            "type": "string",
+            "example": "Must contain between 2 and 100 characters after trimming"
+          }
+        }
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Search query is invalid"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "details"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR",
+                  "RATE_LIMITED",
+                  "INTERNAL_ERROR"
+                ],
+                "example": "VALIDATION_ERROR"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ValidationErrorDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

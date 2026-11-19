@@ -1,82 +1,136 @@
-# Semantic Search Contract (Draft)
+# Semantic Vector Music Search API Contract
 
-**Feature**: [033 Semantic Vector Music Search](../spec.md)
-**Status**: Boundary requirements captured; semantic endpoints and payload require approval.
+**Feature**: [033 Semantic Vector Music Search](../spec.md)  
+**Status**: Approved for Implementation (Phase 1 Gates T001–T010 Resolved — Zero-New-Route Alignment with `api-contract.md`)  
 **Shared conventions**: [AuraTune API Contract](../../../../docs/analysis-and-design/api-contract.md)
 
-## Service Boundary
+## Service Boundary & Topology (T001 & T003 Resolved)
 
-- The existing Express backend is the planning owner for any approved public semantic-search API.
-- Semantic processing is expected to remain behind the shared internal Backend-to-Python AI-service boundary; the frontend must not call an internal AI service or third-party provider directly.
-- The feature-specific public route, internal route, request/response schema, service runtime, provider, authentication, and timeout propagation are not defined by this draft and require approval before implementation.
-- The existing public `GET /search` contract is for text search, and `GET /search/lyrics` is for lyrics search. Neither is a semantic-vector endpoint by inference.
+To keep `docs/analysis-and-design/api-contract.md` completely unchanged, Semantic Vector Search extends the existing public `GET /search` route via `mode=semantic` and reuses the existing internal `POST /ai/recommend` AI Service boundary.
 
-## Confirmed Feature Requirements
+| Property | Public Caller-Facing Boundary | Internal AI Service Boundary |
+| --- | --- | --- |
+| **Method** | `GET` | `POST` |
+| **Path** | `/api/v1/search?mode=semantic` | `/ai/recommend` |
+| **Owner** | Existing AuraTune Express Backend (`src/backend`) | Python FastAPI AI Service (`src/ai-service`) |
+| **Access** | Public / Listener (optional `Authorization: Bearer <token>` used solely to load local user profile for Privacy Guard) | Internal only (`X-Internal-Api-Key` header via backend `.env`) |
+| **Browser Access** | Yes (via Frontend `semanticSearchAdapter.js`) | **Forbidden** (never called directly from browser or third-party client) |
 
-- Accept a Listener's natural-language mood, emotion, or context query.
-- Use available metadata, lyrics, and audio characteristics for semantic ranking.
-- Re-normalize the specified metadata 30%, lyrics 40%, and audio 30% weights across dimensions available for both the query and song.
-- Do not send listener names or email addresses to third-party AI services, diagnostics, or AI error payloads.
-- Start keyword fallback when semantic processing is unavailable, invalid, times out, returns an unsafe response, or cannot safely process the request.
-- Validate query length and content locally: accept at least one meaningful alphanumeric token up to 150 characters; reject empty/whitespace-only or over-limit input before semantic processing.
-- Start keyword fallback after 1,500 ms without a usable semantic response; this is separate from the 3-second SC-003 initial-result goal.
-- Treat HTTP 429 returned by the internal AI dependency as unavailability and use keyword fallback where possible, as specified by the feature edge case.
-- Do not include duplicate songs; order results by descending semantic score or applicable keyword ranking.
-- Use the existing shared success/error envelope and relevant HTTP error conventions where the approved public endpoint applies them.
+### Execution, Privacy & Fallback Flow
 
-## Shared API Conventions
+1. Frontend sends `GET /api/v1/search?q=<query>&mode=semantic&limit=20&offset=0` to the Express backend. (Requests omitting `mode` or passing `mode=metadata` continue executing Feature 031 Metadata Search).
+2. Express validates the query (`>= 1` meaningful alphanumeric token, `<= 150` characters after trimming) and runs the **local Privacy Guard** (`semanticPrivacyGuard.js`).
+3. If the query contains unremovable PII (authenticated profile name/email, detected email patterns, or ambiguous personal names not matching the cached `public.artists.name` whitelist), Express **skips the AI Service** and executes local keyword fallback (`meta.search_mode = "keyword_fallback"`).
+4. Otherwise, Express forwards sanitized `POST /ai/recommend` (`purpose: "semantic_search"`) to the internal Python AI Service with an enforced **1,500 ms deadline** (`AbortSignal.timeout(1500)`).
+5. If the AI Service returns `200 OK` with valid, safe candidate `song_id` rankings within 1,500 ms, Express hydrates track metadata from Supabase (`public.songs` -> `public.albums` -> `public.artists`), deduplicates results, and returns `meta.search_mode = "semantic"`.
+6. If the AI Service times out (`> 1500 ms`), returns `503`, returns `429` (internal rate limit), or fails schema/safety validation, Express automatically executes keyword fallback without retrying and returns `200 OK` with `meta.search_mode = "keyword_fallback"`.
 
-The shared API contract defines the JSON envelope `{success,message,data,error}` and error codes including `AI_SERVICE_UNAVAILABLE` (503) and `RATE_LIMITED` (429). It describes internal AI Service communication as Backend-to-Python and states the frontend does not call that internal service directly. The AI-service 429 fallback rule here applies to the internal dependency; any rate limit on the public API continues to follow the shared API convention.
+---
 
-The shared API document does not define a semantic-vector endpoint, request payload, response data, vector format, per-dimension scores, pagination, or explanation fields. Its lyrics endpoint is not a semantic-vector contract and must not be reused by inference.
+## Public Request (`GET /api/v1/search?mode=semantic`)
 
-## Unresolved Contract Boundary
+Unknown query parameters are rejected with `400 VALIDATION_ERROR`.
 
-Before implementation, approve:
+| Parameter | Required | Type | Default | Validation Rules |
+| --- | --- | --- | --- | --- |
+| `q` | Yes | string | — | Trim surrounding whitespace. Must contain at least one meaningful alphanumeric token and be `<= 150` characters. Preserves emojis, punctuation, and supported languages. |
+| `mode` | Yes (for 033) | string | `"metadata"` | Must be `"semantic"` to invoke Semantic Vector Search. |
+| `limit` | No | integer | `20` | Inclusive range `1`–`50`; default `20`. |
+| `offset` | No | integer | `0` | Non-negative integer (`>= 0`). |
 
-1. The public route/method and request inputs used by the frontend.
-2. The internal AI-service route/method and service owner.
-3. The request/response schema and validation/error mapping.
-4. Whether the AI service returns separate metadata/lyrics/audio similarities or the combined weighted score.
-5. The schema for song identity, playable result information, optional relevance explanations, and semantic/fallback mode.
-6. Provider/service authentication and timeout propagation.
+### Internal AI Service Request (`POST /ai/recommend`)
 
-This document intentionally does not invent those values or field names. The current Express backend is the public-boundary planning choice based on the implemented API server; the exact route and the internal AI-service owner/runtime remain approval items.
+Sent exclusively by the Express backend after local PII sanitization (`X-Internal-Api-Key` required):
 
-## Privacy Contract
+```json
+{
+  "purpose": "semantic_search",
+  "query": "lofi chill de code mua dem",
+  "limit": 20,
+  "offset": 0
+}
+```
 
-- Perform profile matching, email detection, and context-aware name detection locally before any third-party AI processing.
-- Preserve a name only when recognized as a catalog artist under the approved recognition policy.
-- Do not transmit listener names/emails or include them in external semantic requests, searchable payloads sent to the provider, diagnostics, logs, or AI-related error payloads.
-- If safe sanitization or the distinction between personal and artist names cannot be verified, do not call the third-party AI service and use the approved keyword fallback.
-- Keep profile values and unsanitized query content inside the trusted application boundary. Exact retention/logging policy must follow project security guidance.
+---
 
-## Semantic Ranking Contract
+## Successful Response (`200 OK`) (T004 & T007 Resolved)
 
-The ranking weights are fixed by the feature spec:
+Returns ranked, deduplicated **track** results only (playlist generation remains on `POST /playlists/ai-generate`).
 
-| Dimension | Weight |
-|---|---:|
-| Metadata similarity | 30% |
-| Lyrics similarity | 40% |
-| Audio-characteristic similarity | 30% |
+```json
+{
+  "success": true,
+  "message": "Semantic search results retrieved",
+  "data": [
+    {
+      "id": "101",
+      "type": "track",
+      "title": "Midnight Coffee",
+      "artist": "AuraTune Studio",
+      "artist_id": "12",
+      "album": "Lofi bên cửa sổ",
+      "album_id": "5",
+      "genre": "lofi",
+      "release_date": "2026-01-15",
+      "duration_seconds": 210,
+      "play_count": 204000,
+      "cover_url": "https://res.cloudinary.com/auratune/image/upload/v1/covers/101.jpg",
+      "ai_reason": "Beat nhẹ, ít lời, phù hợp không gian tập trung ban đêm."
+    }
+  ],
+  "pagination": {
+    "limit": 20,
+    "offset": 0,
+    "next_offset": null,
+    "has_more": false
+  },
+  "meta": {
+    "search_mode": "semantic"
+  },
+  "error": null
+}
+```
 
-Re-normalize across dimensions available for both the query and song. The contract owner must specify whether dimension scores are returned to the backend/client or the weighted score is calculated within the AI service. No alternate formula or score range is defined here.
+### Result Item Schema (`data[]`)
 
-## Timeout Behavior
+| Field | Type | Required | Nullable | Source / Mapping |
+| --- | --- | --- | --- | --- |
+| `id` | `string` | Yes | No | `String(songs.song_id)` (deduplicated across result set) |
+| `type` | `string` | Yes | No | Constant discriminator `"track"` |
+| `title` | `string` | Yes | No | `songs.title` |
+| `artist` | `string` | Yes | No | `artists.name ?? "Unknown Artist"` |
+| `artist_id` | `string` | No | Yes | `artists.artist_id ? String(artists.artist_id) : null` |
+| `album` | `string` | No | Yes | `albums.title ?? null` |
+| `album_id` | `string` | No | Yes | `songs.album_id ? String(songs.album_id) : null` |
+| `genre` | `string` | No | Yes | `songs.genre ?? null` |
+| `release_date` | `string` | No | Yes | ISO `YYYY-MM-DD` from `albums.release_date ?? null` |
+| `duration_seconds` | `integer` | No | Yes | `songs.duration ?? 0` |
+| `play_count` | `integer` | No | Yes | `songs.total_plays ?? 0` |
+| `cover_url` | `string` | No | Yes | `songs.image_url ?? albums.image_url ?? null` |
+| `ai_reason` | `string` | No | Yes | Optional privacy-safe short context note for the AI understanding card (`null` in `keyword_fallback` mode or if unavailable) |
 
-Start keyword fallback when semantic processing has not produced a usable response within 1,500 ms. This is the threshold recorded in the latest clarification, FR-016, and SC-003a. SC-003 separately measures visible initial results within 3 seconds for at least 95% of normal searches. Do not extend the fallback threshold to 3 seconds.
+---
 
-## Error and Fallback Behavior
+## Semantic Ranking & Tie-Breaking Contract (T004 & T007 Resolved)
 
-| Condition | Required behavior |
-|---|---|
-| AI unavailable, invalid response, or approved timeout | Start keyword fallback automatically. |
-| AI response is unsafe under the approved response-validation policy | Reject the semantic response and start keyword fallback. The detailed policy must be approved; this draft does not invent content filters. |
-| Internal AI service returns HTTP 429 | Treat as AI unavailability and use keyword fallback where possible; do not infer a retry policy. |
-| Query unsafe to send or PII removal cannot be verified | Do not call third-party AI; use keyword fallback. |
-| Semantic and keyword search produce no results | Show a clear no-results state. |
-| Catalog temporarily unavailable | Show a clear unavailable-catalog state. |
-| Any error response | Avoid credentials and sensitive diagnostic details; do not expose PII. |
+- **Score Owner:** Calculated inside the Python AI Service (`POST /ai/recommend` with `purpose: "semantic_search"`) and returned as a normalized relevance score in `[0.0, 1.0]`.
+- **Weighted Ensemble:**
+  - Metadata similarity: **30%** (sourced from `public.songs`, `albums`, `artists`)
+  - Lyrics similarity: **40%** (sourced from cached plain lyrics indexed via `public.songs.lyrics_url`)
+  - Audio-characteristic similarity: **30%** (sourced from available audio fields; `public.songs.duration` is currently populated in PostgreSQL, while unpopulated attributes are treated as absent dimensions without fabrication)
+- **Availability Re-normalization:** For any query/song pair where one or more dimensions are absent, weights are re-normalized across available dimensions (`w_d / sum(w_available)`).
+- **Deduplication & Tie-Breaking:** Duplicate `song_id` entries are removed (retaining the highest score). Equal semantic scores are ordered deterministically by `songs.total_plays DESC NULLS LAST, songs.song_id ASC`.
 
-The feature spec's edge case explicitly treats an AI-service rate-limit response as unavailability and uses keyword fallback where possible. The feature does not define retries or retry delays. This rule does not override the shared public API's `RATE_LIMITED` response for any separately enforced public request limit.
+---
+
+## Privacy, Timeout & Error Handling (T006 & T008 Resolved)
+
+- **Privacy Guarantee:** Listener `name`, `display_name`, `email`, and redacted PII are stripped/blocked locally before external AI calls and are never written to AI requests, diagnostics, logs, or error payloads. Recognized catalog artists (`public.artists.name`) are preserved.
+- **Unsafe AI Response Policy:** Responses failing schema validation, referencing non-existent catalog IDs, or containing PII patterns are rejected as unsafe and routed to `keyword_fallback`.
+- **Timeout Threshold:** Keyword fallback triggers at **1,500 ms** (`FR-016` / `SC-003a`), separate from the **3,000 ms** end-to-end initial-result goal (`SC-003`).
+
+| HTTP Status | Error Code | Trigger Condition | Client & Fallback Behavior |
+| --- | --- | --- | --- |
+| `400` | `VALIDATION_ERROR` | Empty/whitespace query, no alphanumeric token, `> 150` chars, or invalid pagination/unknown query params. | Show local validation guidance; **do not** call AI or fallback. |
+| `429` | `RATE_LIMITED` | Public API rate-limit middleware rejects the client request. *(Internal AI HTTP 429 triggers `keyword_fallback` automatically instead of returning 429).* | Show retryable rate-limit state. |
+| `500` | `INTERNAL_ERROR` | Both semantic processing and catalog keyword fallback fail unexpectedly. | Show unavailable-catalog / error state without exposing PII or stack traces. |

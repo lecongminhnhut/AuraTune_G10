@@ -12,15 +12,15 @@
 
 **Purpose**: Confirm decisions that the plan and partial contract explicitly leave open before implementation binds to a service, schema, or catalog.
 
-- [ ] T001 Verify and approve the caller-facing lyrics-search route and the backend-to-AI route using `docs/analysis-and-design/api-contract.md` and `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md`; record the approved public-to-internal flow.
-- [ ] T002 Approve the exact request fields, response fields for song identity and lyric context, shared envelope behavior, and continuation fields for 20-item batches in `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md`.
-- [ ] T003 Confirm the owner of the public route and internal AI call, runtime/provider, internal authentication, deployment boundary, and secure configuration location in `specs/030-search/032-ai-lyrics-search/plan.md`.
-- [ ] T004 Verify the production searchable lyric source, availability/rights assumptions, and song identity/playback mapping in `specs/030-search/032-ai-lyrics-search/data-model.md`; keep `src/frontend/src/utils/mockData.js` as demo data only.
-- [ ] T005 Confirm whether the approved response includes a fallback-mode indicator or whether the client should infer fallback mode from the local 503/timeout transition in `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md`.
-- [ ] T006 Confirm with the spec owner whether the clarified 3-second threshold in `specs/030-search/032-ai-lyrics-search/plan.md` supersedes the stale 5-second wording in `specs/030-search/032-ai-lyrics-search/spec.md`; keep the decision as an implementation gate and do not edit the spec during task generation.
-- [ ] T007 Verify the approved fallback normalization rules for punctuation and diacritics and obtain approval for a deterministic equal-rank tie-break in `specs/030-search/032-ai-lyrics-search/plan.md`; do not select unapproved matcher rules.
-- [ ] T008 Verify constitution ratification status in `.specify/memory/constitution.md` and record the governance gate without inventing project principles.
-- [ ] T009 Confirm the existing frontend/backend test tooling and test locations in `src/frontend/package.json` and `src/backend/package.json` before adding test dependencies.
+- [x] T001 Verify and approve the caller-facing lyrics-search route and the backend-to-AI route using `docs/analysis-and-design/api-contract.md` and `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md`; record the approved public-to-internal flow.
+- [x] T002 Approve the exact request fields, response fields for song identity and lyric context, shared envelope behavior, and continuation fields for 20-item batches in `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md`.
+- [x] T003 Confirm the owner of the public route and internal AI call, runtime/provider, internal authentication, deployment boundary, and secure configuration location in `specs/030-search/032-ai-lyrics-search/plan.md`.
+- [x] T004 Verify the production searchable lyric source, availability/rights assumptions, and song identity/playback mapping in `specs/030-search/032-ai-lyrics-search/data-model.md`; keep `src/frontend/src/utils/mockData.js` as demo data only.
+- [x] T005 Confirm whether the approved response includes a fallback-mode indicator or whether the client should infer fallback mode from the local 503/timeout transition in `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md`.
+- [x] T006 Confirm with the spec owner whether the clarified 3-second threshold in `specs/030-search/032-ai-lyrics-search/plan.md` supersedes the stale 5-second wording in `specs/030-search/032-ai-lyrics-search/spec.md`; keep the decision as an implementation gate and do not edit the spec during task generation.
+- [x] T007 Verify the approved fallback normalization rules for punctuation and diacritics and obtain approval for a deterministic equal-rank tie-break in `specs/030-search/032-ai-lyrics-search/plan.md`; do not select unapproved matcher rules.
+- [x] T008 Verify constitution ratification status in `.specify/memory/constitution.md` and record the governance gate without inventing project principles.
+- [x] T009 Confirm the existing frontend/backend test tooling and test locations in `src/frontend/package.json` and `src/backend/package.json` before adding test dependencies.
 
 ---
 

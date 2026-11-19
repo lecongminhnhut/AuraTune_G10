@@ -6,16 +6,16 @@
 
 ## Phase 1: Setup and Approval Gates
 
-- [ ] T001 Confirm the public semantic-search route, request/response schema, shared response envelope, and Express ownership in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md` before implementing a client or endpoint.
-- [ ] T002 Complete and record the provider, embedding model, vector database, runtime, hosting, authentication, and service-owner comparison in `specs/030-search/033-semantic-vector-search/research.md` before selecting dependencies or service files.
-- [ ] T003 Confirm the internal Backend-to-Python endpoint, authentication, and timeout propagation in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md` before implementing service communication.
-- [ ] T004 Confirm whether the AI service returns per-dimension scores or the combined score, and record score ownership in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`.
-- [ ] T005 Confirm the canonical catalog source, available metadata/lyrics/audio fields, and index generation/update owner in `specs/030-search/033-semantic-vector-search/data-model.md`; do not infer a migration or index schema.
-- [ ] T006 Confirm the authenticated profile source, supported locale/context name-detection policy, and trusted catalog-artist recognition source in `specs/030-search/033-semantic-vector-search/research.md` before implementing the privacy detector.
-- [ ] T007 Confirm the approved song identity/playback fields, any explanation fields, semantic/fallback mode representation, unsafe-response validation policy, and equal-score tie-breaker in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`.
-- [ ] T008 Verify the plan and API contract consistently use the confirmed 1,500 ms fallback threshold and retain the separate 3-second SC-003 visible-result target in `specs/030-search/033-semantic-vector-search/plan.md` and `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`; do not treat these targets as conflicting.
-- [ ] T009 Confirm how to treat screenshot-only playlist suggestions and verify the project constitution status in `specs/030-search/033-semantic-vector-search/plan.md` before claiming those behaviors or formal governance compliance.
-- [ ] T010 Select feature-level test tooling and test commands consistent with repository conventions in `specs/030-search/033-semantic-vector-search/quickstart.md`; do not count the auth-only backend smoke test as semantic coverage.
+- [x] T001 Confirm the public semantic-search route, request/response schema, shared response envelope, and Express ownership in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md` before implementing a client or endpoint.
+- [x] T002 Complete and record the provider, embedding model, vector database, runtime, hosting, authentication, and service-owner comparison in `specs/030-search/033-semantic-vector-search/research.md` before selecting dependencies or service files.
+- [x] T003 Confirm the internal Backend-to-Python endpoint, authentication, and timeout propagation in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md` before implementing service communication.
+- [x] T004 Confirm whether the AI service returns per-dimension scores or the combined score, and record score ownership in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`.
+- [x] T005 Confirm the canonical catalog source, available metadata/lyrics/audio fields, and index generation/update owner in `specs/030-search/033-semantic-vector-search/data-model.md`; do not infer a migration or index schema.
+- [x] T006 Confirm the authenticated profile source, supported locale/context name-detection policy, and trusted catalog-artist recognition source in `specs/030-search/033-semantic-vector-search/research.md` before implementing the privacy detector.
+- [x] T007 Confirm the approved song identity/playback fields, any explanation fields, semantic/fallback mode representation, unsafe-response validation policy, and equal-score tie-breaker in `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`.
+- [x] T008 Verify the plan and API contract consistently use the confirmed 1,500 ms fallback threshold and retain the separate 3-second SC-003 visible-result target in `specs/030-search/033-semantic-vector-search/plan.md` and `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`; do not treat these targets as conflicting.
+- [x] T009 Confirm how to treat screenshot-only playlist suggestions and verify the project constitution status in `specs/030-search/033-semantic-vector-search/plan.md` before claiming those behaviors or formal governance compliance.
+- [x] T010 Select feature-level test tooling and test commands consistent with repository conventions in `specs/030-search/033-semantic-vector-search/quickstart.md`; do not count the auth-only backend smoke test as semantic coverage.
 
 ## Phase 2: Foundational Search Infrastructure
 
