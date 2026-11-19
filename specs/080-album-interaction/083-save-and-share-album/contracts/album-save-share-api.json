@@ -1,0 +1,303 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Save and Share Album API",
+    "description": "API contract for Feature 083: Save and Share Albums (Group 080 - Album Interaction)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base"
+    }
+  ],
+  "paths": {
+    "/users/me/saved-albums": {
+      "get": {
+        "summary": "Retrieve saved albums for the current user",
+        "description": "Returns the array of saved album IDs for the active account to hydrate the frontend store.",
+        "operationId": "getSavedAlbums",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved albums retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSavedAlbumsResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Saved albums retrieved successfully",
+                  "data": {
+                    "savedAlbumIds": [
+                      "album_123",
+                      "album_456"
+                    ]
+                  },
+                  "error": null
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/albums/{id}/save": {
+      "put": {
+        "summary": "Save an album to personal library",
+        "description": "Adds the identified album to the active account's saved collection.",
+        "operationId": "saveAlbum",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the album to save.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Action completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MutationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Action completed successfully",
+                  "data": null,
+                  "error": null
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove a saved album",
+        "description": "Removes the identified album from the active account's saved collection.",
+        "operationId": "removeSavedAlbum",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the album to remove.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Action completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MutationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Action completed successfully",
+                  "data": null,
+                  "error": null
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "GetSavedAlbumsResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "savedAlbumIds"
+            ],
+            "properties": {
+              "savedAlbumIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "error": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "MutationResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          },
+          "error": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Chưa đăng nhập hoặc token hết hạn",
+              "data": null,
+              "error": {
+                "code": "UNAUTHORIZED",
+                "details": []
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiErrorResponse"
+            },
+            "example": {
+              "success": false,
+              "message": "Lỗi máy chủ nội bộ",
+              "data": null,
+              "error": {
+                "code": "INTERNAL_ERROR",
+                "details": []
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

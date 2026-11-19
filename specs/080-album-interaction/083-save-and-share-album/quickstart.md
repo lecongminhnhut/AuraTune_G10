@@ -1,13 +1,13 @@
 # Quickstart: Save and Share Albums
 
-This guide uses commands declared in the repository package manifests. No automated test runner is currently declared.
+This guide uses commands declared in the repository package manifests. Feature 083 acceptance is manual and adds no test dependency.
 
 ## Prerequisites
 
 - Node.js/npm compatible with the checked-in lockfiles.
 - Frontend and backend dependencies installed as required.
 - An available album and accounts for signed-in/signed-out and cross-account scenarios.
-- The API owner must provide working service routes and request/response mapping for `GET /users/me/saved-albums`, `PUT /albums/:id/save`, and `DELETE /albums/:id/save`; the checked-in Express server currently mounts auth routes only.
+- The checked-in Express server provides the approved saved-album routes with the response envelope defined in `contracts/album-save-share-api.json`.
 
 ## Run locally
 
@@ -26,7 +26,7 @@ Set-Location src/frontend
 npm run build
 ```
 
-Backend (for existing auth service only; album save routes are not currently mounted):
+Backend:
 
 ```powershell
 Set-Location src/backend
@@ -47,4 +47,4 @@ npm run dev
 
 ## Test tooling status
 
-Frontend package scripts are `dev`, `build`, and `preview`; backend scripts are `start` and `dev`. Neither package manifest declares a test command. Confirm the project's test runner and API/browser fixtures before defining executable automated test commands. Until the API owner supplies schemas/error semantics and the sharing mechanism is approved, corresponding contract checks remain blocked.
+No new automated test framework or dependency was added for Feature 083. Acceptance remains a manual walkthrough covering authenticated API responses, account switching, pending/error states, canonical URLs, and provider intents.

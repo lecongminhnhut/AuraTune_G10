@@ -11,6 +11,31 @@ import { normalizeText } from '../../utils/aiMockData.js'
 
 const grid = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
+function SavedAlbumCard({ album, artistName }) {
+  const store = useStore()
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState(null)
+
+  const removeAlbum = async () => {
+    if (pending) return
+    setPending(true)
+    setError(null)
+    const result = await store.removeSavedAlbum(album.id)
+    if (!result.ok) setError(`${result.error} Please try again.`)
+    setPending(false)
+  }
+
+  return (
+    <div className={pending ? 'opacity-60' : ''}>
+      <AlbumCard album={album} artistName={artistName} />
+      <button type="button" onClick={removeAlbum} disabled={pending} className="mt-2 w-full rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-rose-300/50 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-50">
+        {pending ? 'Removing...' : 'Remove from saved'}
+      </button>
+      {error && <p role="alert" className="mt-1 text-xs text-rose-300">{error}</p>}
+    </div>
+  )
+}
+
 export default function LibraryPage() {
   const store = useStore()
   const player = usePlayer()
@@ -54,7 +79,7 @@ export default function LibraryPage() {
         {(filter === 'all' || filter === 'albums') && (
           <section className="mt-10">
             <SectionHeading title="Album đã lưu" />
-            {shownAlbums.length ? <div className={grid}>{shownAlbums.map((album) => <AlbumCard key={album.id} album={album} artistName={getArtist(album.artistId)?.name} />)}</div> : <div className="mt-4"><EmptyState compact title="Chưa lưu album nào" description="Bấm “Lưu album” trên trang album để thêm vào đây." /></div>}
+            {shownAlbums.length ? <div className={grid}>{shownAlbums.map((album) => <SavedAlbumCard key={album.id} album={album} artistName={getArtist(album.artistId)?.name} />)}</div> : <div className="mt-4"><EmptyState compact title="Chưa lưu album nào" description="Bấm “Lưu album” trên trang album để thêm vào đây." /></div>}
           </section>
         )}
         {(filter === 'all' || filter === 'artists') && (

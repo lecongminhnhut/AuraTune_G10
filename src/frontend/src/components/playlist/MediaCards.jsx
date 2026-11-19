@@ -3,7 +3,7 @@ import Icon from '../common/Icon.jsx'
 import CoverArt from './CoverArt.jsx'
 import { Link } from '../../utils/navigation.jsx'
 
-export const releaseYear = (date) => date?.slice(0, 4) ?? ''
+export const releaseYear = (date) => typeof date === 'number' ? String(date) : date?.slice(0, 4) ?? ''
 
 // Ảnh đại diện nghệ sĩ; khi không có ảnh dùng biểu tượng trung tính (spec 091 FR-004).
 export function ArtistAvatar({ artist, className = 'h-full w-full' }) {
@@ -22,7 +22,7 @@ export function AlbumCard({ album, artistName, onPlay }) {
     <article className="group relative min-w-0 rounded-xl bg-white/[0.035] p-3.5 transition duration-300 hover:bg-white/[0.085]">
       <div className="relative aspect-square">
         <Link to={`/album/${album.id}`} aria-label={`Xem album ${album.title}`} className="absolute inset-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300">
-          <CoverArt variant={album.cover} title={album.title} showLabel className="h-full w-full rounded-lg shadow-xl" />
+          <CoverArt variant={album.cover} coverArt={album.coverArt} title={album.title} showLabel className="h-full w-full rounded-lg shadow-xl" />
         </Link>
         {onPlay && (
           <button type="button" onClick={() => onPlay(album)} aria-label={`Phát album ${album.title}`} className="absolute bottom-2 right-2 z-10 grid h-11 w-11 place-items-center rounded-full bg-violet-300 text-zinc-950 shadow-xl transition duration-300 hover:scale-105 hover:bg-violet-200 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white [@media(hover:hover)]:translate-y-2 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100">

@@ -12,9 +12,10 @@ const motifs = {
   aurora: '◒', night: '☾', ocean: '≈', rose: '✳', sunset: '◉', forest: '✦', violet: '✺',
 }
 
-export default function CoverArt({ variant = 'aurora', title, className = '', showLabel = false }) {
+export default function CoverArt({ variant = 'aurora', title, coverArt, className = '', showLabel = false }) {
   return (
     <div className={`group relative isolate overflow-hidden bg-gradient-to-br ${coverStyles[variant] ?? coverStyles.aurora} ${className}`}>
+      {coverArt && <img src={coverArt} alt={title ?? ''} className="absolute inset-0 h-full w-full object-cover" onError={(event) => { event.currentTarget.style.display = 'none' }} />}
       <div className="absolute -right-[18%] -top-[13%] h-[70%] w-[70%] rounded-full bg-white/15 blur-2xl transition duration-700 group-hover:scale-125" />
       <div className="absolute -bottom-[30%] -left-[12%] h-[75%] w-[75%] rounded-full border border-white/20 bg-black/10" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-white/10" />
