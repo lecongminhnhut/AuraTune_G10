@@ -1,8 +1,10 @@
 # UC-100-002 – Receive Personalized Recommendations
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,20 @@
 | **Related FR IDs** | `102-FR-001`, `102-FR-002`, `102-FR-003`, `102-FR-004`, `102-FR-005`, `102-FR-006`, `102-FR-007`, `102-FR-008`, `102-FR-009`, `102-FR-010`, `102-FR-011`, `102-FR-012`, `102-FR-013`, `102-FR-014`, `102-FR-015` |
 | **Related Feature/Spec** | Feature 102: Personalized Recommendations (`specs/100-ai-recommendations/102-personalized-recommendations/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Lê Công Minh Nhựt |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 An authenticated listener receives a tailored music recommendation feed on their home view, derived from their listening history ($\ge 30$ seconds), liked songs, and followed artists. The system returns multi-entity recommendations (Songs, Albums, Artists, and Playlists), handles cold-start scenarios for new listeners via trending fallbacks, and gracefully degrades during external AI service timeouts while strictly protecting account privacy.
 
 ---
 
 ## 3. Preconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user is authenticated as a `Listener` (`ACT-02`) with a valid JWT session (`102-FR-003`).
 - The music catalog contains active, playable open-copyright songs, albums, and curated playlists (`102-FR-008`).
@@ -33,12 +37,14 @@ An authenticated listener receives a tailored music recommendation feed on their
 ---
 
 ## 4. Trigger
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý cho bạn" (Recommended For You) section.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Accesses the Home Dashboard view (`/`).
 2. **System:** Extracts the caller's authenticated `user_id` from the session token and queries user preference signals: qualifying playback records in `listening_history` ($\ge 30$ seconds), liked tracks in `user_liked_songs`, and followed artists in `user_follows_artist` (`102-FR-003`, `102-FR-009`).
@@ -50,14 +56,16 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 8. **Actor:** Browses the personalized recommendations and clicks on a recommended item card (`102-FR-007`).
 9. **System:** Dispatches interaction based on entity type:
    - If a **Song**: delegates playback initiation to the Music Player (`UC-040-001`), streaming audio bytes from Cloud Media Storage.
-   - If an **Album**, **Artist**, or **Playlist**: routes the user to the corresponding entity detail view (`UC-080-001`, `UC-090-001`, or `UC-060-002`).
+   - If an **Album**, **Artist**, or **Playlist**: routes the user to the corresponding entity detail view (`UC-080-001`, `UC-090-001`, or `UC-060-003`).
 10. **Actor:** Listens to the selected track or explores the entity collection.
 
 ---
 
 ## 6. Alternative Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Cold-Start Fallback for New or Low-Data Listeners
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The authenticated listener has zero listening history or insufficient activity to construct a personalized profile (`102-FR-005`).
 1. **System:** Identifies that historical playback activity is below the personalization threshold.
@@ -67,6 +75,7 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 - **Continuation:** Resumes at Step 9 of the Basic Flow.
 
 ### AF-02 – Manual Recommendation Feed Refresh
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The listener triggers a page reload or navigates back to the Home Dashboard after listening to new music (`102-FR-014`).
 1. **Actor:** Reloads the page or clicks the recommendation refresh control.
@@ -75,6 +84,7 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 - **Continuation:** Resumes at Step 8 of the Basic Flow.
 
 ### AF-03 – Transition to Cold-Start Following History Purge
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The listener cleared their entire listening history in Group 070 (`UC-070-004`).
 1. **System:** Detects that historical playback records have been purged (`102-FR-009`).
@@ -84,8 +94,10 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 ---
 
 ## 7. Exception Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – External AI Service Timeout or Outage
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The External AI Service Provider / recommendation inference engine times out ($> 2.5$ seconds) or returns an HTTP 5xx error (`102-FR-006`).
 1. **System:** Intercepts the service exception and prevents dashboard rendering failure.
@@ -95,6 +107,7 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 - **Continuation:** Resumes at Step 8 of the Basic Flow; use case completes in degraded mode.
 
 ### EF-02 – Unauthenticated Visitor Request
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** An unauthenticated visitor (`Guest`) visits the home view.
 1. **System:** Identifies guest state and suppresses private recommendation generation (`102-FR-004`).
@@ -104,20 +117,24 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 ---
 
 ## 8. Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The listener receives a relevant, multi-entity recommendation list tailored to their personal taste profile.
 - Selecting an item reliably initiates audio playback or opens entity details in 1 interaction step (`SC-004`).
 - All displayed items correspond to active, accessible catalog entities with zero broken references (`SC-005`).
 - Account data and preference vectors remain strictly confidential to the authenticated account (`SC-001`).
 
 ### Failure
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The system serves standard popular fallback tracks accompanied by an informative notice.
 - The home dashboard remains fully operational without application crashes or blank sections (`SC-002`, `SC-003`).
 
 ---
 
 ## 9. Special Requirements
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: Recommendation feed response time must not exceed 2.0 seconds under standard server load. AI service timeout is enforced at 2.5 seconds.
 - **Security & Privacy**: Zero cross-account data disclosure (Decree 13/2023/ND-CP). Under no circumstances are User A's history, likes, or personalized picks exposed to User B (`102-FR-004`).
@@ -127,8 +144,10 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Personalized Recommendations Entry](prototypes/UC-100-002-basic-flow-entry.png)
 *Figure 1: "Gợi ý cho bạn" recommendation section entry on the AuraTune Home Dashboard.*
@@ -140,29 +159,33 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 *Figure 3: Interactive recommendation card detail triggering track playback or entity navigation.*
 
 ### Alternative Flow – AF-01 (Cold-Start Trending Fallback)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Home dashboard recommendation block showing popular badges and starter tracks for new accounts with 0 listening history.*
 
 ### Exception Flow – EF-01 (AI Service Degradation)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Non-blocking alert banner notifying the listener that popular music is served while AI recommendation services are offline.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Case**: `UC-010-002` (Log In with Email) – Authenticates the listener.
 - **Context Container**: `UC-020-001` (Browse Home Dashboard) – Embeds the recommendation stream.
-- **Included / Delegated Playback**: `UC-040-001` (Control Audio Playback) – Triggered when a recommended track is clicked.
+- **Optional playback handoff**: `UC-040-001` (Control Audio Playback) – Triggered when a recommended track is clicked.
 - **Target Detail Navigation**:
   - `UC-080-001` (View Album Details)
   - `UC-090-001` (View Artist Profile)
-  - `UC-060-002` (View Playlist Details)
+  - `UC-060-003` (View Playlist Details)
 - **Data Reset Trigger**: `UC-070-004` (Clear Listening History) – Initiates transition to AF-01.
 
 ---
 
 ## 12. Source References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/100-ai-recommendations/102-personalized-recommendations/spec.md` – Requirements FR-001 through FR-015, User Stories 1–4.
 - `docs/proposal/Auratune_Vision_Document.md` – Section 3.5 & Group G10.
@@ -172,6 +195,14 @@ The listener navigates to the Home Dashboard (`/`) or scrolls to the "Gợi ý c
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Multi-Entity Scope**: Clarification session 2026-10-30 explicitly resolved that recommendations span Songs, Albums, Artists, and Playlists (Option 1B).
 - **Offline Ingestion Boundary**: Spotify Web API metadata used during offline song preparation is strictly for catalog seeding and must never be merged into vector prompts (ED-02).
+
+## PA4 implementation evidence and acceptance record
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Analysis/recommendation services and tests exist. Feature 101 computes database statistics without an external AI model. The Python `/ai/recommend` handler currently returns a fixed candidate ordering without ranking from submitted preference signals. Cold-start/fallback results must be distinguished from normal personalized results.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

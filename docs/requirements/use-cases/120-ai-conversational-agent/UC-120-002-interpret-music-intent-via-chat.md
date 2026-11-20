@@ -1,8 +1,10 @@
 # UC-120-002 – Interpret Music Intent via Chat
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -15,17 +17,19 @@
 | **Related Feature/Spec** | Feature 122: Music Intent Understanding (`specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md`) |
 | **Status** | Draft |
 | **Author** | Lê Công Minh Nhựt |
-| **Reviewer** | TBD |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The system processes natural language chat messages submitted by an authenticated listener to determine their underlying musical intent and extract actionable entity slots. The intent engine strips sensitive personal identifiers (PII), resolves contextual references against the active playback state, decomposes chained or compound instructions, and outputs a structured intent payload for real-time music execution or dialogue response.
 
 ---
 
 ## 3. Preconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The listener is authenticated as a valid `Listener` (`ACT-02`) with an active session (`122-FR-009`).
 - A non-empty text prompt has been dispatched through the Conversational Interface (`UC-120-001`).
@@ -33,12 +37,14 @@ The system processes natural language chat messages submitted by an authenticate
 ---
 
 ## 4. Trigger
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Conversational Interface (`UC-120-001`) receives a user message and transmits it to the intent understanding pipeline.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Step | Actor / System | Action |
 |:---:|:---:|---|
@@ -55,8 +61,10 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 ---
 
 ## 6. Alternative Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Contextual Track Inquiry ("bài đang phát là gì?")
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 3 of the Basic Flow.
 - **Condition:** The listener asks a question regarding the currently active track without naming a title (e.g., *"bài đang phát là bài gì?"*, *"ai hát bài này?"*).
 1. **System:** Matches inquiry intent (`query_music_info`) and anchors the target to `context.currentTrack`.
@@ -64,6 +72,7 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 - **Outcome:** Resumes at Step 8 of the Basic Flow.
 
 ### AF-02 – Vague or Incomplete Playback Command ("bật nhạc đi")
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 5 of the Basic Flow.
 - **Condition:** The listener submits an actionable intent lacking explicit target slots (e.g., *"bật nhạc lên"*, *"muốn nghe nhạc"*).
 1. **System:** Activates smart heuristic defaults (`122-FR-005`), inferring top trending songs or user personalized recommendations.
@@ -71,6 +80,7 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 - **Outcome:** Resumes at Step 7 of the Basic Flow.
 
 ### AF-03 – General Out-of-Scope Conversation (Chit-Chat)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 5 of the Basic Flow.
 - **Condition:** The listener enters a general greeting or non-music conversation (e.g., *"chào bạn"*, *"hôm nay thời tiết thế nào?"*).
 1. **System:** Classifies the intent as `general_chitchat` (`122-FR-002`).
@@ -80,8 +90,10 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 ---
 
 ## 7. Exception Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – External AI Service Timeout / Fallback to Rule Matcher
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 5 of the Basic Flow.
 - **Condition:** External NLP parsing times out ($> 1,200$ms) or is unreachable (`122-FR-010`).
 1. **System:** Activates the local rule-based regex fallback parser (`planClause` in `agentService.js`).
@@ -92,18 +104,22 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 ---
 
 ## 8. Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The message is correctly categorized into a valid intent category.
 - Musical entities are extracted into structured slot key-values.
 - Personal data (PII) is completely excluded from external AI service requests.
 
 ### Failure Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The system returns an unrecognized message or falls back to rule matching; active audio streaming remains undisturbed.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: Intent analysis must produce a structured result within 1,200ms under standard conditions (`SC-002`).
 - **Privacy & Legal Compliance**: 100% of sensitive PII (emails, phone numbers, passwords) must be scrubbed before external AI submission, adhering strictly to Vietnamese Decree 13/2023/ND-CP (`122-FR-008`).
@@ -112,6 +128,7 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 ---
 
 ## 10. UI References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Implementation File**: `src/frontend/src/utils/agentService.js` (intent planner & SSE generator)
 - **Related Screenshots**:
@@ -124,7 +141,15 @@ The Conversational Interface (`UC-120-001`) receives a user message and transmit
 ---
 
 ## 11. Traceability
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Functional Requirements**: `122-FR-001` through `122-FR-012`
 - **Spec Kit Specification**: `specs/120-ai-conversational-agent/122-music-intent-understanding/spec.md` (User Stories 1, 2, 3, 4, 5)
 - **Downstream Inclusion**: `UC-120-003` (Execute Music Actions via Conversational Agent)
+
+## PA4 implementation evidence and acceptance record
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Chat UI, Express services and Python Gemini/SSE integration exist. Tests include fixture and fallback paths. Verify the actual live service, account isolation and action result before claiming the corresponding success postcondition; mocked/fallback responses do not demonstrate every normal AI path.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

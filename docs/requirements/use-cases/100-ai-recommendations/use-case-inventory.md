@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 100 – AI Recommendations
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document serves as the official tracking registry for all Use Cases belonging to **Group 100 – AI Recommendations**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), assigned owners, and authoring statuses for PA3.
 
@@ -15,16 +17,18 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Confirmed Use-Case Inventory
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
-| **UC-100-001** | View Listening History Analysis | Listener | External AI Service Provider | `101-FR-001` to `101-FR-014` | `101-listening-history-analysis` | Lê Công Minh Nhựt | **Draft** | [`UC-100-001-view-listening-history-analysis.md`](./UC-100-001-view-listening-history-analysis.md) |
+| **UC-100-001** | View Listening History Analysis | Listener | None (internal database aggregation) | `101-FR-001` to `101-FR-014` | `101-listening-history-analysis` | Lê Công Minh Nhựt | **Draft** | [`UC-100-001-view-listening-history-analysis.md`](./UC-100-001-view-listening-history-analysis.md) |
 | **UC-100-002** | Receive Personalized Recommendations | Listener | External AI Service Provider | `102-FR-001` to `102-FR-015` | `102-personalized-recommendations` | Lê Công Minh Nhựt | **Draft** | [`UC-100-002-receive-personalized-recommendations.md`](./UC-100-002-receive-personalized-recommendations.md) |
 | **UC-100-003** | Discover Music by Mood and Context | Listener | External AI Service Provider | `103-FR-001` to `103-FR-015` | `103-mood-and-context-recommendations` | Lê Công Minh Nhựt | **Draft** | [`UC-100-003-discover-music-by-mood-and-context.md`](./UC-100-003-discover-music-by-mood-and-context.md) |
 
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -38,6 +42,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Unconfirmed / Out-of-Scope Candidates
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following candidate use cases were analyzed during requirements engineering and determined to be out-of-scope or unconfirmed:
 
@@ -49,6 +54,7 @@ The following candidate use cases were analyzed during requirements engineering 
 ---
 
 ## 5. Traceability Matrix
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|

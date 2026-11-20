@@ -1,8 +1,10 @@
 # UC-100-003 – Discover Music by Mood and Context
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,20 @@
 | **Related FR IDs** | `103-FR-001`, `103-FR-002`, `103-FR-003`, `103-FR-004`, `103-FR-005`, `103-FR-006`, `103-FR-007`, `103-FR-008`, `103-FR-009`, `103-FR-010`, `103-FR-011`, `103-FR-012`, `103-FR-013`, `103-FR-014`, `103-FR-015` |
 | **Related Feature/Spec** | Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Lê Công Minh Nhựt |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 An authenticated listener discovers music tailored to their real-time emotional state or situational context by selecting from curated mood preset tags (*Chill*, *Energetic*, *Melancholy*, *Focus*) or activity context preset tags (*Study/Work*, *Workout*, *Late Night*, *Travel/Commute*). The system generates a dedicated recommendation stream comprising individual songs and theme-curated mood playlists, handles empty results gracefully with alternative mood suggestions, and delegates playback or playlist viewing.
 
 ---
 
 ## 3. Preconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user is authenticated as a `Listener` (`ACT-02`) with an active JWT session (`103-FR-005`).
 - The music catalog contains active tracks and curated mood playlists associated with mood and contextual attributes (`103-FR-003`, `103-FR-008`).
@@ -33,12 +37,14 @@ An authenticated listener discovers music tailored to their real-time emotional 
 ---
 
 ## 4. Trigger
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The listener navigates to the Music Discovery section (`/discovery`) or clicks on a mood/context chip in the discovery interface.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Navigates to the Music Discovery hub (`/discovery`) and views the curated mood and context selection bar.
 2. **System:** Renders curated preset tags organized into two distinct categories (`103-FR-002`):
@@ -52,14 +58,16 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 8. **Actor:** Selects a recommended item from the results stream (`103-FR-007`).
 9. **System:** Executes the corresponding action based on entity type:
    - If a **Song**: delegates playback initiation to the Music Player (`UC-040-001`), loading audio bytes directly from Cloud Media Storage.
-   - If a **Mood Playlist**: opens the playlist detail view (`UC-060-002`), displaying the track collection.
+   - If a **Mood Playlist**: opens the playlist detail view (`UC-060-003`), displaying the track collection.
 10. **Actor:** Enjoys the music matching their current vibe or activity.
 
 ---
 
 ## 6. Alternative Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Switching Selected Mood or Context Tag
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The listener selects a different mood or context tag (e.g., switching from "Chill" to "Workout") (`103-FR-015`).
 1. **Actor:** Clicks a different preset chip on the selection bar.
@@ -69,6 +77,7 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 - **Continuation:** Resumes at Step 8 of the Basic Flow.
 
 ### AF-02 – Empty Matches for Selected Tag
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** The selected tag currently matches zero active catalog songs or playlists (`103-FR-004`).
 1. **System:** Identifies an empty recommendation response.
@@ -79,8 +88,10 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 ---
 
 ## 7. Exception Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – AI Recommendation Backend Timeout or Outage
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** The External AI Service or vector matching engine times out ($> 2.5$ seconds) or responds with a service error (`103-FR-004`).
 1. **System:** Intercepts the exception to prevent interface freezing or crashes.
@@ -89,6 +100,7 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 - **Continuation:** Use Case completes in failure mode.
 
 ### EF-02 – Unauthenticated Visitor Request
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** An unauthenticated visitor (`Guest`) accesses `/discovery`.
 1. **System:** Allows the visitor to view available mood chips, but requesting private recommendations or saving mood playlists triggers an authentication check (`103-FR-006`).
@@ -98,20 +110,24 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 ---
 
 ## 8. Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The listener receives an accurate, curated stream of songs and mood playlists tailored to the selected mood/context tag.
 - Selecting an item reliably initiates track playback or opens playlist details in 1 interaction step (`SC-004`).
 - All displayed items correspond to active catalog entities (`SC-005`).
 - The listener's mood interactions remain strictly confidential (`SC-001`).
 
 ### Failure
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The system presents a friendly empty state with suggested alternatives or an informative service-unavailable notice.
 - The platform remains fully functional without crashes or interface blocking (`SC-002`, `SC-003`).
 
 ---
 
 ## 9. Special Requirements
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: Recommendation stream must render within 2.0 seconds upon tag selection. Toggling between chips must update the results stream within 1.0 second.
 - **Security & Privacy**: Strict account isolation (Decree 13/2023/ND-CP). User mood choices are confidential and never exposed to other listeners (`103-FR-006`).
@@ -121,8 +137,10 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Mood Recommendations Entry](prototypes/UC-100-003-basic-flow-entry.png)
 *Figure 1: Mood & Context discovery hub entry on the AuraTune discovery view.*
@@ -137,25 +155,29 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 *Figure 4: Filtered recommendation results stream presenting matching songs and theme-curated mood playlists.*
 
 ### Alternative Flow – AF-02 (Empty Mood Matches)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Empty state card with friendly messaging and alternative mood suggestion chips.*
 
 ### Exception Flow – EF-01 (AI Service Unavailable)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Informative service-offline notice with navigation shortcuts to platform trending charts.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Case**: `UC-010-002` (Log In with Email) – Authenticates the listener.
 - **Context Container**: `UC-020-001` (Browse Home Dashboard) – Discovery navigation link.
-- **Included / Delegated Playback**: `UC-040-001` (Control Audio Playback) – Initiated when a recommended song is clicked.
-- **Target Playlist Navigation**: `UC-060-002` (View Playlist Details) – Initiated when a mood playlist card is clicked.
+- **Optional playback handoff**: `UC-040-001` (Control Audio Playback) – Initiated when a recommended song is clicked.
+- **Target Playlist Navigation**: `UC-060-003` (View Playlist Details) – Initiated when a mood playlist card is clicked.
 
 ---
 
 ## 12. Source References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/100-ai-recommendations/103-mood-and-context-recommendations/spec.md` – Requirements FR-001 through FR-015, User Stories 1–4.
 - `docs/proposal/Auratune_Vision_Document.md` – Section 3.5 & Group G10.
@@ -165,6 +187,14 @@ The listener navigates to the Music Discovery section (`/discovery`) or clicks o
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preset Tag Scope**: Clarification session 2026-10-30 explicitly established 4 core moods (Chill, Energetic, Melancholy, Focus) and 4 activity contexts (Study/Work, Workout, Late Night, Travel/Commute). Custom free-form tagging by listeners is excluded.
 - **Multi-Entity Delivery**: Mood recommendations return individual songs and curated mood playlists (unlike Feature 102, which also recommends individual albums and artists).
+
+## PA4 implementation evidence and acceptance record
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Analysis/recommendation services and tests exist. Feature 101 computes database statistics without an external AI model. The Python `/ai/recommend` handler currently returns a fixed candidate ordering without ranking from submitted preference signals. Cold-start/fallback results must be distinguished from normal personalized results.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

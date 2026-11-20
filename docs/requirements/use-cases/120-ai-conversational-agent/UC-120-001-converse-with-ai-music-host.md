@@ -1,8 +1,10 @@
 # UC-120-001 – Converse with AI Music Host
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -16,17 +18,19 @@
 | **Related Feature/Spec** | Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface/spec.md`) |
 | **Status** | Draft |
 | **Author** | Lê Công Minh Nhựt |
-| **Reviewer** | TBD |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 An authenticated listener interacts with the AuraTune conversational AI host via a dedicated terminal / CLI-style interface. The listener sends natural language messages, observes live reasoning states with active elapsed duration, and receives streamed Markdown responses, all while background music playback continues smoothly and uninterrupted.
 
 ---
 
 ## 3. Preconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user is authenticated as a valid `Listener` (`ACT-02`) with an active JWT session token (`121-FR-001`).
 - The AuraTune frontend application is running in an active browser session.
@@ -34,12 +38,14 @@ An authenticated listener interacts with the AuraTune conversational AI host via
 ---
 
 ## 4. Trigger
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The listener clicks the "AuraTune Agent" button on the top navigation bar or the persistent bottom player bar.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Step | Actor / System | Action |
 |:---:|:---:|---|
@@ -56,8 +62,10 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 ---
 
 ## 6. Alternative Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Quick Prompt Suggestion Chip Selection
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 3 of the Basic Flow.
 - **Condition:** The listener selects one of the pre-populated suggestion chips above the input bar (e.g., *"phát lofi chill để code"*, *"bài đang phát là gì?"*).
 1. **Actor:** Clicks on a suggestion chip.
@@ -65,6 +73,7 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 - **Outcome:** Resumes at Step 4 of the Basic Flow.
 
 ### AF-02 – Command History Recall via Arrow Keys
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 3 of the Basic Flow.
 - **Condition:** The listener presses `ArrowUp` or `ArrowDown` while the input textarea is empty or caret is at start (`121-FR-008`).
 1. **Actor:** Presses `ArrowUp`.
@@ -73,6 +82,7 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 - **Outcome:** Resumes at Step 4 of the Basic Flow.
 
 ### AF-03 – Aborting an In-Flight Agent Turn
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 5 of the Basic Flow.
 - **Condition:** The listener presses `Esc` while the agent is running/thinking.
 1. **Actor:** Presses `Esc`.
@@ -81,6 +91,7 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 - **Outcome:** Resumes at Step 8 of the Basic Flow; use case terminates gracefully.
 
 ### AF-04 – Viewing Terminal Shortcuts via `/help`
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 3 of the Basic Flow.
 - **Condition:** The listener enters `/help` into the prompt bar.
 1. **Actor:** Enters `/help` and presses `Enter`.
@@ -90,8 +101,10 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 ---
 
 ## 7. Exception Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – AI Service Suspended or Unreachable
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 2 of the Basic Flow.
 - **Condition:** The AI service is toggled off (`aiAvailable = false`) or network failure prevents connection (`121-FR-009`).
 1. **System:** Opens the terminal panel displaying a suspended status badge `● tạm ngưng` (amber).
@@ -101,6 +114,7 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 - **Outcome:** Use Case terminates in degraded mode.
 
 ### EF-02 – Unauthenticated Visitor Access Attempt
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 1 of the Basic Flow.
 - **Condition:** An unauthenticated visitor (`Guest`) clicks the AI Agent button (`121-FR-001`).
 1. **System:** Identifies missing authentication tokens and displays an authentication challenge modal.
@@ -110,19 +124,23 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 ---
 
 ## 8. Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The conversational dialogue is appended to the terminal log in strict chronological sequence.
 - Prompt history is updated in client component memory (retaining up to 30 items).
 - Background audio streaming remains completely uninterrupted throughout the interaction.
 
 ### Failure Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - An informative non-blocking notice is presented; no blank screens or uncaught exceptions occur.
 - Existing playback state and platform navigation remain fully operational.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Accessibility & Focus**: Keyboard trap within open panel; `Esc` closes panel when idle or stops agent when running; input textarea automatically gains focus on open.
 - **Performance**: Processing indicator renders within 100 milliseconds; streaming text renders smoothly without UI stutter.
@@ -131,6 +149,7 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 ---
 
 ## 10. UI References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Implementation Component**: `src/frontend/src/components/chat/AIHostChat.jsx`
 - **Related Screenshots**:
@@ -144,7 +163,15 @@ The listener clicks the "AuraTune Agent" button on the top navigation bar or the
 ---
 
 ## 11. Traceability
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Functional Requirements**: `121-FR-001` through `121-FR-012`
 - **Spec Kit Specification**: `specs/120-ai-conversational-agent/121-conversational-interface/spec.md` (User Stories 1, 2, 3, 4)
 - **Included Use Case**: `UC-120-002` (Interpret Music Intent via Chat)
+
+## PA4 implementation evidence and acceptance record
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Chat UI, Express services and Python Gemini/SSE integration exist. Tests include fixture and fallback paths. Verify the actual live service, account isolation and action result before claiming the corresponding success postcondition; mocked/fallback responses do not demonstrate every normal AI path.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).
