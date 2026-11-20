@@ -19,7 +19,7 @@
 1. Frontend sends `GET /api/v1/search/lyrics?q=<fragment>&limit=20&offset=0` to the Express backend.
 2. Express trims and validates query parameters (`>= 3` words, `<= 200` characters after trimming) and forwards `POST /ai/search/lyrics` to the internal Python AI Service with an enforced **3-second timeout** (`3000ms`).
 3. **Normal AI Path (`200 OK`)**: Express resolves song metadata from Supabase (`public.songs` -> `public.albums` -> `public.artists`) and returns `meta.search_mode = "ai"`.
-4. **Automatic Fallback Path (`HTTP 503` or `3s Timeout`)**: Express catches `503 AI_SERVICE_UNAVAILABLE` or timeout, automatically executes normalized lyrics-only keyword fallback against its in-memory/local cache indexed from Cloudinary (`public.songs.lyrics_url`), and returns `200 OK` with `meta.search_mode = "keyword_fallback"`.
+4. **Automatic Fallback Path (`HTTP 503` or `3s Timeout`)**: Express catches `503 AI_SERVICE_UNAVAILABLE` or timeout, automatically executes normalized lyrics-only keyword fallback against its in-memory/local cache indexed directly from Supabase (`public.songs.lyrics`), and returns `200 OK` with `meta.search_mode = "keyword_fallback"`.
 5. **Non-Fallback Errors (`HTTP 400` / `429` / `500`)**: Express does **not** invoke keyword fallback; it returns the corresponding error envelope directly to the client.
 
 ---
@@ -113,7 +113,7 @@ Uses AuraTune's shared response envelope, extended with `pagination` (matching F
 
 ## Normalization & Fallback Ranking Rules (T004 & T007 Resolved)
 
-- **Lyric Index Source**: Raw `.lrc` / `.txt` files hosted on Cloudinary via `public.songs.lyrics_url` are stripped of LRC timestamps (e.g., `[00:15.20]`) and cached in memory/local index by the backend/AI service.
+- **Lyric Index Source**: Raw lyric text stored directly in Supabase `public.songs.lyrics` (excluding `NULL` or empty values; no Cloudinary lyric file or `lyrics_url` column) is stripped of any embedded LRC timestamps (e.g., `[00:15.20]`) and cached in memory/local index by the backend/AI service.
 - **Normalization**: Trim leading/trailing whitespace, collapse internal whitespace, convert to lowercase, strip Unicode NFD diacritics, and remove punctuation.
 - **Lyrics-Only Scope**: Keyword fallback searches normalized lyric text **only**; title, artist, album, and playlist matches are excluded.
 - **Deterministic Fallback Ordering**:

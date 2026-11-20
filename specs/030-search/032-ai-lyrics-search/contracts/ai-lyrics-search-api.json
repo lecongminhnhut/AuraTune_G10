@@ -15,7 +15,7 @@
     "/search/lyrics": {
       "get": {
         "summary": "Search songs by remembered lyric fragment with automatic keyword fallback",
-        "description": "Public caller-facing endpoint owned by the AuraTune Express backend. Validates the trimmed lyric fragment (at least 3 words and at most 200 characters) and forwards POST /ai/search/lyrics to the internal Python AI Service with an enforced 3000ms timeout. If the internal AI service returns HTTP 503 or times out after 3 seconds, Express automatically executes normalized lyrics-only keyword fallback against its cached Cloudinary lyric index (public.songs.lyrics_url) and returns 200 OK with meta.search_mode = 'keyword_fallback'. HTTP 429 and other errors do not trigger fallback.",
+        "description": "Public caller-facing endpoint owned by the AuraTune Express backend. Validates the trimmed lyric fragment (at least 3 words and at most 200 characters) and forwards POST /ai/search/lyrics to the internal Python AI Service with an enforced 3000ms timeout. If the internal AI service returns HTTP 503 or times out after 3 seconds, Express automatically executes normalized lyrics-only keyword fallback against its cached Supabase lyric index (public.songs.lyrics) and returns 200 OK with meta.search_mode = 'keyword_fallback'. HTTP 429 and other errors do not trigger fallback.",
         "operationId": "searchLyrics",
         "security": [],
         "parameters": [
