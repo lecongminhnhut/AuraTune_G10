@@ -1,6 +1,8 @@
 # UC-090-006 – Edit Track Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -12,30 +14,36 @@
 | Related FR IDs | 093-FR-001, 093-FR-005, 093-FR-006, 093-FR-009 |
 | Related Feature ID | 093 – Artist Track Management |
 | Related Spec Kit File | [093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) |
-| Writer | Thái Hoàng |
-| Reviewer | Not assigned |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Thái Hoàng |
+| Reviewer | Group 10 team |
 | Status | Draft |
 | Last Updated | 2026-11-04 |
 
 ## 2. Goal
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist corrects the title, album, genre or duration of an existing track they uploaded and sees confirmation and the saved values in their Studio catalog.
 
 ## 3. Description
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The system presents the current metadata in an edit dialog, accepts permitted changes and confirms a successful update. This goal does not upload a new track, replace published audio, change ownership or play counts, change visibility, moderate content or delete a track. Album editing here means the track's album metadata, not album creation, deletion, ordering or full membership management.
 
 ## 4. Preconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The Artist starts from an existing Studio catalog entry, as described in UC-090-004. The ordinary successful path uses an existing track uploaded by that Artist.
 - Authentication, Artist role, account eligibility, track existence and ownership are checked when protected data is read or changed. They are not assumed permanently valid merely because a row or dialog was previously displayed; rejected direct requests and changes in eligibility are covered below.
 - 093-FR-006 and User Story 3 apply to owned uploaded tracks without a self-hidden exclusion. The same metadata flow applies to ordinary self-hidden tracks. G090-D05 permits the same four-field metadata-edit flow for an owned Admin-restricted track; no moderation override, public availability or new playback is granted.
 
 ## 5. Trigger
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist selects the pencil/edit action on an uploaded track in their Studio catalog (093 User Story 3, scenario 1).
 
 ## 6. Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Artist:** Selects the edit action for their existing uploaded track.
 2. **System:** Checks access and ownership, obtains the current track metadata and opens a dialog populated with its title, album, genre and duration.
@@ -46,8 +54,10 @@ The Artist selects the pencil/edit action on an uploaded track in their Studio c
 G090-D04 confirms that step 4 validates Artist-entered duration syntax only; no audio measurement/comparison is required and no system-verified duration is claimed. G090-D15 settles title edge-whitespace trimming/non-empty validation, optional/clearable album and catalog-member genre. G090-D16 sets an inclusive 200-Unicode-code-point maximum for each title/album field; no additional normalization or default is selected.
 
 ## 7. Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Invalid duration
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4.
 - **Condition:** The submitted duration does not match 093-FR-005.
@@ -57,6 +67,7 @@ G090-D04 confirms that step 4 validates Artist-entered duration syntax only; no 
 - **Outcome:** The submission ends unsuccessfully. G090-D11 retains entered values while the form remains open and permits correction/manual retry. After the Artist corrects duration and selects Save, resume Basic Flow step 4; if they stop, end with no successful update. Exact error placement remains design work.
 
 ### AF-02 – Track no longer exists
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** The requested track cannot be found, including when it disappeared after the catalog or dialog was displayed.
@@ -66,6 +77,7 @@ G090-D04 confirms that step 4 validates Artist-entered duration syntax only; no 
 - **Outcome:** The use case ends unsuccessfully. No message wording, redirect, restoration or deletion-cleanup behavior is specified here.
 
 ### AF-03 – Repeated or concurrent operation
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4 before a change is accepted; also during EX-04 recovery.
 - **Condition:** The same intended request is repeated, or valid operations affecting the track overlap.
@@ -76,6 +88,7 @@ G090-D04 confirms that step 4 validates Artist-entered duration syntax only; no 
 - **Outcome:** Ends with the confirmed saved result when known. If further authorized processing is needed, resume at Basic Flow step 4 for the intended save, or step 2 if the record must be read again; an uncertain result uses EX-04 first. No specific synchronization, versioning, schema or idempotency-key design is selected. Source: G090-D08.
 
 ### AF-04 – Cancel or close before Save submission
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 3, before the Artist submits Save.
 - **Condition:** The Artist chooses Cancel or closes the edit form without submitting Save.
@@ -90,6 +103,7 @@ G090-D04 confirms that step 4 validates Artist-entered duration syntax only; no 
 G090-D11 applies to validation branches while the form remains open: preserve entered values and any selected audio still accessible, give corrective feedback and allow manual correction/retry. Existing checkbox, rights, format/size and duration validations remain enforced. An uncertain submitted result must be reconciled under G090-D08 before resubmission; keeping input is not proof of a saved or unchanged result. Explicit pre-submission upload Cancel and pre-Save edit Cancel retain their discard behavior.
 
 ### AF-05 – Close after Save submission
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** After Basic Flow step 3 submits Save, while step 4 or 5 is pending or the result has not been confirmed.
 - **Condition:** The Artist closes or leaves the metadata form after submitting Save and before receiving a confirmed result.
@@ -102,6 +116,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 - **Outcome:** If reconciliation and loading succeed, resume at Basic Flow step 3 with current saved values. If still uncertain or a load fails, enter EX-04 without a definitive state claim; access/missing-target outcomes use their existing branches. No automatic replay or cancellation/rollback mechanism is added. Source: G090-D12.
 
 ### AF-06 – Invalid title, album length or genre
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, before applying the metadata update.
 - **Condition:** Title is empty after trimming leading/trailing whitespace, title or album exceeds 200 Unicode code points, or genre is missing or not in the system genre catalog.
@@ -112,8 +127,10 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 - **Outcome:** Resume at Basic Flow step 4 for current validation/access checks; if the Artist stops, end without a successful update from this rejected submission. Empty album is accepted and is not a missing-required-field error; a valid save may clear the existing album metadata. Duration validation remains AF-01 and all other existing rules remain in force. Source: G090-D15 and G090-D16.
 
 ## 8. Exception Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EX-01 – Session expiry with account-bound recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4, any later protected request, or recovery while this upload/edit interaction is pending.
 - **Condition:** Authenticated access expires or becomes invalid while the Artist is entering data or awaiting a submitted request's outcome.
@@ -125,6 +142,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 - **Outcome:** For the same account with valid access and unsubmitted accessible input, resume the form interaction at Basic Flow step 3; inaccessible values/file must be supplied again before a new submission. For submitted work, use EX-04 before retry or a definitive claim. If recovery fails, access is denied, or a different account becomes current, the old interaction cannot continue as that account; no request is reassigned or assumed rolled back. Existing explicit Cancel/close rules remain separate. Source: owner-confirmed session decision G090-D13.
 
 ### EX-02 – Role or ownership denied
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** The requester lacks Artist permission or attempts to read/edit another artist's track.
@@ -134,6 +152,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 - **Outcome:** The use case ends unsuccessfully. The rejected request does not perform a metadata update. Admin moderation privileges do not imply Artist Studio permission.
 
 ### EX-03 – Account banned
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** A successful administrative ban applies to the account, even if its token has not expired.
@@ -145,6 +164,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Cancel/close now follows G090-D10/AF-04. G090-D11 settles retention after validation/operation error while the form stays open. G090-D12 permits closing after Save submission without cancellation, requiring reconciliation and current metadata loading on return. G090-D13 now settles account-bound temporary retention and same-account reauthentication; partial/stale presentation remains the separate open B-06 component.
 
 ### EX-04 – Error or uncertain result with manual recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** Loading/processing fails, or no definitive response establishes the result of a submitted operation.
@@ -156,8 +176,10 @@ Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Canc
 - **Outcome:** On a successful read, present the confirmed current result. If further processing is needed, resume at Basic Flow step 4 for the intended save, or step 2 if the record must be read again. If failure or uncertainty persists, return to EX-04 step 1; if the Artist stops, end without a definitive success claim. Access denial/missing-target outcomes use the existing branches. No old-account request is reassigned to a different account. No automatic retry, persistence atomicity or physical cleanup policy is chosen. Source: G090-D08.
 
 ## 9. Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 9.1 Success Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Edited title and album each satisfy the inclusive 200-Unicode-code-point maximum under G090-D16; exact-boundary acceptance does not bypass title, genre or duration validation.
 
@@ -169,6 +191,7 @@ Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Canc
 - This goal does not request an audio replacement, ownership transfer, play-count change, visibility toggle or moderation-state change. It makes no claim about independent concurrent actions.
 
 ### 9.2 Failure Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Invalid title/genre is rejected before applying the update; appropriate feedback and open-form retention support correction under G090-D15/AF-06 and G090-D11. The 200-code-point maximum is enforced under G090-D16; values of exactly 200 code points pass the length check subject to all other validation.
 
@@ -186,6 +209,7 @@ Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Canc
 - No success is established by an unanswered request. For read/save failures or loss of response, the sources do not establish a final saved state, atomicity, cleanup or recovery policy; this Draft does not promise that data was saved or remained unchanged.
 
 ## 10. Special Requirements
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security:** Enforce authentication, Artist role and ownership on protected reads and writes at the server, following shared security rules; 111-FR-011 applies after a ban. Do not rely solely on visible controls.
 - **Performance:** 093-SC-002 requires metadata edits to reflect in the catalog/store within 500 ms of submission. Measurement conditions and failure handling need technical definition; no measured compliance is claimed.
@@ -194,6 +218,7 @@ Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Canc
 - **Other:** Exact duration input validation follows FR-005. G090-D04 confirms manual input/edit within current scope; no measurement from audio or comparison to actual length is required, and metadata editing does not establish system-verified duration.
 
 ## 11. Business Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
@@ -213,8 +238,10 @@ Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Canc
 | BR-14 | Owner-confirmed session decision G090-D16 (2026-11-04), option A for metadata editing: title and album each have a maximum of 200 Unicode code points, inclusive. Count code points, not bytes or UTF-16 code units; do not claim a grapheme-cluster limit. Existing title non-empty/edge-whitespace, optional-clearable album, catalog-genre and exact duration validations remain unchanged. This decision does not automatically extend the new maximum to upload or select schema/API/storage. Invalid lengths are rejected before update with corrective feedback and open-form retention under G090-D11. | Owner-confirmed session decision G090-D16; newly confirmed in this conversation, not original source requirement or group approval |
 
 ## 12. Prototype and Screenshots
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 12.0 Current Submission Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Author-created Basic Flow and key UI states](./prototypes/UC-090-006-basic-flow-and-key-states.png)
 
@@ -230,6 +257,7 @@ Read/save errors and uncertain outcomes now follow G090-D08/EX-04. Pre-save Canc
 
 
 ### 12.1 Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Edit track metadata reference mockup](../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/03-edit-track.png)
 
@@ -244,6 +272,7 @@ G090-D11 retained-input/error/correction/retry states have no verified prototype
 G090-D13 temporary retention, same-account recovery, different-account isolation and submitted-outcome reconciliation have no verified prototype evidence.
 
 ### 12.2 Alternative and Exception Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 G090-D16 exact-200-code-point acceptance, over-limit title/album rejection and Unicode counting have no verified result evidence. Current static short strings do not establish boundary handling.
 
@@ -260,6 +289,7 @@ G090-D10/AF-04 is specified but lacks a cancel-result/reopen illustration; stati
 No verified image demonstrates AF-01 duration rejection, AF-02 missing track or EX-01–03 authentication/permission/ban outcomes. Evidence is also missing for successful save, read/save failure, cancellation, hidden/restricted edit eligibility and an uncertain result. Prototype coverage remains incomplete; no image was created or copied.
 
 ## 13. Related Use Cases
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [UC-090-004 – Access Artist Studio Dashboard](./UC-090-004-access-artist-studio-dashboard.md): provides the own-track catalog and receives the updated table values; its statistics and catalog-loading goal are not repeated.
 - [UC-090-005 – Upload Audio Track](./UC-090-005-upload-audio-track.md): creates a new audio track. Its upload validation-dialog behavior does not automatically apply to editing.
@@ -268,6 +298,7 @@ No verified image demonstrates AF-01 duration rejection, AF-02 missing track or 
 - Group 110 moderation: administrative restriction decisions remain outside this UC.
 
 ## 14. Traceability and Sources
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Every FR below is a feature-qualified reference to the literal FR ID in the [current 093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md). The four applicable IDs match the inventory; the other six are boundaries, not additional edit requirements.
 
@@ -308,6 +339,7 @@ Every FR below is a feature-qualified reference to the literal FR ID in the [cur
 Source alignment: FR-006 and User Story 3 both explicitly include duration among editable fields; FR-005 gives the precise input pattern. User Story 2's shorthand `m:ss` is upload wording and does not override that pattern or prove audio-derived duration. Its invalid-input scenario retaining the upload modal is not an edit scenario. Feature 112 FR-008 restricts what an Admin may edit during moderation; it does not grant Admin Studio access. Artist-owner restricted metadata editing is now confirmed separately by G090-D05. These distinctions avoid inventing a resolution where a policy is absent.
 
 ## 15. Open Questions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Question ID | Question | Owner | Status | Resolution |
 |---|---|---|---|---|
@@ -320,3 +352,10 @@ Source alignment: FR-006 and User Story 3 both explicitly include duration among
 | Q-07 | Evidence: provide correct edit-success toast/table, validation, access/ownership, restricted/hidden and failure/recovery illustrations; correct reused upload wording in a separately authorized pass. | Thái Hoàng | Open | Current P-022/P-025/P-026 illustrate edit-success, validation and key access/recovery/result states; complete sequence/runtime evidence remains incomplete |
 
 The group README distinguishes the remaining business issues from technical/model and evidence follow-ups. No peer review or approval has occurred.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

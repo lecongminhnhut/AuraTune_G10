@@ -1,8 +1,10 @@
 # UC-020-005 – Explore New Album Releases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `025-FR-001`, `025-FR-002`, `025-FR-003`, `025-FR-004`, `025-FR-005`, `025-FR-006`, `025-FR-007`, `025-FR-008`, `025-FR-009`, `025-FR-010`, `025-FR-011`, `051-FR-013` |
 | **Related Feature/Spec** | Feature 025: New Releases (`specs/020-home-dashboard/025-new-releases/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A guest or listener discovers newly released albums on the Home Dashboard and either plays an album directly from its card or opens the album page. The system orders albums by release date, newest first, and plays only available tracks in album order. Album details, tracklists, saving, and sharing belong to Group 080.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The actor has opened the Home Dashboard (`UC-020-001`).
 - The catalog contains at least one album with a release date (`025-FR-001`).
@@ -33,12 +38,14 @@ A guest or listener discovers newly released albums on the Home Dashboard and ei
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Home Dashboard renders the new albums section ("Album mới phát hành").
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **System:** Orders albums by release date, newest first (`025-FR-002`).
 2. **System:** Shows up to 5 albums in a dedicated section, each with cover art, title, and artist (`025-FR-001`, `025-FR-003`, `025-FR-004`).
@@ -52,8 +59,10 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Open the Album Page
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** The actor selects the album card itself instead of its play action (`025-FR-005`).
 1. **Actor:** Selects the album card.
@@ -61,6 +70,7 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 - **Continuation:** Use case ends successfully; the actor continues in `UC-080-001` (View Album Details and Tracklist).
 
 ### AF-02 – Explore More Releases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The actor wants more releases than the section shows (`025-FR-010`).
 1. **Actor:** Selects "Khám phá thêm".
@@ -68,12 +78,14 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 - **Continuation:** Use case ends successfully.
 
 ### AF-03 – Album Partly Unavailable
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 6 of the Basic Flow.
 - **Condition:** Some tracks of the album are unavailable (`025-FR-007`).
 1. **System:** Skips the unavailable tracks and plays only the available ones in album order.
 - **Continuation:** Resumes at Step 7 of the Basic Flow.
 
 ### AF-04 – Album Longer Than the Queue Limit
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The album has more than 50 available tracks (`051-FR-013`).
 1. **System:** Sets only the first 50 available tracks, in album order, as the queue.
@@ -83,8 +95,10 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Album Has Nothing Playable
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 6 of the Basic Flow.
 - **Condition:** No track of the album is available (`025-FR-009`).
 1. **System:** Shows a message that there is nothing to play and does not change current playback.
@@ -92,6 +106,7 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 - **Continuation:** Resumes at Step 3 of the Basic Flow, or continues via AF-01.
 
 ### EF-02 – Section Cannot Be Loaded
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The new albums cannot be retrieved, or no album exists.
 1. **System:** Shows a fallback or empty state in the section, or hides it.
@@ -101,18 +116,22 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The actor sees up to 5 albums ordered by release date, newest first.
 - When played from the card, the album's available tracks are playing in album order and form the queue, up to 50 tracks.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - A message, fallback, or empty state is shown, and current playback is not changed.
 - Unavailable tracks never start playing.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Data Integrity**: Unavailable tracks are filtered out before playback starts (`025-FR-007`).
 - **Capacity**: Starting an album never puts more than 50 tracks in the queue (`051-FR-013`).
@@ -121,10 +140,12 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![New albums section](prototypes/UC-020-005-basic-flow.png)
 *Figure 1: New albums section on Home, newest first (Step 2).*
@@ -136,26 +157,31 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 *Figure 3: Album playback started directly from its card (Steps 6–7).*
 
 ### Alternative Flow – AF-01 (Open the Album Page)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Album page](prototypes/UC-020-005-AF-01-album-detail.png)
 *Figure 4: Album page opened from a new album card.*
 
 ### Alternative Flow – AF-02 (Explore More Releases)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Explore page](prototypes/UC-020-005-AF-02-explore.png)
 *Figure 5: Explore page opened from the section action.*
 
 ### Exception Flow – EF-01 (Album Has Nothing Playable)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Message shown when an album card is played but no track is available.*
 
 ### Alternative Flow – AF-04 (Album Longer Than the Queue Limit)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Notice that only the first 50 tracks were added to the queue. The current prototype does not limit the queue.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Context Container**: `UC-020-001` (Browse Home Dashboard).
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback).
@@ -166,6 +192,7 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/020-home-dashboard/025-new-releases/spec.md` – Requirements FR-001 through FR-011, User Stories 1–3, Edge Cases.
 - `specs/050-queue-management/051-view-queue/spec.md` – FR-004: a started collection becomes the queue; FR-013: maximum 50 tracks.
@@ -176,7 +203,15 @@ The Home Dashboard renders the new albums section ("Album mới phát hành").
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Prototype Gap**: Album data is demo data in the current prototype.
 - **Same Release Date**: Specification 025 does not define the order of albums released on the same date. Unlike the charts in 024, no stable tie order is required yet.
 - **Albums Over 50 Tracks**: No specification states what happens when a started collection has more than 50 tracks. AF-04 applies the 052 edge case for batch additions: only the tracks that fit are added, and the listener sees how many. This needs to be confirmed as a clarification of spec 051.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`HomePage.jsx`, `ChartsPage.jsx` and `ExplorePage.jsx` provide the presentation. Some catalog/ranking inputs still use `src/frontend/src/utils/mockData.js`. Live recommendation widgets do not establish that every Home section is backed by an authoritative catalog or calculated platform ranking.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

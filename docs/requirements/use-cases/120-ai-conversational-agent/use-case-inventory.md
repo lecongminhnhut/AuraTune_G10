@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 120 – AI Conversational Agent
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This inventory serves as the authoritative tracking registry for all Use Cases belonging to **Group 120 – AI Conversational Agent**. It tracks end-to-end alignment between the Spec Kit, actual frontend implementation (`AIHostChat.jsx`), and PA3 documentation standards.
 
@@ -15,6 +17,7 @@ This inventory serves as the authoritative tracking registry for all Use Cases b
 ---
 
 ## 2. Confirmed Use-Case Inventory
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Brief Description | Primary Actor | Supporting Actors | Related FR IDs | Related UI Component / Screen | Related Spec Kit | Implementation Status | Specification Link |
 |---|---|---|---|---|---|---|---|---|---|
@@ -26,6 +29,7 @@ This inventory serves as the authoritative tracking registry for all Use Cases b
 ---
 
 ## 3. Status Definitions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -38,6 +42,7 @@ This inventory serves as the authoritative tracking registry for all Use Cases b
 ---
 
 ## 4. Unconfirmed / Out-of-Scope Candidates
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Candidate ID | Proposed Capability | Reason for Exclusion / Current Status | Alternative Target Group |
 |---|---|---|---|
@@ -47,6 +52,7 @@ This inventory serves as the authoritative tracking registry for all Use Cases b
 ---
 
 ## 5. Traceability and Verification Matrix
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Spec Kit Feature | Verified Functional Requirements | Mapped Use Case(s) | UI Verification Evidence |
 |---|---|---|---|

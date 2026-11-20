@@ -1,8 +1,10 @@
 # Functional Group 120: AI Conversational Agent – Use-Case Documentation
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 5.1. Group Overview
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -19,8 +21,10 @@
 ---
 
 ## 5.2. Functional Scope
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 5.2.1 Required Functionality (Spec Kit Baseline)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The approved scope of Group 120 encompasses three closely integrated subfeatures:
 
 1. **Conversational Interface (Feature 121)**:
@@ -47,18 +51,21 @@ The approved scope of Group 120 encompasses three closely integrated subfeatures
    - Fault isolation: AI backend errors or streaming failures never halt or interrupt background audio playback.
 
 ### 5.2.2 Current Implementation Status
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The AuraTune frontend has implemented Group 120 as a **CLI / Terminal-style Agent** in:
 - `src/frontend/src/components/chat/AIHostChat.jsx`: Main terminal floating panel component.
 - `src/frontend/src/components/chat/agentTools.js`: Client action executor for player and store manipulation.
 - `src/frontend/src/utils/agentService.js`: Async generator simulating the backend Server-Sent Events (SSE) contract (`thinking`, `tool_call`, `text`, `playlist`, `error`, `done`).
 
 ### 5.2.3 Unconfirmed / Out-of-Scope Capabilities
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Voice Recognition / Speech-to-Text**: Unconfirmed in Project Plan Section 2.3.1; established as strictly text-based for MVP.
 - **Persistent Server-Side Chat Storage**: The current database schema does not feature a `chat_messages` table. Conversations are session-based in client component memory, reset upon page reload or `/clear`.
 
 ---
 
 ## 5.3. Use-Case Inventory Summary
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FRs | Implementation Status | Specification Link |
 |---|---|---|---|---|---|---|
@@ -70,6 +77,7 @@ The AuraTune frontend has implemented Group 120 as a **CLI / Terminal-style Agen
 ---
 
 ## 5.4. Use-Case Relationships
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **`UC-120-001` <<include>> `UC-120-002`**:
    - *Condition/Behavior*: Every natural language prompt entered into the conversational interface is unconditionally processed by the intent understanding pipeline to detect musical intents, entity slots, and suggested actions.
@@ -86,6 +94,7 @@ The AuraTune frontend has implemented Group 120 as a **CLI / Terminal-style Agen
 ---
 
 ## 5.5. Use-Case Diagram
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```mermaid
 flowchart LR
@@ -136,6 +145,7 @@ flowchart LR
 ---
 
 ## 5.6. UI Overview (CLI Terminal Agent Interface)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Based on the latest implementation in `src/frontend/src/components/chat/AIHostChat.jsx`:
 
@@ -195,6 +205,7 @@ Based on the latest implementation in `src/frontend/src/components/chat/AIHostCh
 ---
 
 ## 5.7. Traceability
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Functional Requirement | Specification Document | Mapped Use Case ID | Frontend Component / Handler |
 |---|---|---|---|
@@ -210,6 +221,7 @@ Based on the latest implementation in `src/frontend/src/components/chat/AIHostCh
 ---
 
 ## 5.8. Open Issues and Architecture Clarifications
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Persistent Message Storage (`Q-120-01`)**:
    - *Status*: Confirmed for MVP.
@@ -224,6 +236,7 @@ Based on the latest implementation in `src/frontend/src/components/chat/AIHostCh
 ---
 
 ## 5.9. References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/Auratune_Vision_Document.md` – Feature Group G12 & Section 3.5
 - `docs/proposal/proposal.md` – Section 6.12: AI Conversational Agent

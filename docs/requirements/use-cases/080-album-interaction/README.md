@@ -1,8 +1,10 @@
 # Functional Group 080: Album Interaction – Use-Case Documentation
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Group Information
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 2. Scope
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 2.1 Purpose and Objectives
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 080 provides the core catalog browsing experience for releases. Listeners and guests can explore album metadata (cover art, artist, release year, total duration) and tracklists with individual play counts. Listeners can start album or track playback; listeners and guests can share album URLs, while saving an album requires sign-in.
 
 ### 2.2 In-Scope Capabilities
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The capabilities specified for Group 080 comprise three distinct features. Their source specifications are currently Draft:
 
 1. **Album Details (Feature 081)**:
@@ -44,18 +49,21 @@ The capabilities specified for Group 080 comprise three distinct features. Their
    - Enforcing authentication checks before allowing save actions.
 
 ### 2.3 Out-of-Scope Exclusions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 To maintain strict architectural boundaries, the following capabilities are explicitly excluded from Group 080:
 - **Audio Streaming Internals**: Actual fetching and decoding of audio chunks are owned by **Group 040 – Music Player**.
 - **Playlist Management**: Custom user-created playlists and their logic belong to **Group 060 – Playlist**.
 - **Catalog Management**: Uploading, editing, or deleting albums from the system database by admins.
 
 ### 2.4 Dependencies
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Group 010 (Authentication)**: Provides authentication checks for the "Save Album" action and scopes saved states to the `user_id`.
 - **Group 040 (Music Player)**: Receives track data and queue arrays to execute actual audio playback.
 
 ---
 
 ## 3. Related Requirements and Features
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
@@ -66,6 +74,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 4. Actors
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -76,6 +85,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 5. Use-Case Diagram
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following Mermaid flowchart visualizes the boundary, actors, draft use cases, and cross-group dependencies for **Group 080 – Album Interaction**.
 
@@ -119,6 +129,7 @@ flowchart LR
 ```
 
 ### Diagram Legend
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Ovals (`([ ... ])`)**: Draft Use Cases.
 - **Solid Arrow (`-->`)**: Direct primary actor invocation.
 - **Dashed Arrow (`-.->`)**: Optional cross-group dependency or delegation; it does not mean UML `include` or `extend`.
@@ -127,6 +138,7 @@ flowchart LR
 ---
 
 ## 6. Use-Case List
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
@@ -137,6 +149,7 @@ flowchart LR
 ---
 
 ## 7. Dependencies and Integration
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```
                  +---------------------------+
@@ -158,6 +171,7 @@ flowchart LR
 ---
 
 ## 8. Open Issues and Architecture Clarifications
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | ID | Issue / Decision Needed | Impacted UC/FR | Owner | Status |
 |---|---|---|---|---|
@@ -166,6 +180,7 @@ flowchart LR
 ---
 
 ## 9. References
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/proposal.md`
 - `docs/management/team-contract.md`

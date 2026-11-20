@@ -1,6 +1,8 @@
 # 070 – Listening History
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Group Overview
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Description |
 |---|---|
@@ -11,8 +13,10 @@
 | Status | In Progress |
 
 ## 2. Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 2.1 In Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Automatic play event recording upon reaching 30s playback threshold.
 - Recently played history list display with chronological grouping.
 - Full history purge.
@@ -21,11 +25,13 @@
 - Top genres ranked by qualifying play count under 073-FR-002 across the 7-day, 30-day, and 365-day ranges in 073-FR-003.
 
 ### 2.2 Out of Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Global platform-wide playback statistics (Group 110).
 - Public sharing of listening history (strictly private to user).
 - Offline playback history synchronization.
 
 ## 3. Requirement and Feature Traceability
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Kit Specification |
 |---|---|---|---|
@@ -34,6 +40,7 @@
 | 073 | Top Artists and Genres | `073-FR-001..010` | [`specs/070-listening-history/073-top-artists-and-genres/spec.md`](../../../../specs/070-listening-history/073-top-artists-and-genres/spec.md) |
 
 ## 4. Actors
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Goals |
 |---|---|---|---|
@@ -41,6 +48,7 @@
 | System | Primary | Internal service. | Automatically record playback events without user intervention. |
 
 ## 5. Use-Case Diagram
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```mermaid
 flowchart LR
@@ -65,6 +73,7 @@ flowchart LR
 ```
 
 ## 6. Use-Case Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FR IDs | Specification |
 |---|---|---|---|---|
@@ -76,6 +85,7 @@ flowchart LR
 | UC-070-007 | Purge Expired History | System | `071-FR-012` | [./UC-070-007-purge-expired-history.md](./UC-070-007-purge-expired-history.md) |
 
 ## 7. Prototype Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Basic Flow Prototype | Alternative Flow Prototypes | Notes |
 |---|---|---|---|
@@ -87,6 +97,7 @@ flowchart LR
 | UC-070-007 | N/A | N/A | Background process; no UI prototype |
 
 ## 8. Open Issues and Decisions
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | ID | Issue / Decision Needed | Impacted UC/FR | Owner | Status |
 |---|---|---|---|---|
@@ -96,6 +107,7 @@ flowchart LR
 | Q-070-4 | 072-FR-002 requires a top-five artist ranking. Keep that behavior; the current prototype does not illustrate it, so this is a prototype coverage gap to address during design/review. | UC-070-005 | Mai Đăng Khoa | Resolved |
 
 ## 9. Review Record
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Reviewer | Review Date | Result | Summary of Changes |
 |---|---|---|---|

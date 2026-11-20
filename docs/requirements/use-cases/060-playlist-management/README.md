@@ -1,6 +1,8 @@
 # 060 – Playlist Management
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Group Overview
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Description |
 |---|---|
@@ -11,8 +13,10 @@
 | Status | In Progress |
 
 ## 2. Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 2.1 In Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Creating, viewing, updating, and deleting playlists.
 - Managing songs within playlists (add, remove, reorder).
 - Liked Songs integration.
@@ -21,9 +25,11 @@
 - Playlist playback and AI-assisted playlist generation (features 063 and 064).
 
 ### 2.2 Out of Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Advanced social sharing features (covered by 040-social-features).
 
 ## 3. Requirement and Feature Traceability
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Kit Specification |
 |---|---|---|---|
@@ -34,6 +40,7 @@
 | 065-collaborative-playlists | Collaborative Playlists | 065-FR-001 to 065-FR-010 | [specs/060-playlist-management/065-collaborative-playlists/spec.md](../../../../specs/060-playlist-management/065-collaborative-playlists/spec.md) |
 
 ## 4. Actors
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Goals |
 |---|---|---|---|
@@ -44,6 +51,7 @@
 | AI Recommendation Service | Supporting | Service that returns generated track proposals. | Suggest tracks matching a listener's prompt. |
 
 ## 5. Use-Case Diagram
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```mermaid
 flowchart LR
@@ -107,6 +115,7 @@ flowchart LR
 ```
 
 ## 6. Use-Case Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FR IDs | Specification |
 |---|---|---|---|---|
@@ -128,6 +137,7 @@ flowchart LR
 | UC-060-016 | Generate AI Playlist | Listener | 064-FR-001 through 064-FR-010 | [./UC-060-016-generate-ai-playlist.md](./UC-060-016-generate-ai-playlist.md) |
 
 ## 7. Prototype Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Basic Flow Prototype | Alternative Flow Prototypes | Notes |
 |---|---|---|---|
@@ -149,6 +159,7 @@ flowchart LR
 | UC-060-016 | ../../../../specs/060-playlist-management/064-ai-playlist-generation/ui/01-ai-playlist-entry.png | ../../../../specs/060-playlist-management/064-ai-playlist-generation/ui/03-ai-playlist-results.png | Implemented UI; save and unavailable-service states not shown here. |
 
 ## 8. Open Issues and Decisions
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | ID | Issue / Decision Needed | Impacted UC/FR | Owner | Status |
 |---|---|---|---|---|
@@ -159,6 +170,7 @@ flowchart LR
 | Q-060-03 | 061-FR-010 and its clarification specify saving/following a read-only reference, but do not require removing it. Exclude unfollow behavior from this UC unless a requirement is added. | UC-060-006 | Group Owner | Resolved |
 
 ## 9. Review Record
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Reviewer | Review Date | Result | Summary of Changes |
 |---|---|---|---|

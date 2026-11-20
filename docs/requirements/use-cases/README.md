@@ -1,8 +1,10 @@
 # AuraTune Use-Case Documentation Guide
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose and Scope
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the single, standardized guideline for authoring, reviewing, and organizing all **Use-Case Models**, **Use-Case Inventories**, and **Use-Case Specifications** across the **AuraTune** project.
 
@@ -11,6 +13,7 @@ Adherence to this guide is mandatory for all team members across all **12 functi
 ---
 
 ## 2. Relationship with Spec Kit
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 AuraTune utilizes **Spec Kit** for specification-driven implementation and **RUP/UML Use Cases** for behavioral requirement analysis. These artifacts serve fundamentally different purposes in the Software Development Life Cycle (SDLC) and are **not interchangeable**:
 
@@ -23,6 +26,7 @@ AuraTune utilizes **Spec Kit** for specification-driven implementation and **RUP
 | **Spec Kit `tasks.md`** | `specs/[group]/[subfeature]/tasks.md` | Granular, dependency-ordered engineering task breakdown | Implementing Engineer | Atomic coding tasks, verification commands, file changes |
 
 ### Distinction Rules
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 1. **Goal vs. Task**: A Use Case describes *what goal an external actor achieves through interacting with the system*. A Spec Kit specification describes *how a specific software feature satisfies acceptance criteria*, and `tasks.md` lists *the developer tasks required to build it*.
 2. **Persistence Integrity**: Do NOT delete, move, or modify existing `specs/` artifacts when authoring use-case documentation.
 3. **Conflict Resolution**: If a Use Case scenario conflicts with a Spec Kit `spec.md`, do not silently alter either document. Record the conflict as an open issue and resolve it with the functional group owner during weekly Scrum meetings.
@@ -30,6 +34,7 @@ AuraTune utilizes **Spec Kit** for specification-driven implementation and **RUP
 ---
 
 ## 3. Use-Case Writing Principles
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Every Use-Case Specification authored for AuraTune must adhere to five core principles:
 
@@ -42,8 +47,10 @@ Every Use-Case Specification authored for AuraTune must adhere to five core prin
 ---
 
 ## 4. Naming and Identification Convention
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 4.1 Functional Group Directory Structure
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 All use cases must be stored within their dedicated group directory:
 
 ```text
@@ -67,6 +74,7 @@ docs/
 ```
 
 ### 4.2 Use-Case Identifier Format
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Use-case identifiers must strictly follow the format:
 
 $$\text{UC-[GROUP]-[SEQUENCE]}$$
@@ -75,6 +83,7 @@ $$\text{UC-[GROUP]-[SEQUENCE]}$$
 - `[SEQUENCE]`: Three-digit sequence number starting at `001` (e.g., `001`, `002`, `003`).
 
 ### 4.3 Use-Case File Naming Convention
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Every Use-Case Specification file must follow the kebab-case pattern:
 
 $$\text{UC-[GROUP]-[SEQUENCE]-[short-name].md}$$
@@ -87,6 +96,7 @@ $$\text{UC-[GROUP]-[SEQUENCE]-[short-name].md}$$
 ---
 
 ## 5. Actor Guidelines
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Use cases must only associate with verified actors defined in the [System-Level Use-Case Model](../use-case-model.md):
 
@@ -108,6 +118,7 @@ Use cases must only associate with verified actors defined in the [System-Level 
 ---
 
 ## 6. Standard Use-Case Specification Template
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Every use-case specification file must follow this exact 17-section structure:
 
@@ -212,29 +223,33 @@ Every use-case specification file must follow this exact 17-section structure:
 ## 13. Prototype and Screenshot References
 
 ### Basic Flow Prototype
-![Basic Flow Prototype](prototypes/UC-[GROUP]-[SEQUENCE]-basic-flow.png)
+`![Basic Flow Prototype](prototypes/UC-[GROUP]-[SEQUENCE]-basic-flow.png)`
 *Figure 1: UI interface illustrating Basic Flow Step [X].*
 
 ### Alternative / Exception Flow Prototypes
-![AF-01 Prototype](prototypes/UC-[GROUP]-[SEQUENCE]-AF-01.png)
+`![AF-01 Prototype](prototypes/UC-[GROUP]-[SEQUENCE]-AF-01.png)`
 *Figure 2: UI interface showing validation error state for AF-01.*
 ```
 
 ---
 
 ## 7. Basic Flow and Alternative Flow Guidelines
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 7.1 Numbered Step Rules
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Steps must be numbered sequentially (`1.`, `2.`, `3.`, ...).
 - Always identify the active party in bold: `**Actor:**` or `**System:**`.
 - Each step should contain exactly one major user action or one cohesive system reaction.
 
 ### 7.2 Alternative Flow Rules
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Give every Alternative Flow a distinct code: `AF-01`, `AF-02`, etc.
 - Explicitly identify the **Branching Point** (e.g., *"Step 3 of Basic Flow"*).
 - Explicitly state the **Continuation / Exit point** (e.g., *"Resumes at Step 5 of Basic Flow"* or *"Use case ends successfully"*).
 
 ### 7.3 Exception Flow Rules
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Give every Exception Flow a distinct code: `EF-01`, `EF-02`, etc.
 - Focus on business exceptions and validation rejections (e.g., *"Invalid email syntax"*, *"Account temporarily locked"*, *"External AI service timeout"*).
 - Describe how the system preserves user input and recovers gracefully.
@@ -242,6 +257,7 @@ Every use-case specification file must follow this exact 17-section structure:
 ---
 
 ## 8. Preconditions and Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Conditions must be **objective and verifiable**:
 - *Good Precondition*: "Listener is signed in with an active JWT session."
@@ -252,6 +268,7 @@ Conditions must be **objective and verifiable**:
 ---
 
 ## 9. Functional Requirements (FR) Traceability
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Every Use-Case Specification must explicitly link to the **exact requirement IDs** defined in `specs/`:
 - Format: `[GROUP]-FR-[SEQUENCE]` (e.g., `011-FR-001`, `041-FR-005`, `064-FR-001`).
@@ -261,6 +278,7 @@ Every Use-Case Specification must explicitly link to the **exact requirement IDs
 ---
 
 ## 10. Mermaid Diagram Guidelines
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 When embedding Mermaid diagrams inside use-case documentation:
 1. **Diagram Types**: Use `flowchart TD` / `flowchart LR` for flowcharts, `sequenceDiagram` for complex actor-system interactions, and `classDiagram` for actor hierarchies.
@@ -270,6 +288,7 @@ When embedding Mermaid diagrams inside use-case documentation:
 ---
 
 ## 11. Prototype and Screenshot Guidelines
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Storage Location**: When screenshots are added in subsequent tasks, they will be stored in `docs/requirements/use-cases/[group]/prototypes/`.
 2. **File Naming Pattern**:
@@ -284,6 +303,7 @@ When embedding Mermaid diagrams inside use-case documentation:
 ---
 
 ## 12. Team Responsibilities and Ownership
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 In strict compliance with the **AuraTune Team Contract** (`docs/management/team-contract.md`), functional group ownership is allocated as follows:
 
@@ -307,6 +327,7 @@ In strict compliance with the **AuraTune Team Contract** (`docs/management/team-
 ---
 
 ## 13. Documentation and Review Workflow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The development of use-case specifications follows a strict 10-step peer-reviewed workflow:
 
@@ -339,6 +360,7 @@ flowchart TD
 ---
 
 ## 14. Quality Checklist
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Before submitting a Use-Case Specification for review, verify:
 
@@ -356,6 +378,7 @@ Before submitting a Use-Case Specification for review, verify:
 ---
 
 ## 15. Definition of Done (DoD)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A Use-Case Specification is **Done** and ready for PA3 submission when:
 1. The specification file strictly follows the 17-section template.
@@ -368,6 +391,7 @@ A Use-Case Specification is **Done** and ready for PA3 submission when:
 ---
 
 ## 16. PA3 Compliance
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This documentation framework fulfills the formal requirements of **Project Assignment 3 (PA3)**:
 - Provides the overarching **System-Level Use-Case Model** (`docs/requirements/use-case-model.md`).

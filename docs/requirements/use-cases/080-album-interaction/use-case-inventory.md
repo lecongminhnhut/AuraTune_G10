@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 080 – Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document serves as the official tracking registry for all Use Cases belonging to **Group 080 – Album**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), assigned owners, and authoring statuses for PA3.
 
@@ -14,8 +16,9 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Draft Use-Case Inventory
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-080-001** | View Album Details | Listener, Guest | None | `081-FR-001` to `081-FR-016`, including lettered FRs | `081-album-details` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-001-album-details.md`](./UC-080-001-album-details.md) |
 | **UC-080-002** | Play Album Tracklist | Listener | Music Player (`040`) | `082-FR-001` to `082-FR-016` | `082-album-tracklist` | Nguyễn Khánh Đăng | **Draft** | [`UC-080-002-album-tracklist.md`](./UC-080-002-album-tracklist.md) |
@@ -24,6 +27,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -37,6 +41,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Unconfirmed / Out-of-Scope Candidates
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following candidate use cases were analyzed during requirements engineering and determined to be out-of-scope or unconfirmed:
 
@@ -47,6 +52,7 @@ The following candidate use cases were analyzed during requirements engineering 
 ---
 
 ## 5. Traceability Matrix
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|

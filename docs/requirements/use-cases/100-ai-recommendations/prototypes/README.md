@@ -1,19 +1,23 @@
 # Prototype and UI Asset Guide – Group 100: AI Recommendations
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and mockups for **Group 100 – AI Recommendations**. It bridges the gap between behavioral specifications (Use Cases) and visual user experience design, facilitating PA3 deliverables and stakeholder reviews.
 
 ---
 
 ## 2. Prototype Directory Organization
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 100 reside directly in this directory:
 `docs/requirements/use-cases/100-ai-recommendations/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Image files follow a standardized, predictable naming scheme tied directly to Use Case IDs and operational flows:
 
 $$\text{UC-100-[SEQUENCE]-[flow-indicator]-[description].png}$$
@@ -25,6 +29,7 @@ $$\text{UC-100-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 3. Prototype vs. Implementation Distinction
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 In accordance with project engineering standards:
 1. **Design Prototypes / Wireframes**: High-fidelity interface designs derived from the Spec Kit UI specifications (`specs/100-ai-recommendations/*/ui/`). These represent intended visual hierarchy, layout components, and interaction states prior to or during implementation.
@@ -34,6 +39,7 @@ In accordance with project engineering standards:
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -57,11 +63,12 @@ In accordance with project engineering standards:
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 When authoring or updating Use-Case Specifications (`UC-100-*.md`):
 1. **Relative Markdown Image Path**: Reference images located in this folder using `prototypes/[filename].png`.
    ```markdown
-   ![Basic Flow Overview](prototypes/UC-100-001-basic-flow.png)
+   ![Basic Flow Overview](UC-100-001-basic-flow.png)
    *Figure 1: Listening analytics dashboard overview.*
    ```
 2. **Pending Assets**: For flows where a visual wireframe has not yet been designed, do not create fake or placeholder images. Explicitly annotate the section as `[Prototype Pending - To be generated during UI implementation]`.

@@ -1,6 +1,7 @@
 ﻿# UC-030-003 – Semantic Vector Music Search
 
 ## 1. Metadata
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value | 
 | ----- | ----- | 
@@ -12,23 +13,28 @@
 | **Related FR IDs** | `033-FR-001` through `033-FR-017`, including `033-FR-003a`, `033-FR-004a`, and `033-FR-011a` |
 | **Related Feature/Spec** | Feature 033: Semantic Vector Music Search (`specs/030-search/033-semantic-vector-search/spec.md`) |
 | **Status** | Draft | 
-| **Writer** | Nguyễn Khánh Đăng | 
-| **Reviewer** | TBD | 
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Khánh Đăng |
+| Reviewer | Group 10 team |
 
 ## 2. Description
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A listener describes a mood, emotion, or contextual situation in natural language. The system securely masks Personally Identifiable Information (PII), then leverages an External AI Service to process the query against a vector database containing song metadata, lyrics, and audio characteristics. The system returns a ranked list of relevant music based on a weighted ensemble score, or gracefully degrades to keyword search if the AI service becomes unavailable or times out.
 
 ## 3. Preconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-* The user is a Listener (`ACT-02`); the feature does not introduce new permissions.
+* The user is a Listener (`ACT-02`). The owner selected Feature 033 access scope in PA4-D05 (2026-11-20); Guest access described in the older Vision remains a separate source-alignment item.
 * The music catalog has been processed, and vector embeddings for song metadata, lyrics, and audio characteristics (tempo, energy, valence, etc.) are available (`033-FR-003`, `033-FR-003a`).
 
 ## 4. Trigger
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The listener submits a natural-language description containing at least one alphanumeric token up to 150 characters into the search bar (`033-FR-015`).
 
 ## 5. Basic Flow
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Types a natural-language query (e.g., "sad music for a rainy night") into the global search input and submits.
 2. **System:** Validates the input length and checks for non-whitespace alphanumeric tokens (`033-FR-015`).
@@ -42,8 +48,10 @@ The listener submits a natural-language description containing at least one alph
 10. **System:** Delegates playback to the Music Player (`UC-040-001`).
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Missing Content Dimensions for a Song
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * **Starting step:** Step 6 of the Basic Flow.
 * **Condition:** A candidate song is missing lyrics, metadata, or specific audio characteristics (`033-FR-013`).
@@ -52,6 +60,7 @@ The listener submits a natural-language description containing at least one alph
 * **Continuation:** Resumes at Step 7 of the Basic Flow.
 
 ### AF-02 – PII Detection Overlap
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * **Starting step:** Step 3 of the Basic Flow.
 * **Condition:** The query contains a word that matches both the listener's real name AND a recognized catalog artist name, causing an ambiguity that cannot be safely resolved (`033-FR-011a`).
@@ -61,6 +70,7 @@ The listener submits a natural-language description containing at least one alph
 * **Continuation:** Skips to Exception Flow EF-01, Step 3.
 
 ### AF-03 – Invalid Input Length
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * **Starting step:** Step 2 of the Basic Flow.
 * **Condition:** The user inputs an empty or whitespace-only string, or a query exceeding 150 characters (`033-FR-015`).
@@ -69,8 +79,10 @@ The listener submits a natural-language description containing at least one alph
 * **Continuation:** Resumes at Step 1 of the Basic Flow.
 
 ## 7. Exception Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – AI Service Unavailable or Timeout (Graceful Degradation)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * **Starting step:** Step 4 of the Basic Flow.
 * **Condition:** The AI semantic processing is unavailable, returns an invalid response, cannot safely process the request, returns a 5xx error, or has not produced a usable response within 3,000 milliseconds (`033-FR-007`, `033-FR-016`).
@@ -82,57 +94,77 @@ The listener submits a natural-language description containing at least one alph
 * **Continuation:** The user interacts with the fallback results; use case completes in degraded mode.
 
 ## 8. Postconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 * The listener discovers music relevant to their abstract natural-language intent.
 * Personal identifying data (names, emails) is successfully kept out of third-party systems.
 
 ### Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 * The system serves standard keyword results or an explicit empty state.
 * Third-party AI dependencies do not cause the application to crash or freeze.
 
 ## 9. Special Requirements
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * **Privacy & Security**: Enforce strict PII masking (Decree 13/2023/ND-CP). Emails and authenticated user names MUST NEVER be transmitted in the query payload to `ACT-EXT-04` (`033-FR-010`, `033-FR-012`).
 * **Performance Threshold**: The system stops waiting for a usable semantic-search response after 3,000ms and starts keyword fallback (`033-FR-016`). The separate 1,500ms outcome is specified as a success criterion (`SC-003a`), not as the FR-016 timeout rule.
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow - Semantic Search Entry
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Semantic Search Entry](prototypes/UC-030-003-semantic-search-entry.png)
 **Covered steps:** Basic Flow step 1.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Live Natural-Language Dropdown Suggestions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Live Dropdown Suggestions](prototypes/UC-030-003-semantic-search-live-dropdown.png)
 **Covered steps:** Basic Flow step 8.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Full Semantic Search Results
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Full Semantic Search Results](prototypes/UC-030-003-semantic-search-results-page.png)
 **Covered steps:** Basic Flow step 8.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Semantic Context Matching (Mood/Energy)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Semantic Search Mood Energy](prototypes/UC-030-003-semantic-search-mood-energy.png)
 **Covered steps:** Basic Flow steps 5-8.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Semantic Result Playback Interaction
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Semantic Result Playback Interaction](prototypes/UC-030-003-semantic-search-result-playback.png)
 **Covered steps:** Basic Flow step 10.
 **Prototype type:** Implemented UI
 
 ### Exception Flow - Graceful Degradation (EF-01)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Semantic Search Fallback Mode](prototypes/UC-030-003-semantic-search-fallback-mode.png)
 **Covered steps:** EF-01 steps 1-5.
 **Prototype type:** Implemented UI
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * **Delegated Playback**: `UC-040-001` (Control Audio Playback) – Triggered when a semantic result is clicked.
 * **Fallback Search Route**: `UC-030-001` (Search by Metadata) – Underlying mechanism for graceful degradation.
 
 ## 12. Source References
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 * `specs/030-search/033-semantic-vector-search/spec.md` – Requirements 033-FR-001 through 033-FR-017, including lettered requirements, User Stories 1–4.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`src/frontend/src/pages/Search/SearchPage.jsx` calls `utils/searchEngine.js`, which uses local catalog matching and mock recommendations. The required backend metadata/lyrics/vector search behavior is not established by that UI. Search history and live semantic results need separate acceptance evidence.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

@@ -1,19 +1,23 @@
 # Prototype and UI Asset Guide – Group 120: AI Conversational Agent
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and mockups for **Group 120 – AI Conversational Agent**. It aligns behavioral Use Case specifications with the latest terminal-style (CLI) agent frontend interface deployed in AuraTune, serving PA3 evaluation requirements and technical traceability.
 
 ---
 
 ## 2. Directory Organization and Naming Convention
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 120 are stored directly in this directory:
 `docs/requirements/use-cases/120-ai-conversational-agent/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Image files follow the standardized naming convention tied to Use Case IDs and operational flows:
 
 $$\text{UC-120-[SEQUENCE]-[flow-indicator]-[description].png}$$
@@ -26,6 +30,7 @@ $$\text{UC-120-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 3. Current UI Implementation Context
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 In accordance with recent frontend updates (`src/frontend/src/components/chat/AIHostChat.jsx` / PR #28 & PR #32):
 - **Interface Style**: Terminal / CLI-style panel (`AuraTune Agent`) anchored on the right side of the screen (`bg-[#0c0d12]`, mono typography, terminal prompt `❯`).
@@ -35,6 +40,7 @@ In accordance with recent frontend updates (`src/frontend/src/components/chat/AI
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -59,10 +65,11 @@ In accordance with recent frontend updates (`src/frontend/src/components/chat/AI
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Relative Markdown Image Path**: Reference image files directly from this directory:
    ```markdown
-   ![CLI Agent Open State](prototypes/UC-120-001-basic-flow-open.png)
+   ![CLI Agent Open State](UC-120-001-basic-flow-open.png)
    *Figure 1: AuraTune Agent CLI panel opened on the right side.*
    ```
 2. **Pending Assets**: For states lacking explicit screenshot captures (e.g. immediate transition of `/clear`), annotate clearly as `[Prototype Pending - To be generated during UI testing]` without fabricating false image files.

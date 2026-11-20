@@ -1,8 +1,10 @@
 # Prototypes – 060 Playlist Management
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This directory contains UI prototypes and screenshots referenced in the 060 – Playlist Management use-case specifications.
 
 ## 1. Prototype Inventory
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Basic Flow Prototype | Alternative Flow Prototypes | Notes |
 |---|---|---|---|
@@ -24,6 +26,7 @@ This directory contains UI prototypes and screenshots referenced in the 060 – 
 | UC-060-016 | [01-ai-playlist-entry.png](../../../../../specs/060-playlist-management/064-ai-playlist-generation/ui/01-ai-playlist-entry.png) | [03-ai-playlist-results.png](../../../../../specs/060-playlist-management/064-ai-playlist-generation/ui/03-ai-playlist-results.png) | Saved result: 04-ai-playlist-details.png; failure state not present. |
 
 ## 2. Source Specifications
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The actual UI components and screenshots are maintained in the following Spec Kit directories:
 - `specs/060-playlist-management/061-playlist-crud/ui/`

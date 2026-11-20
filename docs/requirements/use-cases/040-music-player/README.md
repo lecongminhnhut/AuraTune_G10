@@ -1,8 +1,10 @@
 # Functional Group 040: Music Player – Use-Case Documentation
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 5.1. Group Information
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 5.2. Scope
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 5.2.1 Purpose and Objectives
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 040 lets guests and listeners listen continuously while they browse AuraTune. A persistent mini player stays on every page, the full player shows lyrics and comments, and each completed play of at least 30 seconds is reported to the listener's history.
 
 ### 5.2.2 In-Scope Capabilities
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The verified capabilities within Group 040 comprise six subfeatures:
 
 1. **Playback Controls (Feature 041)**:
@@ -46,12 +51,14 @@ The verified capabilities within Group 040 comprise six subfeatures:
    - Public comments, posting for signed-in users (300 characters), and deletion by the author or an administrator.
 
 ### 5.2.3 Out-of-Scope Exclusions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Queue Editing**: Owned by **Group 050 – Queue Management**.
 - **Recording and Analyzing Listening History**: Owned by **Group 070 – Listening History** and **Group 100 – AI Recommendations**.
 - **Lyric-Based Search**: Owned by **Group 030 – Search**.
 - **Platform-Wide Comment Moderation Tools**: Owned by **Group 110 – Admin Functions**.
 
 ### 5.2.4 Dependencies
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Cloud Media Storage (`ACT-EXT-03`)**: Delivers audio with range requests for streaming and seeking.
 - **Group 010 (Authentication)**: Identifies listeners and administrators for comments, likes, and history.
 - **Group 050 (Queue Management)**: Supplies the next and previous tracks.
@@ -61,6 +68,7 @@ The verified capabilities within Group 040 comprise six subfeatures:
 ---
 
 ## 5.3. Related Requirements and Features
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
@@ -74,6 +82,7 @@ The verified capabilities within Group 040 comprise six subfeatures:
 ---
 
 ## 5.4. Actors
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -85,6 +94,7 @@ The verified capabilities within Group 040 comprise six subfeatures:
 ---
 
 ## 5.5. Use-Case Diagram
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following Mermaid diagram visualizes the boundary, actors, confirmed use cases, and relationships for **Group 040 – Music Player**.
 
@@ -149,6 +159,7 @@ flowchart LR
 ```
 
 ### Diagram Legend
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Rounded nodes (`([ ... ])`)**: Confirmed Use Cases.
 - **Solid Arrow (`-->`)**: Direct primary actor invocation. The Listener inherits every Guest association; only the extra associations are drawn.
 - **Dashed Arrow (`-.->`)**: External system dependency, `<<include>>`, or `<<extend>>` relationship.
@@ -157,6 +168,7 @@ flowchart LR
 ---
 
 ## 5.6. Use-Case List
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
@@ -174,6 +186,7 @@ flowchart LR
 ---
 
 ## 5.7. Dependencies and Integration
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```
 +---------------------+        +-------------------------+        +----------------------+
@@ -200,6 +213,7 @@ flowchart LR
 ---
 
 ## 5.8. Open Issues and Architecture Clarifications
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Range Request Support (`Q-040-1`)**:
    - *Status*: Open.
@@ -214,6 +228,7 @@ flowchart LR
 ---
 
 ## 5.9. References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/proposal.md` – Section 6.4: Core Music Player
 - `docs/proposal/Auratune_Vision_Document.md` – Feature Group G04, Need N-04 and N-05, Sections 6.1 and 6.4

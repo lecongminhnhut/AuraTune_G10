@@ -1,19 +1,23 @@
 # Prototype and UI Asset Guide – Group 020: Home Dashboard
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and screenshots for **Group 020 – Home Dashboard**. It connects the behavioral specifications (Use Cases) with the visual user experience, supporting PA3 deliverables and stakeholder reviews.
 
 ---
 
 ## 2. Prototype Directory Organization
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 020 reside directly in this directory:
 `docs/requirements/use-cases/020-home-dashboard/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Image files follow a standardized naming scheme tied to Use Case IDs and flows:
 
 $$\text{UC-020-[SEQUENCE]-[flow-indicator]-[description].png}$$
@@ -25,6 +29,7 @@ $$\text{UC-020-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 3. Prototype vs. Implementation Distinction
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 In accordance with project engineering standards:
 1. **Design Prototypes / Wireframes**: Interface designs that show intended layout and interaction states before or during implementation.
@@ -34,6 +39,7 @@ In accordance with project engineering standards:
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -76,11 +82,12 @@ In accordance with project engineering standards:
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 When authoring or updating Use-Case Specifications (`UC-020-*.md`):
 1. **Relative Markdown Image Path**: Reference images in this folder using `prototypes/[filename].png`.
    ```markdown
-   ![Home Dashboard for a guest](prototypes/UC-020-001-basic-flow-guest.png)
+   ![Home Dashboard for a guest](UC-020-001-basic-flow-guest.png)
    *Figure 1: Home Dashboard for a guest.*
    ```
 2. **Pending Assets**: For flows without a visual asset, do not create fake or placeholder images. Annotate the section as `[Prototype Pending - To be generated during UI implementation]`.

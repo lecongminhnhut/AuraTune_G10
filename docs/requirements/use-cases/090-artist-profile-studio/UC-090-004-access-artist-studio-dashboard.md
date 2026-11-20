@@ -1,6 +1,8 @@
 # UC-090-004 – Access Artist Studio Dashboard
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -12,22 +14,26 @@
 | Related FR IDs | 093-FR-001, 093-FR-002, 093-FR-003; 111-FR-011 (protected-access ban constraint); 112-FR-024/025 (restricted-owner viewing and moderation boundary) |
 | Related Feature ID | 093 – Artist Track Management |
 | Related Spec Kit File | [093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) |
-| Writer | Thái Hoàng |
-| Reviewer | Not assigned |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Thái Hoàng |
+| Reviewer | Group 10 team |
 | Status | Draft |
 | Last Updated | 2026-11-04 |
 
 This Draft follows all 15 sections of the extracted UC template. Feature-qualified references retain literal source FR IDs. Three current 093 requirements apply directly, matching the inventory; other 093 requirements belong to UC-090-005–008. Cross-group requirements constrain access and the viewing of restricted tracks; they do not add administration to Studio. No peer review or approval has occurred.
 
 ## 2. Goal
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The artist inspects their own released-track catalog and the three Studio summary statistics to understand their available catalog and recorded plays before choosing any separate management goal.
 
 ## 3. Description
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 AuraTune checks Studio access and ownership, presents the artist header and public-profile link, and shows artist-scoped statistics and track rows. Hidden tracks remain available for owner inspection with preserved play counts. Where the source explicitly permits an active artist-owner to view an admin-restricted track, the view shows the restricted state and reason without private Admin information. This UC is a viewing goal; upload, edit, hide/unhide, deletion and moderation decisions are separate.
 
 ## 4. Preconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The requester can attempt to open the existing Studio entry at `/studio` (093 US1/US6). No new route or endpoint is introduced.
 - Successful access requires a valid authenticated account holding the artist role, no active account ban, and ownership/authorization for the requested Studio data. These are checked during the flow, not global assumptions excluding denied or expired requests.
@@ -35,10 +41,12 @@ AuraTune checks Studio access and ownership, presents the artist header and publ
 - The Basic Flow assumes a successful authorized data load and ordinary artist-managed active/hidden track states. Load failure and moderation-related aggregation gaps are explicitly recorded below rather than treated as completed behavior.
 
 ## 5. Trigger
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The requester opens AuraTune Studio to view the catalog and statistics belonging to their current artist account.
 
 ## 6. Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This successful scenario uses a valid, non-banned artist-owner whose catalog contains tracks with ordinary artist-managed states. The numbered steps describe the viewing interaction, not a requirement for separate requests, screens or additional controls.
 
@@ -50,8 +58,10 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 **Outcome:** The viewing goal ends successfully. No upload, edit, visibility change, deletion, playback or administrative action is executed. Controls identify separate management goals, not additional steps required to complete this UC.
 
 ## 7. Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – The Artist Has No Released Tracks
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, after a successful authorized load.
 - **Condition:** The artist's current Studio catalog has no released tracks.
@@ -62,6 +72,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** Ends successfully as an empty-catalog viewing goal. Selecting upload would start UC-090-005, whose flow is not described here. G090-D06 sets active count to 0 for an empty catalog while preserving validly recorded historical total plays; total plays is 0 only when no such plays exist. A failed/unavailable load is not a genuine empty/zero result. Manual retry follows G090-D08; D14 specifies stale-data labeling and per-portion recovery; exact layout remains illustrative.
 
 ### AF-02 – No Authentication or No Artist Role
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2.
 - **Condition:** The requester is unauthenticated or has a valid account without the artist role.
@@ -72,6 +83,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** Ends without Studio access for the denied request. These steps describe mutually exclusive conditions, not two successive notices. A future valid artist request starts at Basic Flow step 1. An Admin role alone does not confer Studio access; admin song-management API permissions remain a separate boundary.
 
 ### AF-03 – The Owner Inspects an Admin-Restricted Track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, with valid active artist-owner access.
 - **Condition:** An existing owned track has an admin moderation restriction.
@@ -83,6 +95,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** Ends successfully for restricted-track inspection. Viewing does not play, self-unrestrict or republish the track to bypass moderation (112-FR-025), and grants no access to another owner's non-public track. This is not a deleted-track restore flow. G090-D06 excludes Admin-restricted tracks from active count while retaining their valid historical plays. Exact combined-state row presentation remains a C-02 technical/UI follow-up, not an unresolved active-count rule.
 
 ### AF-04 – Requested Data Belongs to Another Account
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4 before returning artist-specific data.
 - **Condition:** A request attempts to read another artist's non-public Studio catalog, statistics or track information, including when the current account differs from the data owner.
@@ -92,6 +105,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** Ends without disclosing the other account's private Studio data. This UC does not change either account's catalog. A subsequent own-Studio request starts at Basic Flow step 1 and must pass current access checks. Exact denial UI and handling of previously rendered or delayed data are technical/UX follow-ups, not copied from feature 092's personal-following rules.
 
 ### AF-05 – The Artist Account Is Banned
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, or a later protected data request serving this viewing goal.
 - **Condition:** The artist account is currently banned, including a ban applied after authentication while the token has not expired.
@@ -101,8 +115,10 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** Ends without a successful Studio load for that request. Unban and login are separate account/authentication behavior; 111 requires sign-in again after unban. No new ban reason, duration or public-browsing restriction is introduced, and no immediate removal of already-rendered UI is assumed.
 
 ## 8. Exception Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EX-01 – Authentication Is Expired or Invalid
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or any protected data request used by this viewing goal.
 - **Condition:** The request lacks valid authenticated access because authentication is expired or invalid.
@@ -112,6 +128,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** The request ends without a successful Studio load. A later request with valid artist access begins at Basic Flow step 1; no automatic refresh, replay, redirect, new HTTP status or Studio-specific recovery UI is defined. This differs from a successfully loaded empty catalog. If the account is banned, AF-05 remains applicable even if the token is unexpired.
 
 ### EX-02 – Partial load or failed reload with manual recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4, including a later manual reload of the Artist's Studio data.
 - **Condition:** Catalog/statistics cannot load fully, one portion fails while another succeeds, or reload fails after earlier data was displayed.
@@ -124,8 +141,10 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Outcome:** On recovery, resume the relevant Basic Flow presentation at step 2 or 4. Continued failure returns to EX-02 step 1; if the Artist stops, successful portions remain usable but full recovery is not claimed. A total failure has an error/retry outcome, not fabricated zero statistics; only available earlier data may be shown as not updated. Access loss follows EX-01/AF-02/04/05, not retention of unauthorized data. No automatic refresh, backend partition or exact UI layout is selected. Source: G090-D14 and G090-D08.
 
 ## 9. Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 9.1 Success Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Under G090-D14, a partially available Studio remains usable for successful portions. Failed portions remain explicitly unavailable/retryable, and old displayed data is marked not updated; partial usability is not a claim that every portion loaded or recovered.
 
@@ -139,6 +158,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - No catalog content, visibility, account role, ban state, play count or moderation decision is changed by viewing. Statistical semantics follow G090-D06; implementation correctness is not certified by this Draft.
 
 ### 9.2 Failure Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - G090-D14 preserves successful portions and distinguishes failed/unknown data from empty/zero. Earlier visible values after failed reload are explicitly not updated, not newly confirmed or transferred across accounts.
 
@@ -149,6 +169,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - The behavior of previously rendered Studio data after account changes or access revocation is not asserted; backend requests must still enforce current authorization.
 
 ## 10. Special Requirements
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security:** Artist-role gating from 093-FR-001 applies to dashboard and management capabilities. Shared [security principles](../../../design/security/README.md) and [data security rules](../../../design/database/security-rules.md) require server-side authentication, ownership and least privilege; frontend hiding is insufficient. 111-FR-011 denies protected requests for banned accounts even with an unexpired token.
 - **Performance:** 093-SC-002's 500 ms target applies to upload/metadata-edit reflection, not dashboard initial loading. No Studio-load target, timeout or refresh interval is defined here.
@@ -157,6 +178,7 @@ This successful scenario uses a valid, non-banned artist-owner whose catalog con
 - **Other:** Only total tracks, active tracks and total play count are defined summary statistics. Do not introduce admin KPIs, search, filtering, sort order, pagination, automatic refresh, provider choices or storage schemas. Static prototype arithmetic is not verification of aggregation policy.
 
 ## 11. Business Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Rule labels below identify source rules locally, not new FR IDs.
 
@@ -175,8 +197,10 @@ Rule labels below identify source rules locally, not new FR IDs.
 | BR-11 | Owner-confirmed session decision G090-D14 (2026-11-04), option A: retain successfully loaded Studio catalog/statistics portions when another portion fails; show a distinct error/unavailable state and manual retry for each failed portion. Previously loaded data may remain visible only when clearly marked not updated, never as newly confirmed data or a replacement zero/empty result. Retry does not invalidate successful portions. This selects no endpoint partition, refresh interval, cache/storage mechanism or exact visual layout. | Owner-confirmed session decision G090-D14; newly confirmed here, not original source requirement or group approval |
 
 ## 12. Prototype and Screenshots
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 12.0 Current Submission Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Author-created Basic Flow and key UI states](./prototypes/UC-090-004-basic-flow-and-key-states.png)
 
@@ -190,6 +214,7 @@ Rule labels below identify source rules locally, not new FR IDs.
 
 
 ### 12.1 Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Reference UI mockup of the Artist Studio dashboard and catalog](../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/01-artist-track-management.png)
 
@@ -202,10 +227,12 @@ Rule labels below identify source rules locally, not new FR IDs.
 G090-D14 successful/failed portions, old-data not-updated labeling and per-portion retry lack verified prototype evidence; static sample totals do not establish these behaviors.
 
 ### 12.2 Alternative Flow – AF-01
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 **Missing evidence:** This image has three tracks; it does not illustrate an empty Studio or first-upload prompt. Empty-state values are specified by G090-D06 but not demonstrated by this populated mockup; no backend/statistical correctness is inferred.
 
 ### 12.3 Alternative Flows – AF-02 through AF-05
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Flow | Evidence status |
 |---|---|
@@ -215,10 +242,12 @@ G090-D14 successful/failed portions, old-data not-updated labeling and per-porti
 | AF-05 ban | No banned-artist protected-access evidence. |
 
 ### 12.4 Exception / Recovery Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Expired/invalid-session behavior has no matching image. G090-D14 now specifies partial/failure/not-updated/manual-retry behavior, but these states have no matching prototype evidence here; the original 093 did not specify them. Prototype coverage remains incomplete. No new/copy images or placeholder links are provided; the remaining four 093 images were not inspected in this pass.
 
 ## 13. Related Use Cases
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [UC-090-001 – View Public Artist Profile](./UC-090-001-view-public-artist-profile.md): destination identified by the Studio's public-profile link; public visibility and profile behavior remain its responsibility. No new navigation or profile-editing flow is added here.
 - UC-090-005 – Upload Audio Track: separate goal reached from upload controls/empty prompt. Specification: [Draft specification](./UC-090-005-upload-audio-track.md).
@@ -229,6 +258,7 @@ Expired/invalid-session behavior has no matching image. G090-D14 now specifies p
 - Account bans and moderation actions remain Group 110. Existing authentication mechanisms remain in Group 010. No include/extend relation is invented.
 
 ## 14. Traceability and Sources
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
@@ -268,6 +298,7 @@ Expired/invalid-session behavior has no matching image. G090-D14 now specifies p
 Source discrepancies are not silently resolved: 093 describes artist active/hidden state while 112 adds independent moderation restriction/owner-visible reason; they require joint presentation/counting alignment, not collapse into one invented enum. 112's older assumptions say the artist-hide distinction remains open despite later explicit clarifications/FR-024/025; its November removal/restoration wording also differs from earlier deletion/restore descriptions. This UC preserves explicit restricted-owner viewing and moderation safety, and leaves ambiguous removed/deleted terminology to source alignment, without asserting recoverability; G090-D06 independently defines Studio metrics for these visibility/deletion outcomes. Broad Artist/Admin API mutation permission does not override 093's artist-only Studio gate.
 
 ## 15. Open Questions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Question IDs are local labels; the categories distinguish business/UX gaps, source alignment and technical/evidence follow-ups.
 
@@ -281,3 +312,10 @@ Question IDs are local labels; the categories distinguish business/UX gaps, sour
 | Q-06 | Documentation/review: independent review and shared model/image alignment. | Thái Hoàng / group | Open | [Group issue D-01](./README.md#shared-open-issues); 112 action/state wording is assessed in the group source assessment below, not assumed contradictory. |
 
 The group-level D18 sharing decision, deferred album scope and external upload-actor follow-ups are recorded in the [group README](./README.md#8-open-issues-and-decisions). They are not prerequisites for recording this read-only Dashboard Draft.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

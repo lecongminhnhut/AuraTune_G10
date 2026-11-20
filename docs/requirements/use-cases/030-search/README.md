@@ -1,8 +1,10 @@
 # Functional Group 030: Search – Use-Case Documentation
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Group Information
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 2. Scope
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 2.1 Purpose and Objectives
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 030 provides the core search and discovery capabilities of the AuraTune platform. It allows users to actively find specific music catalog entities using text keywords, while extending traditional search paradigms with AI-powered semantic vector search to understand lyrical fragments and abstract emotional contexts.
 
 ### 2.2 In-Scope Capabilities
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The documented capabilities within Group 030 comprise:
 
 1. **Metadata Search (Feature 031)**:
@@ -41,12 +46,14 @@ The documented capabilities within Group 030 comprise:
    - Graceful fallback to keyword search if semantic processing fails or times out.
 
 ### 2.3 Out-of-Scope Exclusions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 To maintain strict architectural boundaries, the following capabilities are explicitly excluded from Group 030:
 - **Audio Streaming & Player Controls**: Executing audio playback when a search result is clicked belongs to **Group 040 – Music Player**.
 - **Interactive Conversational AI Dialogue**: Real-time conversational search or text-chat intent parsing is owned by **Group 120 – AI Conversational Agent**.
 - **Curated Mood Tag Selection**: Selecting predefined mood/context chips (e.g., "Chill") without typing free-form queries is owned by **Group 100 – AI Recommendations**.
 
 ### 2.4 Dependencies
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Group 040 (Music Player)**: Executes playback when a searched song is selected.
 - **Group 060, 080 & 090 (Catalog Interaction)**: Provides entity detail views when searched albums, artists, or playlists are opened.
 - **External AI Service Provider (`ACT-EXT-04`)**: Required for Feature 032 and Feature 033 to power semantic vector embeddings (Not required for Feature 031 Metadata Search).
@@ -54,6 +61,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 3. Related Requirements and Features
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
@@ -64,6 +72,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 4. Actors
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -74,6 +83,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 5. Use-Case Diagram
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```mermaid
 flowchart LR
@@ -110,6 +120,7 @@ flowchart LR
 ---
 
 ## 6. Use-Case List
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
@@ -118,6 +129,7 @@ flowchart LR
 | **UC-030-003** | Semantic Vector Search | Listener | `033-FR-001` to `033-FR-017` (including lettered FRs) | [`UC-030-003-semantic-vector-search.md`](./UC-030-003-semantic-vector-search.md) |
 
 ## 5.7. Dependencies and Integration
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```
                  +---------------------------+
@@ -150,6 +162,7 @@ flowchart LR
 ---
 
 ## 5.8. Open Issues and Architecture Clarifications
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Vector Storage Setup (`Q-030-01`)**:
    - *Status*: Pending architecture confirmation in Sprint 3.
@@ -164,6 +177,7 @@ flowchart LR
 ---
 
 ## 5.9. References
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/proposal.md`
 - `docs/proposal/Auratune_Vision_Document.md`

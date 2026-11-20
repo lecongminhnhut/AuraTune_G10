@@ -1,8 +1,10 @@
 # UC-050-006 – Clear Upcoming Queue
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `051-FR-006`, `051-FR-007` |
 | **Related Feature/Spec** | Feature 051: View Queue (`specs/050-queue-management/051-view-queue/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A guest or listener removes all upcoming tracks at once to start building the queue again. The current track keeps playing, and the panel shows guidance on adding new tracks.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The queue panel is open (`UC-050-001`).
 - At least one track is upcoming.
@@ -33,12 +38,14 @@ A guest or listener removes all upcoming tracks at once to start building the qu
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The actor selects "Xóa tất cả" in the queue panel.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Selects "Xóa tất cả" (`051-FR-006`).
 2. **System:** Removes all upcoming tracks from the queue.
@@ -49,8 +56,10 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Start Building a New Queue
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The actor wants to queue new music.
 1. **Actor:** Adds tracks from a track menu.
@@ -59,8 +68,10 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Nothing to Clear
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** No tracks are upcoming (`051-FR-007`).
 1. **System:** Hides the clear action, so the use case cannot start.
@@ -69,17 +80,21 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The queue contains only the current track, and the upcoming count is 0.
 - Current playback continued without interruption.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The queue is unchanged.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Efficiency**: Clearing takes 1 interaction.
 - **Safety**: The current track is never removed by this action.
@@ -87,10 +102,12 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Clear all action](prototypes/UC-050-006-basic-flow.png)
 *Figure 1: "Xóa tất cả" shown while upcoming tracks exist (Step 1).*
@@ -101,6 +118,7 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Extends**: `UC-050-001` (View Playback Queue).
 - **Related Action**: `UC-050-005` (Remove Track from Queue).
@@ -109,6 +127,7 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/050-queue-management/051-view-queue/spec.md` – Requirements FR-006 and FR-007, User Story 3.
 - `docs/proposal/proposal.md` – Section 6.5: Queue Management.
@@ -116,5 +135,13 @@ The actor selects "Xóa tất cả" in the queue panel.
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Confirmation**: The specification does not require a confirmation dialog before clearing. Adding one would need a specification change.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Queue operations are implemented through the player hook and `QueuePanel.jsx`. Verify queue ordering and current-track continuity in the browser. Exporting the queue also depends on the real playlist persistence path; local queue behavior alone does not verify the saved playlist.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

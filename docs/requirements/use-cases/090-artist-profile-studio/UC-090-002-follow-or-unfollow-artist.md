@@ -1,6 +1,8 @@
 # UC-090-002 – Follow or Unfollow Artist
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -12,22 +14,26 @@
 | Related FR IDs | 092-FR-001, 092-FR-002, 092-FR-003, 092-FR-004, 092-FR-005, 092-FR-006, 092-FR-009, 092-FR-010, 092-FR-011, 092-FR-012, 092-FR-013, 092-FR-014, 092-FR-015, 092-FR-016 |
 | Related Feature ID | 092 – Follow Artist |
 | Related Spec Kit File | [092 spec](../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md) |
-| Writer | Thái Hoàng |
-| Reviewer | Not assigned |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Thái Hoàng |
+| Reviewer | Group 10 team |
 | Status | Draft |
 | Last Updated | 2026-11-04 |
 
 This Draft follows all 15 sections of the supplied extracted UC template. Feature-qualified references retain the literal FR IDs from the linked specification. List-only requirements 092-FR-007/008 and the list portions of shared requirements remain assigned to UC-090-003; Section 14 records this boundary explicitly. No peer review or approval has occurred.
 
 ## 2. Goal
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The authenticated account owner starts or stops following an artist and can trust the confirmed personal relationship state without affecting another account or disclosing restricted artist information.
 
 ## 3. Description
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Follow and unfollow are two directions of the same personal relationship goal. AuraTune permits authenticated, non-banned User, Artist and Admin accounts to act only on their own relationships, displays confirmed state truthfully and handles repeated actions, failures and overlapping operations. Public artist presentation belongs to [UC-090-001](./UC-090-001-view-public-artist-profile.md); viewing the personal followed-artists list belongs to UC-090-003. This UC specifies the effect on later list membership only, not a list-viewing flow.
 
 ## 4. Preconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Existing account authentication, artist identity/public eligibility and personal-state retrieval capabilities are available dependencies. This UC does not define a new authentication mechanism or state-retrieval interface.
 - A successful change requires the current account to be authenticated, non-banned and to own the relationship being changed. These conditions are checked during processing; denied attempts and expiry are handled below.
@@ -35,10 +41,12 @@ Follow and unfollow are two directions of the same personal relationship goal. A
 - No global precondition requires Not following or Following. The Basic Flow and the unfollow branches have their own applicable states, so neither direction must first execute the other.
 
 ## 5. Trigger
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The account owner requests their personal following state on a public artist profile or requests a follow/unfollow action. A valid owner request to unfollow an existing hidden artist may start AF-03 directly; this does not introduce a hidden-artist interface.
 
 ## 6. Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The main success scenario is following a public artist from a confirmed Not following state, with no overlapping successful opposing operation. Actor means the current account owner in any of the eligible roles. No confirmation dialog, optimistic state change, specific notification style or persistence design is required by this flow.
 
@@ -50,8 +58,10 @@ The main success scenario is following a public artist from a confirmed Not foll
 **Outcome:** The use case ends successfully. The next successful personal-list load reflects the confirmed relationship subject to public visibility; no list load is required to complete this flow.
 
 ## 7. Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Unfollow a Public Artist
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, when the account's confirmed state is Following; it replaces Basic Flow steps 3–4.
 - **Condition:** The account follows an existing public artist and wants to stop following them.
@@ -62,6 +72,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends successfully with no relationship for the pair. The artist is absent from the next successful personal-list load unless a later follow succeeds. No new follow or Not following state is required before entering this branch; no unfollow confirmation is added.
 
 ### AF-02 – Repeat Follow or Unfollow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4 or AF-01 step 2, including a retry from EX-02/EX-03.
 - **Condition:** A follow request repeats for an existing public artist already followed, or an unfollow repeats for an existing public artist already not followed, with no intervening successful opposing action.
@@ -72,6 +83,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends successfully with the required final state. Duplicate/no-op transport responses are not specified. Overlapping opposing actions use AF-07 rather than assuming this repeat condition still holds.
 
 ### AF-03 – Owner Unfollows an Existing Hidden Artist
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 1, through a valid owner unfollow request; this branch replaces public-profile state loading and all remaining Basic Flow steps.
 - **Condition:** The current authenticated, non-banned account owns a retained relationship to an artist whose existing profile is non-public.
@@ -82,6 +94,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends successfully with the owned relationship absent. It does not return to a public-profile Following/Not following display for the hidden artist, add hidden-artist browsing, or prescribe a new entry control. If the profile later becomes public, the removed relationship does not restore; a new successful follow is needed. Unknown/permanently deleted targets use AF-05, not this branch.
 
 ### AF-04 – Follow Target Is Nonexistent or Non-Public
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4 when public access/follow eligibility is evaluated, including a change of visibility after the profile was opened.
 - **Condition:** The target artist does not exist or is not publicly accessible when follow is evaluated.
@@ -92,6 +105,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends unsuccessfully; no new relationship is created. An existing retained hidden relationship is not removed by this rejection; its owner may independently use AF-03. Following does not grant access to hidden content.
 
 ### AF-05 – Unfollow Target Is Unknown or Permanently Deleted
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** AF-01 step 2 or AF-03 step 2 when the target is evaluated.
 - **Condition:** The unfollow request identifies a nonexistent artist or a permanently deleted artist, rather than an existing hidden profile.
@@ -102,6 +116,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends unsuccessfully as an unfollow request. This UC does not decide storage or cleanup of a relationship whose artist has been deleted. A valid owner unfollow for an existing hidden profile remains AF-03.
 
 ### AF-06 – Follow Again After Successful Unfollow / Revisit Saved State
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 on a later successful personal-state load.
 - **Condition:** The same account returns in a later authenticated session or after a confirmed follow/unfollow.
@@ -112,6 +127,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends successfully for state recognition if no change is requested. For a new follow after successful unfollow, resume at Basic Flow step 3; its successful processing creates exactly one relationship using the new follow time. For unfollow of a followed public artist, enter AF-01 step 1. This branch does not specify a list screen or automatic state-refresh schedule.
 
 ### AF-07 – Opposing Operations Overlap Across Devices
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4 or AF-01 step 2 while processing actions for the same account and public artist.
 - **Condition:** The account issues follow and unfollow from different sessions/devices and their processing overlaps.
@@ -124,6 +140,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends with state recognition of the saved result on the next successful load. The same consistency requirement applies to a later UC-090-003 list load, which is not performed here. No real-time synchronization, continuous polling or click-time precedence is introduced. Failed or uncertain results use EX-02/EX-03.
 
 ### AF-08 – Unauthenticated, Banned or Cross-Account Request
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4, AF-01 step 2, AF-03 step 2, or any state/action access in this UC.
 - **Condition:** There is no valid authentication, the account is banned, or the request attempts to use another account as owner; this includes Administrator cross-account attempts.
@@ -134,6 +151,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Ends without performing the denied change. An account that later has valid access must make a new owner-scoped request; no pending request is silently reassigned or automatically replayed. Public-profile access remains governed separately by 091.
 
 ### AF-09 – The Signed-In Account Changes
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4, AF-01/AF-03 step 2, AF-06 step 1, AF-07 step 4, or any exception recovery before personal data/result presentation.
 - **Condition:** Account A signs out and account B signs in while state loading, an operation or a response for A is pending.
@@ -144,8 +162,10 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** The old account's interaction ends; a new request starts at Basic Flow step 1, AF-01 through its own state load, or AF-03 for a valid hidden-owner request. No cancellation/rollback of an action already processed for A is assumed. B's state is not claimed definitive until successfully obtained.
 
 ## 8. Exception Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EX-01 – Personal Following State Cannot Be Confirmed
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, AF-06 step 1 or AF-07 step 4.
 - **Condition:** Loading the account's personal state fails or is unresolved.
@@ -157,6 +177,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** On success, resume the originating state-load step with its confirmed result: Basic Flow step 2, AF-06 step 1 or AF-07 step 4. Repeated failure returns to EX-01 step 1. If the actor stops, the interaction ends without a definitive state claim. This load does not itself change any relationship, and no dedicated endpoint, retry control or timing is specified.
 
 ### EX-02 – A Change Definitely Fails
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, AF-01 step 2 or AF-03 step 2.
 - **Condition:** The system confirms that the requested change failed; more specific access/eligibility rejections use AF-04/05/08 or EX-04.
@@ -168,6 +189,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** Resume processing at Basic Flow step 4, AF-01 step 2 or AF-03 step 2 for the intended direction. A repeated definite failure returns to EX-02 step 1; an uncertain outcome enters EX-03. If no retry is requested, end unsuccessfully for this action without attributing a saved-state change to it. This does not assert that other devices made no changes.
 
 ### EX-03 – The Action Outcome Is Uncertain
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, AF-01 step 2, AF-03 step 2 or EX-02 retry processing.
 - **Condition:** An interrupted/lost response leaves it uncertain whether the system processed the change.
@@ -179,6 +201,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** If reconciliation establishes the intended current result, end with confirmed state for a public artist or the privacy-safe hidden-owner removal result. If further action is needed and the actor elects to retry, resume the applicable processing step (Basic Flow 4, AF-01 step 2 or AF-03 step 2) with current checks. If reconciliation still fails, return to EX-03 step 1; an access/target change uses the applicable AF/EX branch. If the actor stops, end unresolved: saved state may have changed, but no definitive outcome is asserted. No automatic resubmission, rollback or dedicated state interface is introduced.
 
 ### EX-04 – Authentication Expires During an Action
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, AF-01/AF-03 step 2, or EX-01/02/03 recovery.
 - **Condition:** The session expires and valid authenticated access is not currently available.
@@ -188,8 +211,10 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Outcome:** If access is restored for the same account, re-evaluate the originating step with current state and eligibility; any uncertain prior action follows EX-03 before a definitive claim. If recovery fails, this action ends without a confirmed success and sign-in is handled separately. If a different account signs in, enter AF-09 rather than replaying the old account's action. No expiry-specific transport code or new authentication flow is defined.
 
 ## 9. Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 9.1 Success Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - A successful follow leaves exactly one relationship for the current account and target, with Following shown on the public profile. A successful public-artist unfollow leaves none and shows Not following. These describe confirmed outcomes, subject to later successful opposing operations.
 - Repeated follow preserves the original follow time; repeated public-artist unfollow leaves none. Follow after successful unfollow creates one new relationship with its new follow time.
@@ -199,6 +224,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - No other account's relationships, unrelated artists, public visibility, music catalog or playback state is changed by this UC.
 
 ### 9.2 Failure Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - A definite failed/denied action does not change saved relationship state; unrelated concurrent successful operations may still have changed it. No private following data is disclosed through rejected access.
 - A follow rejection for a nonexistent/non-public artist creates no relationship and reveals no restricted artist information. Unfollow of unknown/deleted artists returns the same not-found outcome with no prior-existence disclosure; cleanup/storage after deletion is not decided.
@@ -206,6 +232,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - Expired authentication, account switching and delayed results never reassign an old account's action/data to a new account.
 
 ## 10. Special Requirements
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security:** 092-FR-003/009/012 require authenticated ownership for every access and change, including Admin personal requests; deny banned accounts. Enforce at the server boundary, not solely through control visibility, following [security principles](../../../design/security/README.md) and [data security rules](../../../design/database/security-rules.md).
 - **Performance:** No follow-specific response-time target is defined in 092. Do not adopt 091's profile timing target as an action timeout.
@@ -214,6 +241,7 @@ The main success scenario is following a public artist from a confirmed Not foll
 - **Other:** Uniqueness, original/new follow times, persistence and successful-processing order are observable behavior, not schema/storage or synchronization implementation choices. No release notifications, automatic playback, sorting controls or follower counts are added.
 
 ## 11. Business Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Rule IDs are local labels for source requirements, not new FR identifiers.
 
@@ -229,8 +257,10 @@ Rule IDs are local labels for source requirements, not new FR identifiers.
 | BR-08 | Unknown and permanently deleted unfollow targets have the same not-found outcome without old information or prior existence. This does not prescribe relationship cleanup or alter existing-hidden owner unfollow. | [092 spec](../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md), FR-016 |
 
 ## 12. Prototype and Screenshots
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 12.0 Current Submission Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Author-created Basic Flow and key UI states](./prototypes/UC-090-002-basic-flow-and-key-states.png)
 
@@ -248,6 +278,7 @@ Rule IDs are local labels for source requirements, not new FR identifiers.
 The three 092 follow/unfollow PNGs below were opened and visually inspected on 2026-11-03. They are reused in place as **reference UI mockups**, not verified screenshots of a deployed implementation. No image was copied or created. Static images cannot prove authentication, successful persistence, ownership, operation ordering or whether a displayed state was actually confirmed.
 
 ### 12.1 Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Reference mockup with a Follow control for Wren Evans](../../../../specs/090-artist-profile-studio/092-follow-artist/ui/01-artist-not-following.png)
 
@@ -262,6 +293,7 @@ The three 092 follow/unfollow PNGs below were opened and visually inspected on 2
 **Prototype type:** Reference UI mockup; implementation provenance unverified. Toast wording/timing is illustrative, not mandated by the current FRs.
 
 ### 12.2 Alternative Flow – AF-01
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Reference mockup after unfollow, showing the Follow control again](../../../../specs/090-artist-profile-studio/092-follow-artist/ui/03-unfollow-artist.png)
 
@@ -270,6 +302,7 @@ The three 092 follow/unfollow PNGs below were opened and visually inspected on 2
 **Prototype type:** Reference UI mockup; implementation provenance unverified.
 
 ### 12.3 Alternative Flows – AF-02 through AF-09
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Flow | Evidence status |
 |---|---|
@@ -283,10 +316,12 @@ The three 092 follow/unfollow PNGs below were opened and visually inspected on 2
 | AF-09 account change | No delayed-response or account-isolation evidence. |
 
 ### 12.4 Exception Flows – EX-01 through EX-04
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Unresolved/failed state loading, definite change failure/retry, uncertain outcome reconciliation and session-expiry/recovery have no matching images among the three inspected assets. Prototype coverage is incomplete; no placeholder image links are provided. The two 092 list PNGs were not inspected in this pass and are reserved as candidates for UC-090-003.
 
 ## 13. Related Use Cases
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [UC-090-001 – View Public Artist Profile](./UC-090-001-view-public-artist-profile.md): public information and privacy-safe profile access. Its public viewing goal remains separate from this personal relationship goal; no include/extend relation is invented.
 - UC-090-003 – View Followed Artists: owns list display, empty/load-failure behavior, visibility and order. This UC only supplies confirmed relationship effects for its next successful load. Specification: [Draft specification](./UC-090-003-view-followed-artists.md).
@@ -294,6 +329,7 @@ Unresolved/failed state loading, definite change failure/retry, uncertain outcom
 - [Group README](./README.md) and [inventory](./use-case-inventory.md): retain all eight stable IDs and the existing combined follow/unfollow goal.
 
 ## 14. Traceability and Sources
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The 14 FRs assigned to UC-090-002 in the inventory match the current 092 meaning. Shared requirements are covered only for their relationship/state aspects; their list portions remain assigned to UC-090-003. All 16 current 092 FRs are explicitly accounted for below to make that distinction reviewable.
 
@@ -332,6 +368,7 @@ The 14 FRs assigned to UC-090-002 in the inventory match the current 092 meaning
 No important behavioral source conflict was found: 091's hidden-profile not-found outcome applies to public access, while 092 explicitly allows an owner's valid hidden unfollow without granting such access. The shared model's reduced/older FR mapping and role presentation remain documentation alignment issues. The API Contract's lack of a dedicated state interface, hidden lifecycle details or operation-specific duplicate response is a technical contract gap, not permission to invent behavior.
 
 ## 15. Open Questions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Question labels are local to this Draft; no new UC or FR IDs are allocated.
 
@@ -344,3 +381,10 @@ Question labels are local to this Draft; no new UC or FR IDs are allocated.
 | Q-05 | Who will independently review the Draft and later align shared-model FR/role references and stale image annotations? | Thái Hoàng / group | Open | Reviewer Not assigned; no shared-model/spec/image changes made. |
 
 Share artist is resolved by D18; broader album management is deferred for this submission, while upload-service technical/model follow-ups remain open in the [group README](./README.md#8-open-issues-and-decisions), outside this UC's relationship goal.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).
