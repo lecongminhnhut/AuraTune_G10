@@ -54,3 +54,65 @@ The browser may persist a list of at most ten recent query strings in LocalStora
 ## Relationships and Source Mapping
 
 Result relationships (for example, track-to-artist and track-to-album identifiers) are projections of the approved catalog schema. Map them only after verifying the real schema. Do not create new relationships or fields to satisfy this document; if a required contract field cannot be sourced, resolve the catalog mapping with the database owner before implementation.
+
+## Verified PostgreSQL / Supabase Catalog Mapping (T001)
+
+> Verified against the deployed Supabase PostgreSQL schema. No feature-specific schema changes or migrations are introduced for Feature 031.
+
+### 1. Tracks (`type = "track"`) -> `public.songs`
+* **Source & Joins:** `public.songs` (`LEFT JOIN public.albums` -> `LEFT JOIN public.artists`)
+* **Field Projections:**
+  * `id`: `String(songs.song_id)`
+  * `type`: `"track"`
+  * `title`: `songs.title`
+  * `artist`: `artists.name ?? "Unknown Artist"` (fallback if `songs.album_id` is `NULL`)
+  * `artist_id`: `artists.artist_id ? String(artists.artist_id) : null`
+  * `album`: `albums.title ?? null`
+  * `album_id`: `songs.album_id ? String(songs.album_id) : null`
+  * `genre`: `songs.genre ?? null`
+  * `release_date`: `albums.release_date ?? null` (ISO `YYYY-MM-DD`)
+  * `duration_seconds`: `songs.duration ?? 0`
+  * `play_count`: `songs.total_plays ?? 0`
+  * `cover_url`: `songs.image_url ?? albums.image_url ?? null` (prioritizes track artwork, falls back to album artwork)
+* **Filter & Sort Semantics:**
+  * `genre`: Matches `songs.genre`
+  * `release_year`: Derived from `EXTRACT(YEAR FROM albums.release_date)`
+  * `plays` sort: `songs.total_plays DESC NULLS LAST, songs.song_id ASC`
+  * `newest` sort: `albums.release_date DESC NULLS LAST, songs.song_id DESC`
+
+### 2. Artists (`type = "artist"`) -> `public.artists`
+* **Source & Joins:** `public.artists` (`LEFT JOIN public.users`)
+* **Field Projections:**
+  * `id`: `String(artists.artist_id)`
+  * `type`: `"artist"`
+  * `name`: `artists.name`
+  * `role`: `users.role ?? "artist"`
+  * `avatar_url`: `artists.image_url ?? users.avatar_url ?? null`
+
+### 3. Albums (`type = "album"`) -> `public.albums`
+* **Source & Joins:** `public.albums` (`LEFT JOIN public.artists`, `LEFT JOIN public.songs` when resolving/filtering `genre`)
+* **Field Projections:**
+  * `id`: `String(albums.album_id)`
+  * `type`: `"album"`
+  * `title`: `albums.title`
+  * `artist`: `artists.name ?? "Unknown Artist"`
+  * `artist_id`: `albums.artist_id ? String(albums.artist_id) : null`
+  * `genre`: Derived from associated `songs.genre` within the album (or `null` if no songs exist)
+  * `release_date`: `albums.release_date ?? null` (ISO `YYYY-MM-DD`)
+  * `cover_url`: `albums.image_url ?? null`
+* **Filter & Sort Semantics:**
+  * `genre`: Matches albums containing at least one track with matching `songs.genre`
+  * `release_year`: Derived from `EXTRACT(YEAR FROM albums.release_date)`
+  * `newest` sort: `albums.release_date DESC NULLS LAST, albums.album_id DESC`
+
+### 4. Playlists (`type = "playlist"`) -> `public.playlists`
+* **Source & Joins:** `public.playlists` (`LEFT JOIN public.users`, aggregate `COUNT` from `public.playlist_songs`)
+* **Visibility Constraint:** **MUST filter `playlists.status = 'Public'`** on all public metadata search queries (`Private` and `Shared` playlists are excluded).
+* **Field Projections:**
+  * `id`: `String(playlists.playlist_id)`
+  * `type`: `"playlist"`
+  * `title`: `playlists.name`
+  * `description`: `null` (`public.playlists` has no `description` column)
+  * `owner`: `users.display_name ?? users.name ?? null` (via `playlists.user_id_creator = users.user_id`)
+  * `track_count`: Count of rows in `public.playlist_songs` for `playlist_id` (default `0`)
+  * `cover_url`: `null` (`public.playlists` has no `image_url` column)

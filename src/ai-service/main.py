@@ -8,11 +8,17 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List
+import json
+import re
+import unicodedata
+from urllib.parse import quote
+from urllib.request import Request as UrlRequest, urlopen
 import unicodedata
 
 from config import settings
 from agent import stream_agent
 from tools import CATALOG_TRACKS, CATALOG_PLAYLISTS
+from semantic_engine import SemanticEngine
 
 app = FastAPI(
     title="AuraTune AI Brain Service",
@@ -38,11 +44,80 @@ class PreferenceSignals(BaseModel):
     followed_artist_ids: List[str] = Field(default_factory=list)
 
 class RecommendRequest(BaseModel):
+    purpose: Optional[str] = None
+    query: Optional[str] = None
+    offset: int = Field(default=0, ge=0)
     user_id: Optional[str] = None
     signals: Optional[PreferenceSignals] = Field(default_factory=PreferenceSignals)
     requested_types: List[str] = Field(default=["song", "album", "artist", "playlist"])
     limit: int = Field(default=30, ge=1, le=50)
 
+semantic_engine = SemanticEngine()
+
+def semantic_catalog() -> list[dict[str, Any]]:
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_ROLE_KEY:
+        return []
+    base = settings.SUPABASE_URL.rstrip("/")
+    endpoint = base if base.endswith("/rest/v1") else f"{base}/rest/v1"
+    select = "song_id,title,genre,lyrics,albums(title),artists(name)"
+    request = UrlRequest(f"{endpoint}/songs?select={quote(select)}", headers={"apikey": settings.SUPABASE_SERVICE_ROLE_KEY, "Authorization": f"Bearer {settings.SUPABASE_SERVICE_ROLE_KEY}"})
+    with urlopen(request, timeout=1.0) as response:
+        rows = json.loads(response.read().decode("utf-8"))
+    def relation(value: Any) -> dict[str, Any]:
+        if isinstance(value, list):
+            return value[0] if value and isinstance(value[0], dict) else {}
+        return value if isinstance(value, dict) else {}
+
+    return [{"song_id": row.get("song_id"), "title": row.get("title"), "genre": row.get("genre"), "lyrics": row.get("lyrics"), "album": relation(row.get("albums")).get("title", ""), "artist": relation(row.get("artists")).get("name", "")} for row in rows]
+
+class LyricsSearchRequest(BaseModel):
+    query: str = Field(..., min_length=1, max_length=200)
+    limit: int = Field(default=20, ge=1, le=50)
+    offset: int = Field(default=0, ge=0)
+
+def _normalize_lyrics(value: str) -> str:
+    value = re.sub(r"\[\d{1,2}:\d{2}(?:\.\d{1,3})?\]", "", value or "")
+    value = unicodedata.normalize("NFD", value)
+    value = "".join(char for char in value if unicodedata.category(char) != "Mn")
+    value = re.sub(r"[^\w\s]", " ", value.lower(), flags=re.UNICODE)
+    return re.sub(r"\s+", " ", value).strip()
+
+def _lyrics_catalog() -> list[dict[str, Any]]:
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_ROLE_KEY:
+        raise RuntimeError("Lyrics catalog service is unavailable")
+    base = settings.SUPABASE_URL.rstrip("/")
+    if base.endswith("/rest/v1"):
+        endpoint = base
+    else:
+        endpoint = f"{base}/rest/v1"
+    select = "song_id,title,album_id,genre,duration,total_plays,image_url,lyrics"
+    request = UrlRequest(f"{endpoint}/songs?select={quote(select)}&lyrics=not.is.null", headers={"apikey": settings.SUPABASE_SERVICE_ROLE_KEY, "Authorization": f"Bearer {settings.SUPABASE_SERVICE_ROLE_KEY}"})
+    with urlopen(request, timeout=2.5) as response:
+        return [row for row in json.loads(response.read().decode("utf-8")) if str(row.get("lyrics") or "").strip()]
+
+@app.post("/ai/search/lyrics")
+async def search_lyrics(req: LyricsSearchRequest, request: Request):
+    if not settings.INTERNAL_API_KEY:
+        return JSONResponse(status_code=503, content={"success": False, "message": "AI lyrics search service is unavailable", "data": None, "error": {"code": "AI_SERVICE_UNAVAILABLE", "details": []}})
+    if request.headers.get("X-Internal-Api-Key") != settings.INTERNAL_API_KEY:
+        return JSONResponse(status_code=401, content={"success": False, "message": "Internal API key is invalid", "data": None, "error": {"code": "UNAUTHORIZED", "details": []}})
+    try:
+        query = _normalize_lyrics(req.query)
+        words = set(query.split())
+        candidates = []
+        for row in _lyrics_catalog():
+            lyric = _normalize_lyrics(row.get("lyrics", ""))
+            matched = len(words.intersection(lyric.split()))
+            if matched:
+                candidates.append((int(query in lyric), matched, row))
+        candidates.sort(key=lambda item: (-item[0], -item[1], -(item[2].get("total_plays") or -1), str(item[2].get("song_id"))))
+        page = candidates[req.offset:req.offset + req.limit]
+        data = [{"id": str(row["song_id"]), "matched_lyric": re.sub(r"\[\d{1,2}:\d{2}(?:\.\d{1,3})?\]", "", row.get("lyrics", "")).strip()} for _, _, row in page]
+        next_offset = req.offset + len(data) if req.offset + len(data) < len(candidates) else None
+        return {"success": True, "message": "Lyrics search results retrieved", "data": data, "pagination": {"limit": req.limit, "offset": req.offset, "next_offset": next_offset, "has_more": next_offset is not None}, "meta": {"search_mode": "ai"}, "error": None}
+    except Exception as error:
+        print(f"Lyrics search provider error: {error}")
+        return JSONResponse(status_code=503, content={"success": False, "message": "AI lyrics search service is unavailable", "data": None, "error": {"code": "AI_SERVICE_UNAVAILABLE", "details": []}})
 class PlaylistGenerateRequest(BaseModel):
     prompt: str = Field(..., min_length=1, max_length=200)
 
@@ -105,7 +180,16 @@ async def agent_stream(req: AgentChatRequest):
     )
 
 @app.post("/ai/recommend")
-async def recommend(req: RecommendRequest):
+async def recommend(req: RecommendRequest, request: Request):
+    if req.purpose == "semantic_search":
+        if not settings.INTERNAL_API_KEY or request.headers.get("X-Internal-Api-Key") != settings.INTERNAL_API_KEY:
+            return JSONResponse(status_code=401, content={"success": False, "message": "Internal API key is invalid", "data": None, "error": {"code": "UNAUTHORIZED", "details": []}})
+        try:
+            data = semantic_engine.search(req.query or "", semantic_catalog(), req.limit, req.offset)
+            return {"success": True, "message": "Semantic search results retrieved", "data": data, "pagination": {"limit": req.limit, "offset": req.offset, "next_offset": req.offset + len(data) if len(data) == req.limit else None, "has_more": len(data) == req.limit}, "meta": {"search_mode": "semantic"}, "error": None}
+        except Exception as error:
+            print("Semantic provider unavailable")
+            return JSONResponse(status_code=503, content={"success": False, "message": "Semantic service is unavailable", "data": None, "error": {"code": "AI_SERVICE_UNAVAILABLE", "details": []}})
     candidates = []
     types = set(req.requested_types) if req.requested_types else {"song", "album", "artist", "playlist"}
 

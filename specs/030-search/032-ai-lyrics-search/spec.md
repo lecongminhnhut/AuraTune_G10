@@ -82,7 +82,7 @@ As a Listener or Public user, I want the system to continue with a basic keyword
 - The fragment is longer than 200 characters after leading and trailing whitespace are removed.
 - The fragment matches several songs with similar lyrics.
 - The AI Service returns HTTP 503 before producing a result.
-- The AI Service does not complete the request within 5 seconds.
+- The AI Service does not complete the request within 3 seconds.
 - The fallback keyword search is unavailable or fails after the AI search is unavailable.
 - The user submits a new search while an earlier AI or fallback search is still loading.
 - The user repeatedly submits the same search while a request is still loading.
@@ -143,7 +143,7 @@ As a Listener or Public user, I want the system to continue with a basic keyword
 - Public and Listener users are allowed to use song search without an additional feature-specific permission.
 - Searchable lyric data is already available through AuraTune's approved content sources.
 - The AI Service contract defines HTTP 503 as the unavailable-service response for overload and timeout handling required by this feature.
-- The AI lyrics-search request timeout is 5 seconds; a request that does not complete within that time is treated as unavailable and triggers keyword fallback.
+- The AI lyrics-search request timeout is 3 seconds; a request that does not complete within that time is treated as unavailable and triggers keyword fallback.
 - Basic keyword search already exists or is available as the approved fallback capability for the same search input.
 - Lyric fragments are validated after whitespace trimming; valid input contains at least 3 words and no more than 200 characters.
 - Only HTTP 503 and a 5-second AI response timeout trigger keyword fallback; other failures, including HTTP 429, use their own error handling.

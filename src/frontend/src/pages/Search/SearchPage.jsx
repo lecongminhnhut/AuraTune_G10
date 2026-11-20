@@ -1,165 +1,74 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AlertTriangle, Quote, SearchX, Sparkles } from 'lucide-react'
+import { AlertTriangle, SearchX } from 'lucide-react'
 import PlaylistCard from '../../components/playlist/PlaylistCard.jsx'
-import CoverArt from '../../components/playlist/CoverArt.jsx'
-import { AlbumCard, ArtistCard, GenreTile } from '../../components/playlist/MediaCards.jsx'
+import { AlbumCard, ArtistCard } from '../../components/playlist/MediaCards.jsx'
 import SongRow from '../../components/song/SongRow.jsx'
-import Icon from '../../components/common/Icon.jsx'
 import { EmptyState, PageHeader, SectionHeading, chipClass } from '../../components/common/ui.jsx'
 import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
-import { genres, getArtist } from '../../utils/mockData.js'
-import { Link, getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
-import { searchCatalog, sortTracks } from '../../utils/searchEngine.js'
+import { getQueryParam, navigate, useLocation } from '../../utils/navigation.jsx'
+import { addSearchHistory, clearSearchHistory, getSearchHistory, removeSearchHistory } from '../../utils/searchHistory.js'
+import useMetadataSearch from './useMetadataSearch.js'
+import useLyricsSearch from './useLyricsSearch.js'
+import useSemanticSearch from '../../hooks/useSemanticSearch.js'
+import { validateSemanticQuery } from '../../utils/semanticQuery.js'
 
-const tabs = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'tracks', label: 'Bài hát' },
-  { id: 'artists', label: 'Nghệ sĩ' },
-  { id: 'albums', label: 'Album' },
-  { id: 'playlists', label: 'Playlist' },
-  { id: 'lyrics', label: 'Theo lời bài hát' },
-]
-
-const browseLinks = [
-  { label: 'Khám phá', icon: 'compass', href: '/explore' },
-  { label: 'Bảng xếp hạng', icon: 'chart', href: '/charts' },
-]
-
+const tabs = [{ id: 'all', label: 'All' }, { id: 'tracks', label: 'Tracks' }, { id: 'artists', label: 'Artists' }, { id: 'albums', label: 'Albums' }, { id: 'playlists', label: 'Playlists' }, { id: 'lyrics', label: 'AI Lyrics' }]
 const grid = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
 export default function SearchPage() {
-  const store = useStore()
-  const player = usePlayer()
-  const { search } = useLocation()
-  const query = getQueryParam(search, 'q')
-  const tab = getQueryParam(search, 'type') || 'all'
-  const [sort, setSort] = useState('relevance')
-  const [draft, setDraft] = useState(query)
+  const store = useStore(); const player = usePlayer(); const { search } = useLocation()
+  const query = getQueryParam(search, 'q'); const tab = getQueryParam(search, 'type') || 'all'; const semanticMode = getQueryParam(search, 'mode') === 'semantic'
+  const [draft, setDraft] = useState(query); const [history, setHistory] = useState(() => getSearchHistory()); const [focused, setFocused] = useState(false)
+  const [constraints, setConstraints] = useState({ genre: getQueryParam(search, 'genre'), release_year: getQueryParam(search, 'release_year'), sort: getQueryParam(search, 'sort') || 'relevance' })
   useEffect(() => setDraft(query), [query])
-
-  const results = useMemo(() => searchCatalog(query, { tracks: store.publicTracks, aiAvailable: store.aiAvailable }), [query, store.publicTracks, store.aiAvailable])
-  const sortedTracks = useMemo(() => sortTracks(results.tracks, sort), [results.tracks, sort])
-  const total = results.tracks.length + results.artists.length + results.albums.length + results.playlists.length + results.lyrics.length
-
-  const setParam = (next) => {
-    const params = new URLSearchParams(search)
-    Object.entries(next).forEach(([key, value]) => (value ? params.set(key, value) : params.delete(key)))
-    navigate(`/search?${params.toString()}`, { replace: true })
-  }
-
+  useEffect(() => setConstraints({ genre: getQueryParam(search, 'genre'), release_year: getQueryParam(search, 'release_year'), sort: getQueryParam(search, 'sort') || 'relevance' }), [search])
+  const effectiveType = tab === 'lyrics' ? 'all' : tab
+  const metadataState = useMetadataSearch(semanticMode ? '' : query, effectiveType, constraints)
+  const lyricsState = useLyricsSearch(!semanticMode && tab === 'lyrics' ? query : '')
+  const semanticState = useSemanticSearch(query, semanticMode)
+  const setParam = (next) => { const params = new URLSearchParams(search); if (Object.prototype.hasOwnProperty.call(next, 'type') && !Object.prototype.hasOwnProperty.call(next, 'mode')) params.delete('mode'); Object.entries(next).forEach(([key, value]) => value ? params.set(key, value) : params.delete(key)); navigate(`/search?${params.toString()}`, { replace: true }) }
+  const submit = (event) => { event.preventDefault(); const value = draft.trim(); const valid = semanticMode ? !validateSemanticQuery(value).error : tab === 'lyrics' ? value.replace(/\s+/g, ' ').trim().length <= 200 && value.replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length >= 3 : value.length >= 2 && value.length <= 100; if (valid) { setHistory(addSearchHistory(value)); setParam({ q: value, mode: semanticMode ? 'semantic' : '' }) } }
   const playAlbum = (album) => player.playCollection(store.publicTracks.filter((track) => track.albumId === album.id))
   const show = (id) => tab === 'all' || tab === id
+  const total = Object.values(metadataState.results).reduce((sum, items) => sum + items.length, 0)
+  const tracks = useMemo(() => metadataState.results.tracks.map((item) => ({ ...item, duration: item.duration_seconds, playCount: item.play_count, artistId: item.artist_id, albumId: item.album_id, coverArt: item.cover_url })), [metadataState.results.tracks])
+  const visibleFilters = tab === 'all' || tab === 'tracks' || tab === 'albums'
+  return <div className="pb-12"><PageHeader eyebrow="Search" title={query ? `Results for “${query}”` : 'Search'} description={semanticMode ? 'Discover songs by mood, emotion, or context.' : tab === 'lyrics' ? 'Find songs from remembered lyric fragments.' : 'Search public tracks, artists, albums, and playlists.'} /><div className="px-5 sm:px-8">
+    <form onSubmit={submit} className="relative flex gap-2"><input type="search" value={draft} onChange={(event) => setDraft(event.target.value)} onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 150)} placeholder={semanticMode ? 'Describe a mood or context' : tab === 'lyrics' ? 'Search lyrics (at least 3 words)' : 'Search metadata'} aria-label="Search query" className="h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-base text-white outline-none focus:border-sky-300/40" /><button type="submit" className="rounded-xl bg-sky-200 px-4 text-xs font-bold text-slate-950">Search</button>{focused && history.length > 0 && <div className="absolute top-12 z-20 w-full rounded-xl border border-white/10 bg-zinc-900 p-2 shadow-xl">{history.map((item) => <div key={item} className="flex items-center gap-2 px-2 py-1"><button type="button" className="min-w-0 flex-1 truncate text-left text-sm text-white" onMouseDown={() => { setDraft(item); setHistory(addSearchHistory(item)); setParam({ q: item, mode: semanticMode ? 'semantic' : '' }) }}>{item}</button><button type="button" className="text-xs text-zinc-400" onMouseDown={() => setHistory(removeSearchHistory(item))}>Remove</button></div>)}<button type="button" className="mt-1 w-full border-t border-white/10 pt-2 text-xs text-zinc-400" onMouseDown={() => setHistory(clearSearchHistory())}>Clear all</button></div>}</form>
+    {!query ? <div className="mt-8"><EmptyState icon={SearchX} title={semanticMode ? 'Describe a mood or context' : tab === 'lyrics' ? 'Enter at least 3 words' : 'Enter at least 2 characters'} description={semanticMode ? 'Try a natural-language description such as music for a rainy night.' : tab === 'lyrics' ? 'Search the catalog by a remembered lyric fragment.' : 'Search the public catalog by metadata.'} /></div> : <>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3"><div className="flex gap-2 overflow-x-auto pb-1" role="tablist">{tabs.map((item) => <button key={item.id} type="button" role="tab" aria-selected={tab === item.id} onClick={() => setParam({ type: item.id === 'all' ? '' : item.id })} className={chipClass(tab === item.id)}>{item.label}</button>)}</div>{visibleFilters && <div className="flex flex-wrap gap-2"><input aria-label="Genre filter" value={constraints.genre} onChange={(event) => setParam({ genre: event.target.value })} placeholder="Genre" className="w-24 rounded-lg border border-white/10 bg-zinc-900 px-2 py-1.5 text-xs text-white" /><input aria-label="Release year filter" value={constraints.release_year} onChange={(event) => setParam({ release_year: event.target.value })} placeholder="Year" className="w-20 rounded-lg border border-white/10 bg-zinc-900 px-2 py-1.5 text-xs text-white" /><select aria-label="Sort results" value={constraints.sort} onChange={(event) => setParam({ sort: event.target.value })} className="rounded-lg border border-white/10 bg-zinc-900 px-2 py-1.5 text-xs text-white"><option value="relevance">Relevance</option><option value="plays">Most played</option><option value="newest">Newest</option><option value="title">Title</option></select></div>}</div>
+      {semanticMode ? <SemanticResults state={semanticState} onPlay={(track) => player.playTrack(track, semanticState.results)} /> : tab === 'lyrics' ? <LyricsResults state={lyricsState} onPlay={(track) => player.playTrack(track, lyricsState.results)} /> : metadataState.loading && total === 0 ? <p role="status" className="mt-8 text-sm text-zinc-400">Loading results…</p> : metadataState.error ? <ErrorState error={metadataState.error} retry={metadataState.retry} /> : total === 0 ? <div className="mt-8"><EmptyState icon={SearchX} title={`No results for “${query}”`} description="Try another title, artist, album, or playlist." /></div> : <>
+        {show('tracks') && tracks.length > 0 && <section className="mt-8"><SectionHeading title="Tracks" /><div className="mt-3 rounded-xl bg-white/[0.025] p-1 sm:p-2">{tracks.map((track, index) => <SongRow key={track.id} track={track} index={index} showPlays onPlay={(item) => player.playTrack(item, tracks)} />)}</div></section>}
+        {show('artists') && metadataState.results.artists.length > 0 && <section className="mt-8"><SectionHeading title="Artists" /><div className={grid}>{metadataState.results.artists.map((artist) => <ArtistCard key={artist.id} artist={{ ...artist, cover: artist.avatar_url }} />)}</div></section>}
+        {show('albums') && metadataState.results.albums.length > 0 && <section className="mt-8"><SectionHeading title="Albums" /><div className={grid}>{metadataState.results.albums.map((album) => <AlbumCard key={album.id} album={{ ...album, artistId: album.artist_id, releaseDate: album.release_date, coverArt: album.cover_url }} artistName={album.artist} onPlay={playAlbum} />)}</div></section>}
+        {show('playlists') && metadataState.results.playlists.length > 0 && <section className="mt-8"><SectionHeading title="Playlists" /><div className={grid}>{metadataState.results.playlists.map((playlist) => <PlaylistCard key={playlist.id} playlist={{ ...playlist, cover: 'aurora', count: playlist.track_count }} onPlayPlaylist={() => player.playPlaylist(playlist)} />)}</div></section>}
+        {metadataState.pagination.has_more && <button type="button" onClick={metadataState.loadMore} disabled={metadataState.loading} className="mx-auto mt-8 block rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50">{metadataState.loading ? 'Loading…' : 'Load More'}</button>}
+      </>}
+    </>}
+  </div></div>
+}
 
-  return (
-    <div className="pb-12">
-      <PageHeader eyebrow="Tìm kiếm" title={query ? `Kết quả cho “${query}”` : 'Tìm kiếm'} description="Tìm theo tên bài hát, nghệ sĩ, album, playlist, một câu hát bạn nhớ hoặc mô tả cảm xúc." />
+function ErrorState({ error, retry }) { return <div className="mt-8 rounded-xl border border-red-300/20 bg-red-300/[0.06] p-4"><p className="flex items-center gap-2 text-sm text-red-100"><AlertTriangle size={16} />{error.message || String(error)}</p><button type="button" onClick={retry} className="mt-3 rounded-lg bg-white/10 px-3 py-2 text-xs text-white">Retry</button></div> }
 
-      <div className="px-5 sm:px-8">
-        <form onSubmit={(event) => { event.preventDefault(); setParam({ q: draft.trim() }) }} className="flex gap-2 md:hidden">
-          <input type="search" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Bạn muốn nghe gì?" aria-label="Từ khóa tìm kiếm" className="h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3.5 text-base text-white outline-none focus:border-sky-300/40" />
-          <button type="submit" className="rounded-xl bg-sky-200 px-4 text-xs font-bold text-slate-950">Tìm</button>
-        </form>
+function LyricsResults({ state, onPlay }) {
+  if (state.validationError) return <p role="alert" className="mt-8 text-sm text-amber-200">{state.validationError}</p>
+  if (state.loading && state.results.length === 0) return <p role="status" className="mt-8 text-sm text-zinc-400">Searching lyrics…</p>
+  if (state.error) return <ErrorState error={state.error} retry={state.retry} />
+  return <>
+    {state.searchMode === 'keyword_fallback' && !state.bannerDismissed && <div role="status" className="mt-6 flex items-center justify-between gap-3 rounded-xl border border-amber-200/20 bg-amber-200/[0.08] p-3 text-sm text-amber-100"><span>AI search was unavailable. Keyword lyrics search was used.</span><button type="button" onClick={state.dismissBanner} aria-label="Dismiss fallback notice" className="text-xs text-amber-200 underline">Dismiss</button></div>}
+    {state.results.length === 0 ? <div className="mt-8"><EmptyState icon={SearchX} title="No lyric matches" description="Try another lyric fragment with at least three words." /></div> : <section className="mt-8"><SectionHeading title="Lyrics matches" /><div className="mt-3 rounded-xl bg-white/[0.025] p-1 sm:p-2">{state.results.map((track, index) => <div key={`${track.id}-${index}`}><SongRow track={track} index={index} showPlays onPlay={onPlay} /><p className="ml-14 -mt-1 mb-2 pr-3 text-xs italic text-zinc-500">{track.matched_lyric || 'Lyric context unavailable.'}</p></div>)}</div></section>}
+    {state.pagination.has_more && <button type="button" onClick={state.loadMore} disabled={state.loading} className="mx-auto mt-8 block rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50">{state.loading ? 'Loading…' : 'Load More'}</button>}
+  </>
+}
 
-        {!query ? (
-          <>
-            {/* Mobile và tablet không có Sidebar: lối vào Khám phá và Bảng xếp hạng nằm ở đây. */}
-            <div className="mb-8 mt-5 grid grid-cols-2 gap-3 lg:hidden">
-              {browseLinks.map((item) => (
-                <Link key={item.href} to={item.href} className="flex h-14 items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 text-sm font-semibold text-white transition hover:bg-white/[0.08]">
-                  <Icon name={item.icon} size={20} className="text-violet-300" /> {item.label}
-                </Link>
-              ))}
-            </div>
-            <SectionHeading title="Duyệt theo thể loại" />
-            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">{genres.map((genre) => <GenreTile key={genre.id} genre={genre} />)}</div>
-          </>
-        ) : (
-          <>
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin" role="tablist" aria-label="Lọc kết quả">
-                {tabs.map((item) => <button key={item.id} type="button" role="tab" aria-selected={tab === item.id} onClick={() => setParam({ type: item.id === 'all' ? '' : item.id })} className={chipClass(tab === item.id)}>{item.label}</button>)}
-              </div>
-              {(tab === 'all' || tab === 'tracks') && results.tracks.length > 1 && (
-                <label className="flex items-center gap-2 text-xs text-zinc-400">Sắp xếp
-                  <select value={sort} onChange={(event) => setSort(event.target.value)} className="rounded-lg border border-white/10 bg-zinc-900 px-2.5 py-1.5 text-xs text-white outline-none">
-                    <option value="relevance">Liên quan nhất</option>
-                    <option value="plays">Lượt nghe nhiều nhất</option>
-                    <option value="newest">Mới phát hành</option>
-                    <option value="title">Tên A–Z</option>
-                  </select>
-                </label>
-              )}
-            </div>
-
-            {!store.aiAvailable && (
-              <p role="status" className="mt-4 flex items-start gap-2 rounded-xl border border-amber-300/20 bg-amber-300/[0.06] px-4 py-3 text-xs leading-5 text-amber-100"><AlertTriangle size={15} className="mt-0.5 shrink-0" aria-hidden="true" /> Tìm kiếm AI theo ý nghĩa tạm thời không khả dụng. Kết quả bên dưới chỉ dựa trên từ khóa trong tên bài hát, nghệ sĩ, album và playlist.</p>
-            )}
-
-            {results.ai && tab === 'all' && (
-              <section className="mt-6 rounded-2xl border border-sky-300/15 bg-gradient-to-br from-sky-300/[0.06] to-violet-400/[0.05] p-4 sm:p-5">
-                <p className="flex items-center gap-2 text-xs font-semibold text-sky-100"><Sparkles size={14} aria-hidden="true" /> AI hiểu ý bạn</p>
-                <p className="mt-1.5 text-xs leading-5 text-zinc-400">{results.ai.reason}</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  {results.ai.tracks.slice(0, 4).map((track) => (
-                    <button key={track.id} type="button" onClick={() => player.playTrack(track, results.ai.tracks)} className="flex items-center gap-3 rounded-xl bg-white/[0.04] p-2 text-left transition hover:bg-white/[0.09]">
-                      <CoverArt variant={track.cover} className="h-11 w-11 shrink-0 rounded-md [&_span]:text-2xl" />
-                      <span className="min-w-0"><span className="block truncate text-[13px] font-semibold text-white">{track.title}</span><span className="block truncate text-[11px] text-zinc-500">{track.artist}</span></span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {total === 0 && !(results.ai && tab === 'all') && (
-              <div className="mt-8"><EmptyState icon={SearchX} title={`Không tìm thấy kết quả cho “${query}”`} description="Hãy kiểm tra chính tả, thử từ khóa ngắn hơn hoặc mô tả cảm xúc như “nhạc buồn đêm mưa”." /></div>
-            )}
-
-            {show('tracks') && sortedTracks.length > 0 && (
-              <section className="mt-8">
-                <SectionHeading title="Bài hát" subtitle={`${sortedTracks.length} kết quả`} />
-                <div className="mt-3 rounded-xl bg-white/[0.025] p-1 sm:p-2">
-                  {(tab === 'all' ? sortedTracks.slice(0, 5) : sortedTracks).map((track, index) => <SongRow key={track.id} track={track} index={index} showPlays onPlay={(item) => player.playTrack(item, sortedTracks)} />)}
-                </div>
-              </section>
-            )}
-            {tab === 'tracks' && !sortedTracks.length && <div className="mt-8"><EmptyState compact icon={SearchX} title="Không có bài hát khớp từ khóa" /></div>}
-
-            {show('lyrics') && results.lyrics.length > 0 && (
-              <section className="mt-8">
-                <SectionHeading title="Khớp lời bài hát" />
-                <div className="mt-3 space-y-2">
-                  {results.lyrics.map(({ track, line }) => (
-                    <button key={track.id} type="button" onClick={() => player.playTrack(track)} className="flex w-full items-center gap-3 rounded-xl bg-white/[0.03] p-3 text-left transition hover:bg-white/[0.07]">
-                      <CoverArt variant={track.cover} className="h-12 w-12 shrink-0 rounded-md [&_span]:text-2xl" />
-                      <span className="min-w-0 flex-1"><span className="flex items-center gap-1.5 text-sm italic text-zinc-200"><Quote size={13} aria-hidden="true" className="shrink-0 text-violet-300" /> <span className="truncate">{line}</span></span><span className="mt-1 block truncate text-[11px] text-zinc-500">{track.title} · {track.artist}</span></span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
-            {tab === 'lyrics' && !results.lyrics.length && <div className="mt-8"><EmptyState compact icon={Quote} title="Không tìm thấy câu hát nào khớp" description="Hiện chỉ một số bài hát có lời được đồng bộ. Hãy thử một cụm từ khác." /></div>}
-
-            {show('artists') && results.artists.length > 0 && (
-              <section className="mt-8"><SectionHeading title="Nghệ sĩ" /><div className={grid}>{results.artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}</div></section>
-            )}
-            {tab === 'artists' && !results.artists.length && <div className="mt-8"><EmptyState compact icon={SearchX} title="Không có nghệ sĩ khớp từ khóa" /></div>}
-
-            {show('albums') && results.albums.length > 0 && (
-              <section className="mt-8"><SectionHeading title="Album" /><div className={grid}>{results.albums.map((album) => <AlbumCard key={album.id} album={album} artistName={getArtist(album.artistId)?.name} onPlay={playAlbum} />)}</div></section>
-            )}
-            {tab === 'albums' && !results.albums.length && <div className="mt-8"><EmptyState compact icon={SearchX} title="Không có album khớp từ khóa" /></div>}
-
-            {show('playlists') && (results.playlists.length > 0 || (tab === 'all' && results.ai)) && (
-              <section className="mt-8">
-                <SectionHeading title="Playlist" subtitle={results.playlists.length ? '' : 'Gợi ý từ AI theo mô tả của bạn'} />
-                <div className={grid}>{(results.playlists.length ? results.playlists : results.ai.playlists).map((playlist) => <PlaylistCard key={playlist.id} playlist={playlist} onPlayPlaylist={player.playPlaylist} />)}</div>
-              </section>
-            )}
-            {tab === 'playlists' && !results.playlists.length && <div className="mt-8"><EmptyState compact icon={SearchX} title="Không có playlist khớp từ khóa" /></div>}
-          </>
-        )}
-      </div>
-    </div>
-  )
+function SemanticResults({ state, onPlay }) {
+  if (state.validationError) return <p role="alert" className="mt-8 text-sm text-amber-200">{state.validationError}</p>
+  if (state.loading && state.results.length === 0) return <p role="status" className="mt-8 text-sm text-zinc-400">Searching by meaning…</p>
+  if (state.error) return <ErrorState error={state.error} retry={state.retry} />
+  return <>
+    {state.searchMode === 'keyword_fallback' && <div role="status" className="mt-6 rounded-xl border border-amber-200/20 bg-amber-200/[0.08] p-3 text-sm text-amber-100">Semantic search is temporarily unavailable. Showing keyword results.</div>}
+    {state.results.length === 0 ? <div className="mt-8"><EmptyState icon={SearchX} title="No matching songs" description="Try another mood, emotion, or context." /></div> : <section className="mt-8"><SectionHeading title="Semantic matches" /><div className="mt-3 rounded-xl bg-white/[0.025] p-1 sm:p-2">{state.results.map((track, index) => <div key={`${track.id}-${index}`}><SongRow track={track} index={index} showPlays onPlay={onPlay} />{track.ai_reason && <p className="ml-14 -mt-1 mb-2 pr-3 text-xs text-zinc-500">{track.ai_reason}</p>}</div>)}</div></section>}
+    {state.pagination.has_more && <button type="button" onClick={state.loadMore} disabled={state.loading} className="mx-auto mt-8 block rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold text-white disabled:opacity-50">{state.loading ? 'Loading…' : 'Load More'}</button>}
+  </>
 }

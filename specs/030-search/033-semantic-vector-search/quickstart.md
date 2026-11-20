@@ -11,18 +11,50 @@
 - Approved AI/vector service, catalog data containing available search dimensions, and safe local profile/artist-name test fixtures.
 - Controlled test credentials/configuration supplied locally; do not commit secrets or PII fixtures.
 
-## Start Existing Applications
+## Start Existing Applications & Automated Tests
 
-From the repository root, start the backend:
+Start the backend (in PowerShell):
 
-```sh
-npm run dev:backend
+```powershell
+Set-Location src/backend
+npm install
+npm run dev
 ```
 
 In a second terminal, start the frontend:
 
-```sh
-npm run dev:frontend
+```powershell
+Set-Location src/frontend
+npm install
+npm run dev
+```
+
+Automated Test Commands (T010 Resolved)
+Both src/backend/package.json and src/frontend/package.json already include configured test runners; no additional test dependencies are required:
+
+
+# Backend unit, privacy guard, ranking, and route contract tests:
+```powershell
+Set-Location src/backend
+npm test
+```
+
+# Frontend query validation, hook, component, and acceptance tests:
+```powershell
+Set-Location src/frontend
+npm test
+```
+
+# Frontend production build check:
+```powershell
+Set-Location src/frontend
+npm run build
+```
+
+Smoke-Test the Approved Endpoint (GET /api/v1/search?mode=semantic)
+```powershell
+curl.exe -i "http://localhost:5000/api/v1/search?q=lofi%20chill%20de%20code&mode=semantic&limit=20&offset=0"
+curl.exe -i "http://localhost:5000/api/v1/search?q=   &mode=semantic"
 ```
 
 The repository currently has no semantic-search-specific test command. The root `npm run test:backend` exercises authentication smoke tests and is not evidence of semantic search behavior. Select feature-level test tooling before treating these scenarios as automated coverage.
@@ -44,6 +76,14 @@ Run these after the endpoint, timeout policy, AI service, and test tooling have 
 11. Provide duplicate candidate songs and equal scores; verify deduplication and the approved deterministic tie-breaker.
 12. Evaluate at least 100 representative mood/context queries with the specified 1–5 scale; count ratings 4–5 as relevant and allow multiple reasonable interpretations satisfying the stated intent.
 13. Test live dropdown keyboard behavior, responsive layout, result playback, and regression of the other `/search` modes. Treat mock playlist suggestions and explanation text as visual references until corresponding response fields/result types are approved.
+
+## Implementation Validation Record
+
+- Phase 2 through Phase 7 implementation completed for tasks T011–T053.
+- Backend semantic ranking, privacy, fallback, and route contract tests passed.
+- Frontend semantic query, adapter, acceptance, and regression tests passed; the full existing frontend suite passed.
+- The production build was attempted and remains blocked by an existing Windows/esbuild path-access error, not a source diagnostic.
+- The 100-query human relevance evaluation remains a controlled follow-up because no approved catalog snapshot or evaluator credentials were supplied.
 
 ## Pending Before End-to-End Validation
 
