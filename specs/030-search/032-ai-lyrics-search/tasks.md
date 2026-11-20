@@ -28,13 +28,13 @@
 
 **Purpose**: Implement the approved public-to-internal service path and common error behavior before frontend story integration.
 
-- [ ] T010 Add contract tests in `src/backend/tests/lyricsSearch.integration.test.js` or `src/ai-service/tests/lyricsSearch.integration.test.js` at the confirmed service owner for the approved public request/response mapping and shared success/error envelope before implementing the route or proxy.
-- [ ] T011 Integrate the approved AI provider/runtime at the confirmed owner in `src/backend/` or `src/ai-service/` using the approved secure configuration and authentication from T003; keep provider credentials out of frontend code and source control.
-- [ ] T012 Implement the approved caller-facing route or proxy at the confirmed owner in `src/backend/server.js` or the approved service entry point, preserving existing middleware, Public/Listener access, and keeping the internal AI service inaccessible directly from the browser.
-- [ ] T013 Map the approved lyrics request and response fields at the confirmed service boundary under `src/backend/` or `src/ai-service/` without adding undocumented fields.
-- [ ] T014 Map HTTP 503 to the shared `AI_SERVICE_UNAVAILABLE` response at the confirmed service boundary under `src/backend/` or `src/ai-service/` while preserving the shared API envelope.
-- [ ] T015 Map HTTP 429 to a retryable `RATE_LIMITED` response at the confirmed service boundary under `src/backend/` or `src/ai-service/` and keep it distinct from service unavailability.
-- [ ] T016 Map other AI-service and catalog failures at the confirmed service boundary under `src/backend/` or `src/ai-service/` to the approved error response without returning success or exposing internal details.
+- [x] T010 Add contract tests in `src/backend/tests/lyricsSearch.integration.test.js` or `src/ai-service/tests/lyricsSearch.integration.test.js` at the confirmed service owner for the approved public request/response mapping and shared success/error envelope before implementing the route or proxy.
+- [x] T011 Integrate the approved AI provider/runtime at the confirmed owner in `src/backend/` or `src/ai-service/` using the approved secure configuration and authentication from T003; keep provider credentials out of frontend code and source control.
+- [x] T012 Implement the approved caller-facing route or proxy at the confirmed owner in `src/backend/server.js` or the approved service entry point, preserving existing middleware, Public/Listener access, and keeping the internal AI service inaccessible directly from the browser.
+- [x] T013 Map the approved lyrics request and response fields at the confirmed service boundary under `src/backend/` or `src/ai-service/` without adding undocumented fields.
+- [x] T014 Map HTTP 503 to the shared `AI_SERVICE_UNAVAILABLE` response at the confirmed service boundary under `src/backend/` or `src/ai-service/` while preserving the shared API envelope.
+- [x] T015 Map HTTP 429 to a retryable `RATE_LIMITED` response at the confirmed service boundary under `src/backend/` or `src/ai-service/` and keep it distinct from service unavailability.
+- [x] T016 Map other AI-service and catalog failures at the confirmed service boundary under `src/backend/` or `src/ai-service/` to the approved error response without returning success or exposing internal details.
 
 ---
 
@@ -46,20 +46,20 @@
 
 ### Tests for User Story 1
 
-- [ ] T017 [P] [US1] Add query validation and normalization tests in `src/frontend/src/pages/Search/useLyricsSearch.test.js` for trimming, whitespace, punctuation, case, diacritics, at least 3 words, and at most 200 characters.
-- [ ] T018 [P] [US1] Add API adapter tests in `src/frontend/src/services/aiLyricsSearchApi.test.js` for approved request serialization, response mapping, and shared success/error envelopes without asserting undocumented fields.
+- [x] T017 [P] [US1] Add query validation and normalization tests in `src/frontend/src/pages/Search/useLyricsSearch.test.js` for trimming, whitespace, punctuation, case, diacritics, at least 3 words, and at most 200 characters.
+- [x] T018 [P] [US1] Add API adapter tests in `src/frontend/src/services/aiLyricsSearchApi.test.js` for approved request serialization, response mapping, and shared success/error envelopes without asserting undocumented fields.
 
 ### Implementation for User Story 1
 
-- [ ] T019 [US1] Create the frontend lyrics-search API adapter in `src/frontend/src/services/aiLyricsSearchApi.js` to call only the approved caller-facing route and use only T002's approved request fields.
-- [ ] T020 [US1] Map the approved song identity and lyric-context response fields into a lyrics result view model in `src/frontend/src/services/aiLyricsSearchApi.js`.
-- [ ] T021 [US1] Validate lyric fragments in `src/frontend/src/pages/Search/useLyricsSearch.js` after trimming and whitespace normalization; require at least 3 words and at most 200 characters, show feedback, and send no request for invalid input.
-- [ ] T022 [US1] Prevent duplicate submissions of the same in-flight query in `src/frontend/src/pages/Search/useLyricsSearch.js`.
-- [ ] T023 [US1] Associate AI, fallback, and pagination requests with the current search identity in `src/frontend/src/pages/Search/useLyricsSearch.js` so stale results, errors, banners, and pagination cannot replace current state; cancel older requests only when supported.
-- [ ] T024 [US1] Reset results, pagination, errors, and fallback notice when a new lyric query is submitted in `src/frontend/src/pages/Search/useLyricsSearch.js`.
-- [ ] T025 [US1] Implement 20-song batches and Load More state in `src/frontend/src/pages/Search/useLyricsSearch.js` using only the approved continuation fields from T002 and preventing stale batch appends.
-- [ ] T026 [US1] Integrate `useLyricsSearch` into the AI Lyrics tab in `src/frontend/src/pages/Search/SearchPage.jsx` while preserving `/search?type=lyrics` navigation and the Metadata/Semantic tab boundaries.
-- [ ] T027 [US1] Connect lyric-result selection to the existing `PlayerContext` and `AppStore` playback checks in `src/frontend/src/pages/Search/SearchPage.jsx`.
+- [x] T019 [US1] Create the frontend lyrics-search API adapter in `src/frontend/src/services/aiLyricsSearchApi.js` to call only the approved caller-facing route and use only T002's approved request fields.
+- [x] T020 [US1] Map the approved song identity and lyric-context response fields into a lyrics result view model in `src/frontend/src/services/aiLyricsSearchApi.js`.
+- [x] T021 [US1] Validate lyric fragments in `src/frontend/src/pages/Search/useLyricsSearch.js` after trimming and whitespace normalization; require at least 3 words and at most 200 characters, show feedback, and send no request for invalid input.
+- [x] T022 [US1] Prevent duplicate submissions of the same in-flight query in `src/frontend/src/pages/Search/useLyricsSearch.js`.
+- [x] T023 [US1] Associate AI, fallback, and pagination requests with the current search identity in `src/frontend/src/pages/Search/useLyricsSearch.js` so stale results, errors, banners, and pagination cannot replace current state; cancel older requests only when supported.
+- [x] T024 [US1] Reset results, pagination, errors, and fallback notice when a new lyric query is submitted in `src/frontend/src/pages/Search/useLyricsSearch.js`.
+- [x] T025 [US1] Implement 20-song batches and Load More state in `src/frontend/src/pages/Search/useLyricsSearch.js` using only the approved continuation fields from T002 and preventing stale batch appends.
+- [x] T026 [US1] Integrate `useLyricsSearch` into the AI Lyrics tab in `src/frontend/src/pages/Search/SearchPage.jsx` while preserving `/search?type=lyrics` navigation and the Metadata/Semantic tab boundaries.
+- [x] T027 [US1] Connect lyric-result selection to the existing `PlayerContext` and `AppStore` playback checks in `src/frontend/src/pages/Search/SearchPage.jsx`.
 
 ---
 
@@ -69,9 +69,9 @@
 
 **Independent Test**: Search a known fragment and a fragment with no match; verify identifiable results and lyric context for the first, explicit guidance for the second, and no stale results after a newer query.
 
-- [ ] T028 [P] [US2] Add component tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for result identity, lyric context, no-results guidance, and current-query result display.
-- [ ] T029 [US2] Render lyric results with approved identifying metadata and matching lyric context in `src/frontend/src/pages/Search/SearchPage.jsx` using existing `SongRow` and cover components.
-- [ ] T030 [US2] Render an explicit no-results state with guidance in `src/frontend/src/pages/Search/SearchPage.jsx` when the approved AI result and any applicable fallback contain no matches.
+- [x] T028 [P] [US2] Add component tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for result identity, lyric context, no-results guidance, and current-query result display.
+- [x] T029 [US2] Render lyric results with approved identifying metadata and matching lyric context in `src/frontend/src/pages/Search/SearchPage.jsx` using existing `SongRow` and cover components.
+- [x] T030 [US2] Render an explicit no-results state with guidance in `src/frontend/src/pages/Search/SearchPage.jsx` when the approved AI result and any applicable fallback contain no matches.
 
 ---
 
@@ -83,23 +83,23 @@
 
 ### Tests for User Story 3
 
-- [ ] T031 [P] [US3] Add lyrics-only fallback matcher tests in `src/frontend/src/utils/lyricsFallbackSearch.test.js` for exact-phrase precedence, query-word ranking, exclusion of title/artist/album/playlist-only matches, and the approved tie-break rule.
-- [ ] T032 [P] [US3] Add service-boundary tests in `src/backend/tests/lyricsSearch.integration.test.js` or `src/ai-service/tests/lyricsSearch.integration.test.js` at the confirmed owner for 503, 429, other failures, and approved response mapping.
-- [ ] T033 [P] [US3] Add lyrics-search state tests in `src/frontend/src/pages/Search/useLyricsSearch.test.js` for 503 fallback, timeout fallback, 429 non-fallback, other errors, fallback failure, and stale AI responses.
-- [ ] T034 [P] [US3] Add component tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for the fallback banner, dismissal, reset on new search, rate-limit feedback, and fallback failure states.
+- [x] T031 [P] [US3] Add lyrics-only fallback matcher tests in `src/frontend/src/utils/lyricsFallbackSearch.test.js` for exact-phrase precedence, query-word ranking, exclusion of title/artist/album/playlist-only matches, and the approved tie-break rule.
+- [x] T032 [P] [US3] Add service-boundary tests in `src/backend/tests/lyricsSearch.integration.test.js` or `src/ai-service/tests/lyricsSearch.integration.test.js` at the confirmed owner for 503, 429, other failures, and approved response mapping.
+- [x] T033 [P] [US3] Add lyrics-search state tests in `src/frontend/src/pages/Search/useLyricsSearch.test.js` for 503 fallback, timeout fallback, 429 non-fallback, other errors, fallback failure, and stale AI responses.
+- [x] T034 [P] [US3] Add component tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for the fallback banner, dismissal, reset on new search, rate-limit feedback, and fallback failure states.
 
 ### Implementation for User Story 3
 
-- [ ] T035 [US3] Start normalized-lyrics fallback automatically after HTTP 503 in `src/frontend/src/pages/Search/useLyricsSearch.js` without another user submission.
-- [ ] T036 [US3] Start the same fallback when the AI request has not completed within the confirmed 3-second threshold in `src/frontend/src/pages/Search/useLyricsSearch.js`; guard the transition against late AI responses.
-- [ ] T037 [US3] Keep HTTP 429 in a retryable rate-limit state and prevent fallback for HTTP 429 and other failures in `src/frontend/src/pages/Search/useLyricsSearch.js`.
-- [ ] T038 [US3] Implement an independently testable lyrics-only fallback matcher in `src/frontend/src/utils/lyricsFallbackSearch.js` using the confirmed lyric source from T004 and approved normalization behavior.
-- [ ] T039 [US3] Rank fallback matches by exact normalized phrase first and then by the number of matching normalized query words in `src/frontend/src/utils/lyricsFallbackSearch.js`, applying only the approved tie-break from T007.
-- [ ] T040 [US3] Exclude title-, artist-, album-, and playlist-only matches from fallback results in `src/frontend/src/utils/lyricsFallbackSearch.js`.
-- [ ] T041 [US3] Track fallback mode in `src/frontend/src/pages/Search/useLyricsSearch.js` using only the approved response indicator or client transition from T005.
-- [ ] T042 [US3] Preserve distinct no-results and error states when fallback returns no matches or fails in `src/frontend/src/pages/Search/useLyricsSearch.js`.
-- [ ] T043 [US3] Render a dismissible inline fallback notice above fallback results in `src/frontend/src/pages/Search/SearchPage.jsx`; keep it until dismissal or a new search.
-- [ ] T044 [US3] Render distinct loading, unavailable-service, retryable rate-limit, other-error, and fallback-failure states with retry actions where approved in `src/frontend/src/pages/Search/SearchPage.jsx`, without showing stale results as current.
+- [x] T035 [US3] Start normalized-lyrics fallback automatically after HTTP 503 in `src/frontend/src/pages/Search/useLyricsSearch.js` without another user submission.
+- [x] T036 [US3] Start the same fallback when the AI request has not completed within the confirmed 3-second threshold in `src/frontend/src/pages/Search/useLyricsSearch.js`; guard the transition against late AI responses.
+- [x] T037 [US3] Keep HTTP 429 in a retryable rate-limit state and prevent fallback for HTTP 429 and other failures in `src/frontend/src/pages/Search/useLyricsSearch.js`.
+- [x] T038 [US3] Implement an independently testable lyrics-only fallback matcher in `src/frontend/src/utils/lyricsFallbackSearch.js` using the confirmed lyric source from T004 and approved normalization behavior.
+- [x] T039 [US3] Rank fallback matches by exact normalized phrase first and then by the number of matching normalized query words in `src/frontend/src/utils/lyricsFallbackSearch.js`, applying only the approved tie-break from T007.
+- [x] T040 [US3] Exclude title-, artist-, album-, and playlist-only matches from fallback results in `src/frontend/src/utils/lyricsFallbackSearch.js`.
+- [x] T041 [US3] Track fallback mode in `src/frontend/src/pages/Search/useLyricsSearch.js` using only the approved response indicator or client transition from T005.
+- [x] T042 [US3] Preserve distinct no-results and error states when fallback returns no matches or fails in `src/frontend/src/pages/Search/useLyricsSearch.js`.
+- [x] T043 [US3] Render a dismissible inline fallback notice above fallback results in `src/frontend/src/pages/Search/SearchPage.jsx`; keep it until dismissal or a new search.
+- [x] T044 [US3] Render distinct loading, unavailable-service, retryable rate-limit, other-error, and fallback-failure states with retry actions where approved in `src/frontend/src/pages/Search/SearchPage.jsx`, without showing stale results as current.
 
 ---
 
@@ -107,11 +107,11 @@
 
 **Purpose**: Validate complete user journeys and existing application behavior without extending feature scope.
 
-- [ ] T045 [P] Add end-to-end acceptance coverage in `tests/e2e/032-ai-lyrics-search.test.js` for incomplete fragments, normalized query variations, matching results, playback, and Load More batches of 20.
-- [ ] T046 [P] Add end-to-end fallback coverage in `tests/e2e/032-ai-lyrics-search.test.js` for HTTP 503, the resolved timeout, banner behavior, fallback no-results, HTTP 429 non-fallback, and newer queries superseding older requests.
-- [ ] T047 Verify `/search` navigation, Metadata and Semantic tabs, normal playback, auth/health routes, and responsive layout in `tests/e2e/032-ai-lyrics-search.test.js` without implementing features 031 or 033.
-- [ ] T048 Run the approved feature validation commands from `specs/030-search/032-ai-lyrics-search/quickstart.md` after the contract, service, lyric source, and test runner gates are resolved.
-- [ ] T049 Evaluate the spec's 90% recognition/next-action success criterion with representative Public and Listener users and record the outcome in `specs/030-search/032-ai-lyrics-search/quickstart.md`.
+- [x] T045 [P] Add end-to-end acceptance coverage in `tests/e2e/032-ai-lyrics-search.test.js` for incomplete fragments, normalized query variations, matching results, playback, and Load More batches of 20.
+- [x] T046 [P] Add end-to-end fallback coverage in `tests/e2e/032-ai-lyrics-search.test.js` for HTTP 503, the resolved timeout, banner behavior, fallback no-results, HTTP 429 non-fallback, and newer queries superseding older requests.
+- [x] T047 Verify `/search` navigation, Metadata and Semantic tabs, normal playback, auth/health routes, and responsive layout in `tests/e2e/032-ai-lyrics-search.test.js` without implementing features 031 or 033.
+- [x] T048 Run the approved feature validation commands from `specs/030-search/032-ai-lyrics-search/quickstart.md` after the contract, service, lyric source, and test runner gates are resolved.
+- [x] T049 Evaluate the spec's 90% recognition/next-action success criterion with representative Public and Listener users and record the outcome in `specs/030-search/032-ai-lyrics-search/quickstart.md`.
 
 ---
 

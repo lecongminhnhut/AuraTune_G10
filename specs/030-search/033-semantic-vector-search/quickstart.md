@@ -77,6 +77,14 @@ Run these after the endpoint, timeout policy, AI service, and test tooling have 
 12. Evaluate at least 100 representative mood/context queries with the specified 1–5 scale; count ratings 4–5 as relevant and allow multiple reasonable interpretations satisfying the stated intent.
 13. Test live dropdown keyboard behavior, responsive layout, result playback, and regression of the other `/search` modes. Treat mock playlist suggestions and explanation text as visual references until corresponding response fields/result types are approved.
 
+## Implementation Validation Record
+
+- Phase 2 through Phase 7 implementation completed for tasks T011–T053.
+- Backend semantic ranking, privacy, fallback, and route contract tests passed.
+- Frontend semantic query, adapter, acceptance, and regression tests passed; the full existing frontend suite passed.
+- The production build was attempted and remains blocked by an existing Windows/esbuild path-access error, not a source diagnostic.
+- The 100-query human relevance evaluation remains a controlled follow-up because no approved catalog snapshot or evaluator credentials were supplied.
+
 ## Pending Before End-to-End Validation
 
 - Approve the exact public and internal semantic routes, request/response schema, service authentication, and timeout propagation.

@@ -13,6 +13,8 @@ import albumRoutes from './routes/albumRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
 import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
+import searchRoutes from './routes/searchRoutes.js';
+import lyricsSearchRoutes from './routes/lyricsSearchRoutes.js';
 
 dotenv.config();
 
@@ -71,6 +73,8 @@ app.use('/api/v1/users/me/stats', statsRoutes);
 // Group 100 AI Recommendations: Feature 102 (Personalized Recommendations)
 app.use('/api/v1/recommendations/mood-context', moodRecommendationRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1', searchRoutes);
+app.use('/api/v1', lyricsSearchRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
@@ -87,6 +91,8 @@ if (process.env.NODE_ENV !== 'production') {
 app.use((req, res) => {
   res.status(404).json({ error: 'not_found', message: `Route ${req.method} ${req.url} not found` });
 });
+
+export { app };
 
 app.listen(PORT, () => {
   console.log(`🚀 AuraTune Backend Server is running on http://localhost:${PORT}`);

@@ -19,5 +19,8 @@ class Settings:
     AI_SERVICE_HOST: str = os.getenv("AI_SERVICE_HOST", "0.0.0.0")
     AI_SERVICE_PORT: int = int(os.getenv("AI_SERVICE_PORT", "8000"))
     CORS_ORIGINS: list[str] = ["*"]
+    INTERNAL_API_KEY: str = os.getenv("INTERNAL_API_KEY", "")
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
+    SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
 settings = Settings()

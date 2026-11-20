@@ -22,15 +22,15 @@
 
 **Purpose**: Implement the approved backend boundary and reusable query behavior needed before the frontend can consume search results.
 
-- [ ] T004 Implement query normalization in `src/backend/utils/searchNormalization.js` to trim whitespace and ignore case, diacritics, and punctuation consistently with the approved matching policy.
-- [ ] T005 Create the catalog search repository in `src/backend/repositories/searchRepository.js` using the verified PostgreSQL/Supabase catalog mapping and the existing client boundary in `src/database/supabaseClient.js` for tracks, artists, albums, and playlists.
-- [ ] T006 Implement approved `type`, `limit`, and `offset` handling in `src/backend/repositories/searchRepository.js`, including defaults `all`, `20`, and `0` and the contract bounds.
-- [ ] T007 Implement typed result projection and grouped ordering in `src/backend/repositories/searchRepository.js` so `type=all` returns tracks, artists, albums, and playlists in the contract-defined group order without adding a ranking formula.
-- [ ] T008 Implement pagination metadata in `src/backend/repositories/searchRepository.js` with `limit`, `offset`, `next_offset`, and `has_more` consistent with the filtered result set.
-- [ ] T009 Create the search controller in `src/backend/controllers/searchController.js` to validate all approved query parameters, reject unknown or inapplicable values with `400 VALIDATION_ERROR`, and enforce the trimmed 2–100 character `q` constraint.
-- [ ] T010 Map catalog failures in `src/backend/controllers/searchController.js` to the shared `500 INTERNAL_ERROR` envelope without exposing credentials, SQL, or stack traces; preserve catalog failures as errors rather than empty successes.
-- [ ] T011 Create `GET /search` in `src/backend/routes/searchRoutes.js` using the approved success and error envelopes from `specs/030-search/031-metadata-search/contracts/search-api.md`.
-- [ ] T012 Mount the search router in `src/backend/server.js` under `/api/v1` using existing Express, CORS, and shared rate-limit conventions; keep the endpoint public and preserve health and authentication routes.
+- [x] T004 Implement query normalization in `src/backend/utils/searchNormalization.js` to trim whitespace and ignore case, diacritics, and punctuation consistently with the approved matching policy.
+- [x] T005 Create the catalog search repository in `src/backend/repositories/searchRepository.js` using the verified PostgreSQL/Supabase catalog mapping and the existing client boundary in `src/database/supabaseClient.js` for tracks, artists, albums, and playlists.
+- [x] T006 Implement approved `type`, `limit`, and `offset` handling in `src/backend/repositories/searchRepository.js`, including defaults `all`, `20`, and `0` and the contract bounds.
+- [x] T007 Implement typed result projection and grouped ordering in `src/backend/repositories/searchRepository.js` so `type=all` returns tracks, artists, albums, and playlists in the contract-defined group order without adding a ranking formula.
+- [x] T008 Implement pagination metadata in `src/backend/repositories/searchRepository.js` with `limit`, `offset`, `next_offset`, and `has_more` consistent with the filtered result set.
+- [x] T009 Create the search controller in `src/backend/controllers/searchController.js` to validate all approved query parameters, reject unknown or inapplicable values with `400 VALIDATION_ERROR`, and enforce the trimmed 2–100 character `q` constraint.
+- [x] T010 Map catalog failures in `src/backend/controllers/searchController.js` to the shared `500 INTERNAL_ERROR` envelope without exposing credentials, SQL, or stack traces; preserve catalog failures as errors rather than empty successes.
+- [x] T011 Create `GET /search` in `src/backend/routes/searchRoutes.js` using the approved success and error envelopes from `specs/030-search/031-metadata-search/contracts/search-api.md`.
+- [x] T012 Mount the search router in `src/backend/server.js` under `/api/v1` using existing Express, CORS, and shared rate-limit conventions; keep the endpoint public and preserve health and authentication routes.
 
 ---
 
@@ -42,30 +42,30 @@
 
 ### Backend and API Tests for User Story 1
 
-- [ ] T013 [P] [US1] Add search API tests in `src/backend/tests/search.test.js` for valid requests, all four result types, type selection, defaults, pagination, and the success envelope.
-- [ ] T014 [P] [US1] Add query validation tests in `src/backend/tests/search.test.js` for missing, short, overlong, whitespace, unknown, and invalid query parameters.
+- [x] T013 [P] [US1] Add search API tests in `src/backend/tests/search.test.js` for valid requests, all four result types, type selection, defaults, pagination, and the success envelope.
+- [x] T014 [P] [US1] Add query validation tests in `src/backend/tests/search.test.js` for missing, short, overlong, whitespace, unknown, and invalid query parameters.
 
 ### Implementation for User Story 1
 
-- [ ] T015 [US1] Create frontend query normalization in `src/frontend/src/utils/searchNormalization.js` with the same whitespace, case, diacritic, and punctuation behavior as the backend.
-- [ ] T016 [US1] Create the frontend search API adapter in `src/frontend/src/services/searchApi.js` to call `GET /api/v1/search` and serialize only `q`, `type`, `limit`, `offset`, `genre`, `release_year`, and `sort`.
-- [ ] T017 [US1] Normalize HTTP and network errors in `src/frontend/src/services/searchApi.js` so the page can distinguish validation, rate-limit, and service failures.
-- [ ] T018 [US1] Create metadata search state in `src/frontend/src/pages/Search/useMetadataSearch.js` for query, type, approved constraints, offset, accumulated results, loading, empty, error, retry, and continuation state.
-- [ ] T019 [US1] Prevent requests for invalid trimmed queries, enforce the 2–100 character range, and provide clear overlength feedback in `src/frontend/src/pages/Search/useMetadataSearch.js` and `src/frontend/src/pages/Search/SearchPage.jsx`.
-- [ ] T020 [US1] Reset the current result batch and offset when query, type, or approved constraints change in `src/frontend/src/pages/Search/useMetadataSearch.js`.
-- [ ] T021 [US1] Protect current search state from stale responses in `src/frontend/src/pages/Search/useMetadataSearch.js` using cancellation or request identity checks.
-- [ ] T022 [US1] Implement retry in `src/frontend/src/pages/Search/useMetadataSearch.js` using the same current query, type, constraints, and offset.
-- [ ] T023 [US1] Implement Load More in `src/frontend/src/pages/Search/useMetadataSearch.js` to request `pagination.next_offset`, append results, and stop when `pagination.has_more` is false.
-- [ ] T024 [US1] Create a LocalStorage-backed recent-query utility in `src/frontend/src/utils/searchHistory.js` that records no more than 10 query strings and stores no results, credentials, or server-side state.
-- [ ] T025 [US1] Handle malformed or unavailable LocalStorage in `src/frontend/src/utils/searchHistory.js` while keeping in-memory search usable.
-- [ ] T026 [US1] Add recent-query selection, individual removal, and clear-all operations in `src/frontend/src/utils/searchHistory.js`.
-- [ ] T027 [US1] Integrate `useMetadataSearch` into `src/frontend/src/pages/Search/SearchPage.jsx` while preserving URL-driven `q` and `type` navigation.
-- [ ] T028 [US1] Render identifiable track, artist, album, and playlist results in `src/frontend/src/pages/Search/SearchPage.jsx` using the existing `SongRow`, `ArtistCard`, `AlbumCard`, and `PlaylistCard` components.
-- [ ] T029 [US1] Preserve track and playlist playback through the existing player context in `src/frontend/src/pages/Search/SearchPage.jsx`.
-- [ ] T030 [US1] Add the focus-triggered recent-query dropdown to `src/frontend/src/pages/Search/SearchPage.jsx` and connect selection, individual removal, and clear-all actions.
-- [ ] T031 [US1] Add a Load More action to `src/frontend/src/pages/Search/SearchPage.jsx` that appends the next batch and hides or disables itself when `has_more` is false.
-- [ ] T032 [P] [US1] Add recent-query utility tests in `src/frontend/src/utils/searchHistory.test.js` for the 10-entry cap, selection, removal, clear-all, malformed storage, and unavailable storage.
-- [ ] T033 [P] [US1] Add search state tests in `src/frontend/src/pages/Search/useMetadataSearch.test.js` for query validation, request parameters, reset behavior, pagination append, retry, and stale-response protection.
+- [x] T015 [US1] Create frontend query normalization in `src/frontend/src/utils/searchNormalization.js` with the same whitespace, case, diacritic, and punctuation behavior as the backend.
+- [x] T016 [US1] Create the frontend search API adapter in `src/frontend/src/services/searchApi.js` to call `GET /api/v1/search` and serialize only `q`, `type`, `limit`, `offset`, `genre`, `release_year`, and `sort`.
+- [x] T017 [US1] Normalize HTTP and network errors in `src/frontend/src/services/searchApi.js` so the page can distinguish validation, rate-limit, and service failures.
+- [x] T018 [US1] Create metadata search state in `src/frontend/src/pages/Search/useMetadataSearch.js` for query, type, approved constraints, offset, accumulated results, loading, empty, error, retry, and continuation state.
+- [x] T019 [US1] Prevent requests for invalid trimmed queries, enforce the 2–100 character range, and provide clear overlength feedback in `src/frontend/src/pages/Search/useMetadataSearch.js` and `src/frontend/src/pages/Search/SearchPage.jsx`.
+- [x] T020 [US1] Reset the current result batch and offset when query, type, or approved constraints change in `src/frontend/src/pages/Search/useMetadataSearch.js`.
+- [x] T021 [US1] Protect current search state from stale responses in `src/frontend/src/pages/Search/useMetadataSearch.js` using cancellation or request identity checks.
+- [x] T022 [US1] Implement retry in `src/frontend/src/pages/Search/useMetadataSearch.js` using the same current query, type, constraints, and offset.
+- [x] T023 [US1] Implement Load More in `src/frontend/src/pages/Search/useMetadataSearch.js` to request `pagination.next_offset`, append results, and stop when `pagination.has_more` is false.
+- [x] T024 [US1] Create a LocalStorage-backed recent-query utility in `src/frontend/src/utils/searchHistory.js` that records no more than 10 query strings and stores no results, credentials, or server-side state.
+- [x] T025 [US1] Handle malformed or unavailable LocalStorage in `src/frontend/src/utils/searchHistory.js` while keeping in-memory search usable.
+- [x] T026 [US1] Add recent-query selection, individual removal, and clear-all operations in `src/frontend/src/utils/searchHistory.js`.
+- [x] T027 [US1] Integrate `useMetadataSearch` into `src/frontend/src/pages/Search/SearchPage.jsx` while preserving URL-driven `q` and `type` navigation.
+- [x] T028 [US1] Render identifiable track, artist, album, and playlist results in `src/frontend/src/pages/Search/SearchPage.jsx` using the existing `SongRow`, `ArtistCard`, `AlbumCard`, and `PlaylistCard` components.
+- [x] T029 [US1] Preserve track and playlist playback through the existing player context in `src/frontend/src/pages/Search/SearchPage.jsx`.
+- [x] T030 [US1] Add the focus-triggered recent-query dropdown to `src/frontend/src/pages/Search/SearchPage.jsx` and connect selection, individual removal, and clear-all actions.
+- [x] T031 [US1] Add a Load More action to `src/frontend/src/pages/Search/SearchPage.jsx` that appends the next batch and hides or disables itself when `has_more` is false.
+- [x] T032 [P] [US1] Add recent-query utility tests in `src/frontend/src/utils/searchHistory.test.js` for the 10-entry cap, selection, removal, clear-all, malformed storage, and unavailable storage.
+- [x] T033 [P] [US1] Add search state tests in `src/frontend/src/pages/Search/useMetadataSearch.test.js` for query validation, request parameters, reset behavior, pagination append, retry, and stale-response protection.
 
 ---
 
@@ -75,12 +75,12 @@
 
 **Independent Test**: Search a multi-result catalog, apply valid filters and sort choices, and verify the result set/order; verify invalid combinations are rejected and inapplicable UI filters are hidden.
 
-- [ ] T034 [P] [US2] Add API tests in `src/backend/tests/search.test.js` for filter applicability, combined filters, each approved sort, type-group ordering, and pagination after filtering.
-- [ ] T035 [P] [US2] Add search page tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for filter visibility, approved sort choices, selection changes, and result updates.
-- [ ] T036 [US2] Apply `genre` and `release_year` together as AND constraints before sorting and pagination in `src/backend/repositories/searchRepository.js`, following the contract behavior for `all`, tracks, and albums.
-- [ ] T037 [US2] Implement `relevance`, `plays`, `newest`, and `title` semantics in `src/backend/repositories/searchRepository.js` with only the approved type applicability and no custom relevance score.
-- [ ] T038 [US2] Render `genre` and `release_year` filters for `all`, tracks, and albums, and hide them for artists and playlists in `src/frontend/src/pages/Search/SearchPage.jsx`.
-- [ ] T039 [US2] Render and apply only the approved sort controls in `src/frontend/src/pages/Search/SearchPage.jsx`, resetting pagination when sort or filter selections change.
+- [x] T034 [P] [US2] Add API tests in `src/backend/tests/search.test.js` for filter applicability, combined filters, each approved sort, type-group ordering, and pagination after filtering.
+- [x] T035 [P] [US2] Add search page tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for filter visibility, approved sort choices, selection changes, and result updates.
+- [x] T036 [US2] Apply `genre` and `release_year` together as AND constraints before sorting and pagination in `src/backend/repositories/searchRepository.js`, following the contract behavior for `all`, tracks, and albums.
+- [x] T037 [US2] Implement `relevance`, `plays`, `newest`, and `title` semantics in `src/backend/repositories/searchRepository.js` with only the approved type applicability and no custom relevance score.
+- [x] T038 [US2] Render `genre` and `release_year` filters for `all`, tracks, and albums, and hide them for artists and playlists in `src/frontend/src/pages/Search/SearchPage.jsx`.
+- [x] T039 [US2] Render and apply only the approved sort controls in `src/frontend/src/pages/Search/SearchPage.jsx`, resetting pagination when sort or filter selections change.
 
 ---
 
@@ -90,9 +90,9 @@
 
 **Independent Test**: Verify explicit no-results feedback for a successful empty response, actionable error and retry for service failure, and current-query protection during overlapping requests.
 
-- [ ] T040 [P] [US3] Add search page tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for loading, empty success, service error, retry, and stale-result handling.
-- [ ] T041 [US3] Render distinct loading, explicit no-results, and service-error states in `src/frontend/src/pages/Search/SearchPage.jsx` without presenting stale results as the current successful result set.
-- [ ] T042 [US3] Add an actionable retry control in `src/frontend/src/pages/Search/SearchPage.jsx` wired to the current request state.
+- [x] T040 [P] [US3] Add search page tests in `src/frontend/src/pages/Search/SearchPage.test.jsx` for loading, empty success, service error, retry, and stale-result handling.
+- [x] T041 [US3] Render distinct loading, explicit no-results, and service-error states in `src/frontend/src/pages/Search/SearchPage.jsx` without presenting stale results as the current successful result set.
+- [x] T042 [US3] Add an actionable retry control in `src/frontend/src/pages/Search/SearchPage.jsx` wired to the current request state.
 
 ---
 
@@ -100,11 +100,11 @@
 
 **Purpose**: Verify the end-to-end feature scope, responsive affordances, project performance reference, and existing neighboring behavior.
 
-- [ ] T043 Keep Metadata behavior separate from AI Lyrics and Semantic tabs in `src/frontend/src/pages/Search/SearchPage.jsx` and preserve their navigation boundaries.
-- [ ] T044 [P] Add end-to-end acceptance coverage in `src/frontend/tests/search/metadata-search.test.js` for known matches across four metadata types, category narrowing, filters, sorting, Load More, query replacement while loading, and responsive result identification.
-- [ ] T045 [P] Verify `/search` navigation, track and playlist playback, health and authentication routes, and AI Lyrics/Semantic tab rendering in `src/frontend/tests/search/metadata-search.test.js` without implementing neighboring feature behavior.
-- [ ] T046 Measure exact metadata search and PostgreSQL core-query latency against the project targets recorded in `specs/030-search/031-metadata-search/plan.md`; report measurements without claiming a pass until measured.
-- [ ] T047 Run the feature's agreed backend/frontend validation commands from `specs/030-search/031-metadata-search/quickstart.md` after the feature implementation is complete.
+- [x] T043 Keep Metadata behavior separate from AI Lyrics and Semantic tabs in `src/frontend/src/pages/Search/SearchPage.jsx` and preserve their navigation boundaries.
+- [x] T044 [P] Add end-to-end acceptance coverage in `src/frontend/tests/search/metadata-search.test.js` for known matches across four metadata types, category narrowing, filters, sorting, Load More, query replacement while loading, and responsive result identification.
+- [x] T045 [P] Verify `/search` navigation, track and playlist playback, health and authentication routes, and AI Lyrics/Semantic tab rendering in `src/frontend/tests/search/metadata-search.test.js` without implementing neighboring feature behavior.
+- [x] T046 Measure exact metadata search and PostgreSQL core-query latency against the project targets recorded in `specs/030-search/031-metadata-search/plan.md`; report measurements without claiming a pass until measured.
+- [x] T047 Run the feature's agreed backend/frontend validation commands from `specs/030-search/031-metadata-search/quickstart.md` after the feature implementation is complete.
 
 ---
 
