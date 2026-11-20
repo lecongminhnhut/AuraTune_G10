@@ -8,6 +8,8 @@
     "start": "node src/backend/server.js",
     "dev:backend": "node --watch src/backend/server.js",
     "dev:frontend": "cd src/frontend && npm run dev",
+    "dev:ai": "py -3.13 -m uvicorn main:app --app-dir src/ai-service --port 8000 --reload",
+    "ai": "py -3.13 -m uvicorn main:app --app-dir src/ai-service --port 8000 --reload",
     "dev": "node src/backend/server.js",
     "test:backend": "node src/backend/test-server.js"
   },

@@ -1,0 +1,291 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AuraTune Album Details API",
+    "description": "API contract for Feature 081: Album Details (Group 080 - Album Interaction)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "AuraTune API v1 base"
+    }
+  ],
+  "paths": {
+    "/albums/{id}": {
+      "get": {
+        "summary": "Retrieve album details and complete track list",
+        "description": "Returns public album metadata (cover art, artist, release year) and the complete ordered list of tracks with their individual play counts and durations.",
+        "operationId": "getAlbumDetails",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Unique identifier of the requested album.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlbumDetailsApiResponse"
+                },
+                "examples": {
+                  "withData": {
+                    "summary": "Album with complete metadata and mixed track values",
+                    "value": {
+                      "success": true,
+                      "message": "Album details retrieved successfully",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "title": "Lofi bên cửa sổ",
+                        "releaseYear": 2026,
+                        "coverArt": "https://storage.supabase.co/auratune/.../cover.jpg",
+                        "artist": {
+                          "id": "a329432-1234-4f8a-...",
+                          "name": "AuraTune Studio"
+                        },
+                        "tracks": [
+                          {
+                            "id": "t1001",
+                            "title": "Midnight Coffee",
+                            "duration": 210,
+                            "playCount": 204000,
+                            "trackNumber": 1
+                          },
+                          {
+                            "id": "t1002",
+                            "title": "Rainy Window",
+                            "duration": 150,
+                            "playCount": 178000,
+                            "trackNumber": 2
+                          },
+                          {
+                            "id": "t1003",
+                            "title": "Unknown Track",
+                            "duration": null,
+                            "playCount": null,
+                            "trackNumber": 3
+                          },
+                          {
+                            "id": "t1004",
+                            "title": "Zero Plays Track",
+                            "duration": 180,
+                            "playCount": 0,
+                            "trackNumber": 4
+                          }
+                        ]
+                      },
+                      "error": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Album not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Không tìm thấy album",
+                  "data": null,
+                  "error": {
+                    "code": "NOT_FOUND",
+                    "details": []
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal database query error or network failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Thông tin album tạm thời không khả dụng, vui lòng thử lại sau",
+                  "data": null,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "details": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AlbumDetailsApiResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Album details retrieved successfully"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AlbumDetailsData"
+          },
+          "error": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "AlbumDetailsData": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "releaseYear",
+          "coverArt",
+          "artist",
+          "tracks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "releaseYear": {
+            "type": "integer",
+            "nullable": true
+          },
+          "coverArt": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "artist": {
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackItem"
+            }
+          }
+        }
+      },
+      "TrackItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "duration",
+          "playCount",
+          "trackNumber"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "description": "Track duration in seconds. Null indicates unavailable duration."
+          },
+          "playCount": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true,
+            "description": "Total plays for this track. Null indicates unavailable count."
+          },
+          "trackNumber": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data",
+          "error"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "example": "NOT_FOUND"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

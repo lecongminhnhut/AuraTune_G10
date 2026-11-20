@@ -9,6 +9,8 @@ import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import { genres, getArtist, playlists, recentlyPlayed } from '../../utils/mockData.js'
 import { Link } from '../../utils/navigation.jsx'
+import RecommendationFeed from '../../components/recommendation/RecommendationFeed.jsx'
+import MoodDiscoverySection from '../../components/mood/MoodDiscoverySection.jsx'
 
 const gridClass = 'mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
 
@@ -86,9 +88,13 @@ export default function HomePage() {
           action="Xem tất cả"
           actionTo="/explore"
         />
-        <div className={gridClass}>
-          {recommendedPlaylists.map((playlist) => <PlaylistCard key={playlist.id} playlist={playlist} onPlayPlaylist={player.playPlaylist} />)}
+        <div className="mt-4">
+          <RecommendationFeed limit={5} onPlaySong={(song) => player.playTrack(song)} />
         </div>
+      </section>
+
+      <section className="px-5 sm:px-8">
+        <MoodDiscoverySection initialTag="chill" />
       </section>
 
       <section className="mt-10 px-5 sm:px-8">

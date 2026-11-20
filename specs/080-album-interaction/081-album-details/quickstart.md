@@ -44,4 +44,16 @@ npm run build
 
 ## Test tooling status
 
-The frontend manifest declares `dev`, `build`, and `preview`; the backend declares `start` and `dev`. Neither manifest declares a test script. Once the team confirms the test harness and the authoritative API provider/contract, add the corresponding automated acceptance, request-state, and contract checks without changing the approved behavior.
+## Test tooling status
+
+- **Automated Testing**: The frontend package manifest declares `dev`, `build`, and `preview`; the backend declares `start` and `dev`. Neither manifest currently declares an automated test script (e.g., Vitest, Jest). Per project constraints, no test dependency has been added during planning.
+- **Current Approach**: Validation for Feature 081 will rely strictly on the manual **Acceptance walkthrough** defined above, using `npm run dev`.
+- **Future Action**: Once the team (Vision Owner/Admin) officially approves and configures a repository-wide test harness, the automated presentation and request-state tests (T007, T008, T017, T022, T027) will be implemented using that framework.
+
+## Phase 2-5 Validation Record
+
+- **Frontend diagnostics**: No Problems diagnostics reported for the album service, application store, album page, cover art, song row, media cards, or shared UI files.
+- **Dev server**: `npm.cmd run dev -- --host 127.0.0.1` started successfully with Vite on `http://127.0.0.1:5173/` when run with the required Windows file-access permission.
+- **Manual smoke check**: `/album/{id}` rendered the loading state and then the retryable service-error state when the approved catalog service was unavailable. The backend was not modified because it is not the confirmed owner of the album-details contract.
+- **Production build**: Vite reached the transform phase, but the sandboxed build process could not complete because the linked root package path was denied by the environment. No source diagnostics were reported.
+- **Automated tests**: Not added or run; the feature constraint requires manual acceptance through `npm run dev` and forbids adding a test framework or new test files.

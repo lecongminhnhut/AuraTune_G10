@@ -44,6 +44,10 @@ export function EmptyState({ icon: IconComponent = Info, title, description, chi
   )
 }
 
+export function LoadingState({ title = 'Loading album details...' }) {
+  return <div role="status" className="flex min-h-48 items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] px-6 py-12 text-sm text-zinc-400">{title}</div>
+}
+
 export function ErrorState({ title = 'Không tải được dữ liệu', description = 'Có lỗi tạm thời. Vui lòng thử lại.', onRetry, compact = false }) {
   return (
     <EmptyState icon={AlertTriangle} title={title} description={description} compact={compact}>

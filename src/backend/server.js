@@ -6,6 +6,14 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
+import songRoutes from './routes/songRoutes.js';
+import agentRoutes from './routes/agentRoutes.js';
+import intentRoutes from './routes/intentRoutes.js';
+import assistanceRoutes from './routes/assistanceRoutes.js';
+import albumRoutes from './routes/albumRoutes.js';
+import statsRoutes from './routes/statsRoutes.js';
+import recommendationRoutes from './routes/recommendationRoutes.js';
+import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
 
 dotenv.config();
 
@@ -50,6 +58,21 @@ app.get('/api/health', (req, res) => {
 // Mount Feature 010 Auth Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/media', mediaRoutes);
+// Group 040 Music Player: song metadata & audio stream
+app.use('/api/v1/songs', songRoutes);
+// Group 120 AI Conversational Agent: Feature 121
+app.use('/api/v1/agent', agentRoutes);
+// Group 120 AI Conversational Agent: Feature 122 (Music Intent Understanding)
+app.use('/api/v1/agent/intent', intentRoutes);
+// Group 120 AI Conversational Agent: Feature 123 (Real-Time Music Assistance)
+app.use('/api/v1/agent/assistance', assistanceRoutes);
+// Feature 083 Album Save and Share routes
+app.use('/api/v1', albumRoutes);
+// Group 100 AI Recommendations: Feature 101 (Listening History Analysis)
+app.use('/api/v1/users/me/stats', statsRoutes);
+// Group 100 AI Recommendations: Feature 102 (Personalized Recommendations)
+app.use('/api/v1/recommendations/mood-context', moodRecommendationRoutes);
+app.use('/api/v1/recommendations', recommendationRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',

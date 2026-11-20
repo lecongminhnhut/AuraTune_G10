@@ -172,3 +172,12 @@ In accordance with `docs/design/architecture/system-architecture.md`, Frontend c
 | `ACCOUNT_BANNED` | `403` | User account is disabled/banned | Rejects request with notification message |
 | *(Empty Catalog Matches)* | `200 OK` | Tag matches 0 active songs/playlists | Returns HTTP 200 with `items: []` and 2–3 `alternative_suggestions` (FR-004) |
 | *(AI Service Timeout / Outage)* | `200 OK` | AI service unresponsive $> 2.5$s or returns HTTP 5xx | Intercepts error, logs warning, and returns HTTP 200 with `is_service_degraded: true` & fallback shortcuts (FR-004, EF-01) |
+
+---
+
+## 4. Client-Side In-Memory Cache & Mock Testing
+
+- **In-Memory Cache (TTL 5 mins)**: `src/frontend/src/services/moodRecommendationService.js` caches recent recommendation results in a Map keyed by `${tag}:${type}:${limit}`. Toggling back to recently viewed chips completes in $< 50$ms without network re-fetch (AF-01).
+- **Client Request Cancellation**: Active fetch requests are tied to `AbortController`, aborting previous queries when chips are rapidly switched to eliminate race conditions.
+- **Standalone Mock Mode**: Set `VITE_USE_MOCKS=true` in `src/frontend/.env.local` to exercise the complete UI against `mockMoodRecommendationService.js`.
+

@@ -9,11 +9,13 @@ import MobileNav from './components/common/MobileNav.jsx'
 import { Toaster } from './components/common/ui.jsx'
 import { AddToPlaylistDialog, PlaylistFormDialog } from './components/playlist/PlaylistDialogs.jsx'
 import AppRouter from './routes/AppRouter.jsx'
-import useMockPlayer from './hooks/useMockPlayer.js'
+import useAudioPlayer from './hooks/useAudioPlayer.js'
 import { AppStoreProvider, useStore } from './context/AppStore.jsx'
 import { PlayerContext } from './context/PlayerContext.jsx'
 import { loginPath, navigate } from './utils/navigation.jsx'
 import { shareLink, shareMessage, trackSharePath } from './utils/share.js'
+
+const MAX_QUEUE_ITEMS = 50
 
 export default function App() {
   return (
@@ -25,7 +27,7 @@ export default function App() {
 
 function AppShell() {
   const store = useStore()
-  const player = useMockPlayer()
+  const player = useAudioPlayer({ findTrack: store.findTrack, isPlayable: store.isPlayable })
   const [chatOpen, setChatOpen] = useState(false)
   const [fullScreenOpen, setFullScreenOpen] = useState(false)
   const queueOpen = store.ui.queueOpen
@@ -36,25 +38,30 @@ function AppShell() {
   const openChat = () => { store.setQueueOpen(false); setChatOpen(true) }
   const openQueue = () => { setChatOpen(false); setFullScreenOpen(false); store.setQueueOpen(true) }
 
-  // Ghi lịch sử nghe: mỗi lần một bài bắt đầu phát tạo một bản ghi, thời lượng nghe được cập nhật khi đổi bài hoặc tạm dừng.
+  // Ghi lịch sử nghe (041-FR-014): một phiên nghe chỉ thành lượt phát khi trình phát báo đã nghe liên tục
+  // 30 giây hoặc nửa bài (playCounted). Thời lượng nghe được cập nhật khi đổi bài, tạm dừng hoặc rời trang.
   const sessionRef = useRef(null)
   const userId = store.currentUser?.id
   const { recordPlay, updateListened } = store
+  const playSessionKey = `${userId}:${player.track.id}:${player.playKey}`
+
   useEffect(() => {
-    if (sessionRef.current && sessionRef.current.trackId === player.track.id) sessionRef.current.listened = player.elapsed
-  }, [player.elapsed, player.track.id])
+    const session = sessionRef.current
+    if (session && session.key !== playSessionKey) {
+      updateListened(session.entryId, session.listened)
+      sessionRef.current = null
+    }
+    if (!userId || !player.playCounted) return
+    if (sessionRef.current) sessionRef.current.listened = player.listened
+    else sessionRef.current = { key: playSessionKey, entryId: recordPlay(player.track.id), listened: player.listened }
+  }, [playSessionKey, userId, player.playCounted, player.listened, player.track.id, recordPlay, updateListened])
 
   useEffect(() => {
     const flush = () => { if (sessionRef.current) updateListened(sessionRef.current.entryId, sessionRef.current.listened) }
-    if (!player.isPlaying || !userId) { flush(); return undefined }
-    const key = `${userId}:${player.track.id}:${player.playKey}`
-    if (sessionRef.current?.key !== key) {
-      flush()
-      sessionRef.current = { key, trackId: player.track.id, entryId: recordPlay(player.track.id), listened: 0 }
-    }
+    if (!player.isPlaying) flush()
     window.addEventListener('pagehide', flush)
     return () => window.removeEventListener('pagehide', flush)
-  }, [player.isPlaying, player.track.id, player.playKey, userId, recordPlay, updateListened])
+  }, [player.isPlaying, updateListened])
 
   const requireLogin = (message = 'Bạn cần đăng nhập để dùng tính năng này.') => {
     store.toast(message, 'error')
@@ -72,6 +79,36 @@ function AppShell() {
     if (!playable.length) { store.toast('Danh sách này chưa có bài hát nào để phát.', 'error'); return }
     player.playCollection(playable, { playlistId, shuffle })
     if (openPlayer) openFullScreen()
+  }
+
+  const playAlbum = (collectionTracks) => {
+    const playable = collectionTracks.filter((track) => store.isPlayable(track.id)).slice(0, MAX_QUEUE_ITEMS)
+    if (!playable.length) {
+      store.toast('This album has no playable tracks.', 'error')
+      return 0
+    }
+    if (player.shuffle) player.toggleShuffle()
+    player.playCollection(playable, { shuffle: false })
+    openFullScreen()
+    return playable.length
+  }
+
+  const playSelectedTrack = (track, albumTracks = []) => {
+    if (!track || !store.isPlayable(track.id)) {
+      store.toast('This track is currently unavailable.', 'error')
+      return false
+    }
+
+    const selectedIndex = albumTracks.findIndex((item) => item.id === track.id)
+    const laterPlayable = albumTracks
+      .slice(selectedIndex + 1)
+      .filter((item) => store.isPlayable(item.id))
+      .slice(0, MAX_QUEUE_ITEMS - 1)
+
+    player.playTrack(track)
+    for (const laterTrack of [...laterPlayable].reverse()) player.playNext(laterTrack)
+    openFullScreen()
+    return true
   }
 
   const playPlaylist = (playlist, { shuffle = false } = {}) => {
@@ -94,18 +131,33 @@ function AppShell() {
   }
 
   const addToQueue = (track) => {
+    if (!store.isPlayable(track.id)) {
+      store.toast('This track is currently unavailable.', 'error')
+      return false
+    }
     const added = player.addToQueue(track)
     store.toast(added ? `Đã thêm “${track.title}” vào danh sách chờ.` : `“${track.title}” đã có trong danh sách chờ.`)
   }
 
   const playNext = (track) => {
+    if (!store.isPlayable(track.id)) {
+      store.toast('This track is currently unavailable.', 'error')
+      return false
+    }
     if (player.playNext(track)) store.toast(`“${track.title}” sẽ phát tiếp theo.`)
     else store.toast('Bài hát này đang được phát.')
   }
 
   const addManyToQueue = (items) => {
-    const count = player.addManyToQueue(items.filter((track) => store.isPlayable(track.id)))
-    store.toast(count ? `Đã thêm ${count} bài vào danh sách chờ.` : 'Các bài này đã có trong danh sách chờ.')
+    const playable = items.filter((track) => store.isPlayable(track.id))
+    const existingIds = new Set(player.queue.map((track) => track.id))
+    const fresh = playable.filter((track) => !existingIds.has(track.id))
+    const availableSlots = Math.max(0, MAX_QUEUE_ITEMS - player.queue.length)
+    const accepted = fresh.slice(0, availableSlots)
+    const count = player.addManyToQueue(accepted)
+    if (count) store.toast(`Added ${count} track${count === 1 ? '' : 's'} to the queue.`)
+    else if (fresh.length && !availableSlots) store.toast('The queue is full (50 tracks).', 'error')
+    else store.toast('These tracks are already in the queue.')
     return count
   }
 
@@ -136,7 +188,7 @@ function AppShell() {
 
   const playerValue = {
     ...player,
-    playTrack, playCollection, playPlaylist, addToQueue, playNext, addManyToQueue,
+    playTrack, playCollection, playAlbum, playSelectedTrack, playPlaylist, addToQueue, playNext, addManyToQueue,
     requestAddToPlaylist, share, requireLogin, openQueue, downloadTrack,
   }
 

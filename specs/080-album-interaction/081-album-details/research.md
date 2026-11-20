@@ -26,9 +26,9 @@
 
 ### Related albums
 
-- **Finding**: FR-016 requires “More from [Artist]”. Current `AlbumPage` filters the demo `AppStore.albums` collection by artist, but the approved album detail contract and production catalog source for this collection are not identified.
-- **Decision**: Do not add fields to the album detail response or invent another API. Reuse an existing approved catalog source if the owner confirms it supplies same-artist releases; otherwise record the source as a blocking clarification before implementation.
-- **Alternatives considered**: Expand `GET /albums/:id`, add a new related-albums endpoint, or assume the demo store is authoritative. Rejected as unsupported by the spec's contract boundary.
+- **Finding**: FR-016 requires “More from [Artist]”. The official API Contract defines existing public endpoints for this purpose.
+- **Decision**: The team will use the existing `GET /artists/:id/albums` endpoint defined in the official API Contract. The frontend will extract the `artist.id` from the initial album details response and fetch the related albums, filtering out the currently viewed album on the client side.
+- **Alternatives considered**: Expanding `GET /albums/:id` was rejected to strictly maintain the approved API boundaries defined in the official contract.
 
 ### Persistence and data model
 

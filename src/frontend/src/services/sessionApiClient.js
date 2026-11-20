@@ -196,3 +196,25 @@ export const authApi = {
   }
 };
 
+const readAlbumEnvelope = async (response) => {
+  const payload = await response.json();
+  if (!payload || typeof payload.success !== 'boolean' || !('data' in payload) || !('error' in payload)) {
+    throw new Error('Invalid album save API response.');
+  }
+  return payload;
+};
+
+export const albumApi = {
+  async getSavedAlbums() {
+    return readAlbumEnvelope(await apiFetch('/users/me/saved-albums', { method: 'GET' }));
+  },
+
+  async saveAlbum(albumId) {
+    return readAlbumEnvelope(await apiFetch(`/albums/${encodeURIComponent(albumId)}/save`, { method: 'PUT' }));
+  },
+
+  async removeSavedAlbum(albumId) {
+    return readAlbumEnvelope(await apiFetch(`/albums/${encodeURIComponent(albumId)}/save`, { method: 'DELETE' }));
+  },
+};
+
