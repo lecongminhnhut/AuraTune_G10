@@ -9,9 +9,11 @@ import songRoutes from './routes/songRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
 import assistanceRoutes from './routes/assistanceRoutes.js';
+import albumRoutes from './routes/albumRoutes.js';
 import statsRoutes from './routes/statsRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
 import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
+import playlistRoutes from './routes/playlistRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
 import artistRoutes from './routes/artistRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -68,16 +70,14 @@ app.use('/api/v1/agent', agentRoutes);
 app.use('/api/v1/agent/intent', intentRoutes);
 // Group 120 AI Conversational Agent: Feature 123 (Real-Time Music Assistance)
 app.use('/api/v1/agent/assistance', assistanceRoutes);
+// Feature 083 Album Save and Share routes
+app.use('/api/v1', albumRoutes);
 // Group 100 AI Recommendations: Feature 101 (Listening History Analysis)
 app.use('/api/v1/users/me/stats', statsRoutes);
 // Group 100 AI Recommendations: Feature 102 (Personalized Recommendations)
 app.use('/api/v1/recommendations/mood-context', moodRecommendationRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
-app.use('/api/v1/media', mediaRoutes);
-// Feature 091: anonymous public identity, independent of personal auth.
-app.use('/api/v1/artists', artistRoutes);
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/studio', studioRoutes);
+app.use('/api/v1', playlistRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
@@ -91,12 +91,15 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 // Fallback 404 handler
-app.use(followTransportError);
 app.use((req, res) => {
   res.status(404).json({ error: 'not_found', message: `Route ${req.method} ${req.url} not found` });
 });
-
+app.use(followTransportError);
 app.listen(PORT, () => {
   console.log(`🚀 AuraTune Backend Server is running on http://localhost:${PORT}`);
   console.log(`🔐 Auth API base URL: http://localhost:${PORT}/api/v1/auth`);
 });
+app.use('/api/v1/media', mediaRoutes);
+app.use('/api/v1/artists', artistRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/studio', studioRoutes);

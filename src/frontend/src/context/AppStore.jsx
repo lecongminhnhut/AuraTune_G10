@@ -1,8 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { authApi, configureAuthContext, invalidateAuthRequests, sessionIdentity, currentAuthIdentity } from '../services/sessionApiClient.js'
+import {
+  albumApi,
+  authApi,
+  configureAuthContext,
+  currentAuthIdentity,
+} from '../services/sessionApiClient.js'
 import { useArtistFollowing } from '../hooks/useArtistFollowing.js'
+import { getAlbumDetails, getArtistAlbums } from '../services/albumDetailsService.js'
+import { logoutFirebase } from '../services/firebaseAuth.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
-import { getDurationSeconds } from '../utils/playback.js'
+import { formatTime, getDurationSeconds } from '../utils/playback.js'
+import { playlistApi } from '../services/playlistApi.js'
 
 // Toàn bộ dữ liệu ở đây là dữ liệu demo lưu trong localStorage của trình duyệt.
 // Khi có backend, các hàm trong store sẽ được thay bằng lời gọi API tương ứng.
@@ -68,6 +76,20 @@ const loadState = () => {
 }
 
 const uid = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
+const fromApiPlaylist = (playlist) => ({
+  ...playlist,
+  id: String(playlist.id),
+  title: playlist.title || playlist.name || '',
+  cover: playlist.cover || 'aurora',
+  songs: (playlist.songs || []).map((song) => ({ ...song, id: String(song.song_id ?? song.id), artist: song.artist || song.artist_name || '', cover: song.cover || 'aurora', duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), addedByName: song.added_by?.display_name || (song.added_by_user_id ? 'Thành viên trước đây' : null) })),
+  trackIds: playlist.trackIds || playlist.songs?.map((song) => String(song.song_id ?? song.id)) || [],
+  collaborators: (playlist.collaborators || []).map((user) => typeof user === 'string' ? user : user.id),
+  collaboratorDetails: (playlist.collaborators || []).filter((user) => typeof user === 'object'),
+  duration: typeof playlist.duration === 'number' ? formatTotalDuration(playlist.duration) : playlist.duration,
+  owner: playlist.owner || 'AuraTune listener',
+  saved: Boolean(playlist.isBookmarked),
+  label: playlist.isCollaborative ? 'PLAYLIST CỘNG TÁC' : 'PLAYLIST CỦA BẠN',
+})
 const normalizeEmail = (value) => value.trim().toLowerCase()
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 export const isStrongPassword = (value) => {
@@ -94,6 +116,15 @@ export const formatTotalDuration = (seconds) => {
     const [sessionRestoring, setSessionRestoring] = useState(true)
     const [toasts, setToasts] = useState([])
     const [ui, setUi] = useState({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
+    const [remotePlaylists, setRemotePlaylists] = useState(null)
+    const [remoteLikedIds, setRemoteLikedIds] = useState(null)
+    const [albumDetailsById, setAlbumDetailsById] = useState({})
+    const albumRequestSequence = useRef(0)
+    const albumRequestIds = useRef(new Map())
+    const savedAlbumsRequestSequence = useRef(0)
+    const [savedAlbumIdsByUser, setSavedAlbumIdsByUser] = useState({})
+    const [savedAlbumsLoading, setSavedAlbumsLoading] = useState(false)
+    const [savedAlbumsError, setSavedAlbumsError] = useState(null)
     const stateRef = useRef(state)
     stateRef.current = state
 
@@ -118,19 +149,16 @@ export const formatTotalDuration = (seconds) => {
     useEffect(() => {
       configureAuthContext({
         getAccessToken: () => stateRef.current.session?.token || null,
-        getSessionIdentity: () => sessionIdentity(stateRef.current.session),
         refreshSession: async () => {
-          const origin = sessionIdentity(stateRef.current.session)
           try {
             const response = await authApi.refresh()
-            if (sessionIdentity(stateRef.current.session) !== origin) return { ok: false }
             const accessToken = response.data?.access_token
             if (response.status !== 'success' || !accessToken) {
               return { ok: false, message: response.message }
             }
 
             const expiresIn = response.data.expires_in || 900
-            setState((previous) => previous.session?.source === 'backend' && sessionIdentity(previous.session) === origin
+            setState((previous) => previous.session?.source === 'backend'
               ? {
                   ...previous,
                   session: {
@@ -240,7 +268,9 @@ export const formatTotalDuration = (seconds) => {
 
   const sessionValid = state.session && new Date(state.session.expiresAt).getTime() > Date.now()
   const currentUser = sessionValid ? state.users.find((user) => user.id === state.session.userId && !user.banned) ?? null : null
-  const followingList = useArtistFollowing(currentUser ? currentAuthIdentity() : null)
+  const followingList = useArtistFollowing(
+  currentUser ? currentAuthIdentity() : null
+  )
 
   // Clear invalid sessions after restoration finishes.
   useEffect(() => {
@@ -267,9 +297,67 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [sessionRestoring, state.session, currentUser])
 
-  const library =
+  useEffect(() => {
+    const userId = currentUser?.id
+    const requestId = ++savedAlbumsRequestSequence.current
+
+    setSavedAlbumsError(null)
+    if (!userId) {
+      setSavedAlbumIdsByUser({})
+      setSavedAlbumsLoading(false)
+      return undefined
+    }
+
+    setSavedAlbumIdsByUser({})
+    setSavedAlbumsLoading(true)
+    albumApi.getSavedAlbums()
+      .then((response) => {
+        if (requestId !== savedAlbumsRequestSequence.current || !response.success) {
+          throw new Error(response.message || 'Could not load saved albums.')
+        }
+        const savedAlbumIds = Array.isArray(response.data?.savedAlbumIds) ? response.data.savedAlbumIds : []
+        setSavedAlbumIdsByUser({ [userId]: savedAlbumIds })
+      })
+      .catch((error) => {
+        if (requestId === savedAlbumsRequestSequence.current) {
+          setSavedAlbumsError(error.message || 'Could not load saved albums.')
+        }
+      })
+      .finally(() => {
+        if (requestId === savedAlbumsRequestSequence.current) setSavedAlbumsLoading(false)
+      })
+
+    return undefined
+  }, [currentUser?.id])
+
+  const storedLibrary =
     (currentUser && state.libraries[currentUser.id]) ||
     emptyLibrary()
+  const library = {
+    ...storedLibrary,
+    savedAlbumIds: currentUser ? (savedAlbumIdsByUser[currentUser.id] ?? []) : [],
+  }
+
+  const refreshRemoteLibrary = useCallback(async () => {
+    try {
+      const [playlists, likedIds] = await Promise.all([playlistApi.list(), playlistApi.liked()])
+      setRemotePlaylists((playlists || []).map(fromApiPlaylist))
+      setRemoteLikedIds(likedIds || [])
+      return true
+    } catch (error) {
+      toast(error.message || 'Không tải được playlist.', 'error')
+      return false
+    }
+  }, [toast])
+
+  useEffect(() => {
+    if (state.session?.source !== 'backend' || !currentUser) {
+      setRemotePlaylists(null)
+      setRemoteLikedIds(null)
+      return
+    }
+    refreshRemoteLibrary()
+  }, [state.session?.source, state.session?.userId, currentUser?.id, refreshRemoteLibrary])
 
   const updateLibrary = useCallback((updater) => {
     setState((previous) => {
@@ -294,12 +382,45 @@ export const formatTotalDuration = (seconds) => {
   const findTrack = useCallback((id) => allTracks.find((track) => track.id === id) ?? null, [allTracks])
   const isPlayable = useCallback((trackId) => (state.trackStatus[trackId] ?? 'active') === 'active', [state.trackStatus])
 
+  const loadAlbumDetails = useCallback(async (albumId) => {
+    const requestId = ++albumRequestSequence.current
+    albumRequestIds.current.set(albumId, requestId)
+    setAlbumDetailsById((previous) => ({
+      ...previous,
+      [albumId]: { ...previous[albumId], status: 'loading', error: null },
+    }))
+
+    try {
+      const details = await getAlbumDetails(albumId)
+      if (albumRequestIds.current.get(albumId) !== requestId) return { stale: true, data: details }
+
+      setAlbumDetailsById((previous) => ({
+        ...previous,
+        [albumId]: { status: 'success', data: details, error: null },
+      }))
+      return { stale: false, data: details }
+    } catch (error) {
+      if (albumRequestIds.current.get(albumId) !== requestId) return { stale: true, error }
+
+      setAlbumDetailsById((previous) => ({
+        ...previous,
+        [albumId]: { ...previous[albumId], status: 'error', error },
+      }))
+      throw error
+    }
+  }, [])
+
+  const getAlbumDetailsCache = useCallback((albumId) => albumDetailsById[albumId]?.data ?? null, [albumDetailsById])
+  const getAlbumDetailsStatus = useCallback((albumId) => albumDetailsById[albumId] ?? { status: 'idle', data: null, error: null }, [albumDetailsById])
+  const loadArtistAlbums = useCallback((artistId) => getArtistAlbums(artistId), [])
+
   const userPlaylistsVisible = useMemo(() => {
     if (!currentUser) return []
+    if (remotePlaylists) return remotePlaylists
     return Object.entries(state.libraries).flatMap(([ownerId, ownerLibrary]) => ownerLibrary.playlists
       .filter((playlist) => ownerId === currentUser.id || playlist.collaborators?.includes(currentUser.id))
       .map((playlist) => ({ ...playlist, ownerId })))
-  }, [state.libraries, currentUser])
+  }, [state.libraries, currentUser, remotePlaylists])
 
   const likedPlaylist = useMemo(() => currentUser ? ({
     id: LIKED_PLAYLIST_ID,
@@ -308,11 +429,11 @@ export const formatTotalDuration = (seconds) => {
     owner: currentUser.displayName,
     cover: 'violet',
     label: 'PLAYLIST',
-    trackIds: [...library.likedIds].reverse(),
+    trackIds: [...(remoteLikedIds ?? library.likedIds)].reverse(),
     isLiked: true,
-  }) : null, [currentUser, library.likedIds])
+  }) : null, [currentUser, library.likedIds, remoteLikedIds])
 
-  const getPlaylistTracks = useCallback((playlist) => (playlist?.trackIds ?? []).map(findTrack).filter((track) => track && isPlayable(track.id)), [findTrack, isPlayable])
+  const getPlaylistTracks = useCallback((playlist) => (playlist?.trackIds ?? []).map((id) => findTrack(id) ?? playlist?.songs?.find((song) => String(song.id ?? song.song_id) === String(id))).filter((track) => track && isPlayable(track.id)), [findTrack, isPlayable])
 
   const describePlaylist = useCallback((playlist) => {
     if (!playlist) return null
@@ -330,7 +451,6 @@ export const formatTotalDuration = (seconds) => {
 
   // ---------- Xác thực API / Backend (Spec 011, 012, 013) ----------
   const register = useCallback(async ({ email, password, displayName, termsAccepted = true }) => {
-    invalidateAuthRequests()
     const normalized = normalizeEmail(email)
     if (!EMAIL_PATTERN.test(normalized)) return { ok: false, field: 'email', error: 'Email không đúng định dạng.' }
     if (!isStrongPassword(password)) return { ok: false, field: 'password', error: 'Mật khẩu chưa đủ mạnh.' }
@@ -365,7 +485,6 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [])
   const login = useCallback(async ({ email, password, rememberMe = false }) => {
-    invalidateAuthRequests()
     const normalized = normalizeEmail(email)
     if (!EMAIL_PATTERN.test(normalized)) return { ok: false, error: 'Email không đúng định dạng.' }
 
@@ -394,34 +513,27 @@ export const formatTotalDuration = (seconds) => {
       }))
       return { ok: true, user }
     } catch (error) {
-      return { ok: false, locked: error.status === 423, error: error.message || 'Không thể kết nối dịch vụ xác thực.' }
+      return {
+        ok: false,
+        locked: error.status === 423,
+        error: error.name === 'TypeError'
+          ? 'Không thể kết nối tới máy chủ đăng nhập. Hãy kiểm tra backend rồi thử lại.'
+          : error.message || 'Đăng nhập thất bại. Vui lòng thử lại.'
+      }
     }
   }, [])
   const logout = useCallback(async () => {
-    invalidateAuthRequests()
-    const request = authApi.logout()
-    stateRef.current = { ...stateRef.current, session: null }
-    setState((previous) => ({ ...previous, session: null }))
-    try {
-      await request
-    } catch {
-      // Clear the in-memory session even if the server is unreachable.
-    }
+    await Promise.allSettled([authApi.logout(), logoutFirebase()])
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
   }, [])
 
   const logoutFromAllDevices = useCallback(async () => {
-    invalidateAuthRequests()
     const token = stateRef.current.session?.token
-    const request = token ? authApi.logoutAll(token) : Promise.resolve()
-    stateRef.current = { ...stateRef.current, session: null }
-    setState((previous) => ({ ...previous, session: null }))
-    try {
-      await request
-    } catch {
-      // Clear the in-memory session even if the server is unreachable.
-    }
+    await Promise.allSettled([
+      token ? authApi.logoutAll(token) : Promise.resolve(),
+      logoutFirebase(),
+    ])
     setState((previous) => ({ ...previous, session: null }))
     setUi({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
   }, [])
@@ -441,8 +553,7 @@ export const formatTotalDuration = (seconds) => {
 
   // Firebase Authentication -> AuraTune Session
   const loginWithFirebase = useCallback(
-    async ({ firebaseUser, termsAccepted = false }) => {
-      invalidateAuthRequests()
+    async ({ firebaseUser, termsAccepted = false, displayName }) => {
       try {
         if (!firebaseUser) {
           return {
@@ -455,7 +566,8 @@ export const formatTotalDuration = (seconds) => {
 
         const response = await authApi.firebaseExchange(
           firebaseIdToken,
-          termsAccepted
+          termsAccepted,
+          displayName
         )
 
         if (!response.success || !response.data?.session?.access_token) {
@@ -508,6 +620,7 @@ export const formatTotalDuration = (seconds) => {
         return {
           ok: false,
           code: error.code || null,
+          status: error.status || null,
           error: error.message || 'Firebase Authentication failed.'
         }
       }
@@ -529,7 +642,7 @@ export const formatTotalDuration = (seconds) => {
     try {
       const firebaseIdToken = await firebaseUser.getIdToken(true)
       const response = await authApi.linkFacebook(firebaseIdToken, accessToken)
-      if (!response.success) return { ok: false, error: response.message || 'Could not link Facebook.' }
+      if (!response.success) return { ok: false, code: response.code || null, error: response.message || 'Could not link Facebook.' }
 
       setState((previous) => ({
         ...previous,
@@ -539,7 +652,7 @@ export const formatTotalDuration = (seconds) => {
       }))
       return { ok: true, message: response.message }
     } catch (error) {
-      return { ok: false, error: error.message || 'Could not link Facebook.' }
+      return { ok: false, code: error.code || null, status: error.status || null, error: error.message || 'Could not link Facebook.' }
     }
   }, [])
 
@@ -565,24 +678,46 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [currentUser])
   // ---------- Thư viện cá nhân ----------
-  const isLiked = (trackId) => library.likedIds.includes(trackId)
+  const isLiked = (trackId) => (remoteLikedIds ?? library.likedIds).includes(trackId)
   const toggleLike = useCallback((trackId) => {
     if (!stateRef.current.session) return false
+    if (stateRef.current.session.source === 'backend') {
+      const previousIds = remoteLikedIds ?? []
+      const currentlyLiked = previousIds.includes(trackId)
+      const next = currentlyLiked ? previousIds.filter((id) => id !== trackId) : [...previousIds, trackId]
+      setRemoteLikedIds(next)
+      playlistApi.setLiked(trackId, !currentlyLiked).then((ids) => setRemoteLikedIds(ids)).catch((error) => {
+        setRemoteLikedIds((current) => current?.includes(trackId) === !currentlyLiked ? previousIds : current)
+        toast(error.message, 'error')
+      })
+      return true
+    }
     updateLibrary((current) => ({
       ...current,
       likedIds: current.likedIds.includes(trackId) ? current.likedIds.filter((id) => id !== trackId) : [...current.likedIds, trackId],
     }))
     return true
-  }, [updateLibrary])
+  }, [updateLibrary, remoteLikedIds, toast])
 
-  const createPlaylist = useCallback(({ title, description = '', trackIds = [], cover = 'aurora', isCollaborative = false }) => {
+  const createPlaylist = useCallback(async ({ title, description = '', trackIds = [], cover = 'aurora', isCollaborative = false }) => {
+    if (stateRef.current.session?.source === 'backend') {
+      const playlist = fromApiPlaylist(await playlistApi.create({ title, description, cover }))
+      try {
+        if (trackIds.length) await playlistApi.addSongs(playlist.id, trackIds)
+      } catch (error) {
+        await playlistApi.remove(playlist.id).catch(() => {})
+        throw error
+      }
+      await refreshRemoteLibrary()
+      return playlist.id
+    }
     const id = uid('pl')
     updateLibrary((current) => ({
       ...current,
       playlists: [{ id, title: title.trim(), description: description.trim(), trackIds, cover, label: 'PLAYLIST CỦA BẠN', owner: currentUser?.displayName ?? 'Bạn', isCollaborative, collaborators: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, ...current.playlists],
     }))
     return id
-  }, [updateLibrary, currentUser])
+  }, [updateLibrary, currentUser, refreshRemoteLibrary])
 
   // Playlist cộng tác có thể thuộc thư viện của người khác, nên cập nhật theo chủ sở hữu.
   const updateOwnedPlaylist = useCallback((playlistId, updater) => {
@@ -599,48 +734,159 @@ export const formatTotalDuration = (seconds) => {
     })
   }, [])
 
-  const updatePlaylist = useCallback((playlistId, patch) => updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, ...patch })), [updateOwnedPlaylist])
-  const deletePlaylist = useCallback((playlistId) => updateOwnedPlaylist(playlistId, () => null), [updateOwnedPlaylist])
+  const updatePlaylist = useCallback(async (playlistId, patch) => {
+    if (stateRef.current.session?.source === 'backend') {
+      if (typeof patch.isCollaborative === 'boolean') await playlistApi.setCollaboration(playlistId, patch.isCollaborative)
+      const metadata = { title: patch.title, description: patch.description, cover: patch.cover, coverUrl: patch.coverUrl || null, status: patch.status }
+      if (Object.values(metadata).some((value) => value !== undefined)) await playlistApi.update(playlistId, metadata)
+      await refreshRemoteLibrary()
+      return true
+    }
+    updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, ...patch }))
+    return true
+  }, [updateOwnedPlaylist, refreshRemoteLibrary])
+  const deletePlaylist = useCallback(async (playlistId) => {
+    if (stateRef.current.session?.source === 'backend') {
+      await playlistApi.remove(playlistId)
+      setRemotePlaylists((items) => (items || []).filter((playlist) => playlist.id !== playlistId))
+      return true
+    }
+    updateOwnedPlaylist(playlistId, () => null)
+    return true
+  }, [updateOwnedPlaylist])
+
+  const bookmarkPlaylist = useCallback(async (playlistId) => {
+    if (stateRef.current.session?.source === 'backend') {
+      await playlistApi.bookmark(playlistId)
+      await refreshRemoteLibrary()
+      return true
+    }
+    updateLibrary((current) => ({ ...current, savedPlaylistIds: [...new Set([...(current.savedPlaylistIds || []), playlistId])] }))
+    return true
+  }, [refreshRemoteLibrary, updateLibrary])
 
   const addTrackToPlaylist = useCallback((playlistId, trackId) => {
     if (playlistId === LIKED_PLAYLIST_ID) {
-      if (!stateRef.current.libraries[stateRef.current.session?.userId]?.likedIds.includes(trackId)) toggleLike(trackId)
+      const likedIds = stateRef.current.session?.source === 'backend' ? (remoteLikedIds ?? []) : (stateRef.current.libraries[stateRef.current.session?.userId]?.likedIds ?? [])
+      if (!likedIds.includes(trackId)) toggleLike(trackId)
       return true
+    }
+    if (stateRef.current.session?.source === 'backend') {
+      return playlistApi.addSongs(playlistId, [trackId]).then(async (playlist) => { await refreshRemoteLibrary(); return playlist.trackIds?.includes(trackId) ?? true }).catch((error) => { toast(error.message, 'error'); return false })
     }
     const existing = Object.values(stateRef.current.libraries).flatMap((ownerLibrary) => ownerLibrary.playlists).find((playlist) => playlist.id === playlistId)
     if (!existing || existing.trackIds.includes(trackId)) return false
     updateOwnedPlaylist(playlistId, (playlist) => playlist.trackIds.includes(trackId) ? playlist : { ...playlist, trackIds: [...playlist.trackIds, trackId] })
     return true
-  }, [updateOwnedPlaylist, toggleLike])
+  }, [updateOwnedPlaylist, toggleLike, refreshRemoteLibrary, toast, remoteLikedIds])
 
   const removeTrackFromPlaylist = useCallback((playlistId, trackId) => {
     if (playlistId === LIKED_PLAYLIST_ID) return toggleLike(trackId)
+    if (stateRef.current.session?.source === 'backend') return playlistApi.removeSong(playlistId, trackId).then(refreshRemoteLibrary).catch((error) => { toast(error.message, 'error'); return false })
     updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, trackIds: playlist.trackIds.filter((id) => id !== trackId) }))
     return true
-  }, [updateOwnedPlaylist, toggleLike])
+  }, [updateOwnedPlaylist, toggleLike, refreshRemoteLibrary, toast])
 
-  const moveTrackInPlaylist = useCallback((playlistId, from, to) => updateOwnedPlaylist(playlistId, (playlist) => {
+  const moveTrackInPlaylist = useCallback((playlistId, from, to) => {
+    if (stateRef.current.session?.source === 'backend') {
+      const playlist = remotePlaylists?.find((item) => item.id === playlistId)
+      if (!playlist) return false
+      const trackIds = [...playlist.trackIds]
+      const [moved] = trackIds.splice(from, 1)
+      trackIds.splice(to, 0, moved)
+      setRemotePlaylists((items) => items.map((item) => item.id === playlistId ? { ...item, trackIds } : item))
+      return playlistApi.reorder(playlistId, trackIds).then(refreshRemoteLibrary).catch(async (error) => { toast(error.message, 'error'); await refreshRemoteLibrary(); return false })
+    }
+    return updateOwnedPlaylist(playlistId, (playlist) => {
     const trackIds = [...playlist.trackIds]
     const [moved] = trackIds.splice(from, 1)
     trackIds.splice(to, 0, moved)
     return { ...playlist, trackIds }
-  }), [updateOwnedPlaylist])
+    })
+  }, [updateOwnedPlaylist, remotePlaylists, refreshRemoteLibrary, toast])
 
   const addCollaborator = useCallback((playlistId, email) => {
+    if (stateRef.current.session?.source === 'backend') return (async () => {
+      const playlist = remotePlaylists?.find((item) => item.id === playlistId)
+      if (!playlist?.isCollaborative) await playlistApi.setCollaboration(playlistId, true)
+      const user = await playlistApi.invite(playlistId, email)
+      await refreshRemoteLibrary()
+      return { ok: true, user: { ...user, displayName: user.display_name } }
+    })().catch((error) => ({ ok: false, error: error.message }))
     const user = stateRef.current.users.find((item) => item.email === normalizeEmail(email))
     if (!user) return { ok: false, error: 'Không tìm thấy người dùng AuraTune với email này.' }
     if (user.id === stateRef.current.session?.userId) return { ok: false, error: 'Bạn đã là chủ sở hữu playlist này.' }
     updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, isCollaborative: true, collaborators: [...new Set([...(playlist.collaborators ?? []), user.id])] }))
     return { ok: true, user }
-  }, [updateOwnedPlaylist])
+  }, [updateOwnedPlaylist, remotePlaylists, refreshRemoteLibrary])
 
-  const removeCollaborator = useCallback((playlistId, userId) => updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, collaborators: (playlist.collaborators ?? []).filter((id) => id !== userId) })), [updateOwnedPlaylist])
-
-  const toggleSaveAlbum = useCallback((albumId) => {
-    if (!stateRef.current.session) return false
-    updateLibrary((current) => ({ ...current, savedAlbumIds: current.savedAlbumIds.includes(albumId) ? current.savedAlbumIds.filter((id) => id !== albumId) : [albumId, ...current.savedAlbumIds] }))
+  const removeCollaborator = useCallback((playlistId, userId) => {
+    if (stateRef.current.session?.source === 'backend') return playlistApi.removeCollaborator(playlistId, userId).then(refreshRemoteLibrary).catch((error) => { toast(error.message, 'error'); return false })
+    updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, collaborators: (playlist.collaborators ?? []).filter((id) => id !== userId) }))
     return true
-  }, [updateLibrary])
+  }, [updateOwnedPlaylist, refreshRemoteLibrary, toast])
+
+  const saveAlbum = useCallback(async (albumId) => {
+    const userId = stateRef.current.session?.userId
+    if (!userId) return { ok: false, code: 'UNAUTHORIZED', error: 'Please sign in to save this album.' }
+
+    try {
+      const response = await albumApi.saveAlbum(albumId)
+      if (!response.success) return { ok: false, code: response.error?.code, error: response.message || 'Could not save this album.' }
+      if (stateRef.current.session?.userId === userId) {
+        setSavedAlbumIdsByUser((previous) => ({
+          ...previous,
+          [userId]: [...new Set([...(previous[userId] ?? []), albumId])],
+        }))
+      }
+      return { ok: true, message: response.message }
+    } catch (error) {
+      return { ok: false, error: error.message || 'Could not save this album.' }
+    }
+  }, [])
+
+  const removeSavedAlbum = useCallback(async (albumId) => {
+    const userId = stateRef.current.session?.userId
+    if (!userId) return { ok: false, code: 'UNAUTHORIZED', error: 'Please sign in to manage saved albums.' }
+
+    try {
+      const response = await albumApi.removeSavedAlbum(albumId)
+      if (!response.success) return { ok: false, code: response.error?.code, error: response.message || 'Could not remove this album.' }
+      if (stateRef.current.session?.userId === userId) {
+        setSavedAlbumIdsByUser((previous) => ({
+          ...previous,
+          [userId]: (previous[userId] ?? []).filter((id) => id !== albumId),
+        }))
+      }
+      return { ok: true, message: response.message }
+    } catch (error) {
+      return { ok: false, error: error.message || 'Could not remove this album.' }
+    }
+  }, [])
+
+  const isAlbumSaved = useCallback((albumId) => library.savedAlbumIds.includes(albumId), [library.savedAlbumIds])
+
+  // ---------- Theo dõi nghệ sĩ (spec 092) ----------
+  // Mô phỏng một lời gọi mạng để giao diện có trạng thái "đang cập nhật".
+  const setFollow = useCallback((artistId, follow) => new Promise((resolve, reject) => {
+    window.setTimeout(() => {
+      const userId = stateRef.current.session?.userId
+      if (!userId) { reject(new Error('Bạn cần đăng nhập để theo dõi nghệ sĩ.')); return }
+      const artist = getArtist(artistId)
+      if (!artist || (!artist.isPublic && follow)) { reject(new Error('Không tìm thấy nghệ sĩ.')); return }
+      setState((previous) => {
+        const current = previous.libraries[userId] ?? emptyLibrary()
+        const exists = current.follows.some((item) => item.artistId === artistId)
+        const follows = follow
+          ? (exists ? current.follows : [...current.follows, { artistId, followedAt: new Date().toISOString() }])
+          : current.follows.filter((item) => item.artistId !== artistId)
+        return { ...previous, libraries: { ...previous.libraries, [userId]: { ...current, follows } } }
+      })
+      resolve(follow)
+    }, 450)
+  }), [])
+
+  const isFollowing = (artistId) => library.follows.some((item) => item.artistId === artistId)
 
   // ---------- Lịch sử nghe (G07 / spec 101) ----------
   const recordPlay = useCallback((trackId) => {
@@ -706,12 +952,14 @@ export const formatTotalDuration = (seconds) => {
   const setQueueOpen = useCallback((queueOpen) => setUi((previous) => ({ ...previous, queueOpen })), [])
 
   const value = {
-    state, currentUser, sessionRestoring, followingList, library, toasts, ui, toast,
+    state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
+    loadAlbumDetails, getAlbumDetailsCache, getAlbumDetailsStatus, loadArtistAlbums,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
     register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
-    isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
-    toggleSaveAlbum, isAlbumSaved: (albumId) => library.savedAlbumIds.includes(albumId), getAlbum,
+    isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, bookmarkPlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
+    saveAlbum, removeSavedAlbum, savedAlbumsLoading, savedAlbumsError, isAlbumSaved, getAlbum,
+    setFollow, isFollowing,
     recordPlay, updateListened, clearHistory,
     comments: state.comments, addComment, deleteComment,
     uploadTrack, updateStudioTrack, deleteStudioTrack, setTrackStatus,

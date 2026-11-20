@@ -15,6 +15,8 @@ import { PlayerContext } from './context/PlayerContext.jsx'
 import { loginPath, navigate } from './utils/navigation.jsx'
 import { shareLink, shareMessage, trackSharePath } from './utils/share.js'
 
+const MAX_QUEUE_ITEMS = 50
+
 export default function App() {
   return (
     <AppStoreProvider>
@@ -26,6 +28,8 @@ export default function App() {
 function AppShell() {
   const store = useStore()
   const player = useAudioPlayer({ findTrack: store.findTrack, isPlayable: store.isPlayable })
+  const activePlaylist = player.playlistId ? store.findPlaylistById(player.playlistId) : null
+  const playlistContext = activePlaylist && activePlaylist.trackIds?.includes(player.track.id) ? activePlaylist.title : (player.playlistId ? 'Danh sách chờ' : null)
   const [chatOpen, setChatOpen] = useState(false)
   const [fullScreenOpen, setFullScreenOpen] = useState(false)
   const queueOpen = store.ui.queueOpen
@@ -79,6 +83,36 @@ function AppShell() {
     if (openPlayer) openFullScreen()
   }
 
+  const playAlbum = (collectionTracks) => {
+    const playable = collectionTracks.filter((track) => store.isPlayable(track.id)).slice(0, MAX_QUEUE_ITEMS)
+    if (!playable.length) {
+      store.toast('This album has no playable tracks.', 'error')
+      return 0
+    }
+    if (player.shuffle) player.toggleShuffle()
+    player.playCollection(playable, { shuffle: false })
+    openFullScreen()
+    return playable.length
+  }
+
+  const playSelectedTrack = (track, albumTracks = []) => {
+    if (!track || !store.isPlayable(track.id)) {
+      store.toast('This track is currently unavailable.', 'error')
+      return false
+    }
+
+    const selectedIndex = albumTracks.findIndex((item) => item.id === track.id)
+    const laterPlayable = albumTracks
+      .slice(selectedIndex + 1)
+      .filter((item) => store.isPlayable(item.id))
+      .slice(0, MAX_QUEUE_ITEMS - 1)
+
+    player.playTrack(track)
+    for (const laterTrack of [...laterPlayable].reverse()) player.playNext(laterTrack)
+    openFullScreen()
+    return true
+  }
+
   const playPlaylist = (playlist, { shuffle = false } = {}) => {
     if (player.playlistId === playlist.id && !shuffle) {
       if (!player.isPlaying) player.togglePlayback()
@@ -99,18 +133,33 @@ function AppShell() {
   }
 
   const addToQueue = (track) => {
+    if (!store.isPlayable(track.id)) {
+      store.toast('This track is currently unavailable.', 'error')
+      return false
+    }
     const added = player.addToQueue(track)
     store.toast(added ? `Đã thêm “${track.title}” vào danh sách chờ.` : `“${track.title}” đã có trong danh sách chờ.`)
   }
 
   const playNext = (track) => {
+    if (!store.isPlayable(track.id)) {
+      store.toast('This track is currently unavailable.', 'error')
+      return false
+    }
     if (player.playNext(track)) store.toast(`“${track.title}” sẽ phát tiếp theo.`)
     else store.toast('Bài hát này đang được phát.')
   }
 
   const addManyToQueue = (items) => {
-    const count = player.addManyToQueue(items.filter((track) => store.isPlayable(track.id)))
-    store.toast(count ? `Đã thêm ${count} bài vào danh sách chờ.` : 'Các bài này đã có trong danh sách chờ.')
+    const playable = items.filter((track) => store.isPlayable(track.id))
+    const existingIds = new Set(player.queue.map((track) => track.id))
+    const fresh = playable.filter((track) => !existingIds.has(track.id))
+    const availableSlots = Math.max(0, MAX_QUEUE_ITEMS - player.queue.length)
+    const accepted = fresh.slice(0, availableSlots)
+    const count = player.addManyToQueue(accepted)
+    if (count) store.toast(`Added ${count} track${count === 1 ? '' : 's'} to the queue.`)
+    else if (fresh.length && !availableSlots) store.toast('The queue is full (50 tracks).', 'error')
+    else store.toast('These tracks are already in the queue.')
     return count
   }
 
@@ -141,7 +190,7 @@ function AppShell() {
 
   const playerValue = {
     ...player,
-    playTrack, playCollection, playPlaylist, addToQueue, playNext, addManyToQueue,
+    playTrack, playCollection, playAlbum, playSelectedTrack, playPlaylist, addToQueue, playNext, addManyToQueue,
     requestAddToPlaylist, share, requireLogin, openQueue, downloadTrack,
   }
 
@@ -163,6 +212,7 @@ function AppShell() {
           <MobileNav onOpenChat={openChat} chatOpen={chatOpen} />
           <BottomPlayer
             player={player}
+            playlistContext={playlistContext}
             liked={store.isLiked(player.track.id)}
             onToggleLike={toggleCurrentLike}
             onDownloadTrack={downloadTrack}
@@ -181,6 +231,7 @@ function AppShell() {
           isOpen={fullScreenOpen}
           onClose={closeFullScreen}
           player={player}
+          playlistContext={playlistContext}
           liked={store.isLiked(player.track.id)}
           onToggleLike={toggleCurrentLike}
           onOpenQueue={openQueue}

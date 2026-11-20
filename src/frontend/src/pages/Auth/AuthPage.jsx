@@ -25,6 +25,39 @@ const passwordChecks = (value) => [
 const safeNext = (value) => (value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/login') && !value.startsWith('/register') ? value : '/')
 const isGoogleFirebaseUser = (user) => user?.providerData?.some(({ providerId }) => providerId === 'google.com')
 
+const getFirebaseAuthErrorMessage = (error, provider = 'google') => {
+  const providerName = provider === 'facebook' ? 'Facebook' : 'Google'
+  const text = [error?.message, error?.customData?.message].filter(Boolean).join(' ').toLowerCase()
+  if (error?.name === 'QuotaExceededError' || text.includes('full disk') || text.includes('indexeddb')) {
+    return 'Trình duyệt không đủ dung lượng để lưu phiên đăng nhập. Hãy giải phóng dung lượng ổ đĩa, tải lại trang và thử lại.'
+  }
+  if (text.includes('thiếu cấu hình firebase')) return error.message
+
+  const messages = {
+    'auth/argument-error': `Cấu hình đăng nhập ${providerName} chưa hợp lệ. Hãy kiểm tra cấu hình Firebase phía giao diện rồi khởi động lại ứng dụng.`,
+    'auth/internal-error': `Firebase gặp lỗi nội bộ khi đăng nhập ${providerName}. Hãy kiểm tra kết nối và dung lượng lưu trữ của trình duyệt rồi thử lại.`,
+    'auth/invalid-api-key': 'Cấu hình Firebase không hợp lệ. Hãy kiểm tra VITE_FIREBASE_API_KEY trong src/frontend/.env.',
+    'auth/operation-not-allowed': `Đăng nhập ${providerName} chưa được bật trong Firebase Console.`,
+    'auth/unauthorized-domain': 'Tên miền hiện tại chưa được cho phép trong Firebase Authentication.',
+    'auth/popup-blocked': `Trình duyệt đã chặn cửa sổ đăng nhập ${providerName}. Hãy cho phép popup rồi thử lại.`,
+    'auth/network-request-failed': 'Không thể kết nối tới Firebase. Hãy kiểm tra mạng rồi thử lại.',
+    'auth/too-many-requests': 'Bạn đã thử đăng nhập quá nhiều lần. Hãy chờ một lúc rồi thử lại.',
+    'auth/web-storage-unsupported': 'Trình duyệt không cho phép lưu phiên đăng nhập. Hãy bật storage cho trang này hoặc thử trình duyệt khác.',
+  }
+  if (messages[error?.code]) return messages[error.code]
+  if (error?.code === 'FACEBOOK_IDENTITY_LINK_CONFLICT') return 'Danh tính Firebase này thuộc tài khoản AuraTune khác. Hãy đăng nhập vào đúng tài khoản AuraTune rồi liên kết lại.'
+  if (error?.code === 'FACEBOOK_ALREADY_LINKED') return 'Tài khoản Facebook này đã được liên kết với một tài khoản AuraTune khác.'
+  if (error?.code === 'ACCOUNT_DISABLED') return 'Tài khoản AuraTune này đã bị vô hiệu hóa. Hãy liên hệ quản trị viên.'
+  if (error?.code === 'ACCOUNT_TEMPORARILY_LOCKED') return 'Tài khoản AuraTune này đang bị khóa tạm thời. Hãy thử lại sau.'
+  if (error?.code === 'FIREBASE_ADMIN_CONFIGURATION_ERROR') return 'Máy chủ chưa được cấu hình xác thực Firebase Admin.'
+  if (error?.code === 'EMAIL_VERIFICATION_REQUIRED') return `Tài khoản ${providerName} cần có email đã xác minh mới đăng nhập được.`
+  if (error?.status >= 500 || error?.name === 'TypeError') return 'Không thể kết nối tới máy chủ đăng nhập. Hãy kiểm tra backend rồi thử lại.'
+  if (error?.status === 401) return `Máy chủ không xác minh được phiên ${providerName}. Hãy đăng nhập lại rồi thử lại.`
+  if (error?.status === 403) return `Tài khoản ${providerName} chưa đủ điều kiện đăng nhập AuraTune. Hãy kiểm tra email xác minh.`
+  if (error?.code === 'GOOGLE_IDENTITY_LINK_CONFLICT') return 'Tài khoản Google này đang được liên kết với tài khoản AuraTune khác.'
+  return `Đăng nhập ${providerName} thất bại. Hãy kiểm tra cấu hình và kết nối rồi thử lại.`
+}
+
 export default function AuthPage({ mode }) {
   const store = useStore()
   const { search } = useLocation()
@@ -96,7 +129,7 @@ export default function AuthPage({ mode }) {
       if (!validate()) return
 
       if (isRegister && isGoogleFirebaseUser(auth.currentUser) && auth.currentUser.email?.toLowerCase() === form.email.trim().toLowerCase()) {
-        const result = await store.loginWithFirebase({ firebaseUser: auth.currentUser, termsAccepted: form.consent && form.termsConsent })
+        const result = await store.loginWithFirebase({ firebaseUser: auth.currentUser, termsAccepted: form.consent && form.termsConsent, displayName: form.displayName })
         if (!result.ok) {
           setFormError(result.error || 'Không thể hoàn tất đăng ký.')
           return
@@ -152,12 +185,15 @@ export default function AuthPage({ mode }) {
           })
 
           if (!result.ok) {
-            if (!isRegister && (result.code === 'TERMS_ACCEPTANCE_REQUIRED' || result.error?.includes('terms'))) {
+            if (!isRegister && (
+              ['GOOGLE_ACCOUNT_NOT_REGISTERED', 'TERMS_ACCEPTANCE_REQUIRED'].includes(result.code)
+              || result.error?.toLowerCase().includes('terms')
+            )) {
               setShowNotFoundModal(true)
               return
             }
             setFormError(
-              result.error || 'Đăng nhập Google thất bại.'
+              getFirebaseAuthErrorMessage({ code: result.code, message: result.error })
             )
             return
           }
@@ -193,9 +229,7 @@ export default function AuthPage({ mode }) {
               setShowNotFoundModal(true)
               return
             }
-            setFormError(
-              result.error || 'Đăng nhập Facebook thất bại.'
-            )
+            setFormError(getFirebaseAuthErrorMessage({ code: result.code, status: result.status, message: result.error }, 'facebook'))
             return
           }
 
@@ -236,9 +270,7 @@ export default function AuthPage({ mode }) {
           return
         }
 
-        setFormError(
-          error.message || 'Không thể xác thực bằng mạng xã hội.'
-        )
+        setFormError(getFirebaseAuthErrorMessage(error, provider))
       }
     }
 
@@ -250,7 +282,7 @@ export default function AuthPage({ mode }) {
           <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#1e1e24] p-6 shadow-2xl">
             <h3 className="text-lg font-bold text-white">Không tìm thấy tài khoản</h3>
             <p className="mt-3 text-sm leading-6 text-zinc-300">
-              Tài khoản mạng xã hội này chưa kết nối với một tài khoản AuraTune.
+              Gmail này chưa có tài khoản AuraTune. Hãy đăng ký để tạo tài khoản mới.
             </p>
             
             <div className="mt-6 flex items-center justify-end gap-3">
@@ -388,13 +420,6 @@ export default function AuthPage({ mode }) {
           <Link to={`${isRegister ? '/login' : '/register'}${next !== '/' ? `?next=${encodeURIComponent(next)}` : ''}`} className="font-semibold text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{isRegister ? 'Đăng nhập' : 'Đăng ký'}</Link>
         </p>
         <Link to="/" className="mt-7 flex items-center justify-center gap-2 text-xs font-medium text-zinc-500 transition hover:text-white"><Icon name="arrowLeft" size={15} /> Quay về trang chủ</Link>
-        {!isRegister && (
-          <div className="mt-5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-[11px] leading-5 text-zinc-500">
-            <p className="font-semibold text-zinc-400">Tài khoản demo (mật khẩu: Aura1234!)</p>
-            <p>demo@auratune.vn · artist@auratune.vn · admin@auratune.vn</p>
-          </div>
-        )}
-        <p className="mt-4 text-center text-[10px] leading-5 text-zinc-600">Bản demo lưu tài khoản trong trình duyệt của bạn; chưa gửi thông tin tới máy chủ.</p>
       </section>
     </div>
   )

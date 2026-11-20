@@ -33,6 +33,7 @@ export async function authenticateToken(req, res, next) {
     req.baseUrl?.startsWith('/api/v1/agent') ||
     req.originalUrl?.includes('/agent') ||
     req.path?.includes('/agent');
+  const isAlbumSaveRoute = /\/(?:users\/me\/saved-albums|albums\/[^/]+\/save)(?:$|\?)/.test(req.originalUrl || '');
 
   const isMoodRoute =
     req.baseUrl?.includes('/mood-context') ||
@@ -43,6 +44,12 @@ export async function authenticateToken(req, res, next) {
     req.baseUrl?.startsWith('/api/v1/recommendations') ||
     req.originalUrl?.includes('/recommendations') ||
     req.path?.includes('/recommendations');
+
+  const isPlaylistRoute =
+    req.originalUrl?.startsWith('/api/v1/playlists') ||
+    req.originalUrl?.startsWith('/api/v1/users/me/playlists') ||
+    req.originalUrl?.startsWith('/api/v1/users/me/liked-songs') ||
+    req.originalUrl?.startsWith('/api/v1/songs/');
 
   const sendUnauthorized = (legacyMsg) => {
     if (isMoodRoute) {
@@ -88,6 +95,9 @@ export async function authenticateToken(req, res, next) {
           details: []
         }
       });
+    }
+    if (isPlaylistRoute) {
+      return res.status(401).json({ success: false, message: 'Authentication is required.', data: null, error: { code: 'UNAUTHORIZED', details: [] } });
     }
     return res.status(401).json({
       status: 'error',

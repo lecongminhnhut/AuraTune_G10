@@ -1,7 +1,7 @@
 # Feature Specification: 083 - Save and Share Album (Lưu và Chia sẻ Album)
 
 > [!NOTE]
-> **Contextual Note**: This specification document was reconstructed to document the implemented UI workflows in the AuraTune frontend (`src/frontend/src/pages/Album/AlbumPage.jsx` and `AppStore.jsx`). The original specification was not provided in the repository archive (only `.gitkeep` was present). Scope is derived strictly from `docs/proposal/proposal.md` and actual application behavior.
+> **Contextual Note**: While the initial mockups reflect a limited UI, the Functional Requirements (FR-001 to FR-014) in this specification are the **authoritative baseline**. The implementation MUST satisfy all defined FRs, including pending states, inline errors, and specific social sharing buttons, superseding the current incomplete UI.
 
 ---
 
