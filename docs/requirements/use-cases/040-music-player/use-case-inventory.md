@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 040 – Music Player
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document serves as the official tracking registry for all Use Cases belonging to **Group 040 – Music Player**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), assigned owners, and authoring statuses for PA3.
 
@@ -15,8 +17,9 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Confirmed Use-Case Inventory
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-040-001** | Control Audio Playback | Guest / Listener | Cloud Media Storage | `041-FR-001` to `041-FR-015` | `041-playback-controls` | Nguyễn Thanh Huy | **Draft** | [`UC-040-001-control-audio-playback.md`](./UC-040-001-control-audio-playback.md) |
 | **UC-040-002** | Adjust Volume and Mute | Guest / Listener | None | `042-FR-006` to `042-FR-011` | `042-playback-progress-and-volume` | Nguyễn Thanh Huy | **Draft** | [`UC-040-002-adjust-volume-and-mute.md`](./UC-040-002-adjust-volume-and-mute.md) |
@@ -32,6 +35,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -45,6 +49,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Unconfirmed / Out-of-Scope Candidates
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Candidate ID | Proposed Name | Rationale / Exclusion Reason | Target Alternative Group |
 |---|---|---|---|
@@ -54,6 +59,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 5. Traceability Matrix
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|

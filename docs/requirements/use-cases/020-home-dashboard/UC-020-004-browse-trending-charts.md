@@ -1,8 +1,10 @@
 # UC-020-004 – Browse Trending Charts
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `024-FR-001`, `024-FR-002`, `024-FR-003`, `024-FR-004`, `024-FR-005`, `024-FR-006`, `024-FR-007`, `024-FR-008`, `024-FR-009`, `024-FR-010`, `024-FR-011`, `024-FR-012`, `024-FR-013`, `024-FR-014` |
 | **Related Feature/Spec** | Feature 024: Trending Charts (`specs/020-home-dashboard/024-trending-charts/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A guest or listener sees what is popular on AuraTune, first in the top 5 preview on the Home Dashboard and then on the full Charts page. Rankings use AuraTune's own play counts only, can be filtered by genre and by a day, week, or month period, and any ranked track or the whole chart can be played in one interaction. Group 020 owns both the Home preview and the Charts page.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The actor has opened the Home Dashboard (`UC-020-001`) or the Charts page (`/charts`).
 - AuraTune has recorded play counts for at least one available track (`024-FR-003`).
@@ -33,12 +38,14 @@ A guest or listener sees what is popular on AuraTune, first in the top 5 preview
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Home Dashboard renders the popular tracks section ("Đang được yêu thích"), or the actor opens the Charts page.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **System:** Ranks available tracks by AuraTune's own play counts in descending order, using a stable order for ties and no external popularity data (`024-FR-003`, `024-FR-004`, `024-FR-005`).
 2. **System:** Leaves unavailable tracks out of the ranking (`024-FR-009`).
@@ -55,14 +62,17 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Open the Charts Page Directly
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The actor opens the Charts page from the sidebar or a link instead of from Home.
 1. **System:** Shows the Charts page with the top 20 tracks for the default week period.
 - **Continuation:** Resumes at Step 10 of the Basic Flow.
 
 ### AF-02 – Filter by Genre
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 9 of the Basic Flow.
 - **Condition:** The actor wants rankings for a single genre (`024-FR-007`).
 1. **Actor:** Selects a genre chip.
@@ -70,6 +80,7 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 - **Continuation:** Resumes at Step 10 of the Basic Flow.
 
 ### AF-03 – Change the Period
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 9 of the Basic Flow.
 - **Condition:** The actor wants rankings for the day or the month (`024-FR-008`).
 1. **Actor:** Selects the day, week, or month period.
@@ -77,6 +88,7 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 - **Continuation:** Resumes at Step 10 of the Basic Flow.
 
 ### AF-04 – Like a Ranked Track
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** The actor selects the heart action on a row (`024-FR-014`).
 1. **Actor:** Selects the heart action.
@@ -87,8 +99,10 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Filter Has No Tracks
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of AF-02 or AF-03.
 - **Condition:** No available track matches the selected genre or period (`024-FR-013`).
 1. **System:** Shows an empty state for the chart.
@@ -96,6 +110,7 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 - **Continuation:** Resumes at Step 1 of AF-02 or AF-03.
 
 ### EF-02 – Chart Cannot Be Loaded
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The chart data cannot be retrieved (`024-FR-013`).
 1. **System:** Shows an error state with a retry action.
@@ -105,18 +120,22 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The actor sees a ranked list in descending play-count order with no unavailable tracks.
 - The same data produces the same order across repeated loads.
 - Playback started from the chart uses the displayed ranked list as the queue.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - An empty state or an error with retry is shown, and current playback is not changed.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Data Policy**: Rankings use only AuraTune play counts; external metadata is never used to calculate popularity (Vision Document, AD-05; `024-FR-005`).
 - **Consistency**: Tied tracks keep a stable order (`024-FR-004`).
@@ -125,10 +144,12 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Popular tracks on Home](prototypes/UC-020-004-basic-flow.png)
 *Figure 1: Top 5 popular tracks on Home with rank, plays, and duration (Step 3).*
@@ -140,26 +161,31 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 *Figure 3: A ranked track playing, with the mini player updated (Step 7).*
 
 ### Alternative Flow – AF-01 (Charts Page)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Full Charts page](prototypes/UC-020-004-AF-01-full-charts.png)
 *Figure 4: Charts page with the top 20 tracks and the play chart action.*
 
 ### Alternative Flow – AF-02 (Filter by Genre)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Genre filter](prototypes/UC-020-004-AF-02-genre-filter.png)
 *Figure 5: Charts page filtered by a single genre.*
 
 ### Alternative Flow – AF-03 (Change the Period)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Day, week, and month period selector on the Charts page. The current prototype has no period control.*
 
 ### Exception Flows – EF-01 and EF-02
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Empty chart state and an error state with a retry action.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Context Container**: `UC-020-001` (Browse Home Dashboard) – Hosts the top 5 preview.
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback).
@@ -169,6 +195,7 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/020-home-dashboard/024-trending-charts/spec.md` – Requirements FR-001 through FR-014, User Stories 1–2, Edge Cases.
 - `docs/proposal/Auratune_Vision_Document.md` – Group G02 and Assumption AD-05.
@@ -178,6 +205,14 @@ The Home Dashboard renders the popular tracks section ("Đang được yêu thí
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Ownership**: Clarification session 2026-11-01 confirmed that Group 020 owns both the Home preview and the Charts page.
 - **Prototype Gap**: The Charts page has no period control yet and ranks by total play count; the Home wording refers to this week (see Known Gaps in the 024 specification).
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`HomePage.jsx`, `ChartsPage.jsx` and `ExplorePage.jsx` provide the presentation. Some catalog/ranking inputs still use `src/frontend/src/utils/mockData.js`. Live recommendation widgets do not establish that every Home section is backed by an authoritative catalog or calculated platform ranking.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

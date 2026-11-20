@@ -1,8 +1,10 @@
 # UC-050-001 – View Playback Queue
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `051-FR-001`, `051-FR-002`, `051-FR-003`, `051-FR-004`, `051-FR-005`, `051-FR-007`, `051-FR-008`, `051-FR-009`, `051-FR-010`, `051-FR-011`, `051-FR-013` |
 | **Related Feature/Spec** | Feature 051: View Queue (`specs/050-queue-management/051-view-queue/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A guest or listener opens the queue panel from the player to see the track that is playing now and the ordered list of tracks that will play next, without interrupting playback. The actor can play any upcoming track immediately. The queue is kept in local browser storage, so it is restored in a paused state after a page reload.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - A track is loaded in the player, either playing or paused (`UC-040-001`).
 - The queue was set by starting a collection, such as a playlist, album, chart, or result list (`051-FR-004`), or by queue actions in `UC-050-002` and `UC-050-003`.
@@ -33,12 +38,14 @@ A guest or listener opens the queue panel from the player to see the track that 
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The actor selects the queue control ("Danh sách chờ") in the mini player or the full player.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Selects the queue control in the player (`051-FR-001`).
 2. **System:** Opens the queue panel as a right-aligned drawer with a backdrop, without interrupting playback (`051-FR-009`).
@@ -53,20 +60,24 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Track Changes While the Panel Is Open
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** The current track ends or the actor presses next (`051-FR-010`).
 1. **System:** Moves the next track to "Đang phát" and updates the upcoming list and count immediately.
 - **Continuation:** Resumes at Step 5 of the Basic Flow.
 
 ### AF-02 – No Upcoming Tracks
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The current track is the last one in the queue (`051-FR-007`).
 1. **System:** Shows guidance on adding tracks from a track's "…" menu and hides the clear action.
 - **Continuation:** Resumes at Step 8 of the Basic Flow.
 
 ### AF-03 – Restore the Queue After a Page Reload
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The actor reloaded the page while a queue existed (`051-FR-011`).
 1. **System:** Restores the current track and upcoming tracks from local browser storage in a paused state.
@@ -74,12 +85,14 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 - **Continuation:** Resumes at Step 2 of the Basic Flow.
 
 ### AF-04 – Many Upcoming Tracks
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The upcoming list is longer than the panel height.
 1. **System:** Scrolls the list inside the panel and truncates long titles without breaking the layout.
 - **Continuation:** Resumes at Step 5 of the Basic Flow.
 
 ### AF-05 – Queue Set From a Collection Longer Than 50 Tracks
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The queue was set by starting a collection with more than 50 available tracks (`051-FR-004`, `051-FR-013`).
 1. **System:** Shows only the first 50 available tracks of the collection, in collection order, counting the current track; the remaining tracks of the collection are not in the queue.
@@ -88,14 +101,17 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Saved Queue Cannot Be Restored
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of AF-03.
 - **Condition:** Browser storage is unavailable or the saved queue cannot be read.
 1. **System:** Starts with the default queue and keeps the application usable.
 - **Continuation:** Resumes at Step 1 of the Basic Flow.
 
 ### EF-02 – Selected Upcoming Track Is No Longer Available
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The selected track became unavailable after it was queued.
 1. **System:** Refuses to play the track and shows a message, as defined in `UC-040-001`.
@@ -104,18 +120,22 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The actor has seen the current track and the upcoming tracks in their real playback order and count.
 - Playback was never interrupted by opening or closing the panel.
 - The queue remains stored in local browser storage.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The panel shows the default queue if the saved queue could not be restored, and the application stays usable.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Consistency**: The displayed order always matches the playback order, and the count always matches the list.
 - **Accessibility**: The panel opens in 1 interaction and can be closed with the keyboard (Escape).
@@ -125,10 +145,12 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Queue control in the player](prototypes/UC-050-001-basic-flow-entry.png)
 *Figure 1: Queue control in the mini player (Step 1).*
@@ -140,21 +162,25 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 *Figure 3: Upcoming track with play-now, reorder, and remove actions (Step 6).*
 
 ### Alternative Flow – AF-02 (No Upcoming Tracks)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Empty queue](prototypes/UC-050-001-AF-02-empty-queue.png)
 *Figure 4: Guidance shown when nothing is upcoming.*
 
 ### Alternative Flow – AF-03 (Restore After Reload)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Player and queue restored in a paused state after a page reload. The current prototype resets the queue on reload.*
 
 ### Alternative Flow – AF-05 (Collection Longer Than 50 Tracks)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Queue panel holding the first 50 tracks of a long collection. The current prototype does not limit the queue.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Case**: `UC-040-001` (Control Audio Playback) – Loads the track and queue.
 - **Extended by**:
@@ -167,6 +193,7 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/050-queue-management/051-view-queue/spec.md` – Requirements FR-001 to FR-005, FR-007 to FR-011, and FR-013, User Stories 1–3, Clarifications 2026-10-31 and 2026-11-01.
 - `specs/050-queue-management/052-add-and-remove-queue-items/spec.md` – Edge Case "Batch exceeding the limit".
@@ -177,8 +204,16 @@ The actor selects the queue control ("Danh sách chờ") in the mini player or t
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Storage Decision**: Clarification session 2026-11-01 confirmed that the queue survives a page reload through local browser storage.
 - **Single-Song Start (`Q-050-2`)**: Whether playing a single song from search replaces the queue or inserts the song at the top is still open in the use-case model.
 - **Collections Over 50 Tracks**: Specification 051 does not state what happens when a started collection has more than 50 tracks. AF-05 applies the 052 edge case for batch additions: only the tracks that fit are added. The same rule is used in `UC-020-002` (AF-04) and `UC-020-005` (AF-04). This needs to be confirmed as a clarification of spec 051.
 - **Prototype Gap**: The current prototype does not save the queue, so it resets after a reload; the panel is modal, so the page behind it cannot be used while it is open.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Queue operations are implemented through the player hook and `QueuePanel.jsx`. Verify queue ordering and current-track continuity in the browser. Exporting the queue also depends on the real playlist persistence path; local queue behavior alone does not verify the saved playlist.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).
