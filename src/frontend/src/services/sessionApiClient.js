@@ -9,13 +9,38 @@ export const API_BASE_URL = typeof import.meta !== 'undefined' && import.meta.en
 
 let sharedAuthContext = {};
 let refreshInFlight = null;
+let authGeneration = 0;
+
+export function invalidateAuthRequests() { authGeneration++; refreshInFlight = null; }
+export function currentAuthIdentity() {
+  const identity = sharedAuthContext.getSessionIdentity?.();
+  return identity ? `${authGeneration}/${identity}` : null;
+}
+
+export function sessionIdentity(session) {
+  if (!session || session.source !== 'backend' || !session.token) return null;
+  try {
+    const segment = session.token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const claims = JSON.parse(atob(segment));
+    return `${session.userId}/${claims.user_id}/${claims.session_id}`;
+  } catch { return null; }
+}
 
 export function configureAuthContext(authContext = {}) {
+  invalidateAuthRequests();
   sharedAuthContext = authContext;
 }
 
 export async function apiFetch(url, options = {}, authContext = sharedAuthContext) {
   const { getAccessToken, refreshSession, onSessionRevoked } = authContext;
+  const generation = authGeneration;
+  const origin = authContext.getSessionIdentity?.() ?? getAccessToken?.() ?? null;
+  const assertOrigin = () => {
+    const current = authContext.getSessionIdentity?.() ?? getAccessToken?.() ?? null;
+    if (generation !== authGeneration || current !== origin || options.signal?.aborted) {
+      throw new DOMException('Session changed', 'AbortError');
+    }
+  };
 
   const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
 
@@ -37,6 +62,7 @@ export async function apiFetch(url, options = {}, authContext = sharedAuthContex
 
   try {
     let response = await fetch(fullUrl, fetchOptions);
+    assertOrigin();
 
     const isCredentialRequest = /\/auth\/(?:login|register|forgot-password|reset-password|refresh|firebase\/exchange|oauth\/(?:login|callback))(?:$|\?)/.test(fullUrl);
     if (
@@ -45,13 +71,18 @@ export async function apiFetch(url, options = {}, authContext = sharedAuthContex
       !isCredentialRequest &&
       (currentToken || headers.has('Authorization'))
     ) {
-      refreshInFlight ??= Promise.resolve()
-        .then(() => refreshSession())
-        .finally(() => { refreshInFlight = null; });
-      const refreshResult = await refreshInFlight;
+      if (!refreshInFlight || refreshInFlight.origin !== origin || refreshInFlight.generation !== generation) {
+        const active = { origin, generation };
+        active.promise = Promise.resolve().then(() => { assertOrigin(); return refreshSession(); })
+          .finally(() => { if (refreshInFlight === active) refreshInFlight = null; });
+        refreshInFlight = active;
+      }
+      const refreshResult = await refreshInFlight.promise;
+      assertOrigin();
       if (refreshResult && refreshResult.ok && refreshResult.accessToken) {
         headers.set('Authorization', `Bearer ${refreshResult.accessToken}`);
         response = await fetch(fullUrl, { ...fetchOptions, headers });
+        assertOrigin();
       } else {
         if (onSessionRevoked) {
           onSessionRevoked(refreshResult?.message || 'Phiên làm việc hết hạn. Vui lòng đăng nhập lại.');

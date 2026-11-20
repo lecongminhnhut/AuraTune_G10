@@ -1,5 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { albumApi, authApi, configureAuthContext } from '../services/sessionApiClient.js'
+import {
+  albumApi,
+  authApi,
+  configureAuthContext,
+  currentAuthIdentity,
+} from '../services/sessionApiClient.js'
+import { useArtistFollowing } from '../hooks/useArtistFollowing.js'
 import { getAlbumDetails, getArtistAlbums } from '../services/albumDetailsService.js'
 import { logoutFirebase } from '../services/firebaseAuth.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
@@ -262,6 +268,9 @@ export const formatTotalDuration = (seconds) => {
 
   const sessionValid = state.session && new Date(state.session.expiresAt).getTime() > Date.now()
   const currentUser = sessionValid ? state.users.find((user) => user.id === state.session.userId && !user.banned) ?? null : null
+  const followingList = useArtistFollowing(
+  currentUser ? currentAuthIdentity() : null
+  )
 
   // Clear invalid sessions after restoration finishes.
   useEffect(() => {
