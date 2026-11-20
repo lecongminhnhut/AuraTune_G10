@@ -1,589 +1,749 @@
-# AuraTune — System-Level Use-Case Model
+# AuraTune system-level use-case model
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
----
+## 1. Document information
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-## 1. Document Information
+Version: 1.1.0, PA4 review draft, 2026-11-20. Original authors: Group 10 Requirements Engineering Team. Independent review is pending.
 
-- **Document Title**: AuraTune System-Level Use-Case Model
-- **Document Version**: 1.0.0
-- **Status**: Baselined for PA3 Review
-- **Last Updated**: 2026-11-03
-- **Primary Authors**: Group 10 Requirements Engineering Team
-- **Approval Authority**: Lê Công Minh Nhựt (Team Leader / Architecture Lead)
-- **Source Baseline Documents**:
-  - `docs/proposal/proposal.md` (Sections 1–8)
-  - `docs/proposal/Auratune_Vision_Document.md` (Sections 1–6)
-  - `docs/proposal/project_plan.md` (Sections 2.3, 2.4, 2.5, 4.3)
-  - `docs/management/team-contract.md` (Section 1)
-  - `docs/analysis-and-design/api-contract.md` (Sections 1–2)
-  - `docs/design/database/er-diagram.md`
-  - `specs/` (Functional feature specifications for groups `010` to `120`)
+The owner confirmed that TA supplied no PA3 feedback and requested more detail in the current version. The owner subsequently confirmed that the original documents before this PA4 revision are the PA3 baseline (PA4-D07). This is the pre-edit snapshot recorded at HEAD `35d8027`, with each original document identified by its recorded SHA-256 hash.
 
----
+This model preserves the existing UC specification IDs and filenames under owner decision PA4-D02. The Vision retains its historical IDs; Section 9 supplies an explicit goal-based crosswalk. [Review register](#11-pa4-decisions-and-source-review) records source conflicts and implementation limits.
 
-## 2. System Overview
+## 2. System overview and boundary
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-AuraTune is a smart, cloud-backed music streaming and discovery web platform designed to combine open-copyright music distribution with artificial intelligence. Unlike conventional streaming services that rely exclusively on standard SQL metadata lookups, AuraTune integrates Large Language Models (LLMs) and vector similarity search to act as an intelligent "AI DJ" and conversational music companion capable of deep semantic comprehension.
+AuraTune supports music discovery, playback, personal collections, Artist Studio, administration and conversational assistance. The model states required observable behavior; it does not certify that every feature is implemented.
 
-The platform addresses two primary stakeholder groups:
-1. **Listeners and Focused Workers**: Students, office workers, and general listeners who seek to adapt their auditory environment to shifting emotions, focus levels, and activities (e.g., finding tracks from vague memories, mood prompts, or fragmented lyrics).
-2. **Independent Artists**: Musicians seeking an accessible, direct-to-consumer launchpad to publish, distribute, and manage their original, non-commercially copyrighted audio tracks.
+The application UI, Express API, Python orchestration and application-owned data are inside the logical AuraTune boundary. Identity providers, cloud media storage and third-party model services are outside. Internal Player, Queue, analysis logic, databases and background jobs are not external human actors. Browser storage is a client persistence mechanism, not an actor.
 
-AuraTune operates within an academic, non-commercial research scope (Proposal Section 4.1; Vision Document Section 3.3). To guarantee legal compliance with Vietnam's Intellectual Property Law (Article 25) and Personal Data Protection Decree (Decree 13/2023/ND-CP), the platform streams strictly royalty-free, Creative Commons (CC0), public-domain, or team-licensed audio, while enforcing rigorous anonymization before dispatching user queries to external AI services.
+The Vision requires licensed/authorized media and privacy protections. Those are requirements to verify, rather than a claim of legal compliance established by this model. Spotify is described in the Vision as an offline metadata preparation source, not a runtime user actor.
 
----
+## 3. Actors
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-## 3. System Boundary
+| Actor | Boundary and permissions |
+| --- | --- |
+| ACT-01 Guest / Visitor / Public User | Public discovery and permitted playback; registration/login are entry goals. Source-specific restrictions still apply, including Listener-only semantic search under PA4-D05. |
+| ACT-02 Listener | Authenticated access to the account's own collections, history, recommendations and chat. |
+| Playlist Owner | Listener with ownership of the selected playlist; permissions do not apply to other playlists. |
+| ACT-03 Playlist Collaborator / Editor / Participant | Resource-specific invited co-editing and viewing, subject to the collaboration spec. Ownership-only actions remain with the owner. |
+| ACT-04 Artist | Listener capabilities plus management of the Artist's own Studio. An Admin role does not confer Artist Studio impersonation. |
+| ACT-05 Administrator | Listener capabilities plus authorized platform administration, subject to self-management restrictions. |
+| ACT-EXT-01 Google; ACT-EXT-02 Facebook | External identity verification. Session issuance and account authorization remain AuraTune responsibilities. |
+| ACT-EXT-03 Cloud media storage | Logical external upload/delivery role. Cloudinary integration is present; no Cloudflare deployment is inferred. |
+| ACT-EXT-04 External AI provider | External model inference where a goal requires it. Feature 101 history-only statistical aggregation is internal. |
 
-### 3.1 What is Inside AuraTune
-- **Web Application Client (SPA)**: Responsive browser frontend providing home discovery, multi-modal search, persistent mini/full playback, queue drawer, playlist management, user library, and conversational chat interfaces.
-- **AuraTune Application Backend**: RESTful API services handling authentication, authorization, session management, catalog indexing, playlist persistence, listening history logging, user stats aggregation, and administrative moderation.
-- **AuraTune Database**: PostgreSQL relational database storing user credentials, profiles, sessions, catalog metadata (songs, albums, artists, genres), playlists, likes, and listening history events.
-- **AuraTune AI Orchestrator**: Python/FastAPI microservice orchestrating semantic embedding lookups, vector similarity scoring, mood tag extraction, prompt-driven playlist generation, and chat intent resolution.
-
-### 3.2 What is Outside AuraTune
-- **External OAuth Identity Providers**: Third-party identity services (Google, Facebook) managing user identity verification outside AuraTune's boundaries.
-- **Cloud Media Storage / CDN**: Cloud object storage (Cloudinary / Cloudflare CDN) storing raw binary audio files (MP3), high-resolution cover art, and artist avatars, serving audio streams via HTTP Range requests.
-- **External AI Foundation Models**: Third-party language models, embedding models, and managed vector infrastructure providing inference endpoints consumed by AuraTune's backend.
-- **Client Web Browsers**: Standard modern desktop and mobile browsers (Chrome, Edge, Firefox, Safari) providing standard HTML5 `<audio>` playback engines.
-
-### 3.3 External Systems & Cross-Boundary Responsibilities
-
-| External System | Type | Cross-Boundary Responsibility | Source Document | Status |
-|---|---|---|---|---|
-| **Google OAuth 2.0** | External System | Authenticates users; returns user identity token, email, display name, and avatar URL via callback. | `Vision Document` AD-07; `012/spec.md` | Confirmed |
-| **Facebook Login** | External System | Authenticates users; returns OAuth authorization code and profile claims. | `Vision Document` AD-07; `012/spec.md` | Confirmed |
-| **Cloud Media Storage (CDN)** | External System | Stores uploaded audio files and images; handles progressive streaming and HTTP 206 Partial Content byte-range requests. | `Vision Document` AD-04, ED-05; `042/spec.md` | Confirmed |
-| **External AI / LLM Provider** | External System | Generates vector embeddings for lyrics/queries; performs LLM completion for AI playlist generation and conversational host dialogues. | `Vision Document` AD-06, ED-08; `proposal.md` | Confirmed |
-| **Spotify Web API** | Offline Ingestion Tool | Source of catalog metadata during team preparation scripts; **not** invoked at runtime by end users or backend APIs. | `Vision Document` Section 4.1, AD-05, ED-01 | Confirmed (Offline only) |
-
----
-
-## 4. Actor Catalog
+Role specialization inherits public/user capabilities, not every entry flow's preconditions. Resource ownership, current ban/session state and feature-specific access always constrain an inherited capability.
 
 ```mermaid
 classDiagram
-    direction BT
-    class Guest {
-        +Browse public catalog
-        +Search by metadata/lyrics/mood
-        +Stream public audio
-        +Register account
-    }
-    class Listener {
-        +Manage personal library
-        +Curate playlists
-        +Maintain listening history
-        +Converse with AI host
-    }
-    class PlaylistCollaborator {
-        +Co-edit shared playlists
-    }
-    class Artist {
-        +Access AuraTune Studio
-        +Upload & manage tracks
-    }
-    class Administrator {
-        +Ban/unban users
-        +Moderate infringing content
-        +Inspect platform KPIs
-    }
-    Listener --|> Guest : Generalization
-    PlaylistCollaborator --|> Listener : Generalization
-    Artist --|> Listener : Generalization
-    Administrator --|> Listener : Generalization
+ direction BT
+ class Guest
+ class Listener
+ class PlaylistOwner
+ class PlaylistCollaborator
+ class Artist
+ class Administrator
+ Listener --|> Guest : public capabilities
+ PlaylistOwner --|> Listener
+ PlaylistCollaborator --|> Listener
+ Artist --|> Listener
+ Administrator --|> Listener
 ```
 
-### 4.1 Detailed Actor Specifications
+## 4. Functional groups and source coverage
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| Actor ID | Actor Name | Actor Type | Description & Responsibilities | Related Use Cases | Source |
-|---|---|---|---|---|---|
-| `ACT-01` | **Guest / Visitor** | Primary Human Actor | Unauthenticated visitor accessing AuraTune via a web browser. Can browse public content, execute searches, and stream music without logging in. Prompted to authenticate when attempting personal actions. | `UC-010-001` through `UC-010-004`, `UC-020-001`, `UC-020-002`, `UC-020-004`, `UC-020-005`, `UC-030-001` through `UC-030-004`, `UC-040-001` through `UC-040-008`, `UC-050-001` through `UC-050-006`, `UC-080-001` through `UC-080-003`, `UC-080-005`, `UC-090-001` | `proposal.md` Section 3; `Vision Document` Section 3.2 |
-| `ACT-02` | **Listener** | Primary Human Actor | Authenticated standard user. Inherits all capabilities of Guest. Manages personal playlists, bookmarks albums, tracks listening history, generates AI playlists, and interacts with the AI Conversational Host. | All Guest use cases plus: `UC-010-005` through `UC-010-009`, `UC-020-003`, `UC-040-009`, `UC-040-010`, `UC-050-007`, `UC-060-001` through `UC-060-012`, `UC-070-002` through `UC-070-006`, `UC-080-004`, `UC-090-002`, `UC-090-003`, `UC-100-002`, `UC-100-003`, `UC-120-001` through `UC-120-004` | `proposal.md` Section 3; `Vision Document` Section 3.2 |
-| `ACT-03` | **Playlist Collaborator** | Supporting Human Actor | Authenticated listener who has been invited by a playlist owner to co-curate a shared playlist. Can add, remove, and reorder songs within the specific shared collection. | `UC-060-005`, `UC-060-006`, `UC-060-007`, `UC-060-011` | `Vision Document` Section 5.2 G06; `065/spec.md` |
-| `ACT-04` | **Artist** | Primary Human Actor | Musician with an authenticated account assigned the `artist` role. Inherits all Listener capabilities. Granted access to AuraTune Studio (`/studio`) to upload tracks, edit metadata, hide, or delete audio. | All Listener use cases plus: `UC-090-004` through `UC-090-008` | `proposal.md` Section 3; `Vision Document` Section 3.2 |
-| `ACT-05` | **Administrator** | Administrative Human Actor | Platform operator assigned the `admin` role. Inherits all Listener capabilities. Granted access to Admin Dashboard (`/admin`) to manage accounts, ban violators, moderate infringing tracks/comments, and inspect stats. | All Listener use cases plus: `UC-040-010`, `UC-110-001` through `UC-110-008` | `proposal.md` Section 3; `Vision Document` Section 3.2 |
-| `ACT-EXT-01` | **Google OAuth Provider** | External System | Third-party identity provider implementing OAuth 2.0 / OpenID Connect. Authenticates users and returns identity profiles. | `UC-010-003` | `Vision Document` AD-07; `012/spec.md` |
-| `ACT-EXT-02` | **Facebook Login Provider** | External System | Third-party social login provider implementing OAuth 2.0. Authenticates users and returns user profile data. | `UC-010-004` | `Vision Document` AD-07; `012/spec.md` |
-| `ACT-EXT-03` | **Cloud Media Storage (CDN)** | External System | Cloudinary / Cloudflare CDN storing audio files (MP3) and images. Serves byte-range streaming requests for audio playback and seeking. | `UC-040-001`, `UC-040-003`, `UC-090-005` | `Vision Document` AD-04, ED-05; `042/spec.md` |
-| `ACT-EXT-04` | **External AI Service Provider** | External System | Cloud LLM and embedding infrastructure providing vector similarity lookups, prompt analysis, and conversational dialogue completion. | `UC-030-002`, `UC-030-003`, `UC-060-010`, `UC-100-001` through `UC-100-003`, `UC-120-001` through `UC-120-003` | `Vision Document` AD-06, ED-08; `proposal.md` Section 7 |
+| Group | Draft specifications | Source inventory | Review state |
+| --- | ---: | --- | --- |
+| 010 Authentication | 9 | [Inventory](./use-cases/010-authentication/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 020 Home Dashboard | 5 | [Inventory](./use-cases/020-home-dashboard/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 030 Search | 4 | [Inventory](./use-cases/030-search/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 040 Music Player | 10 | [Inventory](./use-cases/040-music-player/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 050 Queue Management | 7 | [Inventory](./use-cases/050-queue-management/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 060 Playlist Management | 16 | [Inventory](./use-cases/060-playlist-management/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 070 Listening History | 7 | [Inventory](./use-cases/070-listening-history/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 080 Album Interaction | 3 | [Inventory](./use-cases/080-album-interaction/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 090 Artist Profile and Studio | 8 | [Inventory](./use-cases/090-artist-profile-studio/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 100 AI Recommendations | 3 | [Inventory](./use-cases/100-ai-recommendations/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 110 Admin Functions | 8 | [Inventory](./use-cases/110-admin-functions/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
+| 120 AI Conversational Agent | 4 | [Inventory](./use-cases/120-ai-conversational-agent/use-case-inventory.md) | Pending PA4 peer review; see source/implementation gaps |
 
----
+There are 84 specification files across twelve groups. This is a file/catalog count, not a coverage percentage or completed-feature count. UC-070-001 records an internal playback-triggered process for a Listener; UC-070-007 documents a retention policy without an interactive user goal. They are retained for traceability and are not new external actors.
 
-## 5. Functional Group Overview
+## 5. Group use-case diagrams
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-The AuraTune system encompasses 12 official functional groups established in the project charter and Team Contract:
+Each diagram shows a human role association to its catalog goals. Role labels are abbreviated; the specifications and actor table define actual authority. An association to a background policy indicates its beneficiary, not that the user manually invokes the job.
 
-### 5.1 Group 010 – Authentication
-- **Purpose**: Establishes, validates, and maintains user identity and session security across local and third-party login methods.
-- **Confirmed Capabilities**: Local email/password registration and login; Google OAuth2 and Facebook OAuth2 sign-in; account linking across methods; dual-token session management (JWT Access Token + rotating Refresh Token in HttpOnly cookie); 15-minute account lockout on brute-force attempts; self-service password reset; multi-device session limits (max 5) and revocation.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`), Google OAuth (`ACT-EXT-01`), Facebook Login (`ACT-EXT-02`).
-- **Related FR IDs**: `011-FR-001` to `011-FR-011`; `012-FR-001` to `012-FR-011`; `013-FR-001` to `013-FR-014`.
-- **Dependencies**: Database (PostgreSQL `users`, `user_sessions`, `oauth_links`).
-- **Source References**: `proposal.md` 6.1; `Vision Document` G01; `specs/010-authentication/`.
-- **Unresolved Questions**: Free-tier SMTP mail service selection for password recovery emails (PC-03, Q-010-1).
-
-### 5.2 Group 020 – Home Dashboard
-- **Purpose**: Acts as the central discovery surface, aggregating personalized music, recent plays, charts, and new releases.
-- **Confirmed Capabilities**: Section ordering (Hero → Recommendations → New Albums → Trending Charts → Featured Artists → Suggested Playlists → Genres); guest vs. authenticated partition; direct one-click playback initializing queue; failure isolation per section; dedicated `/charts` page with period and genre filters.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`).
-- **Related FR IDs**: `021-FR-001` to `021-FR-013`; `022-FR-001` to `022-FR-011`; `023-FR-001` to `023-FR-011`; `024-FR-001` to `024-FR-014`; `025-FR-001` to `025-FR-011`.
-- **Dependencies**: Groups `010`, `040`, `050`, `070`, `080`, `090`, `100`.
-- **Source References**: `proposal.md` 6.2; `Vision Document` G02; `specs/020-home-dashboard/`.
-- **Unresolved Questions**: Single composite endpoint `GET /home` vs. granular parallel client requests (Q-020-1).
-
-### 5.3 Group 030 – Search
-- **Purpose**: Delivers multi-modal music discovery via metadata, lyric fragments, and emotional descriptions.
-- **Confirmed Capabilities**: Text search by song, artist, album, playlist with diacritic-insensitivity and filters; AI lyric search with matched excerpt highlight; semantic mood/context vector search; 3-second timeout triggering automatic keyword fallback; client-side LocalStorage search history (max 10); PII sanitization.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`), External AI Service (`ACT-EXT-04`).
-- **Related FR IDs**: `031-FR-001` to `031-FR-007`; `032-FR-001` to `032-FR-005`; `033-FR-001` to `033-FR-005`.
-- **Dependencies**: Database (PostgreSQL), External AI / Vector Database (pgvector / ChromaDB).
-- **Source References**: `proposal.md` 6.3, 7; `Vision Document` G03; `specs/030-search/`.
-- **Unresolved Questions**: Vector database selection (PostgreSQL `pgvector` vs. ChromaDB/Pinecone) under free-tier limits (R4, Q-030-1).
-
-### 5.4 Group 040 – Music Player
-- **Purpose**: Provides uninterrupted, continuous audio streaming and playback controls across all pages.
-- **Confirmed Capabilities**: Play, pause, skip, previous (with 3-second restart rule); elapsed/duration display; seeking via HTTP 206 range requests; volume slider and mute; shuffle and repeat modes; synchronized lyrics scrolling; persistent bottom mini-player; full player modal; song sharing; public comment reading; authenticated comment posting and deletion; 30-second listening history dispatch.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`), Administrator (`ACT-05`), Cloud Media Storage (`ACT-EXT-03`).
-- **Related FR IDs**: `041-FR-001` to `041-FR-015`; `042-FR-001` to `042-FR-012`; `043-FR-001` to `043-FR-012`; `044-FR-001` to `044-FR-012`; `045-FR-001` to `045-FR-012`; `046-FR-001` to `046-FR-015`.
-- **Dependencies**: Group `050` (Queue), Group `070` (History), Cloud Media Storage (Cloudinary/Cloudflare).
-- **Source References**: `proposal.md` 6.4; `Vision Document` G04; `specs/040-music-player/`.
-- **Unresolved Questions**: Cloud media storage range request verification on free tier (Q-040-1).
-
-### 5.5 Group 050 – Queue Management
-- **Purpose**: Provides real-time dynamic control over the upcoming playback waitlist.
-- **Confirmed Capabilities**: Slide-out queue drawer UI; now-playing top card; upcoming tracks list (max 50 tracks); jump to track; clear upcoming queue; append to queue; de-duplication of manual additions; drag-and-drop reordering; step up/down accessibility buttons; LIFO Play Next prioritization; Play Next override over Shuffle; LocalStorage session persistence across page reload.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`).
-- **Related FR IDs**: `051-FR-001` to `051-FR-013`; `052-FR-001` to `052-FR-012`; `053-FR-001` to `053-FR-009`; `054-FR-001` to `054-FR-010`.
-- **Dependencies**: Group `040` (Player), Group `060` (Playlist creation from queue).
-- **Source References**: `proposal.md` 6.5; `Vision Document` G05; `specs/050-queue-management/`.
-- **Unresolved Questions**: Behavior when clicking a single song from search (queue replacement vs. index 0 insertion, Q-050-2).
-
-### 5.6 Group 060 – Playlist Management
-- **Purpose**: Empowers listeners to assemble, curate, share, and collaborate on personal music collections.
-- **Confirmed Capabilities**: Playlist CRUD (title max 80 chars, description max 300 chars, default Private); song addition/removal; song reordering; full playlist playback; Liked Songs special collection; prompt-driven AI playlist generation (10–20 songs with explanation, review, and edit flow); collaborative playlists (invite by email, co-editing, contributor attribution, owner revocation); following public playlists.
-- **Main Actors**: Listener (`ACT-02`), Playlist Collaborator (`ACT-03`), External AI Service (`ACT-EXT-04`).
-- **Related FR IDs**: `061-FR-001` to `061-FR-006`; `062-FR-001` to `062-FR-004`; `063-FR-001` to `063-FR-002`; `064-FR-001` to `064-FR-005`; `065-FR-001` to `065-FR-004`.
-- **Dependencies**: Database (PostgreSQL), Group `010`, Group `040`, Group `050`, External AI Service.
-- **Source References**: `proposal.md` 6.6; `Vision Document` G06; `specs/060-playlist-management/`.
-- **Unresolved Questions**: Real-time collaborative sync mechanism (REST polling vs. WebSockets, Q-060-1).
-
-### 5.7 Group 070 – Listening History
-- **Purpose**: Captures user playback activity and generates personal listening habit analytics.
-- **Confirmed Capabilities**: Automatic play event recording upon reaching 30s playback threshold; recently played list display; individual record deletion; "Clear All History" full purge (removing records and excluding them from AI profile); cumulative listening duration tracking (daily, weekly, total); last 7 days usage trend visualization; top 10 artists by play frequency; top genres analysis across configurable time horizons (4 weeks, 6 months, all-time/365 days).
-- **Main Actors**: Listener (`ACT-02`), System / Player Internal Service.
-- **Related FR IDs**: `071-FR-001` to `071-FR-004`; `072-FR-001` to `072-FR-003`; `073-FR-001` to `073-FR-003`.
-- **Dependencies**: Database (`listening_history`, `user_listening_stats`), Group `040` (Player trigger), Group `010`.
-- **Source References**: `proposal.md` 6.7; `Vision Document` G07; `specs/070-listening-history/`.
-- **Unresolved Questions**: Data aggregation schedule for top genres (on-demand SQL query vs. pre-aggregated summary table).
-
-### 5.8 Group 080 – Album Interaction
-- **Purpose**: Presents structured musical releases in their complete artist-intended context.
-- **Confirmed Capabilities**: Album detail view (cover art, title, artist, release year, release type badge "Đĩa đơn" vs "Album", total duration, track-level play counts); complete tracklist rendering; Play Album action (loading entire album into queue in order); individual track playback; Save Album to personal library; Share Album via Web Share API or clipboard URL copy.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`).
-- **Related FR IDs**: `081-FR-001` to `081-FR-002`; `082-FR-001` to `082-FR-003`; `083-FR-001` to `083-FR-002`.
-- **Dependencies**: Database (`albums`, `songs`, `artists`), Group `040` (Player), Group `050` (Queue), Group `010`.
-- **Source References**: `proposal.md` 6.8; `Vision Document` G08; `specs/080-album-interaction/`.
-- **Unresolved Questions**: Display of multi-disc releases (confirmed as flat ordered list in 081 specification).
-
-### 5.9 Group 090 – Artist Profile & Studio
-- **Purpose**: Connects listeners with artist discographies and provides musicians with a dedicated content management workspace.
-- **Confirmed Capabilities**: Public artist profile (avatar, bio, top 5 songs by AuraTune play count, released albums, related playlists); Follow/Unfollow artist; Following artists list in library; AuraTune Studio (`/studio`) restricted to `artist` role; Studio metrics dashboard (track count, public count, total plays); audio file upload with metadata (`POST /songs`); track metadata editing; track hiding (soft-hide); track permanent deletion.
-- **Main Actors**: Guest (`ACT-01`), Listener (`ACT-02`), Artist (`ACT-04`), Cloud Media Storage (`ACT-EXT-03`).
-- **Related FR IDs**: `091-FR-001` to `091-FR-003`; `092-FR-001` to `092-FR-004`; `093-FR-001` to `093-FR-005`.
-- **Dependencies**: Database (`artists`, `songs`, `albums`, `user_follows_artist`), Group `010`, Cloud Media Storage.
-- **Source References**: `proposal.md` 6.9; `Vision Document` G09; `specs/090-artist-profile-studio/`.
-- **Unresolved Questions**: Workflow for artist verification/elevation (handled by Administrator via Group 110).
-
-### 5.10 Group 100 – AI Recommendations
-- **Purpose**: Generates passive, automated song recommendations matching individual listener taste and emotional context.
-- **Confirmed Capabilities**: Analysis of `listening_history` and liked songs to identify taste profile; `GET /recommendations/songs` personalized feed; curated mood and context preset chips (Chill, Energetic, Focus, Workout, Study, Sleep); fallback to platform popular tracks when AI service is offline or for new users without history.
-- **Main Actors**: Listener (`ACT-02`), External AI Service (`ACT-EXT-04`).
-- **Related FR IDs**: `101-FR-001` to `101-FR-002`; `102-FR-001` to `102-FR-004`; `103-FR-001` to `103-FR-003`.
-- **Dependencies**: Database (`listening_history`, `user_liked_songs`), Group `010`, Group `070`, External AI Service.
-- **Source References**: `proposal.md` 6.10; `Vision Document` G10; `specs/100-ai-recommendations/`.
-- **Unresolved Questions**: Algorithm model selection (collaborative filtering vs. content-based embeddings, PoC ED-08).
-
-### 5.11 Group 110 – Admin Functions
-- **Purpose**: Provides administrative oversight, user access management, content moderation, and platform health analytics.
-- **Confirmed Capabilities**: User management dashboard (`GET /admin/users` with search, role, and ban status filters); banning users with mandatory reason; unbanning accounts; session blocking for banned users; changing user roles (`user`, `artist`, `admin`) with self-modification prevention; content moderation (hiding/removing infringing tracks, editing track metadata, deleting abusive comments); platform statistics dashboard (KPI cards for total users, artists, songs, plays); system controls (AI availability toggle and browser demo data reset).
-- **Main Actors**: Administrator (`ACT-05`).
-- **Related FR IDs**: `111-FR-001` to `111-FR-007`; `112-FR-001` to `112-FR-004`; `113-FR-001` to `113-FR-004`.
-- **Dependencies**: Database, Group `010` (Role verification), Group `040` (Comment deletion), Group `090` (Track metadata).
-- **Source References**: `proposal.md` 6.11; `Vision Document` G11; `specs/110-admin-functions/`.
-- **Unresolved Questions**: Audit log persistence for administrative actions (in-memory vs. dedicated database audit table).
-
-### 5.12 Group 120 – AI Conversational Agent
-- **Purpose**: Acts as an interactive real-time musical host/DJ that users converse with via natural language text to discover music and control playback.
-- **Confirmed Capabilities**: Chat workspace interface with message thread; prompt history navigation (Up/Down arrow keys, max 30 prompts); `/clear` command; music intent parsing (identifying intents: `play_music`, `queue_song`, `recommend_mood`, `ask_track_info`, `control_player`); client-side action execution via `client_actions` payload (controlling bottom player and queue directly from chat); interactive confirmation for destructive actions (`clear_queue`); graceful degradation notice when AI host is suspended.
-- **Main Actors**: Listener (`ACT-02`), External AI Service (`ACT-EXT-04`).
-- **Related FR IDs**: `121-FR-001` to `121-FR-007`; `122-FR-001` to `122-FR-005`; `123-FR-001` to `123-FR-005`.
-- **Dependencies**: Group `010`, Group `040`, Group `050`, Group `060`, External AI Service.
-- **Source References**: `proposal.md` Section 1, 5.12, 6.12; `Vision Document` G12; `specs/120-ai-conversational-agent/`.
-- **Unresolved Questions**: Voice speech synthesis/recognition scope (Project Plan 2.3.1 notes voice is unconfirmed; text-only confirmed for baseline).
-
----
-
-## 6. System-Level Use-Case Diagram
+### 010: Authentication
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```mermaid
-flowchart TB
-    subgraph EXT[External Systems]
-        OAUTH_G[Google OAuth Provider]
-        OAUTH_F[Facebook Login Provider]
-        CDN[Cloud Media Storage]
-        AI_SRV[External AI Service]
-    end
-
-    subgraph ACTORS[AuraTune Actors]
-        GUEST([Guest / Visitor])
-        USER([Listener])
-        COLLAB([Playlist Collaborator])
-        ARTIST([Artist])
-        ADMIN([Administrator])
-    end
-
-    USER -.->|extends role| GUEST
-    COLLAB -.->|extends role| USER
-    ARTIST -.->|extends role| USER
-    ADMIN -.->|extends role| USER
-
-    subgraph SYS[AuraTune System Boundary]
-        subgraph G010[010 Authentication]
-            UC010_1["Register Account (UC-010-001)"]
-            UC010_2["Log In with Email (UC-010-002)"]
-            UC010_3["Log In with Google (UC-010-003)"]
-            UC010_4["Log In with Facebook (UC-010-004)"]
-            UC010_5["Refresh Session Token (UC-010-005)"]
-            UC010_6["Reset Password via Email (UC-010-006)"]
-            UC010_7["Log Out (UC-010-007)"]
-            UC010_8["Log Out from All Devices (UC-010-008)"]
-            UC010_9["Unlink Social Account (UC-010-009)"]
-        end
-
-        subgraph G020[020 Home Dashboard]
-            UC020_1["Browse Home Dashboard (UC-020-001)"]
-            UC020_2["Stream Recommended Music (UC-020-002)"]
-            UC020_3["Replay Recent Music (UC-020-003)"]
-            UC020_4["Browse Trending Charts (UC-020-004)"]
-            UC020_5["Explore New Releases (UC-020-005)"]
-        end
-
-        subgraph G030[030 Search]
-            UC030_1["Search Catalog by Text (UC-030-001)"]
-            UC030_2["Search Music by Lyrics (UC-030-002)"]
-            UC030_3["Discover by Mood & Context (UC-030-003)"]
-            UC030_4["Manage Search History (UC-030-004)"]
-        end
-
-        subgraph G040[040 Music Player]
-            UC040_1["Control Audio Playback (UC-040-001)"]
-            UC040_2["Adjust Volume & Mute (UC-040-002)"]
-            UC040_3["Seek Audio Position (UC-040-003)"]
-            UC040_4["Toggle Shuffle & Repeat (UC-040-004)"]
-            UC040_5["View Synchronized Lyrics (UC-040-005)"]
-            UC040_6["Toggle Mini & Full Player (UC-040-006)"]
-            UC040_7["Share Song (UC-040-007)"]
-            UC040_8["Read Track Comments (UC-040-008)"]
-            UC040_9["Post Track Comment (UC-040-009)"]
-            UC040_10["Delete Track Comment (UC-040-010)"]
-        end
-
-        subgraph G050[050 Queue Management]
-            UC050_1["View Playback Queue (UC-050-001)"]
-            UC050_2["Add Track to Queue (UC-050-002)"]
-            UC050_3["Play Track Next (UC-050-003)"]
-            UC050_4["Reorder Upcoming Queue (UC-050-004)"]
-            UC050_5["Remove Track from Queue (UC-050-005)"]
-            UC050_6["Clear Upcoming Queue (UC-050-006)"]
-            UC050_7["Save Queue as Playlist (UC-050-007)"]
-        end
-
-        subgraph G060[060 Playlist Management]
-            UC060_1["Create Playlist (UC-060-001)"]
-            UC060_2["View Playlist Details (UC-060-002)"]
-            UC060_3["Edit Playlist Metadata (UC-060-003)"]
-            UC060_4["Delete Playlist (UC-060-004)"]
-            UC060_5["Add Track to Playlist (UC-060-005)"]
-            UC060_6["Remove Track from Playlist (UC-060-006)"]
-            UC060_7["Reorder Playlist Tracks (UC-060-007)"]
-            UC060_8["Play Playlist (UC-060-008)"]
-            UC060_9["Manage Liked Songs (UC-060-009)"]
-            UC060_10["Generate Playlist with AI (UC-060-010)"]
-            UC060_11["Manage Collaborative Playlist (UC-060-011)"]
-            UC060_12["Bookmark Public Playlist (UC-060-012)"]
-        end
-
-        subgraph G070[070 Listening History]
-            UC070_1["Record Track Play Event (UC-070-001)"]
-            UC070_2["View Listening History (UC-070-002)"]
-            UC070_3["Delete History Record (UC-070-003)"]
-            UC070_4["Purge Entire History (UC-070-004)"]
-            UC070_5["View Duration Analytics (UC-070-005)"]
-            UC070_6["View Top Artists & Genres (UC-070-006)"]
-        end
-
-        subgraph G080[080 Album Interaction]
-            UC080_1["View Album Details (UC-080-001)"]
-            UC080_2["Play Entire Album (UC-080-002)"]
-            UC080_3["Play Specific Album Track (UC-080-003)"]
-            UC080_4["Save Album to Library (UC-080-004)"]
-            UC080_5["Share Album (UC-080-005)"]
-        end
-
-        subgraph G090[090 Artist Profile & Studio]
-            UC090_1["View Public Artist Profile (UC-090-001)"]
-            UC090_2["Follow or Unfollow Artist (UC-090-002)"]
-            UC090_3["View Followed Artists (UC-090-003)"]
-            UC090_4["Access Studio Dashboard (UC-090-004)"]
-            UC090_5["Upload Audio Track (UC-090-005)"]
-            UC090_6["Edit Track Metadata (UC-090-006)"]
-            UC090_7["Hide or Unhide Track (UC-090-007)"]
-            UC090_8["Delete Track from Studio (UC-090-008)"]
-        end
-
-        subgraph G100[100 AI Recommendations]
-            UC100_1["Analyze Listening Profile (UC-100-001)"]
-            UC100_2["Receive Personalized Picks (UC-100-002)"]
-            UC100_3["Discover by Mood Tags (UC-100-003)"]
-        end
-
-        subgraph G110[110 Admin Functions]
-            UC110_1["View & Search Users (UC-110-001)"]
-            UC110_2["Ban User Account (UC-110-002)"]
-            UC110_3["Unban User Account (UC-110-003)"]
-            UC110_4["Manage User Roles (UC-110-004)"]
-            UC110_5["Moderate Tracks (UC-110-005)"]
-            UC110_6["Moderate Comments (UC-110-006)"]
-            UC110_7["View Platform KPIs (UC-110-007)"]
-            UC110_8["Manage System & Reset (UC-110-008)"]
-        end
-
-        subgraph G120[120 AI Conversational Agent]
-            UC120_1["Converse with AI Host (UC-120-001)"]
-            UC120_2["Interpret Music Intent (UC-120-002)"]
-            UC120_3["Execute Music Actions (UC-120-003)"]
-            UC120_4["Clear Chat History (UC-120-004)"]
-        end
-    end
-
-    %% Actor to Use Case associations
-    GUEST --> UC010_1
-    GUEST --> UC010_2
-    GUEST --> UC010_3
-    GUEST --> UC010_4
-    GUEST --> UC020_1
-    GUEST --> UC030_1
-    GUEST --> UC040_1
-    GUEST --> UC080_1
-    GUEST --> UC090_1
-
-    USER --> UC010_5
-    USER --> UC010_7
-    USER --> UC020_3
-    USER --> UC040_9
-    USER --> UC050_1
-    USER --> UC060_1
-    USER --> UC070_2
-    USER --> UC080_4
-    USER --> UC090_2
-    USER --> UC100_2
-    USER --> UC120_1
-
-    COLLAB --> UC060_5
-    COLLAB --> UC060_6
-    COLLAB --> UC060_7
-
-    ARTIST --> UC090_4
-    ARTIST --> UC090_5
-    ARTIST --> UC090_6
-    ARTIST --> UC090_7
-    ARTIST --> UC090_8
-
-    ADMIN --> UC110_1
-    ADMIN --> UC110_2
-    ADMIN --> UC110_3
-    ADMIN --> UC110_4
-    ADMIN --> UC110_5
-    ADMIN --> UC110_6
-    ADMIN --> UC110_7
-    ADMIN --> UC110_8
-    ADMIN --> UC040_10
-
-    %% External Systems associations
-    UC010_3 --> OAUTH_G
-    UC010_4 --> OAUTH_F
-    UC040_1 --> CDN
-    UC040_3 --> CDN
-    UC090_5 --> CDN
-    UC030_2 --> AI_SRV
-    UC030_3 --> AI_SRV
-    UC060_10 --> AI_SRV
-    UC100_2 --> AI_SRV
-    UC120_1 --> AI_SRV
+flowchart LR
+ A0["Guest or Listener"]
+ A1["Listener"]
+ subgraph B["AuraTune: Authentication"]
+ UUC010001(["UC-010-001: Register with Email"])
+ UUC010002(["UC-010-002: Login with Email"])
+ UUC010003(["UC-010-003: Recover Password"])
+ UUC010004(["UC-010-004: Login with Google"])
+ UUC010005(["UC-010-005: Login with Facebook"])
+ UUC010006(["UC-010-006: Logout"])
+ end
+ A0 --- UUC010001
+ A0 --- UUC010002
+ A0 --- UUC010003
+ A0 --- UUC010004
+ A0 --- UUC010005
+ A1 --- UUC010006
 ```
 
----
+```mermaid
+flowchart LR
+ A1["Listener"]
+ subgraph B["AuraTune: Authentication"]
+ UUC010007(["UC-010-007: View Active Sessions"])
+ UUC010008(["UC-010-008: Logout from All Devices"])
+ UUC010009(["UC-010-009: Unlink OAuth Provider"])
+ end
+ A1 --- UUC010007
+ A1 --- UUC010008
+ A1 --- UUC010009
+```
 
-## 7. Consolidated Use-Case Catalog
+### 020: Home Dashboard
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-*Naming Convention: `UC-[GROUP]-[SEQUENCE]-[short-name]` (Provisional project standard matching `AuraTune_Use_Case_Documentation_Guide.md`).*
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ A1["Listener"]
+ subgraph B["AuraTune: Home Dashboard"]
+ UUC020001(["UC-020-001: Browse Home Dashboard"])
+ UUC020002(["UC-020-002: Stream Recommended Music from Home"])
+ UUC020003(["UC-020-003: Replay Recently Played Music"])
+ UUC020004(["UC-020-004: Browse Trending Charts"])
+ UUC020005(["UC-020-005: Explore New Album Releases"])
+ end
+ A0 --- UUC020001
+ A0 --- UUC020002
+ A1 --- UUC020003
+ A0 --- UUC020004
+ A0 --- UUC020005
+```
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Functional Group | Related FR IDs | Source References | Status |
-|---|---|---|---|---|---|---|---|
-| `UC-010-001` | Register Account | Guest | None | 010 Authentication | `011-FR-001..003`, `011-FR-008..010` | `011/spec.md` US1 | Confirmed |
-| `UC-010-002` | Log In with Email and Password | Guest / Listener | None | 010 Authentication | `011-FR-004`, `011-FR-006`, `011-FR-009`, `013-FR-001..003` | `011/spec.md` US2 | Confirmed |
-| `UC-010-003` | Log In with Google | Guest / Listener | Google OAuth Provider | 010 Authentication | `012-FR-001`, `012-FR-003..008`, `013-FR-001..003` | `012/spec.md` US1, US2 | Confirmed |
-| `UC-010-004` | Log In with Facebook | Guest / Listener | Facebook Login Provider | 010 Authentication | `012-FR-002..008`, `013-FR-001..003` | `012/spec.md` US1, US2 | Confirmed |
-| `UC-010-005` | Refresh Session Token | Listener | None | 010 Authentication | `013-FR-004..005`, `013-FR-009`, `013-FR-011`, `013-FR-014` | `013/spec.md` US1 | Confirmed |
-| `UC-010-006` | Reset Password via Email | Guest / Listener | Email Service | 010 Authentication | `011-FR-011` | `011/spec.md` US4 | Confirmed |
-| `UC-010-007` | Log Out | Listener | None | 010 Authentication | `013-FR-006` | `013/spec.md` US2 | Confirmed |
-| `UC-010-008` | Log Out from All Devices | Listener | None | 010 Authentication | `013-FR-008` | `013/spec.md` US3 | Confirmed |
-| `UC-010-009` | Unlink Social Account | Listener | None | 010 Authentication | `012-FR-011` | `012/spec.md` US4 | Confirmed |
-| `UC-020-001` | Browse Home Dashboard | Guest / Listener | None | 020 Home Dashboard | `021-FR-001` to `021-FR-013` | `021/spec.md` US1, US2 | Confirmed |
-| `UC-020-002` | Stream Recommended Music from Home | Guest / Listener | None | 020 Home Dashboard | `022-FR-001` to `022-FR-011`, `051-FR-013` | `022/spec.md` US1 | Confirmed |
-| `UC-020-003` | Replay Recently Played Music | Listener | None | 020 Home Dashboard | `023-FR-001` to `023-FR-011` | `023/spec.md` US1 | Confirmed |
-| `UC-020-004` | Browse Trending Charts | Guest / Listener | None | 020 Home Dashboard | `024-FR-001` to `024-FR-014` | `024/spec.md` US1, US2 | Confirmed |
-| `UC-020-005` | Explore New Album Releases | Guest / Listener | None | 020 Home Dashboard | `025-FR-001` to `025-FR-011`, `051-FR-013` | `025/spec.md` US1, US2 | Confirmed |
-| `UC-030-001` | Search Catalog by Text Metadata | Guest / Listener | None | 030 Search | `031-FR-001..006` | `031/spec.md` US1, US2 | Confirmed |
-| `UC-030-002` | Search Music by Lyric Fragment | Guest / Listener | External AI Service | 030 Search | `032-FR-001..005` | `032/spec.md` US1 | Confirmed |
-| `UC-030-003` | Discover Music by Semantic Mood or Context | Guest / Listener | External AI Service | 030 Search | `033-FR-001..005` | `033/spec.md` US1, US2 | Confirmed |
-| `UC-030-004` | Manage Local Search History | Guest / Listener | None | 030 Search | `031-FR-007` | `031/spec.md` US3 | Confirmed |
-| `UC-040-001` | Control Audio Playback | Guest / Listener | Cloud Media Storage | 040 Music Player | `041-FR-001` to `041-FR-015` | `041/spec.md` US1, US2 | Confirmed |
-| `UC-040-002` | Adjust Volume and Mute | Guest / Listener | None | 040 Music Player | `042-FR-006` to `042-FR-011` | `042/spec.md` US2 | Confirmed |
-| `UC-040-003` | Seek Audio Playback Position | Guest / Listener | Cloud Media Storage | 040 Music Player | `042-FR-001` to `042-FR-005`, `042-FR-011`, `042-FR-012` | `042/spec.md` US1 | Confirmed |
-| `UC-040-004` | Toggle Shuffle and Repeat Modes | Guest / Listener | None | 040 Music Player | `043-FR-001` to `043-FR-012` | `043/spec.md` US1, US2 | Confirmed |
-| `UC-040-005` | View Synchronized Lyrics | Guest / Listener | None | 040 Music Player | `044-FR-001` to `044-FR-012` | `044/spec.md` US1, US2 | Confirmed |
-| `UC-040-006` | Toggle Persistent Mini and Full Player | Guest / Listener | None | 040 Music Player | `045-FR-001` to `045-FR-012` | `045/spec.md` US1, US2 | Confirmed |
-| `UC-040-007` | Share Song | Guest / Listener | None | 040 Music Player | `046-FR-001` to `046-FR-005` | `046/spec.md` US1 | Confirmed |
-| `UC-040-008` | Read Track Comments | Guest / Listener | None | 040 Music Player | `046-FR-006`, `046-FR-007`, `046-FR-014`, `046-FR-015` | `046/spec.md` US2 | Confirmed |
-| `UC-040-009` | Post Track Comment | Listener | None | 040 Music Player | `046-FR-008`, `046-FR-009`, `046-FR-012`, `046-FR-013`, `046-FR-015` | `046/spec.md` US3 | Confirmed |
-| `UC-040-010` | Delete Track Comment | Listener / Administrator | None | 040 Music Player | `046-FR-010` to `046-FR-012` | `046/spec.md` US3 | Confirmed |
-| `UC-050-001` | View Playback Queue | Guest / Listener | None | 050 Queue Management | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011`, `051-FR-013` | `051/spec.md` US1, US2 | Confirmed |
-| `UC-050-002` | Add Track to Queue | Guest / Listener | None | 050 Queue Management | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012`, `051-FR-013` | `052/spec.md` US1 | Confirmed |
-| `UC-050-003` | Play Track Next | Guest / Listener | None | 050 Queue Management | `054-FR-001` to `054-FR-010`, `052-FR-012`, `051-FR-013` | `054/spec.md` US1, US2 | Confirmed |
-| `UC-050-004` | Reorder Upcoming Queue | Guest / Listener | None | 050 Queue Management | `053-FR-001` to `053-FR-009` | `053/spec.md` US1, US2 | Confirmed |
-| `UC-050-005` | Remove Track from Queue | Guest / Listener | None | 050 Queue Management | `052-FR-008` to `052-FR-011` | `052/spec.md` US2 | Confirmed |
-| `UC-050-006` | Clear Upcoming Queue | Guest / Listener | None | 050 Queue Management | `051-FR-006`, `051-FR-007` | `051/spec.md` US2 | Confirmed |
-| `UC-050-007` | Save Queue as Playlist | Listener | None | 050 Queue Management | `051-FR-012` | `051/spec.md` US2 | Confirmed |
-| `UC-060-001` | Create Playlist | Listener | None | 060 Playlist Management | `061-FR-001..002` | `061/spec.md` US1 | Confirmed |
-| `UC-060-002` | View Playlist Details | Guest / Listener | None | 060 Playlist Management | `061-FR-003` | `061/spec.md` US1 | Confirmed |
-| `UC-060-003` | Edit Playlist Metadata and Visibility | Listener | None | 060 Playlist Management | `061-FR-002`, `061-FR-004` | `061/spec.md` US2 | Confirmed |
-| `UC-060-004` | Delete Playlist | Listener | None | 060 Playlist Management | `061-FR-005` | `061/spec.md` US3 | Confirmed |
-| `UC-060-005` | Add Track to Playlist | Listener / Collaborator | None | 060 Playlist Management | `062-FR-001`, `065-FR-002` | `062/spec.md` US1 | Confirmed |
-| `UC-060-006` | Remove Track from Playlist | Listener / Collaborator | None | 060 Playlist Management | `062-FR-002`, `065-FR-002` | `062/spec.md` US2 | Confirmed |
-| `UC-060-007` | Reorder Playlist Tracks | Listener / Collaborator | None | 060 Playlist Management | `062-FR-003`, `065-FR-002` | `062/spec.md` US3 | Confirmed |
-| `UC-060-008` | Play Playlist | Guest / Listener | None | 060 Playlist Management | `063-FR-001..002` | `063/spec.md` US1, US2 | Confirmed |
-| `UC-060-009` | Manage Liked Songs | Listener | None | 060 Playlist Management | `062-FR-004` | `062/spec.md` US4 | Confirmed |
-| `UC-060-010` | Generate Playlist with AI | Listener | External AI Service | 060 Playlist Management | `064-FR-001..005` | `064/spec.md` US1..US3 | Confirmed |
-| `UC-060-011` | Manage Collaborative Playlist | Listener | None | 060 Playlist Management | `065-FR-001`, `065-FR-004` | `065/spec.md` US1, US3 | Confirmed |
-| `UC-060-012` | Bookmark Public Playlist | Listener | None | 060 Playlist Management | `061-FR-006` | `061/spec.md` US1 | Confirmed |
-| `UC-070-001` | Record Track Play Event | System / Player | None | 070 Listening History | `071-FR-001` | `071/spec.md` US1 | Confirmed |
-| `UC-070-002` | View Recently Played History | Listener | None | 070 Listening History | `071-FR-002` | `071/spec.md` US2 | Confirmed |
-| `UC-070-003` | Delete History Record | Listener | None | 070 Listening History | `071-FR-003` | `071/spec.md` US3 | Confirmed |
-| `UC-070-004` | Purge Entire Listening History | Listener | None | 070 Listening History | `071-FR-004` | `071/spec.md` US3 | Confirmed |
-| `UC-070-005` | View Listening Duration Analytics | Listener | None | 070 Listening History | `072-FR-001..003` | `072/spec.md` US1, US2 | Confirmed |
-| `UC-070-006` | View Top Artists and Genres Statistics | Listener | None | 070 Listening History | `073-FR-001..003` | `073/spec.md` US1, US2 | Confirmed |
-| `UC-080-001` | View Album Details and Tracklist | Guest / Listener | None | 080 Album Interaction | `081-FR-001..002`, `082-FR-001` | `081/spec.md` US1 | Confirmed |
-| `UC-080-002` | Play Entire Album | Guest / Listener | None | 080 Album Interaction | `082-FR-002` | `082/spec.md` US2 | Confirmed |
-| `UC-080-003` | Play Specific Album Track | Guest / Listener | None | 080 Album Interaction | `082-FR-003` | `082/spec.md` US1 | Confirmed |
-| `UC-080-004` | Save Album to Library | Listener | None | 080 Album Interaction | `083-FR-001` | `083/spec.md` WF A | Confirmed |
-| `UC-080-005` | Share Album | Guest / Listener | None | 080 Album Interaction | `083-FR-002` | `083/spec.md` WF B | Confirmed |
-| `UC-090-001` | View Public Artist Profile | Guest / Listener | None | 090 Artist Profile & Studio | `091-FR-001..003` | `091/spec.md` US1, US2 | Confirmed |
-| `UC-090-002` | Follow or Unfollow Artist | Listener | None | 090 Artist Profile & Studio | `092-FR-001..003` | `092/spec.md` US1, US2 | Confirmed |
-| `UC-090-003` | View Followed Artists | Listener | None | 090 Artist Profile & Studio | `092-FR-004` | `092/spec.md` US3 | Confirmed |
-| `UC-090-004` | Access Artist Studio Dashboard | Artist | None | 090 Artist Profile & Studio | `093-FR-001` | `093/spec.md` US1 | Confirmed |
-| `UC-090-005` | Upload Audio Track | Artist | Cloud Media Storage | 090 Artist Profile & Studio | `093-FR-002` | `093/spec.md` US2 | Confirmed |
-| `UC-090-006` | Edit Track Metadata | Artist | None | 090 Artist Profile & Studio | `093-FR-003` | `093/spec.md` US3 | Confirmed |
-| `UC-090-007` | Hide or Unhide Track | Artist | None | 090 Artist Profile & Studio | `093-FR-004` | `093/spec.md` US4 | Confirmed |
-| `UC-090-008` | Delete Track from Studio | Artist | None | 090 Artist Profile & Studio | `093-FR-005` | `093/spec.md` US5 | Confirmed |
-| `UC-100-001` | Analyze Listening Profile for Recommendations | System | External AI Service | 100 AI Recommendations | `101-FR-001..002` | `101/spec.md` US1 | Confirmed |
-| `UC-100-002` | Receive Personalized Song Recommendations | Listener | External AI Service | 100 AI Recommendations | `102-FR-001..004` | `102/spec.md` US1 | Confirmed |
-| `UC-100-003` | Discover Music by Curated Mood Tags | Listener | External AI Service | 100 AI Recommendations | `103-FR-001..003` | `103/spec.md` US1 | Confirmed |
-| `UC-110-001` | View and Search Platform Users | Administrator | None | 110 Admin Functions | `111-FR-001..003` | `111/spec.md` US1 | Confirmed |
-| `UC-110-002` | Ban User Account | Administrator | None | 110 Admin Functions | `111-FR-004..005` | `111/spec.md` US2 | Confirmed |
-| `UC-110-003` | Unban User Account | Administrator | None | 110 Admin Functions | `111-FR-006` | `111/spec.md` US3 | Confirmed |
-| `UC-110-004` | Manage User Roles | Administrator | None | 110 Admin Functions | `111-FR-007` | `111/spec.md` US4 | Confirmed |
-| `UC-110-005` | Moderate Platform Tracks | Administrator | None | 110 Admin Functions | `112-FR-001..003` | `112/spec.md` US1, US2 | Confirmed |
-| `UC-110-006` | Moderate Inappropriate Comments | Administrator | None | 110 Admin Functions | `112-FR-004` | `112/spec.md` US3 | Confirmed |
-| `UC-110-007` | View Platform Key Performance Indicators | Administrator | None | 110 Admin Functions | `113-FR-001..003` | `113/spec.md` US1 | Confirmed |
-| `UC-110-008` | Manage System Availability and Demo Reset | Administrator | None | 110 Admin Functions | `113-FR-004` | `113/spec.md` US2 | Confirmed |
-| `UC-120-001` | Converse with AI Music Host | Listener | External AI Service | 120 AI Conversational Agent | `121-FR-001..007` | `121/spec.md` US1, US2 | Confirmed |
-| `UC-120-002` | Interpret Music Intent via Chat | Listener | External AI Service | 120 AI Conversational Agent | `122-FR-001..005` | `122/spec.md` US1, US2 | Confirmed |
-| `UC-120-003` | Execute Music Actions via Conversational Agent | Listener | External AI Service | 120 AI Conversational Agent | `123-FR-001..005` | `123/spec.md` US1, US2 | Confirmed |
-| `UC-120-004` | Clear Conversation History | Listener | None | 120 AI Conversational Agent | `121-FR-007` | `121/spec.md` US3 | Confirmed |
+### 030: Search
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
----
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ A1["Listener"]
+ subgraph B["AuraTune: Search"]
+ UUC030001(["UC-030-001: Search by Metadata"])
+ UUC030002(["UC-030-002: AI Lyrics Search"])
+ UUC030003(["UC-030-003: Semantic Vector Music Search"])
+ UUC030004(["UC-030-004: Manage Local Search History"])
+ end
+ A0 --- UUC030001
+ A0 --- UUC030002
+ A1 --- UUC030003
+ A0 --- UUC030004
+```
 
-## 8. Use-Case Relationships
+### 040: Music Player
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-### 8.1 Included Behaviors (`<<include>>`)
-- **`UC-040-001 Control Audio Playback` <<include>> `UC-070-001 Record Track Play Event`**:
-  - *Condition/Behavior*: Whenever continuous playback of a track passes the 30-second mark (or 50% for tracks under 30s), the Music Player *always* issues a call to log the play event in `listening_history`.
-- **`UC-120-001 Converse with AI Music Host` <<include>> `UC-120-002 Interpret Music Intent via Chat`**:
-  - *Condition/Behavior*: Every incoming chat prompt received by the AI host interface is unconditionally parsed by the intent resolution engine to identify whether musical actions or informational responses are required.
-- **`UC-120-003 Execute Music Actions via Conversational Agent` <<include>> `UC-050-002 Add Track to Queue`**:
-  - *Condition/Behavior*: When the conversational host executes a `queue_song` action directive, it dispatches the validated track object directly into the active playback queue.
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ subgraph B["AuraTune: Music Player"]
+ UUC040001(["UC-040-001: Control Audio Playback"])
+ UUC040002(["UC-040-002: Adjust Volume and Mute"])
+ UUC040003(["UC-040-003: Seek Audio Playback Position"])
+ UUC040004(["UC-040-004: Toggle Shuffle and Repeat Modes"])
+ UUC040005(["UC-040-005: View Synchronized Lyrics"])
+ UUC040006(["UC-040-006: Toggle Persistent Mini and Full Player"])
+ end
+ A0 --- UUC040001
+ A0 --- UUC040002
+ A0 --- UUC040003
+ A0 --- UUC040004
+ A0 --- UUC040005
+ A0 --- UUC040006
+```
 
-### 8.2 Extended Behaviors (`<<extend>>`)
-- **`UC-030-002 Search Music by Lyric Fragment` <<extend>> `UC-030-001 Search Catalog by Text Metadata`**:
-  - *Extension Point*: `AI Service Unavailable or Timeout (> 3s)`.
-  - *Behavior*: When the AI vector lyrics service fails or times out, the system extends into keyword-based text search over catalog lyrics.
-- **`UC-030-003 Discover Music by Semantic Mood or Context` <<extend>> `UC-030-001 Search Catalog by Text Metadata`**:
-  - *Extension Point*: `Vector Search Timeout (> 3s)`.
-  - *Behavior*: When natural-language vector matching times out, the search engine falls back to metadata keyword querying using the prompt tokens.
-- **`UC-050-007 Save Queue as Playlist` <<extend>> `UC-060-001 Create Playlist`**:
-  - *Extension Point*: `Queue Action Menu`.
-  - *Behavior*: A user curating an active queue can trigger the playlist creation flow pre-populated with current queue items.
-- **`UC-120-003 Execute Music Actions` <<extend>> `UC-040-001 Control Audio Playback`**:
-  - *Extension Point*: `Chat Action Directive`.
-  - *Behavior*: The AI host can initiate, pause, or resume playback directly through client-side action payloads.
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ A1["Listener"]
+ subgraph B["AuraTune: Music Player"]
+ UUC040007(["UC-040-007: Share Song"])
+ UUC040008(["UC-040-008: Read Track Comments"])
+ UUC040009(["UC-040-009: Post Track Comment"])
+ UUC040010(["UC-040-010: Delete Track Comment"])
+ end
+ A0 --- UUC040007
+ A0 --- UUC040008
+ A1 --- UUC040009
+ A1 --- UUC040010
+```
 
-### 8.3 Actor Generalizations
-- **`Listener` specializes `Guest`**: Authenticated listeners inherit all public catalog discovery, search, and playback capabilities of guests.
-- **`Artist` specializes `Listener`**: Artists have all listener capabilities and additionally possess studio upload and track management rights.
-- **`Administrator` specializes `Listener`**: Administrators have all listener capabilities and additionally possess platform moderation and user ban privileges.
-- **`Playlist Collaborator` specializes `Listener`**: Collaborators possess standard listener rights plus co-editing rights on specifically shared playlists.
+### 050: Queue Management
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
----
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ subgraph B["AuraTune: Queue Management"]
+ UUC050001(["UC-050-001: View Playback Queue"])
+ UUC050002(["UC-050-002: Add Track to Queue"])
+ UUC050003(["UC-050-003: Play Track Next"])
+ UUC050004(["UC-050-004: Reorder Upcoming Queue"])
+ UUC050005(["UC-050-005: Remove Track from Queue"])
+ UUC050006(["UC-050-006: Clear Upcoming Queue"])
+ end
+ A0 --- UUC050001
+ A0 --- UUC050002
+ A0 --- UUC050003
+ A0 --- UUC050004
+ A0 --- UUC050005
+ A0 --- UUC050006
+```
 
-## 9. Functional Requirements Traceability Matrix
+```mermaid
+flowchart LR
+ A1["Listener"]
+ subgraph B["AuraTune: Queue Management"]
+ UUC050007(["UC-050-007: Save Queue as Playlist"])
+ end
+ A1 --- UUC050007
+```
 
-| Functional Group | Verified FR IDs | Mapped Use Cases | Status |
-|---|---|---|---|
-| **010 Authentication** | `011-FR-001` to `011-FR-011`<br>`012-FR-001` to `012-FR-011`<br>`013-FR-001` to `013-FR-014` | `UC-010-001` through `UC-010-009` | Fully Covered |
-| **020 Home Dashboard** | `021-FR-001` to `021-FR-013`<br>`022-FR-001` to `022-FR-011`<br>`023-FR-001` to `023-FR-011`<br>`024-FR-001` to `024-FR-014`<br>`025-FR-001` to `025-FR-011` | `UC-020-001` through `UC-020-005` | Fully Covered |
-| **030 Search** | `031-FR-001` to `031-FR-007`<br>`032-FR-001` to `032-FR-005`<br>`033-FR-001` to `033-FR-005` | `UC-030-001` through `UC-030-004` | Fully Covered |
-| **040 Music Player** | `041-FR-001` to `041-FR-015`<br>`042-FR-001` to `042-FR-012`<br>`043-FR-001` to `043-FR-012`<br>`044-FR-001` to `044-FR-012`<br>`045-FR-001` to `045-FR-012`<br>`046-FR-001` to `046-FR-015` | `UC-040-001` through `UC-040-010` | Fully Covered |
-| **050 Queue Management** | `051-FR-001` to `051-FR-013`<br>`052-FR-001` to `052-FR-012`<br>`053-FR-001` to `053-FR-009`<br>`054-FR-001` to `054-FR-010` | `UC-050-001` through `UC-050-007` | Fully Covered |
-| **060 Playlist Management** | `061-FR-001` to `061-FR-006`<br>`062-FR-001` to `062-FR-004`<br>`063-FR-001` to `063-FR-002`<br>`064-FR-001` to `064-FR-005`<br>`065-FR-001` to `065-FR-004` | `UC-060-001` through `UC-060-012` | Fully Covered |
-| **070 Listening History** | `071-FR-001` to `071-FR-004`<br>`072-FR-001` to `072-FR-003`<br>`073-FR-001` to `073-FR-003` | `UC-070-001` through `UC-070-006` | Fully Covered |
-| **080 Album Interaction** | `081-FR-001` to `081-FR-002`<br>`082-FR-001` to `082-FR-003`<br>`083-FR-001` to `083-FR-002` | `UC-080-001` through `UC-080-005` | Fully Covered |
-| **090 Artist Profile & Studio** | `091-FR-001` to `091-FR-003`<br>`092-FR-001` to `092-FR-004`<br>`093-FR-001` to `093-FR-005` | `UC-090-001` through `UC-090-008` | Fully Covered |
-| **100 AI Recommendations** | `101-FR-001` to `101-FR-002`<br>`102-FR-001` to `102-FR-004`<br>`103-FR-001` to `103-FR-003` | `UC-100-001` through `UC-100-003` | Fully Covered |
-| **110 Admin Functions** | `111-FR-001` to `111-FR-007`<br>`112-FR-001` to `112-FR-004`<br>`113-FR-001` to `113-FR-004` | `UC-110-001` through `UC-110-008` | Fully Covered |
-| **120 AI Conversational Agent** | `121-FR-001` to `121-FR-007`<br>`122-FR-001` to `122-FR-005`<br>`123-FR-001` to `123-FR-005` | `UC-120-001` through `UC-120-004` | Fully Covered |
+### 060: Playlist Management
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
----
+```mermaid
+flowchart LR
+ A0["Listener"]
+ A1["Playlist Owner"]
+ subgraph B["AuraTune: Playlist Management"]
+ UUC060001(["UC-060-001: View Playlists in Library"])
+ UUC060002(["UC-060-002: Create Playlist"])
+ UUC060003(["UC-060-003: View Playlist Details"])
+ UUC060004(["UC-060-004: Edit Playlist Metadata"])
+ UUC060005(["UC-060-005: Delete Playlist"])
+ UUC060006(["UC-060-006: Bookmark Public Playlist"])
+ end
+ A0 --- UUC060001
+ A0 --- UUC060002
+ A0 --- UUC060003
+ A1 --- UUC060004
+ A1 --- UUC060005
+ A0 --- UUC060006
+```
 
-## 10. Open Questions and Limitations
+```mermaid
+flowchart LR
+ A0["Listener"]
+ A1["Playlist Owner"]
+ A2["Authorized playlist participant"]
+ subgraph B["AuraTune: Playlist Management"]
+ UUC060007(["UC-060-007: Add Songs to Playlist"])
+ UUC060008(["UC-060-008: Remove Song from Playlist"])
+ UUC060009(["UC-060-009: Reorder Songs in Playlist"])
+ UUC060010(["UC-060-010: Toggle Like Song"])
+ UUC060011(["UC-060-011: Enable Collaboration on Playlist"])
+ UUC060012(["UC-060-012: Invite Collaborators"])
+ end
+ A2 --- UUC060007
+ A2 --- UUC060008
+ A2 --- UUC060009
+ A0 --- UUC060010
+ A1 --- UUC060011
+ A1 --- UUC060012
+```
 
-1. **Email Service Integration (`Q-010-1`)**: Password recovery (`UC-010-006`) relies on sending emails. Under project constraint PC-03 (zero commercial budget), the specific free-tier SMTP provider (SendGrid, Mailgun, or Gmail SMTP) requires validation in Sprint 3.
-2. **Facebook Login Production Status (`Q-010-2`)**: Facebook Login (`UC-010-004`) requires app verification for public access. In Development Mode, course evaluators must be manually registered as test users (AD-07, ED-09).
-3. **Vector Database Infrastructure Selection (`Q-030-1`)**: The choice between PostgreSQL `pgvector` and an independent vector store (ChromaDB) remains an open architecture decision for Sprint 3.
-4. **Cloud Media Storage Byte-Range Verification (`Q-040-1`)**: Precise seeking (`UC-040-003`) requires verifying that the free tier of Cloudinary or Cloudflare CDN properly supports HTTP 206 Range headers.
-5. **Collaborative Playlist Sync Protocol (`Q-060-1`)**: Whether collaborative editing (`UC-060-011`) uses REST polling or WebSocket push remains an unconfirmed technical design detail.
-6. **AI Host Voice Capabilities**: Project Plan Section 2.3.1 explicitly records that voice input/speech synthesis is unconfirmed; the baseline Use-Case Model is established as text-only.
+```mermaid
+flowchart LR
+ A0["Listener"]
+ A1["Playlist Owner"]
+ A2["Authorized playlist participant"]
+ subgraph B["AuraTune: Playlist Management"]
+ UUC060013(["UC-060-013: Manage Collaborators"])
+ UUC060014(["UC-060-014: View Collaborative Playlist Details"])
+ UUC060015(["UC-060-015: Play Playlist"])
+ UUC060016(["UC-060-016: Generate AI Playlist"])
+ end
+ A1 --- UUC060013
+ A2 --- UUC060014
+ A0 --- UUC060015
+ A0 --- UUC060016
+```
 
----
+### 070: Listening History
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-## 11. References
+```mermaid
+flowchart LR
+ A0["Listener beneficiary"]
+ A1["Listener"]
+ subgraph B["AuraTune: Listening History"]
+ UUC070001(["UC-070-001: Record Track Play Event"])
+ UUC070002(["UC-070-002: View Listening History"])
+ UUC070003(["UC-070-003: Delete History Record"])
+ UUC070004(["UC-070-004: Purge Entire History"])
+ UUC070005(["UC-070-005: View Duration Analytics"])
+ UUC070006(["UC-070-006: View Top Artists and Genres"])
+ end
+ A0 --- UUC070001
+ A1 --- UUC070002
+ A1 --- UUC070003
+ A1 --- UUC070004
+ A1 --- UUC070005
+ A1 --- UUC070006
+```
 
-- `docs/proposal/proposal.md` – Project Proposal: Problem statement, legal safe zone, actors, key features, and semantic search workflow.
-- `docs/proposal/Auratune_Vision_Document.md` – Product Vision Document: Positioning, stakeholder/user descriptions, system context (Figure 4.1), assumptions/dependencies (AD-01 to AD-10), feature descriptions (G01 to G12), and non-functional requirements.
-- `docs/proposal/project_plan.md` – Software Project Management Plan (SPMP): In-scope features, out-of-scope boundaries, Sprint roadmap (Sprints 1–5), build checkpoints (BLD-01 to BLD-04), and Assumptions & Constraints register (PC-01 to PC-06, TA-01 to TA-05, ED-01 to ED-11).
-- `docs/management/team-contract.md` – Roles, functional group ownership assignments, and collaboration rules.
-- `docs/analysis-and-design/api-contract.md` – Official API specification across all endpoints (`/auth`, `/home`, `/search`, `/songs`, `/playlists`, `/albums`, `/artists`, `/admin`, `/ai`).
-- `docs/design/database/er-diagram.md` – Entity-Relationship model of the relational database.
-- `specs/` – Feature specifications (`011` to `123`) establishing functional requirements, acceptance criteria, and UI workflows.
-- `docs/PA/AuraTune_Use_Case_Documentation_Guide.md` – PA3 Use-Case modeling guidelines and conventions.
+```mermaid
+flowchart LR
+ A0["Listener beneficiary"]
+ subgraph B["AuraTune: Listening History"]
+ UUC070007(["UC-070-007: Purge Expired History"])
+ end
+ A0 --- UUC070007
+```
+
+### 080: Album Interaction
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ A1["Listener"]
+ subgraph B["AuraTune: Album Interaction"]
+ UUC080001(["UC-080-001: View Album Details"])
+ UUC080002(["UC-080-002: Play Album Tracklist"])
+ UUC080003(["UC-080-003: Save and Share Album"])
+ end
+ A0 --- UUC080001
+ A1 --- UUC080002
+ A0 --- UUC080003
+```
+
+### 090: Artist Profile and Studio
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+```mermaid
+flowchart LR
+ A0["Guest or Listener"]
+ A1["Listener"]
+ A2["Artist owner"]
+ subgraph B["AuraTune: Artist Profile and Studio"]
+ UUC090001(["UC-090-001: View Public Artist Profile"])
+ UUC090002(["UC-090-002: Follow or Unfollow Artist"])
+ UUC090003(["UC-090-003: View Followed Artists"])
+ UUC090004(["UC-090-004: Access Artist Studio Dashboard"])
+ UUC090005(["UC-090-005: Upload Audio Track"])
+ UUC090006(["UC-090-006: Edit Track Metadata"])
+ end
+ A0 --- UUC090001
+ A1 --- UUC090002
+ A1 --- UUC090003
+ A2 --- UUC090004
+ A2 --- UUC090005
+ A2 --- UUC090006
+```
+
+```mermaid
+flowchart LR
+ A2["Artist owner"]
+ subgraph B["AuraTune: Artist Profile and Studio"]
+ UUC090007(["UC-090-007: Hide or Unhide Track"])
+ UUC090008(["UC-090-008: Delete Track from Studio"])
+ end
+ A2 --- UUC090007
+ A2 --- UUC090008
+```
+
+### 100: AI Recommendations
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+```mermaid
+flowchart LR
+ A0["Listener"]
+ subgraph B["AuraTune: AI Recommendations"]
+ UUC100001(["UC-100-001: View Listening History Analysis"])
+ UUC100002(["UC-100-002: Receive Personalized Recommendations"])
+ UUC100003(["UC-100-003: Discover Music by Mood and Context"])
+ end
+ A0 --- UUC100001
+ A0 --- UUC100002
+ A0 --- UUC100003
+```
+
+### 110: Admin Functions
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+```mermaid
+flowchart LR
+ A0["Administrator"]
+ subgraph B["AuraTune: Admin Functions"]
+ UUC110001(["UC-110-001: View and Search Platform Users"])
+ UUC110002(["UC-110-002: Ban User Account"])
+ UUC110003(["UC-110-003: Unban User Account"])
+ UUC110004(["UC-110-004: Manage User Roles"])
+ UUC110005(["UC-110-005: Moderate Platform Tracks"])
+ UUC110006(["UC-110-006: Moderate Platform Comments"])
+ end
+ A0 --- UUC110001
+ A0 --- UUC110002
+ A0 --- UUC110003
+ A0 --- UUC110004
+ A0 --- UUC110005
+ A0 --- UUC110006
+```
+
+```mermaid
+flowchart LR
+ A0["Administrator"]
+ subgraph B["AuraTune: Admin Functions"]
+ UUC110007(["UC-110-007: View Platform Key Performance Indicators"])
+ UUC110008(["UC-110-008: Manage System Availability and Demo Reset"])
+ end
+ A0 --- UUC110007
+ A0 --- UUC110008
+```
+
+### 120: AI Conversational Agent
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+```mermaid
+flowchart LR
+ A0["Listener"]
+ subgraph B["AuraTune: AI Conversational Agent"]
+ UUC120001(["UC-120-001: Converse with AI Music Host"])
+ UUC120002(["UC-120-002: Interpret Music Intent via Chat"])
+ UUC120003(["UC-120-003: Execute Music Actions via Conversational Agent"])
+ UUC120004(["UC-120-004: Clear Conversation History"])
+ end
+ A0 --- UUC120001
+ A0 --- UUC120002
+ A0 --- UUC120003
+ A0 --- UUC120004
+```
+
+## 6. Relationships and workflow handoffs
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+| Relationship | Classification and condition |
+| --- | --- |
+| UC-120-001 to UC-120-002 | Required intent interpretation for ordinary submitted chat prompts. The existing included-use-case reference is scoped to that path; terminal clear/reset controls retain their own flows. |
+| UC-070-001 to UC-040-001 | Conditional extension behavior after authenticated qualifying playback. Guest/short playback does not necessarily record an event. Threshold differences between source features remain registered. |
+| UC-120-003 to Player, Queue or Library actions | The action type selects a destination. Queue addition is not mandatory for volume, pause or library actions; there is no unconditional include of UC-050-002. |
+| UC-030-002/003 fallback to metadata | Alternative/exception paths within the search goals; not a global UML extend relation with a keyword-search base goal. |
+| UC-050-007 to UC-060-002 then UC-060-003 | Queue export reuses playlist creation and may continue to details. This is a handoff, not an extension point inside every Create Playlist flow. |
+| Recommendation, album, history or lyrics to Player | Playback/seek is a user-selected handoff, not an unconditional include of every browsing goal. |
+| UC-040-010 from UC-040-008 | Optional authorized deletion while reading comments; it retains author/Admin checks. |
+
+```mermaid
+flowchart LR
+ C["UC-120-001: ordinary chat prompt"] -. "include: required interpretation" .-> I["UC-120-002: Interpret Music Intent"]
+ H["UC-070-001: Record Track Play Event"] -. "extend: signed-in qualifying play" .-> P["UC-040-001: Control Audio Playback"]
+```
+
+The arrows use Mermaid notation with labeled UML semantics. Include points from the base to reused required behavior; extend points from conditional behavior to the base. The qualifying-play guard does not resolve the separate threshold conflict.
+
+## 7. Consolidated use-case catalog
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Every entry below links to a specification file. FR references retain feature-qualified local numbering; they are not the Vision FR namespace. Feature 065 is an exception in source notation: the inventory alias `065-FR-001` corresponds to literal `FR-065-01`, through `065-FR-010` / `FR-065-10`. The normalization identifies the same requirements and does not rename source FRs. Original Writer and review metadata remain in the linked files. PA4 review is pending for this revision.
+
+| UC ID | Name | Primary actor / beneficiary | Related FR references | Specification |
+| --- | --- | --- | --- | --- |
+| UC-010-001 | Register with Email | Visitor | `FR-011-001`, `FR-011-002`, `FR-011-003`, `FR-011-010` | [Specification](./use-cases/010-authentication/UC-010-001-register-with-email.md) |
+| UC-010-002 | Login with Email | Visitor | `FR-011-004`, `FR-011-009`, `FR-013-009` | [Specification](./use-cases/010-authentication/UC-010-002-login-with-email.md) |
+| UC-010-003 | Recover Password | Visitor | `FR-011-011` | [Specification](./use-cases/010-authentication/UC-010-003-recover-password.md) |
+| UC-010-004 | Login with Google | Visitor | `FR-012-001`, `FR-012-003`, `FR-012-004`, `FR-012-007` | [Specification](./use-cases/010-authentication/UC-010-004-login-with-google.md) |
+| UC-010-005 | Login with Facebook | Visitor | `FR-012-002`, `FR-012-003`, `FR-012-004`, `FR-012-007` | [Specification](./use-cases/010-authentication/UC-010-005-login-with-facebook.md) |
+| UC-010-006 | Logout | Listener | `FR-013-006`, `FR-013-009` | [Specification](./use-cases/010-authentication/UC-010-006-logout.md) |
+| UC-010-007 | View Active Sessions | Listener | `FR-013-007` | [Specification](./use-cases/010-authentication/UC-010-007-view-active-sessions.md) |
+| UC-010-008 | Logout from All Devices | Listener | `FR-013-008` | [Specification](./use-cases/010-authentication/UC-010-008-logout-all-devices.md) |
+| UC-010-009 | Unlink OAuth Provider | Listener | `FR-012-011` | [Specification](./use-cases/010-authentication/UC-010-009-unlink-oauth-provider.md) |
+| UC-020-001 | Browse Home Dashboard | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `021-FR-001`, `021-FR-002`, `021-FR-003`, `021-FR-004`, `021-FR-005`, `021-FR-006`, `021-FR-007`, `021-FR-008`, `021-FR-009`, `021-FR-010`, `021-FR-011`, `021-FR-012`, `021-FR-013` | [Specification](./use-cases/020-home-dashboard/UC-020-001-browse-home-dashboard.md) |
+| UC-020-002 | Stream Recommended Music from Home | Listener (`ACT-02`), Guest / Visitor (`ACT-01`) | `022-FR-001`, `022-FR-002`, `022-FR-003`, `022-FR-004`, `022-FR-005`, `022-FR-006`, `022-FR-007`, `022-FR-008`, `022-FR-009`, `022-FR-010`, `022-FR-011`, `051-FR-013` | [Specification](./use-cases/020-home-dashboard/UC-020-002-stream-recommended-music-from-home.md) |
+| UC-020-003 | Replay Recently Played Music | Listener (`ACT-02`) | `023-FR-001`, `023-FR-002`, `023-FR-003`, `023-FR-004`, `023-FR-005`, `023-FR-006`, `023-FR-007`, `023-FR-008`, `023-FR-009`, `023-FR-010`, `023-FR-011` | [Specification](./use-cases/020-home-dashboard/UC-020-003-replay-recently-played-music.md) |
+| UC-020-004 | Browse Trending Charts | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `024-FR-001`, `024-FR-002`, `024-FR-003`, `024-FR-004`, `024-FR-005`, `024-FR-006`, `024-FR-007`, `024-FR-008`, `024-FR-009`, `024-FR-010`, `024-FR-011`, `024-FR-012`, `024-FR-013`, `024-FR-014` | [Specification](./use-cases/020-home-dashboard/UC-020-004-browse-trending-charts.md) |
+| UC-020-005 | Explore New Album Releases | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `025-FR-001`, `025-FR-002`, `025-FR-003`, `025-FR-004`, `025-FR-005`, `025-FR-006`, `025-FR-007`, `025-FR-008`, `025-FR-009`, `025-FR-010`, `025-FR-011`, `051-FR-013` | [Specification](./use-cases/020-home-dashboard/UC-020-005-explore-new-album-releases.md) |
+| UC-030-001 | Search by Metadata | Public User / Guest (`ACT-01`), Listener (`ACT-02`) | `031-FR-001` through `031-FR-019` | [Specification](./use-cases/030-search/UC-030-001-metadata-search.md) |
+| UC-030-002 | AI Lyrics Search | Public User / Guest (`ACT-01`), Listener (`ACT-02`) | `032-FR-001` through `032-FR-019` | [Specification](./use-cases/030-search/UC-030-002-ai-lyrics-search.md) |
+| UC-030-003 | Semantic Vector Music Search | Listener (`ACT-02`) | `033-FR-001` through `033-FR-017`, including `033-FR-003a`, `033-FR-004a`, and `033-FR-011a` | [Specification](./use-cases/030-search/UC-030-003-semantic-vector-search.md) |
+| UC-030-004 | Manage Local Search History | Guest / Listener | 031-FR-019; FR-030-004 | [Specification](./use-cases/030-search/UC-030-004-manage-local-search-history.md) |
+| UC-040-001 | Control Audio Playback | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `041-FR-001`, `041-FR-002`, `041-FR-003`, `041-FR-004`, `041-FR-005`, `041-FR-006`, `041-FR-007`, `041-FR-008`, `041-FR-009`, `041-FR-010`, `041-FR-011`, `041-FR-012`, `041-FR-013`, `041-FR-014`, `041-FR-015` | [Specification](./use-cases/040-music-player/UC-040-001-control-audio-playback.md) |
+| UC-040-002 | Adjust Volume and Mute | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `042-FR-006`, `042-FR-007`, `042-FR-008`, `042-FR-009`, `042-FR-010`, `042-FR-011` | [Specification](./use-cases/040-music-player/UC-040-002-adjust-volume-and-mute.md) |
+| UC-040-003 | Seek Audio Playback Position | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `042-FR-001`, `042-FR-002`, `042-FR-003`, `042-FR-004`, `042-FR-005`, `042-FR-011`, `042-FR-012` | [Specification](./use-cases/040-music-player/UC-040-003-seek-audio-playback-position.md) |
+| UC-040-004 | Toggle Shuffle and Repeat Modes | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `043-FR-001`, `043-FR-002`, `043-FR-003`, `043-FR-004`, `043-FR-005`, `043-FR-006`, `043-FR-007`, `043-FR-008`, `043-FR-009`, `043-FR-010`, `043-FR-011`, `043-FR-012` | [Specification](./use-cases/040-music-player/UC-040-004-toggle-shuffle-and-repeat-modes.md) |
+| UC-040-005 | View Synchronized Lyrics | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `044-FR-001`, `044-FR-002`, `044-FR-003`, `044-FR-004`, `044-FR-005`, `044-FR-006`, `044-FR-007`, `044-FR-008`, `044-FR-009`, `044-FR-010`, `044-FR-011`, `044-FR-012` | [Specification](./use-cases/040-music-player/UC-040-005-view-synchronized-lyrics.md) |
+| UC-040-006 | Toggle Persistent Mini and Full Player | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `045-FR-001`, `045-FR-002`, `045-FR-003`, `045-FR-004`, `045-FR-005`, `045-FR-006`, `045-FR-007`, `045-FR-008`, `045-FR-009`, `045-FR-010`, `045-FR-011`, `045-FR-012` | [Specification](./use-cases/040-music-player/UC-040-006-toggle-persistent-mini-and-full-player.md) |
+| UC-040-007 | Share Song | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `046-FR-001`, `046-FR-002`, `046-FR-003`, `046-FR-004`, `046-FR-005` | [Specification](./use-cases/040-music-player/UC-040-007-share-song.md) |
+| UC-040-008 | Read Track Comments | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `046-FR-006`, `046-FR-007`, `046-FR-014`, `046-FR-015` | [Specification](./use-cases/040-music-player/UC-040-008-read-track-comments.md) |
+| UC-040-009 | Post Track Comment | Listener (`ACT-02`) | `046-FR-008`, `046-FR-009`, `046-FR-012`, `046-FR-013`, `046-FR-015` | [Specification](./use-cases/040-music-player/UC-040-009-post-track-comment.md) |
+| UC-040-010 | Delete Track Comment | Listener (`ACT-02`), Administrator (`ACT-05`) | `046-FR-010`, `046-FR-011`, `046-FR-012` | [Specification](./use-cases/040-music-player/UC-040-010-delete-track-comment.md) |
+| UC-050-001 | View Playback Queue | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `051-FR-001`, `051-FR-002`, `051-FR-003`, `051-FR-004`, `051-FR-005`, `051-FR-007`, `051-FR-008`, `051-FR-009`, `051-FR-010`, `051-FR-011`, `051-FR-013` | [Specification](./use-cases/050-queue-management/UC-050-001-view-playback-queue.md) |
+| UC-050-002 | Add Track to Queue | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `052-FR-001`, `052-FR-002`, `052-FR-003`, `052-FR-004`, `052-FR-005`, `052-FR-006`, `052-FR-007`, `052-FR-010`, `052-FR-011`, `052-FR-012`, `051-FR-013` | [Specification](./use-cases/050-queue-management/UC-050-002-add-track-to-queue.md) |
+| UC-050-003 | Play Track Next | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `054-FR-001`, `054-FR-002`, `054-FR-003`, `054-FR-004`, `054-FR-005`, `054-FR-006`, `054-FR-007`, `054-FR-008`, `054-FR-009`, `054-FR-010`, `052-FR-012`, `051-FR-013` | [Specification](./use-cases/050-queue-management/UC-050-003-play-track-next.md) |
+| UC-050-004 | Reorder Upcoming Queue | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `053-FR-001`, `053-FR-002`, `053-FR-003`, `053-FR-004`, `053-FR-005`, `053-FR-006`, `053-FR-007`, `053-FR-008`, `053-FR-009` | [Specification](./use-cases/050-queue-management/UC-050-004-reorder-upcoming-queue.md) |
+| UC-050-005 | Remove Track from Queue | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `052-FR-008`, `052-FR-009`, `052-FR-010`, `052-FR-011` | [Specification](./use-cases/050-queue-management/UC-050-005-remove-track-from-queue.md) |
+| UC-050-006 | Clear Upcoming Queue | Guest / Visitor (`ACT-01`), Listener (`ACT-02`) | `051-FR-006`, `051-FR-007` | [Specification](./use-cases/050-queue-management/UC-050-006-clear-upcoming-queue.md) |
+| UC-050-007 | Save Queue as Playlist | Listener (`ACT-02`) | `051-FR-012` | [Specification](./use-cases/050-queue-management/UC-050-007-save-queue-as-playlist.md) |
+| UC-060-001 | View Playlists in Library | Listener | 061-FR-004, 061-FR-010, 062-FR-002 | [Specification](./use-cases/060-playlist-management/UC-060-001-view-playlists-in-library.md) |
+| UC-060-002 | Create Playlist | Listener | 061-FR-001, 061-FR-002, 061-FR-003, 061-FR-009 | [Specification](./use-cases/060-playlist-management/UC-060-002-create-playlist.md) |
+| UC-060-003 | View Playlist Details | Listener | 061-FR-005, 061-FR-006, 065-FR-010 | [Specification](./use-cases/060-playlist-management/UC-060-003-view-playlist-details.md) |
+| UC-060-004 | Edit Playlist Metadata | Playlist Owner | 061-FR-007, 065-FR-006 | [Specification](./use-cases/060-playlist-management/UC-060-004-edit-playlist-metadata.md) |
+| UC-060-005 | Delete Playlist | Playlist Owner | 061-FR-008, 065-FR-006 | [Specification](./use-cases/060-playlist-management/UC-060-005-delete-playlist.md) |
+| UC-060-006 | Bookmark Public Playlist | Listener | 061-FR-010 | [Specification](./use-cases/060-playlist-management/UC-060-006-bookmark-public-playlist.md) |
+| UC-060-007 | Add Songs to Playlist | Playlist Editor | 062-FR-001, 062-FR-003, 062-FR-006, 062-FR-007, 062-FR-008, 065-FR-004, 065-FR-008 | [Specification](./use-cases/060-playlist-management/UC-060-007-add-songs-to-playlist.md) |
+| UC-060-008 | Remove Song from Playlist | Playlist Editor | 062-FR-005, 062-FR-006, 062-FR-007, 065-FR-004, 065-FR-008 | [Specification](./use-cases/060-playlist-management/UC-060-008-remove-song-from-playlist.md) |
+| UC-060-009 | Reorder Songs in Playlist | Playlist Editor | 062-FR-003, 062-FR-004, 062-FR-007, 065-FR-004, 065-FR-008 | [Specification](./use-cases/060-playlist-management/UC-060-009-reorder-songs-in-playlist.md) |
+| UC-060-010 | Toggle Like Song | Listener | 062-FR-002 | [Specification](./use-cases/060-playlist-management/UC-060-010-toggle-like-song.md) |
+| UC-060-011 | Enable Collaboration on Playlist | Playlist Owner | 065-FR-001, 065-FR-009 | [Specification](./use-cases/060-playlist-management/UC-060-011-enable-collaboration-on-playlist.md) |
+| UC-060-012 | Invite Collaborators | Playlist Owner | 065-FR-002, 065-FR-003, 065-FR-009 | [Specification](./use-cases/060-playlist-management/UC-060-012-invite-collaborators.md) |
+| UC-060-013 | Manage Collaborators | Playlist Owner | 065-FR-007, 065-FR-009 | [Specification](./use-cases/060-playlist-management/UC-060-013-manage-collaborators.md) |
+| UC-060-014 | View Collaborative Playlist Details | Participant | 065-FR-004, 065-FR-005, 065-FR-009, 065-FR-010 | [Specification](./use-cases/060-playlist-management/UC-060-014-view-collaborative-playlist-details.md) |
+| UC-060-015 | Play Playlist | Listener | 063-FR-001 through 063-FR-009 | [Specification](./use-cases/060-playlist-management/UC-060-015-play-playlist.md) |
+| UC-060-016 | Generate AI Playlist | Listener | 064-FR-001 through 064-FR-010 | [Specification](./use-cases/060-playlist-management/UC-060-016-generate-ai-playlist.md) |
+| UC-070-001 | Record Track Play Event | System / Player | `071-FR-001`, `071-FR-002`, `071-FR-003`, `071-FR-010` | [Specification](./use-cases/070-listening-history/UC-070-001-record-track-play-event.md) |
+| UC-070-002 | View Listening History | Listener | `071-FR-004`, `071-FR-005`, `071-FR-006`, `071-FR-007`, `071-FR-009`, `071-FR-011` | [Specification](./use-cases/070-listening-history/UC-070-002-view-listening-history.md) |
+| UC-070-003 | Delete History Record | Listener | FR-070-003 (Vision); PA4-D04 | [Specification](./use-cases/070-listening-history/UC-070-003-delete-history-record.md) |
+| UC-070-004 | Purge Entire History | Listener | `071-FR-008`, `071-FR-013` | [Specification](./use-cases/070-listening-history/UC-070-004-purge-entire-history.md) |
+| UC-070-005 | View Duration Analytics | Listener | `072-FR-001` through `072-FR-008`, `071-FR-013` | [Specification](./use-cases/070-listening-history/UC-070-005-view-duration-analytics.md) |
+| UC-070-006 | View Top Artists and Genres | Listener | `073-FR-001` through `073-FR-010`, `071-FR-013`, `072-FR-004` | [Specification](./use-cases/070-listening-history/UC-070-006-view-top-artists-and-genres.md) |
+| UC-070-007 | Purge Expired History | System | `071-FR-012` | [Specification](./use-cases/070-listening-history/UC-070-007-purge-expired-history.md) |
+| UC-080-001 | View Album Details | Listener (`ACT-02`), Guest/Visitor (`ACT-01`) | `081-FR-001` to `081-FR-016` | [Specification](./use-cases/080-album-interaction/UC-080-001-album-details.md) |
+| UC-080-002 | Play Album Tracklist | Listener (`ACT-02`) | `082-FR-001` to `082-FR-016` | [Specification](./use-cases/080-album-interaction/UC-080-002-album-tracklist.md) |
+| UC-080-003 | Save and Share Album | Listener (`ACT-02`) (Save), Guest/Visitor (`ACT-01`) (Share) | `083-FR-001` to `083-FR-014` | [Specification](./use-cases/080-album-interaction/UC-080-003-save-and-share-album.md) |
+| UC-090-001 | View Public Artist Profile | Guest / Visitor; Listener (Artist and Administrator inherit public access in the model) | 091-FR-001, 002, 003, 004, 005, 006, 007, 008, 009, 010, 010A, 010B, 011, 012, 013, 014, 014A, 015, 016, 017, 018, 018A, 019, 020, 021, 022, 023, 024, 025, 026, 027; 092-FR-011 (public-profile consistency only) | [Specification](./use-cases/090-artist-profile-studio/UC-090-001-view-public-artist-profile.md) |
+| UC-090-002 | Follow or Unfollow Artist | Listener; Artist; Administrator, acting only for their own authenticated, non-banned account | 092-FR-001, 092-FR-002, 092-FR-003, 092-FR-004, 092-FR-005, 092-FR-006, 092-FR-009, 092-FR-010, 092-FR-011, 092-FR-012, 092-FR-013, 092-FR-014, 092-FR-015, 092-FR-016 | [Specification](./use-cases/090-artist-profile-studio/UC-090-002-follow-or-unfollow-artist.md) |
+| UC-090-003 | View Followed Artists | Listener; Artist; Administrator, accessing only their own authenticated, non-banned account's list | 092-FR-003, 092-FR-006, 092-FR-007, 092-FR-008, 092-FR-009, 092-FR-012, 092-FR-013, 092-FR-014, 092-FR-015, 092-FR-016; 091-FR-018/018A for public-profile handoff consistency only | [Specification](./use-cases/090-artist-profile-studio/UC-090-003-view-followed-artists.md) |
+| UC-090-004 | Access Artist Studio Dashboard | Artist, accessing only their own Studio | 093-FR-001, 093-FR-002, 093-FR-003; 111-FR-011 (protected-access ban constraint); 112-FR-024/025 (restricted-owner viewing and moderation boundary) | [Specification](./use-cases/090-artist-profile-studio/UC-090-004-access-artist-studio-dashboard.md) |
+| UC-090-005 | Upload Audio Track | Artist, uploading a new track for their own account | 093-FR-001, 093-FR-004, 093-FR-005, 093-FR-009, 093-FR-010; 111-FR-011 as a protected-access ban constraint | [Specification](./use-cases/090-artist-profile-studio/UC-090-005-upload-audio-track.md) |
+| UC-090-006 | Edit Track Metadata | Artist, acting on their own uploaded track | 093-FR-001, 093-FR-005, 093-FR-006, 093-FR-009 | [Specification](./use-cases/090-artist-profile-studio/UC-090-006-edit-track-metadata.md) |
+| UC-090-007 | Hide or Unhide Track | Artist, acting on their own track | 093-FR-001, 093-FR-007, 093-FR-009 | [Specification](./use-cases/090-artist-profile-studio/UC-090-007-hide-or-unhide-track.md) |
+| UC-090-008 | Delete Track from Studio | Artist, acting on their own track | 093-FR-001, 093-FR-008, 093-FR-009 | [Specification](./use-cases/090-artist-profile-studio/UC-090-008-delete-track-from-studio.md) |
+| UC-100-001 | View Listening History Analysis | Listener (`ACT-02`) | `101-FR-001`, `101-FR-002`, `101-FR-003`, `101-FR-004`, `101-FR-005`, `101-FR-006`, `101-FR-007`, `101-FR-008`, `101-FR-009`, `101-FR-010`, `101-FR-011`, `101-FR-012`, `101-FR-013`, `101-FR-014` | [Specification](./use-cases/100-ai-recommendations/UC-100-001-view-listening-history-analysis.md) |
+| UC-100-002 | Receive Personalized Recommendations | Listener (`ACT-02`) | `102-FR-001`, `102-FR-002`, `102-FR-003`, `102-FR-004`, `102-FR-005`, `102-FR-006`, `102-FR-007`, `102-FR-008`, `102-FR-009`, `102-FR-010`, `102-FR-011`, `102-FR-012`, `102-FR-013`, `102-FR-014`, `102-FR-015` | [Specification](./use-cases/100-ai-recommendations/UC-100-002-receive-personalized-recommendations.md) |
+| UC-100-003 | Discover Music by Mood and Context | Listener (`ACT-02`) | `103-FR-001`, `103-FR-002`, `103-FR-003`, `103-FR-004`, `103-FR-005`, `103-FR-006`, `103-FR-007`, `103-FR-008`, `103-FR-009`, `103-FR-010`, `103-FR-011`, `103-FR-012`, `103-FR-013`, `103-FR-014`, `103-FR-015` | [Specification](./use-cases/100-ai-recommendations/UC-100-003-discover-music-by-mood-and-context.md) |
+| UC-110-001 | View and Search Platform Users | Administrator | 111-FR-001..004, 007..009, 012..015, 017, 021; FR-110-001 | [Specification](./use-cases/110-admin-functions/UC-110-001-view-and-search-users.md) |
+| UC-110-002 | Ban User Account | Administrator | 111-FR-005, 007..013, 015..017, 020, 023; FR-110-002 | [Specification](./use-cases/110-admin-functions/UC-110-002-ban-user-account.md) |
+| UC-110-003 | Unban User Account | Administrator | 111-FR-006..009, 012..017, 023; FR-110-003 | [Specification](./use-cases/110-admin-functions/UC-110-003-unban-user-account.md) |
+| UC-110-004 | Manage User Roles | Administrator | 111-FR-007..009, 012..015, 017, 022; FR-110-004 | [Specification](./use-cases/110-admin-functions/UC-110-004-manage-user-roles.md) |
+| UC-110-005 | Moderate Platform Tracks | Administrator | 112-FR-001..030; FR-110-005 | [Specification](./use-cases/110-admin-functions/UC-110-005-moderate-platform-tracks.md) |
+| UC-110-006 | Moderate Platform Comments | Administrator | FR-110-006; related UC-040-010 | [Specification](./use-cases/110-admin-functions/UC-110-006-moderate-platform-comments.md) |
+| UC-110-007 | View Platform Key Performance Indicators | Administrator | 113-FR-001..019; FR-110-007 | [Specification](./use-cases/110-admin-functions/UC-110-007-view-platform-statistics.md) |
+| UC-110-008 | Manage System Availability and Demo Reset | Administrator | FR-110-008; Vision goal beyond the read-only 113 scope | [Specification](./use-cases/110-admin-functions/UC-110-008-manage-system-and-demo-reset.md) |
+| UC-120-001 | Converse with AI Music Host | Listener (`ACT-02`) | `121-FR-001`, `121-FR-002`, `121-FR-003`, `121-FR-004`, `121-FR-005`, `121-FR-006`, `121-FR-007`, `121-FR-008`, `121-FR-009`, `121-FR-010`, `121-FR-011`, `121-FR-012` | [Specification](./use-cases/120-ai-conversational-agent/UC-120-001-converse-with-ai-music-host.md) |
+| UC-120-002 | Interpret Music Intent via Chat | Listener (`ACT-02`) | `122-FR-001`, `122-FR-002`, `122-FR-003`, `122-FR-004`, `122-FR-005`, `122-FR-006`, `122-FR-007`, `122-FR-008`, `122-FR-009`, `122-FR-010`, `122-FR-011`, `122-FR-012` | [Specification](./use-cases/120-ai-conversational-agent/UC-120-002-interpret-music-intent-via-chat.md) |
+| UC-120-003 | Execute Music Actions via Conversational Agent | Listener (`ACT-02`) | `123-FR-001`, `123-FR-002`, `123-FR-003`, `123-FR-004`, `123-FR-005`, `123-FR-006`, `123-FR-007`, `123-FR-008`, `123-FR-009`, `123-FR-010`, `123-FR-011`, `123-FR-012`, `123-FR-013`, `123-FR-014` | [Specification](./use-cases/120-ai-conversational-agent/UC-120-003-execute-music-actions-via-conversational-agent.md) |
+| UC-120-004 | Clear Conversation History | Listener (`ACT-02`) | `121-FR-003`, `121-FR-008` | [Specification](./use-cases/120-ai-conversational-agent/UC-120-004-clear-conversation-history.md) |
+
+## 8. Implementation and source limitations
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+The source/implementation register identifies browser-only history/comments/Admin actions, process-memory album saves, incomplete Studio mutations and AI fallback/static-candidate behavior. Full end-to-end acceptance is not inferred from UI screenshots or checked Spec Kit tasks. [source review](#11-pa4-decisions-and-source-review) also retains source decisions that require an authorized update to the unchanged Vision/specs.
+
+## 9. Vision FR and historical UC crosswalk
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+This crosswalk maps goals, not equal-looking numbers. The owner chose existing file IDs on 2026-11-20. Historical references below are explicitly labeled and do not identify different current goals by accident.
+
+| Vision FR | Historical Vision UC | Current specification(s) | Alignment note |
+| --- | --- | --- | --- |
+| FR-010-001 | UC-010-001 (historical) | [UC-010-001](use-cases/010-authentication/UC-010-001-register-with-email.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-010-002 | UC-010-002 (historical) | [UC-010-002](use-cases/010-authentication/UC-010-002-login-with-email.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-010-003 | UC-010-003 (historical) | [UC-010-004](use-cases/010-authentication/UC-010-004-login-with-google.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-010-004 | UC-010-004 (historical) | [UC-010-005](use-cases/010-authentication/UC-010-005-login-with-facebook.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-010-005 | UC-010-005 (historical) | [UC-010-002](use-cases/010-authentication/UC-010-002-login-with-email.md) | Automatic refresh is supporting behavior of authenticated sessions; View Active Sessions remains current UC-010-007. |
+| FR-010-006 | UC-010-006 (historical) | [UC-010-003](use-cases/010-authentication/UC-010-003-recover-password.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-010-007 | UC-010-007 (historical) | [UC-010-006](use-cases/010-authentication/UC-010-006-logout.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-010-008 | UC-010-008 (historical) | [UC-010-008](use-cases/010-authentication/UC-010-008-logout-all-devices.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-010-009 | UC-010-009 (historical) | [UC-010-009](use-cases/010-authentication/UC-010-009-unlink-oauth-provider.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-020-001 | UC-020-001 (historical) | [UC-020-001](use-cases/020-home-dashboard/UC-020-001-browse-home-dashboard.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-020-002 | UC-020-002 (historical) | [UC-020-002](use-cases/020-home-dashboard/UC-020-002-stream-recommended-music-from-home.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-020-003 | UC-020-003 (historical) | [UC-020-003](use-cases/020-home-dashboard/UC-020-003-replay-recently-played-music.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-020-004 | UC-020-004 (historical) | [UC-020-004](use-cases/020-home-dashboard/UC-020-004-browse-trending-charts.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-020-005 | UC-020-005 (historical) | [UC-020-005](use-cases/020-home-dashboard/UC-020-005-explore-new-album-releases.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-030-001 | UC-030-001 (historical) | [UC-030-001](use-cases/030-search/UC-030-001-metadata-search.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-030-002 | UC-030-002 (historical) | [UC-030-002](use-cases/030-search/UC-030-002-ai-lyrics-search.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-030-003 | UC-030-003 (historical) | [UC-030-003](use-cases/030-search/UC-030-003-semantic-vector-search.md) | PA4-D05 adopts Listener-only access from spec 033; Vision actor wording needs source alignment. |
+| FR-030-004 | UC-030-004 (historical) | [UC-030-004](use-cases/030-search/UC-030-004-manage-local-search-history.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-001 | UC-040-001 (historical) | [UC-040-001](use-cases/040-music-player/UC-040-001-control-audio-playback.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-002 | UC-040-002 (historical) | [UC-040-002](use-cases/040-music-player/UC-040-002-adjust-volume-and-mute.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-003 | UC-040-003 (historical) | [UC-040-003](use-cases/040-music-player/UC-040-003-seek-audio-playback-position.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-004 | UC-040-004 (historical) | [UC-040-004](use-cases/040-music-player/UC-040-004-toggle-shuffle-and-repeat-modes.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-005 | UC-040-005 (historical) | [UC-040-005](use-cases/040-music-player/UC-040-005-view-synchronized-lyrics.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-006 | UC-040-006 (historical) | [UC-040-006](use-cases/040-music-player/UC-040-006-toggle-persistent-mini-and-full-player.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-007 | UC-040-007 (historical) | [UC-040-007](use-cases/040-music-player/UC-040-007-share-song.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-008 | UC-040-008 (historical) | [UC-040-008](use-cases/040-music-player/UC-040-008-read-track-comments.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-009 | UC-040-009 (historical) | [UC-040-009](use-cases/040-music-player/UC-040-009-post-track-comment.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-040-010 | UC-040-010 (historical) | [UC-040-010](use-cases/040-music-player/UC-040-010-delete-track-comment.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-001 | UC-050-001 (historical) | [UC-050-001](use-cases/050-queue-management/UC-050-001-view-playback-queue.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-002 | UC-050-002 (historical) | [UC-050-002](use-cases/050-queue-management/UC-050-002-add-track-to-queue.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-003 | UC-050-003 (historical) | [UC-050-003](use-cases/050-queue-management/UC-050-003-play-track-next.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-004 | UC-050-004 (historical) | [UC-050-004](use-cases/050-queue-management/UC-050-004-reorder-upcoming-queue.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-005 | UC-050-005 (historical) | [UC-050-005](use-cases/050-queue-management/UC-050-005-remove-track-from-queue.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-006 | UC-050-006 (historical) | [UC-050-006](use-cases/050-queue-management/UC-050-006-clear-upcoming-queue.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-050-007 | UC-050-007 (historical) | [UC-050-007](use-cases/050-queue-management/UC-050-007-save-queue-as-playlist.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-060-001 | UC-060-001 (historical) | [UC-060-002](use-cases/060-playlist-management/UC-060-002-create-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-002 | UC-060-002 (historical) | [UC-060-003](use-cases/060-playlist-management/UC-060-003-view-playlist-details.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-003 | UC-060-003 (historical) | [UC-060-004](use-cases/060-playlist-management/UC-060-004-edit-playlist-metadata.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-004 | UC-060-004 (historical) | [UC-060-005](use-cases/060-playlist-management/UC-060-005-delete-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-005 | UC-060-005 (historical) | [UC-060-007](use-cases/060-playlist-management/UC-060-007-add-songs-to-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-006 | UC-060-006 (historical) | [UC-060-008](use-cases/060-playlist-management/UC-060-008-remove-song-from-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-007 | UC-060-007 (historical) | [UC-060-009](use-cases/060-playlist-management/UC-060-009-reorder-songs-in-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-008 | UC-060-008 (historical) | [UC-060-015](use-cases/060-playlist-management/UC-060-015-play-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-009 | UC-060-009 (historical) | [UC-060-010](use-cases/060-playlist-management/UC-060-010-toggle-like-song.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-010 | UC-060-010 (historical) | [UC-060-016](use-cases/060-playlist-management/UC-060-016-generate-ai-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-011 | UC-060-011 (historical) | [UC-060-011](use-cases/060-playlist-management/UC-060-011-enable-collaboration-on-playlist.md), [UC-060-012](use-cases/060-playlist-management/UC-060-012-invite-collaborators.md), [UC-060-013](use-cases/060-playlist-management/UC-060-013-manage-collaborators.md), [UC-060-014](use-cases/060-playlist-management/UC-060-014-view-collaborative-playlist-details.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-060-012 | UC-060-012 (historical) | [UC-060-006](use-cases/060-playlist-management/UC-060-006-bookmark-public-playlist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-070-001 | UC-070-001 (historical) | [UC-070-001](use-cases/070-listening-history/UC-070-001-record-track-play-event.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-070-002 | UC-070-002 (historical) | [UC-070-002](use-cases/070-listening-history/UC-070-002-view-listening-history.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-070-003 | UC-070-003 (historical) | [UC-070-003](use-cases/070-listening-history/UC-070-003-delete-history-record.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-070-004 | UC-070-004 (historical) | [UC-070-004](use-cases/070-listening-history/UC-070-004-purge-entire-history.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-070-005 | UC-070-005 (historical) | [UC-070-005](use-cases/070-listening-history/UC-070-005-view-duration-analytics.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-070-006 | UC-070-006 (historical) | [UC-070-006](use-cases/070-listening-history/UC-070-006-view-top-artists-and-genres.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-080-001 | UC-080-001 (historical) | [UC-080-001](use-cases/080-album-interaction/UC-080-001-album-details.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-080-002 | UC-080-002 (historical) | [UC-080-002](use-cases/080-album-interaction/UC-080-002-album-tracklist.md) | PA4-D03 preserves unrelated queued tracks after the album; implementation/spec alignment pending. |
+| FR-080-003 | UC-080-003 (historical) | [UC-080-002](use-cases/080-album-interaction/UC-080-002-album-tracklist.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-080-004 | UC-080-004 (historical) | [UC-080-003](use-cases/080-album-interaction/UC-080-003-save-and-share-album.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-080-005 | UC-080-005 (historical) | [UC-080-003](use-cases/080-album-interaction/UC-080-003-save-and-share-album.md) | Historical ID translated by goal; no existing UC file renamed. |
+| FR-090-001 | UC-090-001 (historical) | [UC-090-001](use-cases/090-artist-profile-studio/UC-090-001-view-public-artist-profile.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-002 | UC-090-002 (historical) | [UC-090-002](use-cases/090-artist-profile-studio/UC-090-002-follow-or-unfollow-artist.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-003 | UC-090-003 (historical) | [UC-090-003](use-cases/090-artist-profile-studio/UC-090-003-view-followed-artists.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-004 | UC-090-004 (historical) | [UC-090-004](use-cases/090-artist-profile-studio/UC-090-004-access-artist-studio-dashboard.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-005 | UC-090-005 (historical) | [UC-090-005](use-cases/090-artist-profile-studio/UC-090-005-upload-audio-track.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-006 | UC-090-006 (historical) | [UC-090-006](use-cases/090-artist-profile-studio/UC-090-006-edit-track-metadata.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-007 | UC-090-007 (historical) | [UC-090-007](use-cases/090-artist-profile-studio/UC-090-007-hide-or-unhide-track.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-090-008 | UC-090-008 (historical) | [UC-090-008](use-cases/090-artist-profile-studio/UC-090-008-delete-track-from-studio.md) | Preserve G090-D01-D18 source boundaries; broader Vision scope is not automatically fulfilled. |
+| FR-100-001 | UC-100-001 (historical) | [UC-100-001](use-cases/100-ai-recommendations/UC-100-001-view-listening-history-analysis.md) | Vision embedding/likes/skip-profile wording exceeds Feature 101 history-only statistics; source alignment pending. |
+| FR-100-002 | UC-100-002 (historical) | [UC-100-002](use-cases/100-ai-recommendations/UC-100-002-receive-personalized-recommendations.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-100-003 | UC-100-003 (historical) | [UC-100-003](use-cases/100-ai-recommendations/UC-100-003-discover-music-by-mood-and-context.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-110-001 | UC-110-001 (historical) | [UC-110-001](use-cases/110-admin-functions/UC-110-001-view-and-search-users.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-002 | UC-110-002 (historical) | [UC-110-002](use-cases/110-admin-functions/UC-110-002-ban-user-account.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-003 | UC-110-003 (historical) | [UC-110-003](use-cases/110-admin-functions/UC-110-003-unban-user-account.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-004 | UC-110-004 (historical) | [UC-110-004](use-cases/110-admin-functions/UC-110-004-manage-user-roles.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-005 | UC-110-005 (historical) | [UC-110-005](use-cases/110-admin-functions/UC-110-005-moderate-platform-tracks.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-006 | UC-110-006 (historical) | [UC-110-006](use-cases/110-admin-functions/UC-110-006-moderate-platform-comments.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-007 | UC-110-007 (historical) | [UC-110-007](use-cases/110-admin-functions/UC-110-007-view-platform-statistics.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-110-008 | UC-110-008 (historical) | [UC-110-008](use-cases/110-admin-functions/UC-110-008-manage-system-and-demo-reset.md) | New drafts retain owner-selected newer rules and explicitly identify source/prototype/implementation gaps. |
+| FR-120-001 | UC-120-001 (historical) | [UC-120-001](use-cases/120-ai-conversational-agent/UC-120-001-converse-with-ai-music-host.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-120-002 | UC-120-002 (historical) | [UC-120-002](use-cases/120-ai-conversational-agent/UC-120-002-interpret-music-intent-via-chat.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-120-003 | UC-120-003 (historical) | [UC-120-003](use-cases/120-ai-conversational-agent/UC-120-003-execute-music-actions-via-conversational-agent.md) | Same goal identifier; detailed/source constraints still apply. |
+| FR-120-004 | UC-120-004 (historical) | [UC-120-004](use-cases/120-ai-conversational-agent/UC-120-004-clear-conversation-history.md) | Same goal identifier; detailed/source constraints still apply. |
+
+## 10. Source references and review status
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+- [Vision Document](../proposal/Auratune_Vision_Document.md): requirements and original crosswalk IDs.
+- [Project Plan](../proposal/project_plan.md): PA4 deliverables D-21/D-22.
+- [Use-case authoring guide](./use-cases/README.md): structure and source/conflict rules.
+- [API contract](../analysis-and-design/api-contract.md): shared interface/access boundaries; source discrepancies remain explicit.
+- [PA4 review register](#11-pa4-decisions-and-source-review): owner decisions, evidence and unresolved work.
+- [PA4 change log](../Changes.md): one section per revised document.
+
+The PA3 baseline is confirmed by the owner. Independent peer review, missing prototype states and unresolved product details remain open. This model does not mark those items approved.
+
+## 11. PA4 decisions and source review
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+### 1. Sources and comparison baseline
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Assignment: `docs/PA/PA4-2026.pdf`, Part A and Submission Guidelines. Owner instruction on 2026-11-20: TA supplied no feedback; elaborate the current documents. Therefore all changes in this revision are team/owner-requested corrections and elaborations, not claimed TA findings.
+
+Confirmed PA3 baseline: the original documents before this PA4 revision, as confirmed by the owner in PA4-D07. The recorded pre-edit checkout is `35d8027`; its latest requirements history entry is `8ec2d25c11a7a2d2ac663c9ab751c53f0dbbdb7b` (2026-11-06, message `testt`). The revision manifest records the original document hashes, and the per-document diffs compare this baseline with the PA4 revision. This identification relies on the owner's confirmation, not the commit date alone. Original PA3 Changes.md files are preserved.
+
+The original 74 UC specification files and their IDs are preserved; ten missing model/Vision goals are added as drafts, making 84 files. All source files under specs/ and application code remain unchanged by this revision.
+
+### 2. Owner decisions recorded in this session
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+| ID | Decision on 2026-11-20 | Scope |
+| --- | --- | --- |
+| PA4-D01 | TA supplied no feedback; add detail to the current version. | No fabricated TA findings or approvals. |
+| PA4-D02 | Keep existing UC file IDs and add a historical-ID crosswalk. | Model, catalog and references; no file renumbering. |
+| PA4-D03 | Play Album keeps unrelated queued tracks behind the album, following clarification and FR-012. | UC-080-002; source FR-004 and App.jsx alignment remain separate. |
+| PA4-D04 | Retain individual history deletion according to the Vision. | Missing UC-070-003 is drafted; deletion mechanics and effects need detail. |
+| PA4-D05 | Semantic-search access follows Feature 033. | Listener-only; do not silently broaden to Guest. |
+| PA4-D06 | Administration follows newer rules where old/new source statements differ. | Direct actions/default ban reason; newer removal policy with retained history. Unrelated unresolved details remain open. |
+| PA4-D07 | The original documents before this PA4 revision are the PA3 baseline. | Owner-confirmed baseline: pre-edit snapshot at `35d8027` and the original document hashes in the revision manifest. |
+| PA4-D08 | Report attribution: performed and edited by Lê Công Minh Nhựt; reviewed by the Group 10 team. | Owner-specified responsibility for this PA4 revision. Review assignment does not by itself establish final approval or close unresolved acceptance items. |
+| PA4-D09 | Restore Performed by to the PA3 responsible author; preserve the current Reviewed by and Edited by values. | Group 010 uses Mai Đăng Khoa as explicitly confirmed by the owner; other group credits follow PA3 group responsibility. Current review remains the Group 10 team and editing remains Lê Công Minh Nhựt. |
+
+These are the current user's decisions. They do not assert a named teammate's identity, TA review or independent peer approval.
+
+### 3. Source conflicts and remaining decisions
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+| ID | Source difference | Disposition |
+| --- | --- | --- |
+| S01 | Model/Vision IDs differ from existing 010/060/080 specifications. | PA4-D02 resolves current document numbering. Model Section 9 preserves the historical mapping. Vision is unchanged. |
+| S02 | Album replacement FR-004 differs from clarification/FR-012 preservation. | PA4-D03 resolves UC behavior. Spec/task/code edits are outside this task and still needed. |
+| S03 | Vision individual-history deletion has no Feature 071 operation definition. | PA4-D04 retains the goal. Confirmation, duplicate/missing handling, physical deletion and aggregate/AI effects still need review. |
+| S04 | Vision permits Guest semantic search; Feature 033 requires Listener. | PA4-D05 selects the spec access boundary; Vision source alignment remains pending. |
+| S05 | Admin mandatory custom reason versus newer default-reason direct action. | PA4-D06 selects newer behavior. Do not claim a manually entered reason exists when the default was used. |
+| S06 | Older Admin permanent-delete/started-playback wording differs from newer removal/blocking/preserved-history wording. | PA4-D06 selects newer policy; exact physical media deletion and remaining lifecycle interpretation are not invented. |
+| S07 | Vision/Player/History have different qualifying-play thresholds, including half-track and short-track completion wording. | Pending source decision; removed unconditional history include and the model's unsupported universal 50% claim. Do not silently change feature requirements. |
+| S08 | Vision G09 includes MP3/FLAC, broader metadata, live follower counts and album organization; Group 090 decisions narrow/defer parts. | Preserve G090-D01-D18 and accepted feature boundaries. Those do not prove full Vision coverage. Source alignment and broader scope remain pending. |
+| S09 | Vision FR-100-001 calls for an embedding/likes/skip-based taste profile, while Feature 101 FR-003 uses history only. | Current UC describes history-only statistics. External AI supporting actor removed for this goal. Broader Vision alignment remains pending. |
+| S10 | Vision lists active-session and AI-latency Admin metrics; 113 uses four metrics and earlier text describes two. | PA4-D06 adopts newer four-metric scope; unsupported extra metrics are not fabricated. Metric-source acceptance remains pending. |
+| S11 | Vision AI toggle/demo reset exceeds read-only Feature 113 and lacks reset safety/data scope. | UC-110-008 is a Draft with explicit unresolved scope; no reset executed or endpoint invented. |
+| S12 | Album playback Guest access differs between Vision and Listener-only feature/UC wording. | Pending product alignment. Public album viewing/sharing does not establish Guest playback permission. |
+| S14 | Vision FR-110-005 permits broad Admin metadata editing, while 112-FR-008 explicitly prohibits it. | Pending source decision; track moderation drafts do not grant metadata editing. |
+| S13 | UC-110-006 comment-moderation goal exists in Vision/UC-040-010 but is outside track-focused 112. | Added a Vision-backed Draft with entry point, contract and prototype still pending. |
+
+### 4. Implementation evidence by group
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Source inspection was performed on the current checkout; no new live acceptance execution is claimed.
+
+| Group | Observed source and limits |
+| --- | --- |
+| 010 Authentication | Authentication routes and repositories exist in `src/backend/routes/authRoutes.js` and `src/backend/repositories/authRepository.js`. Firebase exchange is also present. Validate the actual login/recovery/session route and authoritative account state; frontend navigation alone is insufficient. The integrated backend entrypoint currently has a duplicate import. Automatic refresh is supporting session behavior, not a replacement for the existing View Active Sessions goal. |
+| 020 Home Dashboard | `HomePage.jsx`, `ChartsPage.jsx` and `ExplorePage.jsx` provide the presentation. Some catalog/ranking inputs still use `src/frontend/src/utils/mockData.js`. Live recommendation widgets do not establish that every Home section is backed by an authoritative catalog or calculated platform ranking. |
+| 030 Search | `src/frontend/src/pages/Search/SearchPage.jsx` calls `utils/searchEngine.js`, which uses local catalog matching and mock recommendations. The required backend metadata/lyrics/vector search behavior is not established by that UI. Search history and live semantic results need separate acceptance evidence. |
+| 040 Music Player | Player components and `useAudioPlayer.js` exist, with backend metadata/stream handling in `songController.js`. Comments remain browser-state operations in `AppStore.jsx`; backend lyrics and history-write integration remain open in Group 040 tasks. Stream/range tests are not proof of server-side comment persistence or every lyrics state. |
+| 050 Queue Management | Queue operations are implemented through the player hook and `QueuePanel.jsx`. Verify queue ordering and current-track continuity in the browser. Exporting the queue also depends on the real playlist persistence path; local queue behavior alone does not verify the saved playlist. |
+| 060 Playlist Management | Playlist routes, `playlistService.js`, `playlistRepository.js` and SQL migration `003_playlist_management.sql` exist. Verify current owner/collaborator authorization and committed read-back for mutations, including failure outcomes. Feature 064 currently uses keyword-selected candidates in the Python service; this does not demonstrate the required semantic/vector generation path. |
+| 070 Listening History | `AppStore.jsx` records and clears browser-side history. Backend analysis readers exist, but the integrated history write/delete/retention path is not established. Clearing local state does not prove removal from database statistics or recommendation inputs. The history-recording threshold also needs alignment across source features. |
+| 080 Album Interaction | Album UI and playback integration exist. `src/backend/routes/albumRoutes.js` stores saved album IDs in a process-local Map. A successful save response therefore does not establish persistence after backend restart. The owner-selected queue-preservation behavior is documented separately from the current replacement implementation in `App.jsx`. |
+| 090 Artist Profile and Studio | Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope. |
+| 100 AI Recommendations | Analysis/recommendation services and tests exist. Feature 101 computes database statistics without an external AI model. The Python `/ai/recommend` handler currently returns a fixed candidate ordering without ranking from submitted preference signals. Cold-start/fallback results must be distinguished from normal personalized results. |
+| 110 Admin Functions | `src/frontend/src/pages/Admin/AdminPage.jsx` and AppStore provide browser-state administration. No Admin API module is mounted in the current backend entrypoint. UI role checks, toasts and local state updates do not establish server authorization, audit persistence, session enforcement or authoritative aggregates. |
+| 120 AI Conversational Agent | Chat UI, Express services and Python Gemini/SSE integration exist. Tests include fixture and fallback paths. Verify the actual live service, account isolation and action result before claiming the corresponding success postcondition; mocked/fallback responses do not demonstrate every normal AI path. |
+
+The duplicate mediaRoutes import in `src/backend/server.js` prevents parsing; Artist/User/Studio mounts also follow the 404 middleware. These findings are recorded without changing application code. Previous suite results in the readiness checklist are historical execution evidence, not a new run for this document revision.
+
+### 5. Prototype and review evidence
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Existing PNGs/HTML storyboards are retained as source artifacts; their presence does not verify backend behavior. New 030/070 goals and Admin comment/system controls lack dedicated matching flow prototypes. Existing 090 prototype gaps remain as recorded by its author. Owner source decisions do not automatically establish prototype or independent-review completion.
+
+### 6. Verification and export
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Verification is recorded in Section 12. Each document has a PDF beside its Markdown source in the existing docs directories. Missing or failed exports remain failures.
+
+### 7. Completion boundary
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+The revision supplies a detailed Draft and a single PA4 change log. The PA3 baseline is confirmed. Part A remains pending source/business follow-up, missing prototype evidence and independent team review. No commit or push was performed.
+
+## 12. Document verification
+Performed by: Group 10 Requirements Engineering Team | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+The revised set contains 84 UC specifications across twelve groups, linked from the model catalog. The Vision crosswalk maps 81 requirement rows. Checks cover unique UC IDs, local file/heading links, embedded images, immediate section attribution, source FR references and Mermaid rendering. The baseline and report attribution follow the owner confirmations above.
+
+There are 124 Markdown documents in the revised set, including the existing `docs/Changes.md`. Matching PDFs are stored beside their Markdown files, using the same basename. The 34 diagram instances and 195 embedded image references are checked during export. These document checks do not establish application acceptance, missing prototype coverage or completed team approval.
+
+Markdown-It, Mermaid and headless Chrome are used for document export. Technical logs, temporary scripts, comparison manifests and complete diff backups are retained outside the repository. The existing code/spec/proposal files are unchanged by this document-layout correction.
