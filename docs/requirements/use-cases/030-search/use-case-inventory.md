@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 030 – Search
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document serves as the official tracking registry for all Use Cases belonging to **Group 030 – Search**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), assigned owners, and authoring statuses for PA3.
 
@@ -14,8 +16,9 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Draft Use-Case Inventory
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-030-001** | Search by Metadata | Public User, Listener | None | `031-FR-001` to `031-FR-019` | `031-metadata-search` | Nguyễn Khánh Đăng | **Draft** | [`UC-030-001-metadata-search.md`](./UC-030-001-metadata-search.md) |
 | **UC-030-002** | AI Lyrics Search | Public User, Listener | External AI Service Provider | `032-FR-001` to `032-FR-019` | `032-ai-lyrics-search` | Nguyễn Khánh Đăng | **Draft** | [`UC-030-002-ai-lyrics-search.md`](./UC-030-002-ai-lyrics-search.md) |
@@ -24,6 +27,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -36,9 +40,19 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Traceability Matrix
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|
 | `specs/030-search/031-metadata-search/spec.md` | `031-FR-001` through `031-FR-019` | **UC-030-001** | User Story 1 (P1), User Story 2 (P2), User Story 3 (P2) |
 | `specs/030-search/032-ai-lyrics-search/spec.md` | `032-FR-001` through `032-FR-019` | **UC-030-002** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P1) |
 | `specs/030-search/033-semantic-vector-search/spec.md` | `033-FR-001` through `033-FR-017`, including `033-FR-003a`, `033-FR-004a`, `033-FR-011a` | **UC-030-003** | User Story 1 (P1), User Story 2 (P1), User Story 3 (P1), User Story 4 (P1) |
+
+## PA4 catalog additions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+These existing model/Vision IDs now have Draft specifications. They supplement the original inventory; they are not approved implementation.
+
+| UC ID | Goal | Source | Status | Specification |
+| --- | --- | --- | --- | --- |
+| UC-030-004 | Manage Local Search History | 031-FR-019; FR-030-004 | Draft; pending review | [Specification](./UC-030-004-manage-local-search-history.md) |

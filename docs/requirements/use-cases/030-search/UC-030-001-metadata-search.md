@@ -3,6 +3,7 @@
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +15,21 @@
 | **Related FR IDs** | `031-FR-001` through `031-FR-019` |
 | **Related Feature/Spec** | Feature 031: Metadata Search (`specs/030-search/031-metadata-search/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Khánh Đăng |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Khánh Đăng |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A user (Public or Authenticated) interacts with the search interface to discover specific songs, artists, albums, or playlists using text keywords. The system queries the database catalog, ignoring letter case, diacritics, and punctuation, and presents the matched entities. The user can refine these results using dynamic category filters and sorting options, paginate via a "Load More" action, and quickly access up to 10 locally stored recent queries.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user has accessed the AuraTune web application and navigated to the Search page (`/search`).
 - The music catalog database is reachable and populated with searchable entities (Songs, Artists, Albums, Playlists).
@@ -33,12 +37,14 @@ A user (Public or Authenticated) interacts with the search interface to discover
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The user focuses on the search input field or types a text query containing at least 2 characters and submits the request.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Navigates to `/search` and clicks on the search input field.
 2. **System:** Extracts up to 10 recently entered queries stored in the browser's `LocalStorage` and displays them in a history dropdown (`031-FR-019`).
@@ -55,8 +61,10 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Keyword Length Boundary Violation
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The user inputs a keyword with fewer than 2 characters or exceeding 100 characters (`031-FR-002`, `031-FR-003`).
 1. **System:** Detects the length violation client-side and intercepts the query submission.
@@ -65,6 +73,7 @@ The user focuses on the search input field or types a text query containing at l
 - **Continuation:** Resumes at Step 3 of the Basic Flow.
 
 ### AF-02 – Interacting with Local Search History
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The user selects a past query from the dropdown or decides to clear their history (`031-FR-019`).
 1. **Actor:** Clicks on a previous query chip OR clicks the "Clear History" action.
@@ -74,6 +83,7 @@ The user focuses on the search input field or types a text query containing at l
 - **Continuation:** Resumes at Step 4 or Step 3 of the Basic Flow.
 
 ### AF-03 – Insufficient / Zero Matches for Keyword
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** The database query yields exactly zero matched entities for the provided keyword (`031-FR-014`).
 1. **System:** Identifies an empty result array.
@@ -82,6 +92,7 @@ The user focuses on the search input field or types a text query containing at l
 - **Continuation:** Resumes at Step 3 of the Basic Flow.
 
 ### AF-04 – Refining Results via Category Filter
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 8 of the Basic Flow.
 - **Condition:** The user wants to narrow the search scope to a specific entity type (e.g., Songs or Albums).
 1. **Actor:** Clicks a specific category tab (e.g., "Bài hát").
@@ -91,6 +102,7 @@ The user focuses on the search input field or types a text query containing at l
 - **Continuation:** Resumes at Step 8 of the Basic Flow.
 
 ### AF-05 – Sorting Refined Results
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 8 of the Basic Flow.
 - **Condition:** The user wants to reorder the displayed results using an approved sorting option (`031-FR-012`).
 1. **Actor:** Selects an option from the sorting dropdown menu.
@@ -99,9 +111,10 @@ The user focuses on the search input field or types a text query containing at l
 - **Continuation:** Resumes at Step 8 of the Basic Flow.
 
 ### AF-06 – Dynamic Result Pagination ("Load More")
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 8 of the Basic Flow.
 - **Condition:** The total matched results exceed the initial API `limit`, and the user scrolls down to request more (`031-FR-009`).
-1. **Actor:** Clicks the "Load More" button (or triggers infinite scroll).
+1. **Actor:** Clicks the "Load More" button.
 2. **System:** Invokes `GET /search` using the current query, type constraints, and the next `offset` index (`031-FR-008`, `031-FR-009`).
 3. **System:** Appends the newly fetched batch of entities seamlessly to the bottom of the current list.
 - **Continuation:** Resumes at Step 8 of the Basic Flow.
@@ -109,8 +122,10 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Backend Search Service Timeout / Connection Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The backend database or API Gateway fails to respond, times out, or returns a 5xx error (`031-FR-015`).
 1. **System:** Intercepts the network/server error to prevent UI freezing.
@@ -122,13 +137,16 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The user views an accurate, deduplicated list of catalog entities matching their exact text query.
 - Selecting a result reliably delegates playback or navigates to the entity's detail view.
 - The valid query string is successfully persisted into the browser's local search history (capped at 10 items).
 
 ### Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The system presents a clear error or empty state.
 - No stale or fabricated data is presented.
 - The platform remains fully functional without application crashes.
@@ -136,6 +154,7 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: Standard metadata search queries should execute and render within 1.5 seconds.
 - **Data Privacy (Client-Side)**: Search history is stored strictly in client-side `LocalStorage`. It is not synchronized to the backend database, ensuring no server-side retention of raw query logs (`031-FR-019`).
@@ -144,23 +163,28 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow - Search Entry
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Metadata Search Entry](prototypes/UC-030-001-metadata-search-entry.png)
 **Covered steps:** Basic Flow steps 1-2.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Search Results (All)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Search Results All](prototypes/UC-030-001-metadata-search-results-all.png)
 **Covered steps:** Basic Flow steps 4-6.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Track Playback
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Track Playback](prototypes/UC-030-001-metadata-search-track-playback.png)
 **Covered steps:** Basic Flow step 9.
 **Prototype type:** Implemented UI
 
 ### AF-04 - Category Filters (Songs, Albums, Artists, Playlists)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Category Tracks](prototypes/UC-030-001-metadata-search-category-tracks.png)
 ![Category Artists](prototypes/UC-030-001-metadata-search-category-artists.png)
 ![Category Albums](prototypes/UC-030-001-metadata-search-category-albums.png)
@@ -169,11 +193,13 @@ The user focuses on the search input field or types a text query containing at l
 **Prototype type:** Implemented UI
 
 ### AF-05 - Sorting
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Sorting Controls](prototypes/UC-030-001-metadata-search-sorting-plays.png)
 **Covered steps:** AF-05 steps 1-3.
 **Prototype type:** Implemented UI
 
 ### AF-03 - Empty State
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Explicit No-Results State](prototypes/UC-030-001-metadata-search-empty-state.png)
 **Covered steps:** AF-03 steps 1-2.
 **Prototype type:** Implemented UI
@@ -181,17 +207,19 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback) – Triggered when a searched song is clicked.
 - **Target Navigation**:
   - `UC-080-001` (View Album Details)
   - `UC-090-001` (View Artist Profile)
-  - `UC-060-002` (View Playlist Details)
+  - `UC-060-003` (View Playlist Details)
 - **Parallel Search Modes**: `UC-030-002` (AI Lyrics Search) & `UC-030-003` (Semantic Vector Search) – Accessible via dedicated tabs on the `/search` view.
 
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/030-search/031-metadata-search/spec.md` – Requirements 031-FR-001 through 031-FR-019, User Stories 1–3.
 - `docs/proposal/Auratune_Vision_Document.md` – Section 3.4 (N-02) & Group G03.
@@ -200,5 +228,13 @@ The user focuses on the search input field or types a text query containing at l
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Search History Scope**: Clarification session 2026-11-01 confirmed that search history applies only to recent queries stored locally (LocalStorage, limit 10), not a backend database table.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`src/frontend/src/pages/Search/SearchPage.jsx` calls `utils/searchEngine.js`, which uses local catalog matching and mock recommendations. The required backend metadata/lyrics/vector search behavior is not established by that UI. Search history and live semantic results need separate acceptance evidence.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

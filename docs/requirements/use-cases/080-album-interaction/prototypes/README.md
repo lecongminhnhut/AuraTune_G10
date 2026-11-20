@@ -1,19 +1,23 @@
 # Prototype and UI Asset Guide – Group 080: Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and mockups for **Group 080 – Album**. It bridges the gap between behavioral specifications (Use Cases) and visual user experience design, facilitating PA3 deliverables and stakeholder reviews.
 
 ---
 
 ## 2. Prototype Directory Organization
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 080 reside directly in this directory:
 `docs/requirements/use-cases/080-album-interaction/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Image files follow a standardized, predictable naming scheme tied directly to Use Case IDs and operational flows:
 
 $$\text{UC-080-[SEQUENCE]-[description].png}$$
@@ -25,6 +29,7 @@ $$\text{UC-080-[SEQUENCE]-[description].png}$$
 ---
 
 ## 3. Prototype vs. Implementation Distinction
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 In accordance with project engineering standards:
 1. **Design Prototypes / Wireframes**: High-fidelity interface designs derived from the Spec Kit UI specifications.
@@ -34,6 +39,7 @@ In accordance with project engineering standards:
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -53,11 +59,12 @@ In accordance with project engineering standards:
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 When authoring or updating Use-Case Specifications (`UC-080-*.md`):
 1. **Relative Markdown Image Path**: Reference images located in this folder using `prototypes/[filename].png`.
    ```markdown
-   ![Album Details](prototypes/UC-080-001-album-details.png)
+   ![Album Details](UC-080-001-album-details.png)
     **Covered steps:** Basic Flow steps 5.
     **Prototype type:** Design prototype or implementation screenshot (provenance to be verified)
    ```

@@ -1,8 +1,10 @@
 # UC-080-003 – Save and Share Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `083-FR-001` to `083-FR-014` |
 | **Related Feature/Spec** | Feature 083: Save and Share Album (`specs/080-album-interaction/083-save-and-share-album/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Khánh Đăng |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Khánh Đăng |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Allows a signed-in listener to save or remove an album from their personal library and allows any visitor to share a URL that identifies the album. Save/remove actions use the specified API contracts; sharing controls and user-visible outcomes follow Feature 083 requirements.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - For saving: The user must be authenticated (`Listener`).
 - For sharing: None (Guests can share).
@@ -33,12 +38,14 @@ Allows a signed-in listener to save or remove an album from their personal libra
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ album" (Share) icon on the album action toolbar.
 
 ---
 
 ## 5. Basic Flow (Save Album)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Selects the "Lưu album" action.
 2. **System:** Verifies the user is signed in (`083-FR-007`).
@@ -50,8 +57,10 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Share Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The actor (Guest or Listener) clicks "Chia sẻ album".
 1. **Actor:** Selects the Share action.
@@ -61,6 +70,7 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 - **Continuation:** Use Case ends successfully.
 
 ### AF-02 – Unsave Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The album is already saved (button shows "Đã lưu").
 1. **Actor:** Selects the "Đã lưu" action.
@@ -71,8 +81,10 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Unauthenticated Save Attempt
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The visitor is a Guest.
 1. **System:** Detects lack of authentication.
@@ -81,6 +93,7 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 - **Continuation:** The save action ends without changing library state; the visitor may sign in and retry.
 
 ### EF-02 – Save or Remove Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The API request times out or returns an error.
 1. **System:** Removes the pending state and retains the last confirmed saved state; if removal fails in Saved Albums, keeps the album visible (`083-FR-002`, `083-FR-005`).
@@ -88,6 +101,7 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 - **Continuation:** Use case ends unsuccessfully; actor can retry.
 
 ### EF-03 – Share Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** AF-01, Step 3.
 - **Condition:** The selected share action cannot be completed.
 1. **System:** Does not indicate that sharing succeeded.
@@ -95,6 +109,7 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 - **Continuation:** The visitor may retry; otherwise, the share flow ends unsuccessfully.
 
 ### EF-04 – Invalid or Unavailable Shared Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** AF-01, Step 4.
 - **Condition:** The shared URL is invalid or the identified album is unavailable (`083-FR-013`).
 1. **System:** Opens the album details destination for the identified album and delegates its not-found/unavailable presentation to `UC-080-001`; it does not display details for another album (`083-FR-010`, `083-FR-013`).
@@ -103,18 +118,22 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The album is saved to or removed from the acting listener's personal library only after the action is confirmed.
 - The displayed saved state corresponds to the active account.
 
 ### Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - No false success indicators are shown. State remains securely synchronized with the server's truth.
 - Failed save, remove, or share actions do not show false success and provide the required inline feedback.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Account Isolation**: Saved states are strictly bound to the authenticated account. User A's saves do not affect User B (`083-FR-003`).
 - **Pending State**: While save or remove is pending, disable the action, show progress, and retain the last confirmed saved state (`083-FR-005`).
@@ -124,8 +143,10 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow - Save Album
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Album Save Action](prototypes/UC-080-003-album-save-action.png)
 **Covered steps:** Basic Flow step 1.
 **Prototype type:** Available; source type to verify
@@ -135,11 +156,13 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 **Prototype type:** Available; source type to verify
 
 ### AF-01 - Share Album Action
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Album Share Action](prototypes/UC-080-003-album-share-action.png)
 **Covered steps:** AF-01 step 1.
 **Prototype type:** Available; source type to verify
 
 ### EF-03 - Share Album Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Album Share Result (Error)](prototypes/UC-080-003-album-share-result.png)
 **Covered steps:** EF-03.
 **Prototype type:** Available; source type to verify
@@ -147,12 +170,14 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Case**: `UC-010-002` (Log In with Email)
 
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/080-album-interaction/083-save-and-share-album/spec.md` – Requirements 083-FR-001 through 083-FR-014.
 - `docs/proposal/proposal.md`
@@ -160,5 +185,13 @@ The actor clicks the "Lưu album" (Save Album) bookmark icon or the "Chia sẻ a
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Share Destinations**: Copy Link, Facebook, Instagram, X, and Zalo are required destinations (`083-FR-011`). The technical sharing mechanism is not specified by Feature 083.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Album UI and playback integration exist. `src/backend/routes/albumRoutes.js` stores saved album IDs in a process-local Map. A successful save response therefore does not establish persistence after backend restart. The owner-selected queue-preservation behavior is documented separately from the current replacement implementation in `App.jsx`.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

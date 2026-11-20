@@ -3,17 +3,20 @@
 ---
 
 ## 1. Purpose
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and mockups for **Group 030 – Search**. It bridges the gap between behavioral specifications (Use Cases) and visual user experience design, facilitating PA3 deliverables and stakeholder reviews.
 
 ---
 
 ## 2. Prototype Directory Organization
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 030 reside directly in this directory:
 `docs/requirements/use-cases/030-search/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Image files follow a standardized, predictable naming scheme tied directly to Use Case IDs and operational flows:
 
 $$\text{UC-030-[SEQUENCE]-[description].png}$$
@@ -25,6 +28,7 @@ $$\text{UC-030-[SEQUENCE]-[description].png}$$
 ---
 
 ## 3. Prototype vs. Implementation Distinction
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 In accordance with project engineering standards:
 1. **Design Prototypes / Wireframes**: High-fidelity interface designs derived from the Spec Kit UI specifications.
@@ -34,6 +38,7 @@ In accordance with project engineering standards:
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -62,11 +67,12 @@ In accordance with project engineering standards:
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 When authoring or updating Use-Case Specifications (`UC-030-*.md`):
 1. **Relative Markdown Image Path**: Reference images located in this folder using `prototypes/[filename].png`.
    ```markdown
-   ![Metadata Search Entry](prototypes/UC-030-001-metadata-search-entry.png)
+   ![Metadata Search Entry](UC-030-001-metadata-search-entry.png)
     **Covered steps:** Basic Flow steps 1-2.
     **Prototype type:** Implemented UI
     ```
