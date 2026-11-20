@@ -1,8 +1,10 @@
 # Functional Group 020: Home Dashboard – Use-Case Documentation
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 5.1. Group Information
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 5.2. Scope
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 5.2.1 Purpose and Objectives
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 020 provides the first screen that guests and listeners see. It organizes public and personal content into a predictable sequence of sections, starts playback from any section in one interaction, and keeps each section independent so that one failure never blocks the rest of the page.
 
 ### 5.2.2 In-Scope Capabilities
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The verified capabilities within Group 020 comprise five subfeatures:
 
 1. **Home Content Layout (Feature 021)**:
@@ -47,6 +52,7 @@ The verified capabilities within Group 020 comprise five subfeatures:
    - Direct album playback from the card using only available tracks.
 
 ### 5.2.3 Out-of-Scope Exclusions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Recommendation Generation and Ranking**: Owned by **Group 100 – AI Recommendations**.
 - **Recording and Managing Listening History**: Owned by **Group 070 – Listening History**.
 - **Album Details, Saving, and Sharing**: Owned by **Group 080 – Album Interaction**.
@@ -54,6 +60,7 @@ The verified capabilities within Group 020 comprise five subfeatures:
 - **Queue Editing**: Owned by **Group 050 – Queue Management**.
 
 ### 5.2.4 Dependencies
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Group 010 (Authentication)**: Determines guest or listener state and handles sign-in for personal shortcuts.
 - **Group 040 (Music Player)**: Executes playback started from any Home section.
 - **Group 050 (Queue Management)**: Receives the queue set by Home playback actions.
@@ -64,6 +71,7 @@ The verified capabilities within Group 020 comprise five subfeatures:
 ---
 
 ## 5.3. Related Requirements and Features
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
@@ -76,6 +84,7 @@ The verified capabilities within Group 020 comprise five subfeatures:
 ---
 
 ## 5.4. Actors
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -85,6 +94,7 @@ The verified capabilities within Group 020 comprise five subfeatures:
 ---
 
 ## 5.5. Use-Case Diagram
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following Mermaid diagram visualizes the boundary, actors, confirmed use cases, and relationships for **Group 020 – Home Dashboard**.
 
@@ -144,6 +154,7 @@ flowchart LR
 ```
 
 ### Diagram Legend
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Rounded nodes (`([ ... ])`)**: Confirmed Use Cases.
 - **Solid Arrow (`-->`)**: Direct primary actor invocation.
 - **Dashed Arrow (`-.->`)**: Section embedding, cross-group dependency, or `<<include>>` relationship.
@@ -152,6 +163,7 @@ flowchart LR
 ---
 
 ## 5.6. Use-Case List
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
@@ -164,6 +176,7 @@ flowchart LR
 ---
 
 ## 5.7. Dependencies and Integration
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```
                  +---------------------------+
@@ -196,6 +209,7 @@ flowchart LR
 ---
 
 ## 5.8. Open Issues and Architecture Clarifications
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Home Data Loading (`Q-020-1`)**:
    - *Status*: Open architecture decision.
@@ -213,6 +227,7 @@ flowchart LR
 ---
 
 ## 5.9. References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/proposal.md` – Section 6.2: Home Dashboard
 - `docs/proposal/Auratune_Vision_Document.md` – Feature Group G02 and Section 6.1

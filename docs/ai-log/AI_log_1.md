@@ -42,7 +42,8 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 36  | 2026-11-11 | Tích hợp hoàn chỉnh Bộ não AI Agent Service (Python FastAPI + Google Gemini 2.5 Flash + Function Calling Tools)                           | 12 – AI Conversational Agent                      |
 | 37  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 101 – Listening History Analysis bằng `/speckit-implement`                         | 10 – AI Recommendations                           |
 | 38  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 102 – Personalized Recommendations bằng `/speckit-implement`                       | 10 – AI Recommendations                           |
-| 39  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`                     | 10 – AI Recommendations                           |
+| 39  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`                   | 10 – AI Recommendations                           |
+| 40  | 2026-11-20 | Rà soát và hoàn thiện phần A PA4: sửa use-case model/specifications, ghi Changes.md, chuẩn hóa attribution và xuất PDF                    | PA4 / Toàn bộ 12 nhóm chức năng (010–120)         |
 
 ---
 
@@ -6246,12 +6247,12 @@ Sau khi hoàn tất, hãy báo cáo danh sách file đã tạo/sửa đổi, k�
 
 ## Mục 39: Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`
 
-| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations/`)                                                                                                                                                                                                                                                                                                                                                                            |
-| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Trường                   | Nội dung                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-11                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Người thực hiện          | Nhựt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Nhóm tính năng liên quan | 10 – AI Recommendations, Feature 103: Mood and Context Recommendations (`specs/100-ai-recommendations/103-mood-and-context-recommendations/`)                                                                                                                                                                                                                                                                                                                                                                     |
+| Công cụ AI               | Antigravity CLI (Gemini 2.5 Pro), Spec Kit `/speckit-implement`                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Mục đích                 | Triển khai hoàn chỉnh toàn bộ 37 nhiệm vụ kỹ thuật (T001 – T037) thuộc 7 Phase cho Feature 103 (Mood and Context Recommendations) trên nhánh `103-mood-and-context-recommendations` theo chuẩn Test-Driven Development (TDD), giới hạn nghiêm ngặt taxonomy đúng 8 preset tags chuẩn, hạn chế thực thể trả về chỉ gồm Songs và Curated Mood Playlists, bọc timeout cứng 2.5s khi gọi Python AI service kèm graceful degradation về catalog cục bộ, xử lý empty state với 2-3 gợi ý thay thế, và cô lập tài khoản. |
 
 ### Prompt đã dùng
@@ -6346,17 +6347,17 @@ Sau khi hoàn thành, hãy chạy toàn bộ test suite và đối chiếu với
 
 ### Phần đã sử dụng / chỉnh sửa / bỏ
 
-| Phần                                                         | Quyết định   | Lý do                                                                                                                                                                                            |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Taxonomy đúng 8 tags chuẩn (4 Moods + 4 Contexts)            | Dùng toàn bộ | Tuân thủ FR-002, SC-003: chỉ cho phép 8 tags được phê duyệt. Mọi tag khác bị từ chối bằng HTTP 400 `INVALID_MOOD_TAG`.                                                                        |
-| Giới hạn thực thể nghiêm ngặt (Chỉ Songs và Playlists)       | Dùng toàn bộ | Tuân thủ Invariant 2, FR-003: chỉ trả về bài hát và danh sách phát theo chủ đề. Lọc bỏ hoàn toàn các thực thể Albums và Artists tại tầng repository và hydration service.                       |
-| Tương tác 1-Click (1-Click Play & Navigate)                  | Dùng toàn bộ | Tuân thủ FR-007, SC-004: click bài hát phát ngay lập tức thông qua `PlayerContext.playTrack()`; click danh sách phát chuyển hướng ngay tới `/playlist/:id`.                                     |
-| Chịu lỗi AI & Timeout 2.5s (Graceful Degradation)            | Dùng toàn bộ | Tuân thủ FR-004, EF-01, SC-003: bọc `AbortController` 2500ms; khi AI chết hoặc timeout, tự động fallback về catalog local với `is_service_degraded: true`, HTTP 200, không bao giờ trả lỗi 500. |
-| Empty State & 2–3 Gợi ý thay thế chủ động                    | Dùng toàn bộ | Tuân thủ FR-004, AF-02: khi không có nội dung khớp, trả về mảng rỗng kèm 2–3 `alternative_suggestions` và UI hiển thị chip chuyển tag tức thì.                                                |
-| Bộ nhớ đệm in-memory (< 50ms) & AbortController              | Dùng toàn bộ | Tuân thủ AF-01: hủy bỏ yêu cầu đang bay khi chuyển tag nhanh để tránh race condition; cache in-memory 5 phút giúp mở lại tag đã xem tức thì không cần gọi mạng.                                |
-| Bảo mật & Cô lập tài khoản theo Nghị định 13/2023/NĐ-CP      | Dùng toàn bộ | Tuân thủ FR-005, FR-006, SC-001: bắt buộc Bearer JWT token, chưa đăng nhập trả về HTTP 401 `UNAUTHORIZED`. Lựa chọn tâm trạng chỉ mang tính tạm thời, không lộ chéo giữa các tài khoản.        |
+| Phần                                                        | Quyết định   | Lý do                                                                                                                                                                                           |
+| :---------------------------------------------------------- | :----------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Taxonomy đúng 8 tags chuẩn (4 Moods + 4 Contexts)           | Dùng toàn bộ | Tuân thủ FR-002, SC-003: chỉ cho phép 8 tags được phê duyệt. Mọi tag khác bị từ chối bằng HTTP 400 `INVALID_MOOD_TAG`.                                                                          |
+| Giới hạn thực thể nghiêm ngặt (Chỉ Songs và Playlists)      | Dùng toàn bộ | Tuân thủ Invariant 2, FR-003: chỉ trả về bài hát và danh sách phát theo chủ đề. Lọc bỏ hoàn toàn các thực thể Albums và Artists tại tầng repository và hydration service.                       |
+| Tương tác 1-Click (1-Click Play & Navigate)                 | Dùng toàn bộ | Tuân thủ FR-007, SC-004: click bài hát phát ngay lập tức thông qua `PlayerContext.playTrack()`; click danh sách phát chuyển hướng ngay tới `/playlist/:id`.                                     |
+| Chịu lỗi AI & Timeout 2.5s (Graceful Degradation)           | Dùng toàn bộ | Tuân thủ FR-004, EF-01, SC-003: bọc `AbortController` 2500ms; khi AI chết hoặc timeout, tự động fallback về catalog local với `is_service_degraded: true`, HTTP 200, không bao giờ trả lỗi 500. |
+| Empty State & 2–3 Gợi ý thay thế chủ động                   | Dùng toàn bộ | Tuân thủ FR-004, AF-02: khi không có nội dung khớp, trả về mảng rỗng kèm 2–3 `alternative_suggestions` và UI hiển thị chip chuyển tag tức thì.                                                  |
+| Bộ nhớ đệm in-memory (< 50ms) & AbortController             | Dùng toàn bộ | Tuân thủ AF-01: hủy bỏ yêu cầu đang bay khi chuyển tag nhanh để tránh race condition; cache in-memory 5 phút giúp mở lại tag đã xem tức thì không cần gọi mạng.                                 |
+| Bảo mật & Cô lập tài khoản theo Nghị định 13/2023/NĐ-CP     | Dùng toàn bộ | Tuân thủ FR-005, FR-006, SC-001: bắt buộc Bearer JWT token, chưa đăng nhập trả về HTTP 401 `UNAUTHORIZED`. Lựa chọn tâm trạng chỉ mang tính tạm thời, không lộ chéo giữa các tài khoản.         |
 | Thực thể Albums và Artists trong kết quả gợi ý Feature 103  | Bỏ tuyệt đối | Đảm bảo ranh giới thiết kế của Feature 103: chỉ tập trung vào Songs và Curated Mood Playlists, không gợi ý Albums/Artists (vốn thuộc Feature 102).                                              |
-| Tính toán thống kê lịch sử nghe hoặc gu nghe nhạc tổng quát | Bỏ tuyệt đối | Phân định ranh giới module rõ ràng: thống kê nghe nhạc thuộc Feature 101, gu nghe nhạc cá nhân hóa tổng quát thuộc Feature 102.                                                                  |
+| Tính toán thống kê lịch sử nghe hoặc gu nghe nhạc tổng quát | Bỏ tuyệt đối | Phân định ranh giới module rõ ràng: thống kê nghe nhạc thuộc Feature 101, gu nghe nhạc cá nhân hóa tổng quát thuộc Feature 102.                                                                 |
 
 ### Cách kiểm chứng
 
@@ -6370,3 +6371,92 @@ Sau khi hoàn thành, hãy chạy toàn bộ test suite và đối chiếu với
   - Scenario 4 (Account Privacy & Boundary Isolation - US4): Đạt (chặn 401 khi thiếu token, chặn 400 mã `INVALID_MOOD_TAG` khi tag không thuộc 8 preset tags, cô lập hoàn toàn giữa User A và User B).
   - Scenario 5 (Rapid Tag Switching & Cache - AF-01): Đạt (`AbortController` hủy bỏ request đang bay khi bấm đổi chip liên tục; bộ đệm in-memory trả về tag cũ trong $< 50$ms).
 - [x] **Kiểm tra danh mục tasks.md:** Đạt **37/37 tasks** đã hoàn thành và được đánh dấu `[X]`.
+
+---
+
+## Mục 40: Rà soát và hoàn thiện tài liệu phần A PA4 – Revised Use-Case Specification
+
+| Trường                   | Nội dung                                                                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-20                                                                                                                                        |
+| Người thực hiện          | Lê Công Minh Nhựt                                                                                                                                 |
+| Nhóm tính năng liên quan | PA4 phần A; tài liệu yêu cầu của 12 nhóm chức năng 010–120                                                                                        |
+| Công cụ AI               | Codex (GPT-6), skill `humanizer:humanizer`                                                                                                        |
+| Mục đích                 | Đối chiếu yêu cầu PA4 với baseline PA3, Vision, đặc tả và code; sửa trực tiếp tài liệu use case, ghi Changes.md, kiểm tra tham chiếu và xuất PDF. |
+
+### Prompt đã dùng
+
+```text
+$humanizer:humanizer Hãy hoàn thiện phần A của PA4: Revised Use-Case Specification, 2nd submission, trong repo AuraTune.
+
+Đọc các nguồn sau trước khi sửa:
+- docs/PA/PA4-2026.pdf, đặc biệt phần A và Submission Guidelines.
+- docs/management/pa4-readiness-checklist.md.
+- docs/requirements/use-case-model.md và toàn bộ docs/requirements/use-cases/.
+- docs/proposal/Auratune_Vision_Document.md.
+- Hướng dẫn viết use case trong repo.
+- Các spec, contract, code và test liên quan trong specs/ và src/.
+- Git history để xác định phiên bản tài liệu đã nộp PA3.
+
+Thực hiện trực tiếp các chỉnh sửa cần thiết, theo trình tự:
+
+1. Xác định baseline PA3 và tìm feedback của TA trong repo. Ghi rõ nguồn feedback và phiên bản dùng để so sánh. Nếu chưa xác định được, hỏi tôi thông tin còn thiếu và tiếp tục rà soát những phần không phụ thuộc vào câu trả lời. Không tự tạo feedback hoặc chọn một commit bất kỳ làm baseline.
+
+2. Đối chiếu use-case model, các use-case specification và Vision Document:
+   - Kiểm tra actor, system boundary, mã UC/FR và quan hệ include/extend.
+   - Kiểm tra precondition, postcondition, basic flow, alternative flow và exception flow.
+   - Kiểm tra đường dẫn tài liệu, ảnh prototype và bảng truy vết.
+   - Chú ý các vấn đề mã UC-060/UC-080 đã được nhắc trong AI log; xác minh tình trạng hiện tại trước khi sửa.
+
+3. Đọc code để kiểm tra hành vi được mô tả, nhất là xác thực, phân quyền, quyền sở hữu, lưu dữ liệu, trạng thái rỗng và xử lý lỗi.
+   - Sửa các lỗi tài liệu khi đã có đủ căn cứ.
+   - Phân biệt yêu cầu sản phẩm với phần đã triển khai.
+   - Nếu code chưa đáp ứng yêu cầu, ghi rõ khoảng thiếu. Không hạ yêu cầu để hợp thức hóa code.
+   - Nếu các nguồn mâu thuẫn về phạm vi hoặc hành vi nghiệp vụ, ghi lại điểm cần quyết định và hỏi tôi trước khi thay đổi quyết định đó.
+
+4. Cập nhật những tài liệu use case bị ảnh hưởng, giữ nguyên phần còn đúng và cấu trúc chung của repo. Chỉ thay đổi mã UC khi đã kiểm tra các tham chiếu liên quan. Không sửa code ứng dụng hoặc tự thay đổi spec/plan/task để khớp với tài liệu.
+
+5. Tạo docs/pa4/Changes.md làm change log duy nhất cho lần nộp PA4. Giữ nguyên change log PA3.
+   - Có một section riêng cho từng tài liệu được sửa.
+   - Mỗi thay đổi ghi vị trí, nội dung trước/sau, lý do và feedback hoặc bằng chứng liên quan.
+   - Phân biệt thay đổi do TA yêu cầu với lỗi nhóm tự phát hiện.
+   - Mô tả đúng thay đổi so với baseline PA3 đã xác minh.
+
+6. Viết tài liệu đầu ra bằng tiếng Anh rõ ràng, tự nhiên; áp dụng skill humanizer. Đặt thông tin Performed by, Reviewed by và Edited by ngay sau từng section header theo đề. Giữ thông tin tác giả có căn cứ; để Pending nếu chưa có người review, không tự ghi đã được phê duyệt.
+
+7. Kiểm tra lại mã UC/FR, tham chiếu chéo, liên kết, ảnh và cú pháp Mermaid. Xuất PDF cho các tài liệu thuộc phần A nếu công cụ có sẵn, rồi kiểm tra sơ đồ và bố cục. Nếu chưa xuất được, ghi rõ phần còn thiếu.
+
+Cuối cùng, cập nhật riêng trạng thái phần A trong checklist PA4. Chỉ đánh dấu hoàn thành khi đủ bằng chứng; để mở những mục còn chờ feedback, baseline hoặc quyết định nghiệp vụ.
+
+Báo lại các file đã sửa, kết quả kiểm tra và những việc còn cần tôi cung cấp. Chưa commit hoặc push.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đọc đề PA4 gốc, bộ tài liệu use case, Vision, lịch sử Git và các spec/contract/code liên quan. Người dùng xác nhận TA không có feedback và baseline PA3 chính là bộ tài liệu ban đầu trước đợt sửa này; ghi nhận snapshot so sánh `35d8027` cùng các hash tài liệu gốc.
+- Sửa trực tiếp use-case model và các tài liệu trong `docs/requirements/`, giữ nguyên mã và tên file UC hiện có. Bổ sung 10 đặc tả còn thiếu, gồm quản lý lịch sử tìm kiếm, xóa từng dòng lịch sử nghe và 8 UC Admin; tổng cộng có 84 đặc tả UC. Thêm bảng đối chiếu 81 FR trong Vision với các UC hiện tại.
+- Ghi nhận các quyết định người dùng đã chốt: Play Album giữ các bài ngoài album ở phía sau; xóa từng dòng lịch sử theo Vision; tìm ngữ nghĩa chỉ dành cho Listener theo spec 033; Admin theo các quy tắc mới hơn. Phân biệt quyết định đã chốt với các chi tiết nguồn và nghiệp vụ còn mở.
+- Ghi rõ khoảng cách giữa yêu cầu và code, gồm lưu album bằng Map trong bộ nhớ, lịch sử/bình luận/Admin còn dùng trạng thái trình duyệt, phần Studio chưa đầy đủ và gợi ý AI chưa chứng minh được đường chạy cá nhân hóa bình thường. Không sửa code ứng dụng hoặc spec/plan/task để che các khoảng thiếu.
+- Theo các yêu cầu điều chỉnh tiếp theo, khôi phục Performed by theo người phụ trách PA3; riêng nhóm 010 dùng Mai Đăng Khoa thay cho nhãn Writer tự động “Roo”. Giữ Reviewed by là Group 10 team và Edited by là Lê Công Minh Nhựt. Các thông tin tác giả gốc vẫn được lưu để truy vết.
+- Bỏ thư mục `docs/pa4/` đã tạo lúc đầu; gộp quyết định, vấn đề nguồn và kết quả kiểm tra vào model hiện có. Giữ bản change log PA3 ở `docs/proposal/Changes.md`; chuyển change log hiện tại và PDF ra `docs/Changes.md`, `docs/Changes.pdf` để Git nhận được. PDF của tài liệu nằm cạnh file Markdown tương ứng.
+- Thêm riêng hai đường dẫn `docs/management/pa4-readiness-checklist.md` và `.pdf` vào `.gitignore` theo yêu cầu. Không commit hoặc push.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                                           | Quyết định                | Lý do                                                                                                                |
+| ------------------------------------------------------------------------------ | ------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Đối chiếu model, inventory, UC và Vision theo mục tiêu nghiệp vụ               | Dùng                      | Sửa tham chiếu không thống nhất ở các nhóm 010, 060, 080; giữ mã file hiện có và bổ sung bảng đối chiếu mã lịch sử.  |
+| Các bản nháp UC và phần phân biệt yêu cầu với trạng thái triển khai            | Dùng, tiếp tục chờ review | Bổ sung tài liệu còn thiếu mà không coi sự tồn tại của UI, code hoặc checkbox là bằng chứng đã nghiệm thu.           |
+| Giả định chưa xác định được baseline PA3                                       | Sửa                       | Người dùng xác nhận dùng bản tài liệu ban đầu trước đợt sửa; không còn để mở mục xác định baseline.                  |
+| Performed by đồng loạt là Lê Công Minh Nhựt                                    | Sửa                       | Trả về người phụ trách PA3 theo xác nhận của người dùng; Review và Edit giữ nguyên.                                  |
+| Thư mục riêng `docs/pa4/` cùng các manifest/diff trong repo                    | Bỏ khỏi repo              | Người dùng yêu cầu sửa trực tiếp tài liệu cũ. Phần cần thiết được gộp vào model; bản sao kỹ thuật giữ ngoài repo.    |
+| Đặt change log trong thư mục `docs/PA/` bị Git bỏ qua                          | Sửa                       | Chuyển hai file hiện tại ra `docs/Changes.md` và `docs/Changes.pdf`, cập nhật liên kết để thuận tiện đưa lên GitHub. |
+| Đánh dấu toàn bộ phần A hoàn tất hoặc coi tên reviewer là bằng chứng phê duyệt | Không dùng                | Còn thiếu một số prototype, quyết định chi tiết và xác nhận review; các mục này được giữ mở.                         |
+| Sửa code ứng dụng hoặc tự đổi spec/plan/task trong lượt tài liệu này           | Không dùng                | Ngoài phạm vi đã được yêu cầu; chỉ ghi nhận các khoảng thiếu và mâu thuẫn nguồn.                                     |
+
+### Cách kiểm chứng
+
+- [x] Chạy kiểm tra cấu trúc tài liệu và xuất PDF: bộ sau khi gộp có 124 Markdown, 84 UC không trùng, 1.413 liên kết/tham chiếu, 195 ảnh và 34 sơ đồ Mermaid; không còn lỗi đích liên kết, ảnh hoặc render trong lượt kiểm tra ghi nhận.
+- [x] Đối chiếu đề `docs/PA/PA4-2026.pdf`, tài liệu PA3, Vision, spec/contract và code; kiểm tra 446 tham chiếu FR đầy đủ tiền tố. Các tham chiếu viết tắt hoặc theo khoảng được đối chiếu qua inventory và nguồn liên quan.
+- [x] Kiểm tra checksum các bản Markdown/PDF đã ghi, kiểm tra `git diff --check` và xác nhận 962 file code/spec/proposal được bảo vệ không bị đổi trong lượt sửa tài liệu. Khi khôi phục Performed by, kiểm tra riêng rằng Reviewed by và Edited by được giữ nguyên. `git check-ignore` xác nhận checklist Markdown/PDF bị bỏ qua, còn `docs/Changes.md` và `.pdf` được Git nhận.
+- [x] Người thực hiện và cả team hoàn tất việc rà soát nội dung, prototype còn thiếu và xác nhận phê duyệt cuối cùng. Việc ghi tên người review không tự hoàn tất bước này.

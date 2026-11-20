@@ -1,8 +1,10 @@
 # UC-100-001 – View Listening History Analysis
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -10,36 +12,40 @@
 | **Use Case Name** | View Listening History Analysis |
 | **Functional Group** | 100 – AI Recommendations |
 | **Primary Actor** | Listener (`ACT-02`) |
-| **Supporting Actors** | External AI Service Provider (`ACT-EXT-04`) |
+| **Supporting Actors** | None; analysis is performed inside AuraTune |
 | **Related FR IDs** | `101-FR-001`, `101-FR-002`, `101-FR-003`, `101-FR-004`, `101-FR-005`, `101-FR-006`, `101-FR-007`, `101-FR-008`, `101-FR-009`, `101-FR-010`, `101-FR-011`, `101-FR-012`, `101-FR-013`, `101-FR-014` |
 | **Related Feature/Spec** | Feature 101: Listening History Analysis (`specs/100-ai-recommendations/101-listening-history-analysis/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Lê Công Minh Nhựt |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 An authenticated listener requests and reviews statistical insights derived from their personal listening history. The system analyzes historical playback events to compute total listening duration and generate a ranked list of top genres ordered by accumulated listening duration, presenting the insights in a dedicated analytics dashboard while strictly isolating private user data.
 
 ---
 
 ## 3. Preconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user is authenticated as a valid `Listener` (`ACT-02`) with an active session token.
 - The platform database is reachable and contains the listener's account profile.
-- The listener has at least one eligible playback record in `listening_history` linked to a valid song identifier (`101-FR-012`).
+- The listener may have eligible history or no eligible history. The latter follows AF-01; it is not an access precondition.
 
 ---
 
 ## 4. Trigger
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The listener navigates to the Listening History page (`/history`) and selects the "Thống kê" (Statistics / Analytics) view tab.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Navigates to `/history` and clicks on the "Thống kê" tab on the view mode switcher.
 2. **System:** Verifies the listener's authentication session, extracts the authenticated `user_id`, and queries the `listening_history` table for records belonging exclusively to this account (`101-FR-005`, `101-FR-006`).
@@ -52,8 +58,10 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 6. Alternative Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Insufficient or Empty Listening History
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The authenticated listener has zero eligible entries in `listening_history` (e.g., a newly registered account or an account whose history was recently cleared).
 1. **System:** Identifies that eligible history record count is less than 1 (`101-FR-012`).
@@ -63,6 +71,7 @@ The listener navigates to the Listening History page (`/history`) and selects th
 - **Continuation:** Use Case ends.
 
 ### AF-02 – Switching Time Range Filter
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 6 of the Basic Flow.
 - **Condition:** The listener selects a different time period filter (e.g., "7 ngày", "30 ngày", or "Toàn bộ").
 1. **Actor:** Clicks a time range filter button on the dashboard interface.
@@ -71,6 +80,7 @@ The listener navigates to the Listening History page (`/history`) and selects th
 - **Continuation:** Resumes at Step 7 of the Basic Flow.
 
 ### AF-03 – Dynamic Statistics Refresh
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The listener plays additional tracks in another session and returns to or re-opens the analytics view.
 1. **Actor:** Reloads the page or switches back to the "Thống kê" tab.
@@ -81,8 +91,10 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 7. Exception Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Unauthenticated Visitor Access Attempt
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** An unauthenticated visitor (`Guest`) attempts to access `/history` or calls the listening analysis API.
 1. **System:** Intercepts the request and detects the absence of a valid JWT authentication token (`101-FR-006`).
@@ -91,6 +103,7 @@ The listener navigates to the Listening History page (`/history`) and selects th
 - **Continuation:** Redirects to `UC-010-002` (Log In with Email); this use case terminates in failure.
 
 ### EF-02 – History Database Query Failure
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The database connection times out or encounters an internal query error.
 1. **System:** Intercepts the query failure and logs the technical error securely without exposing internal database schemas.
@@ -101,13 +114,16 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 8. Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The listener views their accurate total listening duration and top genres breakdown.
 - All presented data is strictly derived from the caller's own eligible `listening_history` records.
 - Zero listening activity or insights belonging to any other user is disclosed.
 
 ### Failure
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - No personal listening analytics are rendered.
 - No misleading or fabricated placeholder data is presented to the user.
 - System security and privacy boundaries remain fully intact.
@@ -115,6 +131,7 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 9. Special Requirements
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: Analytics aggregation for accounts with up to 10,000 listening events must complete and render within 1.5 seconds.
 - **Security & Privacy**: Strict compliance with Vietnamese Personal Data Protection Decree 13/2023/ND-CP. SQL queries must explicitly enforce `WHERE user_id = $authenticated_user_id`.
@@ -124,8 +141,10 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Listening Analysis Overview](prototypes/UC-100-001-basic-flow.png)
 *Figure 1: Complete listening analysis dashboard on the "Thống kê" tab of `/history` showing metric summaries and top genres.*
@@ -137,11 +156,13 @@ The listener navigates to the Listening History page (`/history`) and selects th
 *Figure 3: Top genres ranked by accumulated listening duration with proportional visual bars.*
 
 ### Alternative Flow – AF-01 (Insufficient History)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Insufficient Listening History](prototypes/UC-100-001-AF-01-insufficient-history.png)
 *Figure 4: Empty state presented when an account has fewer than 1 eligible playback entry.*
 
 ### Exception Flow – EF-01 (Login Required)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Analysis Unavailable - Login Required](prototypes/UC-100-001-EF-01-login-required.png)
 *Figure 5: Access denial and login prompt presented when an unauthenticated guest attempts access.*
@@ -149,6 +170,7 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 11. Related Use Cases
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Case**: `UC-010-002` (Log In with Email) – Establishes the authenticated listener session.
 - **Related Use Case**: `UC-070-002` (View Listening History) – Co-located on `/history` under the "Lịch sử" tab.
@@ -157,6 +179,7 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 12. Source References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/100-ai-recommendations/101-listening-history-analysis/spec.md` – Requirements FR-001 through FR-014, User Stories 1–3.
 - `docs/proposal/Auratune_Vision_Document.md` – Section 3.5 & Group G10.
@@ -166,6 +189,14 @@ The listener navigates to the Listening History page (`/history`) and selects th
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Scope Boundary with Group 070**: As resolved in clarification session 2026-10-20, Group 100 provides aggregate listening time and top genres, while Group 070 retains ownership of top songs and top artists.
 - **Aggregate Table (`user_listening_stats`)**: The database schema includes an optional pre-computed table. However, per FR-003, this feature dynamically queries `listening_history` to guarantee real-time freshness until a formal background aggregation worker is scheduled.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Analysis/recommendation services and tests exist. Feature 101 computes database statistics without an external AI model. The Python `/ai/recommend` handler currently returns a fixed candidate ordering without ranking from submitted preference signals. Cold-start/fallback results must be distinguished from normal personalized results.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

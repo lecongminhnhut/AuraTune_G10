@@ -1,4 +1,5 @@
 # Prototype Index – 090 Artist Profile & Studio
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This file tracks the prototype and screenshot assets used by the group's Use-Case Specifications.
 
@@ -9,6 +10,7 @@ Writer: Thái Hoàng. Reviewer: Not assigned. Last updated: 2026-11-04. All eigh
 Current flow reconciliation after D18: **90 entries**, matched by UC and flow ID against all eight specifications (UC-001 through UC-008: 11, 14, 12, 8, 15, 11, 10, 9). EX-03 of UC-001 is now illustrated by P-017, with runtime/return-sequence evidence still Partial; this count does not mean complete prototype coverage. Historical inspection notes below retain the decision range reviewed at that time.
 
 ## Submission Mockup Assets
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Created for PA3 at the owner's request on 2026-11-04 using HTML/CSS and Chrome rendering. All are mockups, not implemented-system screenshots. Each board groups distinct UI states to avoid one image per flow. Layout and sample wording remain illustrative.
 
@@ -26,6 +28,7 @@ Created for PA3 at the owner's request on 2026-11-04 using HTML/CSS and Chrome r
 | P-026 | UC-090-002/003/005/006/007/008 | Next-load and repeated/opposing-operation results | Partial: result snapshots | [PNG](./Group090-next-load-and-request-results.png); [HTML](./Group090-next-load-and-request-results.html) | Mockup | Author-created from 092 and current UC/D08 rules. No processing-order, backend or successful-test evidence. |
 
 ## Existing Source Assets
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Asset ID | UC ID | Flow | Screen / State | File Path | Type | Source / Notes |
 |---|---|---|---|---|---|---|
@@ -49,6 +52,7 @@ Created for PA3 at the owner's request on 2026-11-04 using HTML/CSS and Chrome r
 All 16 original PNGs exist. Historical visual observations are retained in each Draft Section 12; the upload/edit images were reopened for this pass to compare D01-D16. No new visual inspection of all other assets is claimed for this pass. Mockup provenance remains unverified; none is labeled an implemented UI.
 
 ## UC-090-001 – View Public Artist Profile
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-001-view-public-artist-profile.md)
 
@@ -67,6 +71,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-017 | UC-090-001 | [EX-04](../UC-090-001-view-public-artist-profile.md#ex-04---profile-link-cannot-be-copied) | Partial: current submission storyboard | [PNG](./UC-090-001-basic-flow-and-key-states.png) | Mockup | Illustrates this flow's main visible state(s), not its complete executed sequence. See UC Section 12.0 for provenance and limits. Runtime permissions, persistence, concurrency and recipient/recovery results are not demonstrated. |
 
 ## UC-090-002 – Follow or Unfollow Artist
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-002-follow-or-unfollow-artist.md)
 
@@ -88,6 +93,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-025 | UC-090-002 | [EX-04](../UC-090-002-follow-or-unfollow-artist.md#ex-04--authentication-expires-during-an-action) | Partial: shared access/recovery state | [PNG](./Group090-access-and-recovery-states.png) | Mockup | Reuses the applicable signed-out/expired, banned, Artist-only, ownership-denied, account-isolation or uncertain-result panel. Complete recovery/authorization and subsequent results are not demonstrated. |
 
 ## UC-090-003 – View Followed Artists
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-003-view-followed-artists.md)
 
@@ -107,6 +113,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-025 | UC-090-003 | [EX-02](../UC-090-003-view-followed-artists.md#ex-02--authentication-expires-during-the-list-request) | Partial: shared access/recovery state | [PNG](./Group090-access-and-recovery-states.png) | Mockup | Reuses the applicable signed-out/expired, banned, Artist-only, ownership-denied, account-isolation or uncertain-result panel. Complete recovery/authorization and subsequent results are not demonstrated. |
 
 ## UC-090-004 – Access Artist Studio Dashboard
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-004-access-artist-studio-dashboard.md)
 
@@ -122,6 +129,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-020 | UC-090-004 | [EX-02](../UC-090-004-access-artist-studio-dashboard.md#ex-02--partial-load-or-failed-reload-with-manual-recovery) | Partial: current submission storyboard | [PNG](./UC-090-004-basic-flow-and-key-states.png) | Mockup | Illustrates this flow's main visible state(s), not its complete executed sequence. See UC Section 12.0 for provenance and limits. Runtime permissions, persistence, concurrency and recipient/recovery results are not demonstrated. |
 
 ## UC-090-005 – Upload Audio Track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-005-upload-audio-track.md)
 
@@ -144,6 +152,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-021 | UC-090-005 | [EX-03](../UC-090-005-upload-audio-track.md#ex-03--error-or-uncertain-result-with-manual-recovery) | Partial: current submission storyboard | [PNG](./UC-090-005-basic-flow-and-key-states.png) | Mockup | Illustrates this flow's main visible state(s), not its complete executed sequence. See UC Section 12.0 for provenance and limits. Runtime permissions, persistence, concurrency and recipient/recovery results are not demonstrated. |
 
 ## UC-090-006 – Edit Track Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-006-edit-track-metadata.md)
 
@@ -162,6 +171,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-022 | UC-090-006 | [EX-04](../UC-090-006-edit-track-metadata.md#ex-04--error-or-uncertain-result-with-manual-recovery) | Partial: current submission storyboard | [PNG](./UC-090-006-basic-flow-and-key-states.png) | Mockup | Illustrates this flow's main visible state(s), not its complete executed sequence. See UC Section 12.0 for provenance and limits. Runtime permissions, persistence, concurrency and recipient/recovery results are not demonstrated. |
 
 ## UC-090-007 – Hide or Unhide Track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-007-hide-or-unhide-track.md)
 
@@ -179,6 +189,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-023 | UC-090-007 | [EX-04](../UC-090-007-hide-or-unhide-track.md#ex-04--error-or-uncertain-result-with-manual-recovery) | Partial: current submission storyboard | [PNG](./UC-090-007-basic-flow-and-key-states.png) | Mockup | Illustrates this flow's main visible state(s), not its complete executed sequence. See UC Section 12.0 for provenance and limits. Runtime permissions, persistence, concurrency and recipient/recovery results are not demonstrated. |
 
 ## UC-090-008 – Delete Track from Studio
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Draft specification](../UC-090-008-delete-track-from-studio.md)
 
@@ -195,6 +206,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 | P-024 | UC-090-008 | [EX-05](../UC-090-008-delete-track-from-studio.md#ex-05--error-or-uncertain-result-with-manual-recovery) | Partial: current submission storyboard | [PNG](./UC-090-008-basic-flow-and-key-states.png) | Mockup | Illustrates this flow's main visible state(s), not its complete executed sequence. See UC Section 12.0 for provenance and limits. Runtime permissions, persistence, concurrency and recipient/recovery results are not demonstrated. |
 
 ## Decision-to-Prototype Gaps
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Decisions | Current visual coverage and residual limits |
 |---|---|
@@ -209,6 +221,7 @@ All 16 original PNGs exist. Historical visual observations are retained in each 
 Some existing flows have no unique additional screen (for example a later list load or repeated request); no extra UI is invented merely to remove Missing. Distinct transition evidence remains itemized honestly. All ten new mockup PNGs and the rendered diagram PNG were visually inspected after rendering; the exact team Markdown host remains unverified.
 
 ## Asset Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Preserve descriptive source filenames and source attribution for these reused assets. User-authorized in-place reuse overrides moving/copying or renaming assets into this directory; there are no local image copies.
 - Link original files with the five-level relative path from this index to the repository root; never create a placeholder link for a Missing state.

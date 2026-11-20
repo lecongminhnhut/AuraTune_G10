@@ -1,6 +1,8 @@
 # UC-090-008 – Delete Track from Studio
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -12,32 +14,38 @@
 | Related FR IDs | 093-FR-001, 093-FR-008, 093-FR-009 |
 | Related Feature ID | 093 – Artist Track Management |
 | Related Spec Kit File | [093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) |
-| Writer | Thái Hoàng |
-| Reviewer | Not assigned |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Thái Hoàng |
+| Reviewer | Group 10 team |
 | Status | Draft |
 | Last Updated | 2026-11-04 |
 
 ## 2. Goal
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist permanently removes their own track from Studio and public distribution after confirming the deletion, or cancels before deletion is submitted.
 
 ## 3. Description
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist chooses a track, reviews a confirmation naming it and warning that it cannot be restored, and confirms or cancels. Successful deletion removes the Studio entry, displays a confirmation toast and updates the statistics cards as required by 093 User Story 5. Hiding is a separate reversible visibility goal; this UC provides no restore feature.
 
 Permanent removal is the business outcome, not a decision about hard/soft deletion, physical audio removal or related-data cleanup. Admin moderation reason, one-click removal, retention and restore rules are not adopted as Artist deletion rules.
 
 ## 4. Preconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Normal entry is a track entry in the Artist's Studio catalog (UC-090-004). The ordinary successful path targets an existing owned track eligible for deletion under the current contract.
 - Authentication, Artist role, account eligibility, track existence and ownership must be checked on protected reads and deletion requests. A previously displayed catalog or confirmation does not establish continuing authorization or existence; denial branches cover direct requests and changes since display.
 - 093 User Story 5 and FR-008 specify owned-track deletion without a self-hidden exclusion; ordinary self-hidden tracks use the same confirmation/cancel/delete flow. G090-D05 also permits Artist-owner deletion of an Admin-restricted track through this same confirmation/cancel flow, without making the track public, permitting new playback or introducing restore/moderation override.
 
 ## 5. Trigger
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist selects the delete (Trash) action for a track in their own Studio catalog.
 
 ## 6. Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Artist:** Selects Delete for their track.
 2. **System:** Checks access, ownership and track existence, then displays a confirmation modal containing the track title and a warning that the track cannot be restored.
@@ -48,8 +56,10 @@ The Artist selects the delete (Trash) action for a track in their own Studio cat
 The use case ends successfully. Step 5 follows 093's observable outcomes without deciding the storage mechanism; Studio active/total-play semantics follow G090-D06. No Artist deletion reason field is introduced.
 
 ## 7. Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Cancel confirmation
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 3, before confirmation is submitted.
 - **Condition:** The Artist selects Cancel ("Hủy") instead of Delete.
@@ -60,6 +70,7 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 - **Outcome:** The use case ends with cancellation; no deletion is submitted by this flow. This does not guarantee that another independent actor has not changed the track concurrently.
 
 ### AF-02 – Track not found
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** The requested record no longer exists, including disappearance after the catalog or confirmation was displayed.
@@ -69,6 +80,7 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 - **Outcome:** The request ends unsuccessfully. This does not define an idempotent success response for repeated Artist deletions, a retained deleted-record response or a restore/cleanup procedure.
 
 ### AF-03 – Repeated or concurrent operation
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4 or 5 before a change is accepted; also during EX-05 recovery.
 - **Condition:** The same intended request is repeated, or valid operations affecting the track overlap.
@@ -79,8 +91,10 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 - **Outcome:** Ends with the confirmed saved result when known. If further authorized processing is needed, resume at Basic Flow step 4 for the already-confirmed intended deletion; a new deletion intent uses the existing confirmation flow; an uncertain result uses EX-05 first. No specific synchronization, versioning, schema or idempotency-key design is selected. Source: G090-D08.
 
 ## 8. Exception Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EX-01 – Missing or expired session
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** The protected request has no valid authenticated session, including expiry while the confirmation was open.
@@ -90,6 +104,7 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 - **Outcome:** The request ends unsuccessfully without executing that rejected deletion. Original deletion source does not define a recovery mechanism; D08/EX-05 governs current manual recovery and rechecks without automatic replay.
 
 ### EX-02 – Role or ownership denied
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** The requester lacks Artist permission or attempts to delete another account's track.
@@ -99,6 +114,7 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 - **Outcome:** The request ends unsuccessfully without executing that rejected deletion. Admin moderation permission does not independently confer Artist Studio access.
 
 ### EX-03 – Banned account
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4.
 - **Condition:** A successful administrative ban applies, even if the token issued earlier is unexpired.
@@ -108,6 +124,7 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 - **Outcome:** The request ends unsuccessfully without executing that rejected deletion; account ban/unban management is outside this UC.
 
 ### EX-04 – Reported operation failure
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4 or 5, after confirmation.
 - **Condition:** Processing returns an explicit operation-error result rather than confirmed deletion success.
@@ -119,6 +136,7 @@ The use case ends successfully. Step 5 follows 093's observable outcomes without
 A lost response is not a confirmed failure. Use EX-05 to reconcile the actual result before a definitive claim or retry under G090-D08.
 
 ### EX-05 – Error or uncertain result with manual recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4 or 5.
 - **Condition:** Loading/processing fails, or no definitive response establishes the result of a submitted operation.
@@ -130,8 +148,10 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 - **Outcome:** On a successful read, present the confirmed current result. If further processing is needed, resume at Basic Flow step 4 for the already-confirmed intended deletion; a new deletion intent uses the existing confirmation flow. If failure or uncertainty persists, return to EX-05 step 1; if the Artist stops, end without a definitive success claim. Access denial/missing-target outcomes use the existing branches. No old-account request is reassigned to a different account. No automatic retry, persistence atomicity or physical cleanup policy is chosen. Source: G090-D08.
 
 ## 9. Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 9.1 Success Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - G090-D07 blocks new play starts via player/playlist/queue/direct URL after successful hide/delete, skips unavailable queue items and permits only playback already started before success to finish. No replay/repeat while unavailable; hidden-track eligibility requires Artist-public, no Admin restriction and no deletion. No deleted-track restore is introduced.
 
@@ -144,6 +164,7 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 - These outcomes do not assert physical file erasure, cleanup of playlists/history or any hard/soft-delete implementation. G090-D06 does require preservation of the user-visible historical total-play aggregate; it does not select how that aggregate is stored.
 
 ### 9.2 Failure Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - G090-D08 requires explicit error/uncertainty feedback and manual recovery; unresolved results do not become definitive saved/unchanged/deleted claims. All ownership/restriction/deleted-state boundaries remain enforced.
 
@@ -153,6 +174,7 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 - **Unknown result:** Loss of response after submission does not prove success or failure; neither deletion nor unchanged data is promised without reconciliation evidence.
 
 ## 10. Special Requirements
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security:** Enforce authentication, Artist role and ownership server-side at protected access and execution; apply 111-FR-011 after a ban. Previously displayed controls or confirmation do not bypass these checks.
 - **Performance:** No Artist-deletion response-time target is identified. 093-SC-002's 500 ms target explicitly concerns upload and metadata edit, not deletion.
@@ -161,6 +183,7 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 - **Other:** G090-D07 independently confirms Artist-delete new-start/queue/in-progress playback outcomes. It does not select URL revocation or streaming mechanics. Public-distribution removal remains required; exact stale public-surface refresh presentation is not selected. 112 moderation wording remains assessed separately in group S-01, not silently imported.
 
 ## 11. Business Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
@@ -176,8 +199,10 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 | BR-10 | Owner-confirmed session decision G090-D08 (2026-11-04), option A: distinguish Studio errors from valid empty/zero results and offer manual retry. An unanswered submitted operation remains explicitly uncertain; reconcile its actual result before a definitive state claim or resubmission. Retrying the same upload submission must not create another track. Concurrent valid operations take effect in successful processing order, with the last successful applicable change prevailing, subject to current ownership, Admin restriction and deletion rules; deleted content cannot be resurrected. No automatic resubmission, schema/API, transaction or deduplication mechanism is selected. | Owner-confirmed session decision G090-D08; not an original 093 requirement or group approval |
 
 ## 12. Prototype and Screenshots
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 12.0 Current Submission Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Author-created Basic Flow and key UI states](./prototypes/UC-090-008-basic-flow-and-key-states.png)
 
@@ -193,6 +218,7 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 
 
 ### 12.1 Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Delete confirmation reference mockup](../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/05-delete-track.png)
 
@@ -203,14 +229,17 @@ A lost response is not a confirmed failure. Use EX-05 to reconcile the actual re
 The blurred background retains the track and pre-deletion statistics. Visible background toasts report an upload and a hide; neither is deletion confirmation. The image does not demonstrate execution, record removal, updated statistics, public delisting, playback consequences, ownership or physical cleanup. Although the background appears to contain a hidden track, an open dialog does not establish hidden-track deletion eligibility or success.
 
 ### 12.2 Alternative Flow – AF-01
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Cancel button is visible in the same mockup; the resulting modal dismissal and unchanged catalog are not illustrated. AF-01's behavior comes from 093 User Story 5, scenario 2, not from inferred image interaction. No distinct cancellation-result evidence was found in the referenced asset.
 
 ### 12.3 Remaining Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 No verified asset demonstrates completed deletion/toast/statistics, AF-02 not-found, EX-01–04 access/ban/error outcomes, restricted-track deletion, repeated/concurrent requests or uncertain outcomes. Public discovery and playback effects also lack evidence. Prototype coverage remains incomplete; no image was created or copied.
 
 ## 13. Related Use Cases
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [UC-090-004 – Access Artist Studio Dashboard](./UC-090-004-access-artist-studio-dashboard.md): catalog entry point and statistics display; its historical-play/active-count semantics are confirmed by G090-D06; technical retrieval and recovery remain separate.
 - [UC-090-005 – Upload Audio Track](./UC-090-005-upload-audio-track.md): creates audio content; its storage role does not establish a deletion-cleanup actor.
@@ -220,6 +249,7 @@ No verified asset demonstrates completed deletion/toast/statistics, AF-02 not-fo
 - Group 110 moderation and the playback/queue features retain their own action boundaries.
 
 ## 14. Traceability and Sources
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Feature-qualified references identify literal FR IDs in the [current 093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md). Three FRs apply directly/shared as allocated in the inventory; the other seven are boundaries/context.
 
@@ -254,6 +284,7 @@ Feature-qualified references identify literal FR IDs in the [current 093 spec](.
 Source assessment: see [S-01](./README.md#source-assessment-s-01) for exact 112 quotations, line references and action/state analysis. Only the confirmation requirement versus one-click execution is retained as a conditional same-action conflict; reason defaults are compatible, and playback/state wording is not declared irreconcilable without matching scopes. Independent 093 Artist behavior remains in force.
 
 ## 15. Open Questions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Question ID | Question | Owner | Status | Resolution |
 |---|---|---|---|---|
@@ -266,3 +297,10 @@ Source assessment: see [S-01](./README.md#source-assessment-s-01) for exact 112 
 | Q-07 | Evidence: provide cancel-result, deletion-success/toast/statistics, public/playback, access/failure and uncertain-outcome illustrations. | Thái Hoàng | Open | Current P-024/P-025/P-026 add cancel/result/statistics and key access/recovery illustrations; public/playback runtime and full sequence evidence remain incomplete |
 
 Post-deletion total-play/active-count semantics are confirmed by owner session decision G090-D06 and shared with UC-090-004; B-02 is resolved without a persistence/cleanup decision. Earlier unresolved issues remain open; source-answered subquestions and shared follow-ups are tracked in the group README. Reviewer is not assigned; this is a Draft without peer review or approval.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

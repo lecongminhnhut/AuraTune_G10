@@ -1,8 +1,10 @@
 # UC-020-001 – Browse Home Dashboard
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `021-FR-001`, `021-FR-002`, `021-FR-003`, `021-FR-004`, `021-FR-005`, `021-FR-006`, `021-FR-007`, `021-FR-008`, `021-FR-009`, `021-FR-010`, `021-FR-011`, `021-FR-012`, `021-FR-013` |
 | **Related Feature/Spec** | Feature 021: Home Content Layout (`specs/020-home-dashboard/021-home-content-layout/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A guest or signed-in listener opens the AuraTune Home Dashboard and browses an organized set of music sections without searching. The system presents the sections in a fixed order, adapts the greeting and shortcuts to the actor's sign-in state, loads each section independently so that one failure does not block the page, and provides paths to the full destination of each section while current playback continues.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The AuraTune web application is reachable from a supported desktop or mobile browser.
 - The music catalog contains at least one public, playable item for the public sections (`021-FR-001`).
@@ -34,12 +39,14 @@ A guest or signed-in listener opens the AuraTune Home Dashboard and browses an o
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The actor opens the AuraTune root route (`/`), signs in and lands on Home, or selects "Trang chủ" in the sidebar or mobile navigation.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Opens the Home Dashboard.
 2. **System:** Determines whether the actor is a guest or a signed-in listener (`021-FR-001`).
@@ -55,8 +62,10 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Open the Full Destination of a Section
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The actor wants more content than the preview shows (`021-FR-005`).
 1. **Actor:** Selects the section action, for example "Xem tất cả", "Khám phá thêm", or "Bảng xếp hạng".
@@ -65,6 +74,7 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 - **Continuation:** Use case ends successfully; the actor continues in the destination use case, for example `UC-020-004`.
 
 ### AF-02 – Guest Selects a Personal Shortcut
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** A guest selects a shortcut that needs an account, such as saved hits (`021-FR-009`).
 1. **Actor:** Selects the personal shortcut.
@@ -74,6 +84,7 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 - **Continuation:** Use case ends successfully at the personal destination.
 
 ### AF-03 – Browse on a Phone or Tablet
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The actor uses a narrow screen (`021-FR-010`).
 1. **System:** Reflows the sections for the screen width, without horizontal page scrolling, and shows the mobile navigation and compact mini player.
@@ -82,8 +93,10 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – One Section Fails to Load
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The content for a single section cannot be loaded (`021-FR-006`).
 1. **System:** Shows a fallback or error state inside that section only.
@@ -92,6 +105,7 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 - **Continuation:** Resumes at Step 7 of the Basic Flow.
 
 ### EF-02 – No Section Can Be Loaded
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 3 of the Basic Flow.
 - **Condition:** The page cannot load any section, for example because of a connection failure (`021-FR-008`).
 1. **System:** Shows a page-level error message with a retry action.
@@ -100,6 +114,7 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 - **Continuation:** Resumes at Step 3 of the Basic Flow if loading succeeds; otherwise the use case ends in failure with the error state shown.
 
 ### EF-03 – Section Has No Content
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 6 of the Basic Flow.
 - **Condition:** A section has no items to show.
 1. **System:** Hides the section or shows an empty state, and never shows a blank block.
@@ -108,19 +123,23 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The actor sees the Home Dashboard with every available section in the defined order.
 - Guests see only public content, and signed-in listeners see their personalized greeting and shortcuts.
 - Any playback started from Home continues while the actor browses or leaves Home.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - Sections that failed show a fallback or error state, and the rest of the page remains usable.
 - If no section loads, the page shows an error with a retry action, and no playback state is changed.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: The Home Dashboard should be usable within 2 seconds under standard network conditions (Vision Document, Section 6.1).
 - **Responsiveness**: No horizontal page scrolling from 375 px to 1920 px wide (`021-FR-010`).
@@ -130,10 +149,12 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Home Dashboard for a guest](prototypes/UC-020-001-basic-flow-guest.png)
 *Figure 1: Home Dashboard for a guest, showing the sidebar, top bar, hero, quick access, and mini player (Steps 1–5).*
@@ -151,22 +172,26 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 *Figure 5: Curated playlists and the genre grid (Steps 4 and 6).*
 
 ### Alternative Flow – AF-01 (Open the Full Destination)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Section navigation](prototypes/UC-020-001-AF-01-section-navigation.png)
 *Figure 6: Section actions and sidebar entries leading to full destinations.*
 
 ### Alternative Flow – AF-03 (Phone Layout)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Home on a phone](prototypes/UC-020-001-AF-03-phone-layout.png)
 *Figure 7: Home at 375 px wide with reflowed sections and mobile navigation.*
 
 ### Exception Flows – EF-01 and EF-02 (Section and Page Failures)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Per-section fallback state and a page-level error with a retry action. The prototype reads local demo data, so these states cannot occur yet.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Case**: `UC-010-002` (Log In with Email and Password) – Required only for the personalized variant and AF-02.
 - **Embedded Sections**:
@@ -179,6 +204,7 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/020-home-dashboard/021-home-content-layout/spec.md` – Requirements FR-001 through FR-013, User Stories 1–3, Edge Cases.
 - `docs/proposal/Auratune_Vision_Document.md` – Group G02 and Section 6.1 Performance.
@@ -188,7 +214,15 @@ The actor opens the AuraTune root route (`/`), signs in and lands on Home, or se
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Guest Streaming**: Clarification session 2026-11-01 confirmed that guests can stream public tracks, albums, and playlists from Home; sign-in is required only for personal actions.
 - **Data Loading (`Q-020-1`)**: Whether Home uses the composite `GET /home` request or parallel requests per section is still open. Both options must satisfy the per-section failure rule in EF-01.
 - **Prototype Gap**: The current prototype has no per-section loading, failure, or retry states (see Known Gaps in the 021 specification).
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`HomePage.jsx`, `ChartsPage.jsx` and `ExplorePage.jsx` provide the presentation. Some catalog/ranking inputs still use `src/frontend/src/utils/mockData.js`. Live recommendation widgets do not establish that every Home section is backed by an authoritative catalog or calculated platform ranking.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

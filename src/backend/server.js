@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import mediaRoutes from './routes/mediaRoutes.js';
 import songRoutes from './routes/songRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
@@ -15,6 +16,12 @@ import recommendationRoutes from './routes/recommendationRoutes.js';
 import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
 import lyricsSearchRoutes from './routes/lyricsSearchRoutes.js';
+import playlistRoutes from './routes/playlistRoutes.js';
+import mediaRoutes from './routes/mediaRoutes.js';
+import artistRoutes from './routes/artistRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import studioRoutes from './routes/studioRoutes.js';
+import { followTransportError } from './controllers/followArtistController.js';
 
 dotenv.config();
 
@@ -58,6 +65,7 @@ app.get('/api/health', (req, res) => {
 
 // Mount Feature 010 Auth Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/media', mediaRoutes);
 // Group 040 Music Player: song metadata & audio stream
 app.use('/api/v1/songs', songRoutes);
 // Group 120 AI Conversational Agent: Feature 121
@@ -75,6 +83,7 @@ app.use('/api/v1/recommendations/mood-context', moodRecommendationRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
 app.use('/api/v1', searchRoutes);
 app.use('/api/v1', lyricsSearchRoutes);
+app.use('/api/v1', playlistRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
@@ -94,7 +103,12 @@ app.use((req, res) => {
 
 export { app };
 
+app.use(followTransportError);
 app.listen(PORT, () => {
   console.log(`🚀 AuraTune Backend Server is running on http://localhost:${PORT}`);
   console.log(`🔐 Auth API base URL: http://localhost:${PORT}/api/v1/auth`);
 });
+app.use('/api/v1/media', mediaRoutes);
+app.use('/api/v1/artists', artistRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/studio', studioRoutes);

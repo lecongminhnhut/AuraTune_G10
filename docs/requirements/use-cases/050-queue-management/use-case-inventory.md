@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 050 – Queue Management
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document serves as the official tracking registry for all Use Cases belonging to **Group 050 – Queue Management**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), assigned owners, and authoring statuses for PA3.
 
@@ -15,8 +17,9 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Confirmed Use-Case Inventory
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-050-001** | View Playback Queue | Guest / Listener | None | `051-FR-001` to `051-FR-005`, `051-FR-007` to `051-FR-011`, `051-FR-013` | `051-view-queue` | Nguyễn Thanh Huy | **Draft** | [`UC-050-001-view-playback-queue.md`](./UC-050-001-view-playback-queue.md) |
 | **UC-050-002** | Add Track to Queue | Guest / Listener | None | `052-FR-001` to `052-FR-007`, `052-FR-010` to `052-FR-012`, `051-FR-013` | `052-add-and-remove-queue-items` | Nguyễn Thanh Huy | **Draft** | [`UC-050-002-add-track-to-queue.md`](./UC-050-002-add-track-to-queue.md) |
@@ -29,6 +32,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -42,6 +46,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Unconfirmed / Out-of-Scope Candidates
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Candidate ID | Proposed Name | Rationale / Exclusion Reason | Target Alternative Group |
 |---|---|---|---|
@@ -51,6 +56,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 5. Traceability Matrix
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|

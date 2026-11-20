@@ -1,6 +1,12 @@
 
 import { getApp, getApps, initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import {
+  browserLocalPersistence,
+  browserPopupRedirectResolver,
+  getAuth,
+  inMemoryPersistence,
+  initializeAuth,
+} from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
@@ -16,7 +22,22 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+// Avoid Firebase's IndexedDB persistence: a full browser disk can make it fail
+// before the provider popup opens. Keep users in localStorage when available,
+// and fall back to in-memory auth if browser storage is unavailable.
+let auth;
+try {
+  auth = initializeAuth(app, {
+    persistence: [browserLocalPersistence, inMemoryPersistence],
+    popupRedirectResolver: browserPopupRedirectResolver,
+  });
+} catch (error) {
+  // Vite HMR can evaluate this module again while the Firebase app survives.
+  if (error.code !== 'auth/already-initialized') throw error;
+  auth = getAuth(app);
+}
+
+export { auth };
 export const realtimeDb = firebaseConfig.databaseURL
   ? getDatabase(app)
   : null;

@@ -1,9 +1,12 @@
 # Use-Case Prototypes – 070 Listening History
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Overview
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 This directory contains UI prototypes and implementation screenshots for Functional Group 070. These assets illustrate the user interface for viewing playback history and analytical statistics.
 
 ## 2. Prototype Inventory
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | ID | Related Use Case | Flow / State | Asset Source | Prototype Type | Notes |
 |---|---|---|---|---|---|
@@ -16,4 +19,5 @@ This directory contains UI prototypes and implementation screenshots for Functio
 | P-070-007 | UC-070-001, UC-070-007 | Background Flow | N/A | No UI prototype | Automatic recording and retention purge are background system behavior. |
 
 ## 3. Reference Links
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - [Spec Kit UI Assets](../../../../../specs/070-listening-history/)

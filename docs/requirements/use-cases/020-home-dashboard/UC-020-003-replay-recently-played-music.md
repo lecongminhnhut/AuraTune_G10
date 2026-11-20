@@ -1,8 +1,10 @@
 # UC-020-003 – Replay Recently Played Music
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `023-FR-001`, `023-FR-002`, `023-FR-003`, `023-FR-004`, `023-FR-005`, `023-FR-006`, `023-FR-007`, `023-FR-008`, `023-FR-009`, `023-FR-010`, `023-FR-011` |
 | **Related Feature/Spec** | Feature 023: Recently Played (`specs/020-home-dashboard/023-recently-played/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A signed-in listener returns to familiar music by selecting one of their recently played tracks from the quick access area at the top of the Home Dashboard. The system shows distinct, available tracks from the listener's own history, most recent first, and starts playback in one interaction using the recent list as the queue. Recording and managing history belongs to Group 070.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The actor is signed in as a `Listener` (`ACT-02`) with a valid session (`023-FR-001`).
 - The listener has at least one qualifying entry in their listening history, recorded by `UC-070-001` after 30 seconds of continuous playback, or 50% of the duration for a shorter track (`041-FR-014`).
@@ -34,12 +39,14 @@ A signed-in listener returns to familiar music by selecting one of their recentl
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Home Dashboard renders the quick access area for a signed-in listener.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **System:** Retrieves the signed-in listener's own listening history (`023-FR-009`).
 2. **System:** Removes repeated plays so each track appears once, at its most recent position (`023-FR-003`).
@@ -53,21 +60,25 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Guest Visitor
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The actor is not signed in (`023-FR-008`).
 1. **System:** Shows suggested playlist shortcuts in place of recent tracks.
 2. **Actor:** Selects a shortcut to open the playlist.
-- **Continuation:** Use case ends; the actor continues in `UC-060-002` (View Playlist Details).
+- **Continuation:** Use case ends; the actor continues in `UC-060-003` (View Playlist Details).
 
 ### AF-02 – Listener With No History
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The signed-in listener has no history, or has cleared it (`023-FR-008`).
 1. **System:** Shows suggested playlist shortcuts in place of recent tracks.
 - **Continuation:** Use case ends; the actor can continue via AF-01 Step 2.
 
 ### AF-03 – View Full Listening History
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The listener wants to see more than the recent preview (`023-FR-007`).
 1. **Actor:** Selects the history link.
@@ -77,8 +88,10 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – History Cannot Be Loaded
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** The listener's history cannot be retrieved (`023-FR-010`).
 1. **System:** Shows suggested playlist shortcuts in the quick access area.
@@ -86,6 +99,7 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 - **Continuation:** Use case ends in fallback mode.
 
 ### EF-02 – Session Expires
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Any step of the Basic Flow.
 - **Condition:** The listener's session is no longer valid.
 1. **System:** Removes the personal data from the page and shows the guest state.
@@ -94,18 +108,22 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The selected recent track is playing, and the queue contains the recent tracks list starting from that track.
 - The recent list contains no duplicate and no unavailable tracks.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The quick access area shows suggested shortcuts, and no personal data is shown.
 - The listening history itself is not modified by this use case (`023-FR-011`).
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security & Privacy**: A listener's history is never shown to any other user (`023-FR-009`).
 - **Freshness**: A track recorded in history appears on the next Home load.
@@ -115,10 +133,12 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Recent tracks for a signed-in listener](prototypes/UC-020-003-basic-flow.png)
 *Figure 1: Recent tracks in the quick access area with a link to the full history (Step 4).*
@@ -127,27 +147,32 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 *Figure 2: Playback started from a recent track (Steps 6–7).*
 
 ### Alternative Flow – AF-01 (Guest Visitor)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Guest shortcuts](prototypes/UC-020-003-AF-01-guest-shortcuts.png)
 *Figure 3: Suggested playlist shortcuts shown to a guest.*
 
 ### Alternative Flow – AF-02 (Listener With No History)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![No history state](prototypes/UC-020-003-AF-02-no-history.png)
 *Figure 4: Suggested shortcuts shown to a signed-in listener with no history.*
 
 ### Alternative Flow – AF-03 (View Full Listening History)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Full history navigation](prototypes/UC-020-003-AF-03-full-history.png)
 *Figure 5: Listening history page opened from the Home link.*
 
 ### Exception Flow – EF-01 (History Cannot Be Loaded)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Quick access area falling back to suggested shortcuts when history cannot be retrieved. The prototype stores history locally, so this failure cannot occur yet.*
 
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Preceding Use Cases**:
   - `UC-010-002` (Log In with Email and Password) – Authenticates the listener.
@@ -160,6 +185,7 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/020-home-dashboard/023-recently-played/spec.md` – Requirements FR-001 through FR-011, User Stories 1–3, Edge Cases.
 - `specs/040-music-player/041-playback-controls/spec.md` – FR-014: a play is recorded after 30 seconds or 50% of the track.
@@ -169,5 +195,13 @@ The Home Dashboard renders the quick access area for a signed-in listener.
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Prototype Gap**: History is stored only in the browser in the current prototype, and plays are recorded as soon as a track starts instead of after 30 seconds (see Known Gaps in specs 023 and 041).
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`HomePage.jsx`, `ChartsPage.jsx` and `ExplorePage.jsx` provide the presentation. Some catalog/ranking inputs still use `src/frontend/src/utils/mockData.js`. Live recommendation widgets do not establish that every Home section is backed by an authoritative catalog or calculated platform ranking.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

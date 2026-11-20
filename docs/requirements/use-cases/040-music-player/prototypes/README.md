@@ -1,19 +1,23 @@
 # Prototype and UI Asset Guide – Group 040: Music Player
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and screenshots for **Group 040 – Music Player**.
 
 ---
 
 ## 2. Prototype Directory Organization
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 040 reside directly in this directory:
 `docs/requirements/use-cases/040-music-player/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 $$\text{UC-040-[SEQUENCE]-[flow-indicator]-[description].png}$$
 
@@ -24,6 +28,7 @@ $$\text{UC-040-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 3. Prototype vs. Implementation Distinction
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Implementation Screenshots**: All images in this directory are screenshots of the current frontend prototype, copied from `specs/040-music-player/*/ui/`.
 2. **Current Status**: The prototype simulates audio playback with a timer and runs on demo data. States that depend on real streaming (stream errors, buffering, blocked autoplay, restore after reload) cannot be captured yet and are marked **Pending**.
@@ -31,6 +36,7 @@ $$\text{UC-040-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -80,6 +86,7 @@ $$\text{UC-040-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Relative Markdown Image Path**: Reference images using `prototypes/[filename].png`.
 2. **Pending Assets**: For flows without a visual asset, annotate the section as `[Prototype Pending - To be generated during UI implementation]` instead of adding a fake image.

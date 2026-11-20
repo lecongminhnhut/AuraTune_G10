@@ -1,8 +1,10 @@
 # Functional Group 100: AI Recommendations – Use-Case Documentation
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 5.1. Group Information
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 5.2. Scope
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 5.2.1 Purpose and Objectives
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 100 provides automated music discovery and behavioral listening habit insights. By analyzing historical playback activity and user preference signals, the system assists listeners in discovering relevant open-copyright music, understanding their listening trends, and matching tracks to their current emotional vibe or activity context.
 
 ### 5.2.2 In-Scope Capabilities
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The verified capabilities within Group 100 comprise three distinct subfeatures:
 
 1. **Listening History Analysis (Feature 101)**:
@@ -42,6 +47,7 @@ The verified capabilities within Group 100 comprise three distinct subfeatures:
    - Resilient fallback with friendly empty state and alternative tag suggestion chips when no catalog matches exist.
 
 ### 5.2.3 Out-of-Scope Exclusions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 To maintain strict architectural boundaries, the following capabilities are explicitly excluded from Group 100:
 - **Interactive Conversational AI Dialogue**: Real-time chat, intent parsing, and conversational prompt-based music recommendations belong exclusively to **Group 120 – AI Conversational Agent**.
 - **Keyword & Semantic Search**: Free-form natural language querying and lyric vector search are owned by **Group 030 – Search** (`031`, `032`, `033`).
@@ -51,6 +57,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 - **Custom User-Typed Free-Form Mood Prompts**: Natural language text prompts are not supported in Feature 103 (curated preset chips only).
 
 ### 5.2.4 Dependencies
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Group 010 (Authentication)**: Validates JWT access tokens and supplies the authenticated `user_id` to ensure private data isolation (Decree 13/2023/ND-CP).
 - **Group 020 (Home Dashboard)**: Hosts the visual containers for personalized recommendation feeds and discovery hubs.
 - **Group 040 (Music Player)**: Executes playback when a recommended song or playlist is selected.
@@ -61,6 +68,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 5.3. Related Requirements and Features
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
@@ -71,6 +79,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 5.4. Actors
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -81,6 +90,7 @@ To maintain strict architectural boundaries, the following capabilities are expl
 ---
 
 ## 5.5. Use-Case Diagram
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following Mermaid diagram visualizes the boundary, actors, confirmed use cases, and external relationships for **Group 100 – AI Recommendations**.
 
@@ -129,6 +139,7 @@ flowchart LR
 ```
 
 ### Diagram Legend
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Ovals (`([ ... ])`)**: Confirmed Use Cases.
 - **Solid Arrow (`-->`)**: Direct primary actor invocation.
 - **Dashed Arrow (`-.->`)**: External system dependency or cross-group inclusion (`<<include>>` / `<<extend>>`).
@@ -137,6 +148,7 @@ flowchart LR
 ---
 
 ## 5.6. Use-Case List
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
@@ -147,6 +159,7 @@ flowchart LR
 ---
 
 ## 5.7. Dependencies and Integration
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```
                  +---------------------------+
@@ -179,6 +192,7 @@ flowchart LR
 ---
 
 ## 5.8. Open Issues and Architecture Clarifications
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Vector Storage & Similarity Lookup (`Q-100-01`)**:
    - *Status*: Open architecture decision.
@@ -193,6 +207,7 @@ flowchart LR
 ---
 
 ## 5.9. References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/proposal.md` – Section 6.10: AI-Powered Recommendations
 - `docs/proposal/Auratune_Vision_Document.md` – Feature Group G10 & Section 3.5

@@ -221,3 +221,24 @@
 | POST   | `/ai/search/lyrics`     | Tìm bài hát theo ngữ nghĩa lời bài hát |
 | POST   | `/ai/playlist/generate` | Tạo playlist từ câu mô tả              |
 | GET    | `/ai/health`            | Kiểm tra AI Service còn sống           |
+
+### 2.12. Playlist Management (Feature Group 060)
+
+| Method | Endpoint | Permission | Description |
+|---|---|---|---|
+| GET | `/users/me/playlists` | User | Owned, collaborative and bookmarked playlists |
+| GET | `/playlists` | Public | Public playlist catalog |
+| POST | `/playlists` | User | Create private playlist (`title`, `description`, `coverUrl`) |
+| GET | `/playlists/:id` | Public | Public playlist details; private playlists require owner/collaborator access |
+| PUT / DELETE | `/playlists/:id` | Owner | Update metadata / permanently delete playlist |
+| POST | `/playlists/:id/songs` | Owner or collaborator | Add songs (`songIds`) |
+| DELETE | `/playlists/:id/songs/:songId` | Owner or collaborator | Remove a song |
+| PUT | `/playlists/:id/songs/order` | Owner or collaborator | Replace complete song order (`songIds`) |
+| PUT / DELETE | `/songs/:songId/like` | User | Like / unlike a song and sync Liked Songs |
+| PUT | `/playlists/:id/bookmark` | User | Save a read-only reference to a public playlist |
+| PUT | `/playlists/:id/collaboration` | Owner | Enable/disable collaboration; enabling makes the playlist public, disabling makes it private and revokes members |
+| POST | `/playlists/:id/collaborators` | Owner | Invite an existing AuraTune user by email |
+| DELETE | `/playlists/:id/collaborators/:userId` | Owner | Revoke collaborator access |
+| POST | `/playlists/ai-generate` | User | Generate a transient proposal from a prompt up to 200 characters; backend calls the internal AI service |
+
+All playlist endpoints use the shared JSON envelope. The backend checks authorization for every mutation. Bookmarks reference the source playlist and do not grant edit access.

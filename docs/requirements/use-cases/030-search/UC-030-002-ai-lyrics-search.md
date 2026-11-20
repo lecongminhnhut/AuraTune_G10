@@ -1,8 +1,10 @@
 # UC-030-002 – AI Lyrics Search
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `032-FR-001` through `032-FR-019` |
 | **Related Feature/Spec** | Feature 032: AI Lyrics Search (`specs/030-search/032-ai-lyrics-search/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Khánh Đăng |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Khánh Đăng |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A user searches for a specific song by entering an incomplete or vaguely remembered lyric fragment. The system submits this fragment to an External AI Service (`POST /ai/search/lyrics`) for semantic analysis to find matching songs within the lyric catalog. To ensure resilience, if the AI service times out (after 3 seconds) or returns an HTTP 503 error, the system automatically falls back to a normalized keyword-based lyric search, presenting the results alongside a dismissible banner informing the user of the degraded experience.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user has accessed the AuraTune application and navigated to the Search page (`/search`).
 - The user has selected the dedicated "Theo lời bài hát" (By Lyrics) tab.
@@ -34,12 +39,14 @@ A user searches for a specific song by entering an incomplete or vaguely remembe
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The user enters a lyric fragment containing at least 3 words and no more than 200 characters (after whitespace normalization) and submits the search request (`032-FR-001`).
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Actor:** Navigates to the Search view, selects the "Theo lời bài hát" tab, enters a remembered lyric fragment, and submits the search.
 2. **System:** Trims whitespace and validates that the fragment contains $\ge 3$ words and $\le 200$ characters (`032-FR-014`).
@@ -53,8 +60,10 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Lyric Fragment Boundary Violation
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The user inputs an empty string, or a fragment with $< 3$ words or $> 200$ characters (`032-FR-014`).
 1. **System:** Identifies the input boundary violation client-side.
@@ -63,6 +72,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 - **Continuation:** Resumes at Step 1 of the Basic Flow.
 
 ### AF-02 – No Indexed Lyric Matches
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 5 of the Basic Flow.
 - **Condition:** Neither the AI search nor the keyword fallback yields any relevant songs (`032-FR-005`).
 1. **System:** Identifies a successful query execution but an empty result array.
@@ -71,6 +81,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 - **Continuation:** Resumes at Step 2 of the Basic Flow.
 
 ### AF-03 – Dynamic Result Pagination ("Load More")
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 6 of the Basic Flow.
 - **Condition:** More than 20 matching songs are available, and the user wishes to view more (`032-FR-013`).
 1. **Actor:** Clicks the "Load More" pagination action.
@@ -79,6 +90,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 - **Continuation:** Resumes at Step 6 of the Basic Flow.
 
 ### AF-04 – Concurrent or Duplicate Query Submission
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The user submits a new search while a previous AI or fallback search is still loading, or repeatedly submits the exact same query (`032-FR-018`, `032-FR-019`).
 1. **System:** If the query is an exact duplicate currently in flight, blocks the duplicate submission (`032-FR-018`).
@@ -88,8 +100,10 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – AI Service Unavailable (Automatic Keyword Fallback)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The AI Service returns an `HTTP 503` overload error OR fails to complete the response within a strict 3-second timeout window (`032-FR-006`, `032-FR-008`).
 1. **System:** Intercepts the `503` or timeout exception and identifies it as the defined unavailable-service condition.
@@ -100,6 +114,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 - **Continuation:** Resumes at Step 6 of the Basic Flow.
 
 ### EF-02 – AI Service Rate Limited (HTTP 429)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The external service rejects the request due to excessive rate limits (`HTTP 429`) (`032-FR-018`).
 1. **System:** Identifies the `HTTP 429` error.
@@ -110,19 +125,23 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The user views an accurate list of songs containing lyrics relevant to their remembered fragment.
 - Selecting a result reliably delegates audio playback.
 - If the AI was offline, the user is successfully served keyword-fallback results accompanied by full transparency via a warning banner.
 
 ### Failure
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The system presents a clear error or explicit empty state.
 - No stale or fabricated data is ever presented as current.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance & Resilience**: The strict 3-second timeout boundary is critical. If the AI service fails to respond in 3.00 seconds, the client MUST abort the wait and immediately trigger keyword fallback to preserve the UX (`032-FR-008`).
 - **Data Integrity**: Fallback keyword search MUST only match against normalized lyric text arrays. A song title matching the query but lacking the word in its lyrics MUST NOT be returned in this specific tab (`032-FR-017`).
@@ -130,33 +149,40 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Basic Flow - Lyrics Search Tab Selection
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Lyrics Search Tab Selection](prototypes/UC-030-002-lyrics-search-tab-entry.png)
 **Covered steps:** Basic Flow step 1.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Matching Lyric Results Presentation
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Matching Lyric Results Presentation](prototypes/UC-030-002-lyrics-search-results.png)
 **Covered steps:** Basic Flow step 6.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Multiple Matching Lyrics Across Catalog
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Multiple Matching Lyrics Across Catalog](prototypes/UC-030-002-lyrics-search-multiple-matches.png)
 **Covered steps:** Basic Flow step 6.
 **Prototype type:** Implemented UI
 
 ### Basic Flow - Hover state for Lyric Result
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Hover state for Lyric Result](prototypes/UC-030-002-lyrics-search-track-playback.png)
 **Covered steps:** Basic Flow step 8.
 **Prototype type:** Implemented UI
 
 ### AF-02 - Lyrics Search No Results State
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![Lyrics Search No Results State](prototypes/UC-030-002-lyrics-search-no-results.png)
 **Covered steps:** AF-02 steps 1-2.
 **Prototype type:** Implemented UI
 
 ### EF-01 - AI Search Unavailable Fallback Banner
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 ![AI Search Unavailable Fallback Banner](prototypes/UC-030-002-lyrics-search-fallback-banner.png)
 **Covered steps:** EF-01 steps 1-4.
 **Prototype type:** Implemented UI
@@ -164,6 +190,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Parallel Search Mode**: `UC-030-001` (Search by Metadata) – Primary keyword-based catalog search.
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback) – Triggered when a matching lyric song is clicked.
@@ -171,6 +198,7 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/030-search/032-ai-lyrics-search/spec.md` – Requirements 032-FR-001 through 032-FR-019, User Stories 1–3.
 - `docs/proposal/Auratune_Vision_Document.md` – Section 3.4 (N-02) & Group G03.
@@ -178,5 +206,13 @@ The user enters a lyric fragment containing at least 3 words and no more than 20
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Unified Timeout Rule**: Clarification session 2026-11-01 unified the AI Service timeout threshold to exactly 3 seconds across all AI features (overriding the initial 5s draft).
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`src/frontend/src/pages/Search/SearchPage.jsx` calls `utils/searchEngine.js`, which uses local catalog matching and mock recommendations. The required backend metadata/lyrics/vector search behavior is not established by that UI. Search history and live semantic results need separate acceptance evidence.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

@@ -1,8 +1,10 @@
 # UC-020-002 – Stream Recommended Music from Home
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -14,18 +16,21 @@
 | **Related FR IDs** | `022-FR-001`, `022-FR-002`, `022-FR-003`, `022-FR-004`, `022-FR-005`, `022-FR-006`, `022-FR-007`, `022-FR-008`, `022-FR-009`, `022-FR-010`, `022-FR-011`, `051-FR-013` |
 | **Related Feature/Spec** | Feature 022: Recommended Content (`specs/020-home-dashboard/022-recommended-content/spec.md`) |
 | **Status** | Draft |
-| **Writer** | Nguyễn Thanh Huy |
-| **Reviewer** | TBD |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Nguyễn Thanh Huy |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 A listener or guest discovers recommended music in a dedicated section of the Home Dashboard and starts listening in one interaction. Signed-in listeners see recommended songs when recommendations are available, and all visitors see suggested playlists. Group 020 owns the presentation, playback entry points, and fallback display; generating and ranking recommendations belongs to Group 100.
 
 ---
 
 ## 3. Preconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The actor has opened the Home Dashboard (`UC-020-001`).
 - The catalog contains at least one available playlist or track that can be shown in the section (`022-FR-008`).
@@ -34,12 +39,14 @@ A listener or guest discovers recommended music in a dedicated section of the Ho
 ---
 
 ## 4. Trigger
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Home Dashboard renders the recommended content section, shown as "Có thể bạn sẽ thích" when recommendations are available.
 
 ---
 
 ## 5. Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **System:** Requests recommended content for the actor and shows a loading state in the section (`022-FR-009`).
 2. **System:** Shows up to 5 recommended items in the dedicated section: recommended songs for a signed-in listener when available, and suggested playlists for every visitor (`022-FR-001`, `022-FR-002`, `022-FR-003`, `022-FR-004`).
@@ -54,21 +61,25 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ---
 
 ## 6. Alternative Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Open a Recommended Item
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 6 of the Basic Flow.
 - **Condition:** The actor selects the card itself instead of its play action (`022-FR-006`).
 1. **Actor:** Selects the recommended card.
 2. **System:** Opens the destination page of the item, for example the playlist details page.
-- **Continuation:** Use case ends successfully; the actor continues in `UC-060-002` (View Playlist Details).
+- **Continuation:** Use case ends successfully; the actor continues in `UC-060-003` (View Playlist Details).
 
 ### AF-02 – Guest Suggestions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 2 of the Basic Flow.
 - **Condition:** The actor is not signed in (`022-FR-003`).
 1. **System:** Shows public suggested playlists with no personalized wording or personal data.
 - **Continuation:** Resumes at Step 4 of the Basic Flow.
 
 ### AF-03 – Explore More Recommendations
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 4 of the Basic Flow.
 - **Condition:** The actor wants more content than the section shows (`022-FR-010`).
 1. **Actor:** Selects "Xem tất cả".
@@ -76,6 +87,7 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 - **Continuation:** Use case ends successfully.
 
 ### AF-04 – Playlist Longer Than the Queue Limit
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** The playlist has more than 50 available tracks (`051-FR-013`).
 1. **System:** Sets only the first 50 available tracks, in playlist order, as the queue.
@@ -85,8 +97,10 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ---
 
 ## 7. Exception Flows
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Recommendations Unavailable
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** AI recommendations are unavailable, the result is empty, or the listener is new and has no history (`022-FR-007`).
 1. **System:** Changes the section title to popular content ("Phổ biến trên AuraTune").
@@ -96,12 +110,14 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 - **Continuation:** Resumes at Step 7 of the Basic Flow; use case completes in fallback mode.
 
 ### EF-02 – Playlist Has Nothing Playable
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 7 of the Basic Flow.
 - **Condition:** All tracks in the selected playlist are unavailable.
 1. **System:** Shows a message that there is nothing to play and does not change current playback.
 - **Continuation:** Resumes at Step 4 of the Basic Flow.
 
 ### EF-03 – Slow Response
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting step:** Step 1 of the Basic Flow.
 - **Condition:** Recommendations take longer than expected to load.
 1. **System:** Keeps the loading state in the section and keeps the rest of Home usable (`022-FR-009`).
@@ -110,19 +126,23 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ---
 
 ## 8. Postconditions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The actor sees up to 5 available recommended items, and selecting one plays it or opens its page in 1 interaction.
 - When playback starts, the queue contains the playlist's available tracks, up to 50.
 - Guests never see personalized wording or personal data.
 
 ### Failure
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The section shows popular fallback content with a short notice, and the rest of Home is unaffected.
 - No playback change occurs when a selected playlist has nothing playable.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Performance**: The section must not delay the rest of the Home Dashboard; it loads independently (`022-FR-009`).
 - **Privacy**: Personalized content is shown only to the signed-in listener it belongs to.
@@ -133,10 +153,12 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ---
 
 ## 10. Prototype and Screenshots
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 > **Asset type**: Implementation screenshots captured from the current frontend prototype, which runs on demo data.
 
 ### Basic Flow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Recommended content overview](prototypes/UC-020-002-basic-flow.png)
 *Figure 1: Hero mix and the recommended content section on Home (Step 2).*
@@ -151,15 +173,18 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 *Figure 4: Curated playlist section shown further down Home, also using the playback entry point.*
 
 ### Alternative Flow – AF-01 (Open a Recommended Item)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Playlist detail navigation](prototypes/UC-020-002-AF-01-playlist-detail.png)
 *Figure 5: Playlist details page opened from a recommended card.*
 
 ### Alternative Flow – AF-04 (Playlist Longer Than the Queue Limit)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 *[Prototype Pending - To be generated during UI implementation]*  
 *Planned Interface: Notice that only the first 50 tracks were added to the queue. The current prototype does not limit the queue.*
 
 ### Exception Flow – EF-01 (Recommendations Unavailable)
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![AI fallback state](prototypes/UC-020-002-EF-01-ai-fallback.png)
 *Figure 6: Section switched to popular content with a short notice when AI recommendations are unavailable.*
@@ -167,16 +192,18 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ---
 
 ## 11. Related Use Cases
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Context Container**: `UC-020-001` (Browse Home Dashboard) – Hosts this section.
 - **Recommendation Source**: `UC-100-002` (Receive Personalized Song Recommendations) – Supplies the recommended songs.
 - **Delegated Playback**: `UC-040-001` (Control Audio Playback).
-- **Target Detail Navigation**: `UC-060-002` (View Playlist Details).
+- **Target Detail Navigation**: `UC-060-003` (View Playlist Details).
 - **Queue Rules**: `UC-050-001` (View Playback Queue) – Shows the queue set here; the 50-track limit belongs to Group 050.
 
 ---
 
 ## 12. Source References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `specs/020-home-dashboard/022-recommended-content/spec.md` – Requirements FR-001 through FR-011, User Stories 1–3, Edge Cases.
 - `specs/100-ai-recommendations/102-personalized-recommendations/spec.md` – Recommendation logic and fallback policy.
@@ -188,7 +215,15 @@ The Home Dashboard renders the recommended content section, shown as "Có thể 
 ---
 
 ## 13. Notes and Open Questions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Prototype Gap**: The current prototype shows recommended playlists only; recommended songs are not displayed yet, and recommendations are demo data.
 - **Fallback Trigger**: The same fallback applies to an AI outage, an empty result, and a new listener with no history (022 Edge Cases).
 - **Collections Over 50 Tracks**: No specification states what happens when a started collection has more than 50 tracks. AF-04 applies the 052 edge case for batch additions: only the tracks that fit are added, and the listener sees how many. This needs to be confirmed as a clarification of spec 051.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`HomePage.jsx`, `ChartsPage.jsx` and `ExplorePage.jsx` provide the presentation. Some catalog/ranking inputs still use `src/frontend/src/utils/mockData.js`. Live recommendation widgets do not establish that every Home section is backed by an authoritative catalog or calculated platform ranking.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

@@ -1,12 +1,14 @@
 ﻿# Use-Case Inventory – 060 Playlist Management
 
 ## 1. Purpose
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This inventory lists all approved and candidate use cases within 060. Every use case shown in the group's Use-Case Model must be listed here and must have a corresponding specification file.
 
 ## 2. Inventory
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Feature ID | Writer | Reviewer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Feature ID | Original Writer | Reviewer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|---|
 | UC-060-001 | View Playlists in Library | Listener | None | 061-FR-004, 061-FR-010, 062-FR-002 | 061-playlist-crud | Mai Đăng Khoa | [FULL NAME] | Draft | [UC specification](./UC-060-001-view-playlists-in-library.md) |
 | UC-060-002 | Create Playlist | Listener | None | 061-FR-001, 061-FR-002, 061-FR-003, 061-FR-009 | 061-playlist-crud | Mai Đăng Khoa | [FULL NAME] | Draft | [UC specification](./UC-060-002-create-playlist.md) |
@@ -26,6 +28,7 @@ This inventory lists all approved and candidate use cases within 060. Every use 
 | UC-060-016 | Generate AI Playlist | Listener | AI Recommendation Service | 064-FR-001 through 064-FR-010 | 064-ai-playlist-generation | Mai Đăng Khoa | [FULL NAME] | Draft | [UC specification](./UC-060-016-generate-ai-playlist.md) |
 
 ## 3. Status Definitions
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Meaning |
 |---|---|
@@ -36,6 +39,7 @@ This inventory lists all approved and candidate use cases within 060. Every use 
 | Approved | Group owner/reviewer accepted the specification and its traceability. |
 
 ## 4. Coverage Check
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 FR IDs in this inventory are prefixed with their feature ID to distinguish locally numbered requirements such as `FR-001` across different Spec Kit features.
 
@@ -90,6 +94,7 @@ FR IDs in this inventory are prefixed with their feature ID to distinguish local
 | 064-FR-010 | Provide a manual creation fallback if AI service fails | UC-060-016 | Covered | |
 
 ## 5. Review Checklist
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [x] Every UC currently shown in the diagram is listed in this inventory.
 - [x] Every inventory entry has a corresponding specification file (verify links before review).

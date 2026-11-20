@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 020 – Home Dashboard
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document serves as the official tracking registry for all Use Cases belonging to **Group 020 – Home Dashboard**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), assigned owners, and authoring statuses for PA3.
 
@@ -15,8 +17,9 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Confirmed Use-Case Inventory
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-020-001** | Browse Home Dashboard | Guest / Listener | None | `021-FR-001` to `021-FR-013` | `021-home-content-layout` | Nguyễn Thanh Huy | **Draft** | [`UC-020-001-browse-home-dashboard.md`](./UC-020-001-browse-home-dashboard.md) |
 | **UC-020-002** | Stream Recommended Music from Home | Listener / Guest | None | `022-FR-001` to `022-FR-011`, `051-FR-013` | `022-recommended-content` | Nguyễn Thanh Huy | **Draft** | [`UC-020-002-stream-recommended-music-from-home.md`](./UC-020-002-stream-recommended-music-from-home.md) |
@@ -27,6 +30,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -40,6 +44,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Unconfirmed / Out-of-Scope Candidates
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following candidate use cases were analyzed during requirements engineering and determined to be out-of-scope or covered elsewhere:
 
@@ -51,6 +56,7 @@ The following candidate use cases were analyzed during requirements engineering 
 ---
 
 ## 5. Traceability Matrix
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID | Test Scenarios in Spec Kit |
 |---|---|---|---|

@@ -1,8 +1,10 @@
 # Functional Group 050: Queue Management – Use-Case Documentation
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 5.1. Group Information
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 5.2. Scope
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 5.2.1 Purpose and Objectives
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 050 lets guests and listeners shape a listening session without interrupting the track that is playing. The queue is kept on the client in local browser storage, survives a page reload, and holds at most 50 tracks.
 
 ### 5.2.2 In-Scope Capabilities
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The verified capabilities within Group 050 comprise four subfeatures:
 
 1. **View Queue (Feature 051)**:
@@ -43,11 +48,13 @@ The verified capabilities within Group 050 comprise four subfeatures:
    - Play Next takes priority over shuffle for the next track.
 
 ### 5.2.3 Out-of-Scope Exclusions
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Audio Playback, Shuffle, and Repeat**: Owned by **Group 040 – Music Player**.
 - **Playlist Creation and Editing Rules**: Owned by **Group 060 – Playlist Management**; Group 050 only starts the save action.
 - **Server-Side Queue Sync Across Devices**: Not supported; the API Contract defines no queue endpoints.
 
 ### 5.2.4 Dependencies
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Group 010 (Authentication)**: Required only for Save as Playlist.
 - **Group 040 (Music Player)**: Plays the tracks in queue order and applies shuffle and repeat rules.
 - **Group 060 (Playlist Management)**: Creates the playlist in `UC-050-007`.
@@ -56,6 +63,7 @@ The verified capabilities within Group 050 comprise four subfeatures:
 ---
 
 ## 5.3. Related Requirements and Features
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Path |
 |---|---|---|---|
@@ -67,6 +75,7 @@ The verified capabilities within Group 050 comprise four subfeatures:
 ---
 
 ## 5.4. Actors
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -76,6 +85,7 @@ The verified capabilities within Group 050 comprise four subfeatures:
 ---
 
 ## 5.5. Use-Case Diagram
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The following Mermaid diagram visualizes the boundary, actors, confirmed use cases, and relationships for **Group 050 – Queue Management**.
 
@@ -130,6 +140,7 @@ flowchart LR
 ```
 
 ### Diagram Legend
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Rounded nodes (`([ ... ])`)**: Confirmed Use Cases.
 - **Solid Arrow (`-->`)**: Direct primary actor invocation. Reorder, remove, clear, and save are started from inside the queue panel, so they extend `UC-050-001`.
 - **Dashed Arrow (`-.->`)**: `<<extend>>` relationship or cross-group dependency.
@@ -138,6 +149,7 @@ flowchart LR
 ---
 
 ## 5.6. Use-Case List
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification File |
 |---|---|---|---|---|
@@ -152,6 +164,7 @@ flowchart LR
 ---
 
 ## 5.7. Dependencies and Integration
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```
 +--------------------+        +-------------------------+        +--------------------+
@@ -178,6 +191,7 @@ flowchart LR
 ---
 
 ## 5.8. Open Issues and Architecture Clarifications
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Single-Song Start (`Q-050-2`)**:
    - *Status*: Open.
@@ -195,6 +209,7 @@ flowchart LR
 ---
 
 ## 5.9. References
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - `docs/proposal/proposal.md` – Section 6.5: Queue Management
 - `docs/proposal/Auratune_Vision_Document.md` – Feature Group G05

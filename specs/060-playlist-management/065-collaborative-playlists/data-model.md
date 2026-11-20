@@ -7,8 +7,8 @@
 | Field | Meaning / constraints |
 |---|---|
 | `playlist_id` | Existing playlist identity. |
-| `is_collaborative` | Spec requires boolean; absent from reference ER and requires migration approval. |
-| `status` | Existing Public/Private state. Collaborative visibility transition must be specified so `status` and collaboration state cannot conflict. |
+| `is_collaborative` | Boolean default false. Enabling collaboration sets the playlist public; disabling makes it private and removes collaborator memberships. |
+| `status` | `Public` or `Private`; collaboration transitions update status and flag together in the owner operation. |
 
 ## PlaylistSharedUser
 
@@ -16,8 +16,8 @@
 |---|---|
 | `playlist_id` | Shared playlist identity. |
 | `shared_with_user_id` | Registered invited collaborator identity; unique with playlist ID. |
-| `role` | Owner/Collaborator appears in spec entity, but owner-row versus derived owner is unresolved. |
-| `joined_at` | Membership timestamp in spec entity; actual schema must be verified. |
+| `role` | Owner is derived from `playlists.user_id_creator`; stored membership rows represent collaborators only. |
+| `joined_at` | Timestamp recorded when the collaborator is added. |
 
 ## PlaylistSong contributor
 

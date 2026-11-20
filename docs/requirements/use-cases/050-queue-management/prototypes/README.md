@@ -1,19 +1,23 @@
 # Prototype and UI Asset Guide – Group 050: Queue Management
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Purpose
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This document defines the organization, conventions, and status of user interface prototypes and screenshots for **Group 050 – Queue Management**.
 
 ---
 
 ## 2. Prototype Directory Organization
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All graphical assets for Group 050 reside directly in this directory:
 `docs/requirements/use-cases/050-queue-management/prototypes/`
 
 ### Asset Naming Convention
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 $$\text{UC-050-[SEQUENCE]-[flow-indicator]-[description].png}$$
 
@@ -24,6 +28,7 @@ $$\text{UC-050-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 3. Prototype vs. Implementation Distinction
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Implementation Screenshots**: Images for `UC-050-001` to `UC-050-006` are screenshots of the current frontend prototype, copied from `specs/050-queue-management/*/ui/`. The prototype runs on demo data.
 2. **Conceptual Wireframes**: Images for `UC-050-007` are grayscale wireframes created for this use case. They carry a "WIREFRAME · NOT IMPLEMENTED" label because Save as Playlist does not exist in the frontend yet.
@@ -32,6 +37,7 @@ $$\text{UC-050-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 4. Prototype Inventory and Mapping
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Use Case ID | Flow / Step | Image File | Source Spec Asset | Status | Description |
 |---|---|---|---|---|---|
@@ -68,6 +74,7 @@ $$\text{UC-050-[SEQUENCE]-[flow-indicator]-[description].png}$$
 ---
 
 ## 5. Guidelines for Linking Prototypes in Use-Case Specifications
+Performed by: Nguyễn Thanh Huy | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Relative Markdown Image Path**: Reference images using `prototypes/[filename].png`.
 2. **Pending Assets**: For flows without a visual asset, annotate the section as `[Prototype Pending - To be generated during UI implementation]` instead of adding a fake image.

@@ -1,8 +1,10 @@
 # UC-120-004 – Clear Conversation History
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Metadata
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -16,17 +18,19 @@
 | **Related Feature/Spec** | Feature 121: Conversational Interface (`specs/120-ai-conversational-agent/121-conversational-interface/spec.md`) |
 | **Status** | Draft |
 | **Author** | Lê Công Minh Nhựt |
-| **Reviewer** | TBD |
+| Reviewer | Group 10 team |
 
 ---
 
 ## 2. Description
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 An authenticated listener clears the visual log of the active AI conversational terminal window by entering the `/clear` built-in command. The system immediately resets the terminal display buffer to its initial welcome banner state, purging all prior user messages, assistant responses, reasoning blocks, and tool execution logs from the active view, while preserving the recent prompt command history buffer for arrow key recall and leaving ongoing music playback completely unaffected.
 
 ---
 
 ## 3. Preconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The user is authenticated as a valid `Listener` (`ACT-02`) with an active session (`121-FR-001`).
 - The AI Conversational terminal panel (`AIHostChat.jsx`) is open and currently displaying at least one dialogue interaction or command output.
@@ -35,12 +39,14 @@ An authenticated listener clears the visual log of the active AI conversational 
 ---
 
 ## 4. Trigger
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The listener types `/clear` into the terminal prompt input field and presses `Enter` (or clicks the send button).
 
 ---
 
 ## 5. Basic Flow
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Step | Actor / System | Action |
 |:---:|:---:|---|
@@ -56,8 +62,10 @@ The listener types `/clear` into the terminal prompt input field and presses `En
 ---
 
 ## 6. Alternative Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Clearing via Command Recalled from History
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 1 of the Basic Flow.
 - **Condition:** The listener has previously typed `/clear` in the current session.
 1. **Actor:** Navigates the history buffer using the `ArrowUp` key until `/clear` appears in the prompt field.
@@ -65,6 +73,7 @@ The listener types `/clear` into the terminal prompt input field and presses `En
 - **Outcome:** Resumes at Step 3 of the Basic Flow.
 
 ### AF-02 – Clearing While Agent is Actively Running
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 1 of the Basic Flow.
 - **Condition:** The listener attempts to clear the terminal while the agent is currently processing a prompt (`running === true`).
 1. **Actor:** Focuses on the prompt input and attempts to submit `/clear`.
@@ -77,8 +86,10 @@ The listener types `/clear` into the terminal prompt input field and presses `En
 ---
 
 ## 7. Exception Flows
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EF-01 – Unauthenticated Visitor Attempt
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Starting Step:** Step 1 of the Basic Flow.
 - **Condition:** The user session has expired or is invalid.
 1. **System:** Closes the agent interface and displays an authentication modal.
@@ -88,19 +99,23 @@ The listener types `/clear` into the terminal prompt input field and presses `En
 ---
 
 ## 8. Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### Success Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - The conversational scroll view is reset to display exclusively the initial welcome banner and suggestion chips.
 - Up to 30 past prompt entries remain preserved in client memory, accessible via `ArrowUp` / `ArrowDown` navigation.
 - No network requests are dispatched to external AI service providers or backend endpoints.
 - Current audio playback, volume level, and play queue remain completely intact and undisturbed.
 
 ### Failure Postconditions
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - If submission is blocked during an active run, existing conversation entries remain on screen without data loss.
 
 ---
 
 ## 9. Special Requirements
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Client-Side Latency**: The clear operation must execute strictly in memory with zero noticeable rendering delay (< 16 ms / 1 animation frame).
 - **Session Privacy**: Clearing removes sensitive or transient prompts from the immediate visual display, protecting listener privacy in public viewing environments.
@@ -109,6 +124,7 @@ The listener types `/clear` into the terminal prompt input field and presses `En
 ---
 
 ## 10. UI References
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Implementation Component**: `src/frontend/src/components/chat/AIHostChat.jsx` (lines 163–168)
 - **Related Screenshots**:
@@ -119,7 +135,15 @@ The listener types `/clear` into the terminal prompt input field and presses `En
 ---
 
 ## 11. Traceability
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Functional Requirements**: `121-FR-003`, `121-FR-008`
 - **Spec Kit Specification**: `specs/120-ai-conversational-agent/121-conversational-interface/spec.md` (User Story 4)
 - **Parent Use Case**: `UC-120-001` (Converse with AI Music Host)
+
+## PA4 implementation evidence and acceptance record
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Chat UI, Express services and Python Gemini/SSE integration exist. Tests include fixture and fallback paths. Verify the actual live service, account isolation and action result before claiming the corresponding success postcondition; mocked/fallback responses do not demonstrate every normal AI path.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

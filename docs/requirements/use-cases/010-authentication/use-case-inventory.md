@@ -1,8 +1,10 @@
 # Use-Case Inventory: Functional Group 010 – Authentication
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Inventory Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 This document serves as the official tracking registry for all Use Cases belonging to **Group 010 – Authentication**. It establishes end-to-end traceability between Spec Kit features, Functional Requirements (FRs), and authoring statuses for PA3.
 
 - **Functional Group**: 010 – Authentication
@@ -13,8 +15,9 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 2. Confirmed Use-Case Inventory
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Assigned Writer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Related Feature | Original Assigned Writer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|
 | **UC-010-001** | Register with Email | Visitor | None | `FR-011-001`, `002`, `003`, `010` | `011` | Mai Đăng Khoa | **In Review** | [./UC-010-001-register-with-email.md](./UC-010-001-register-with-email.md) |
 | **UC-010-002** | Login with Email | Visitor | None | `FR-011-004`, `009` | `011` | Mai Đăng Khoa | **In Review** | [./UC-010-002-login-with-email.md](./UC-010-002-login-with-email.md) |
@@ -29,6 +32,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 3. Status Definitions and Workflow
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Definition |
 |---|---|
@@ -40,6 +44,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 4. Traceability Matrix
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature Specification | Verified FR IDs | Mapped Use Case ID |
 |---|---|---|
@@ -56,6 +61,7 @@ This document serves as the official tracking registry for all Use Cases belongi
 ---
 
 ## 5. Review Checklist
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [x] Every UC in the diagram is listed in this inventory.
 - [x] Every inventory entry has a corresponding specification file.

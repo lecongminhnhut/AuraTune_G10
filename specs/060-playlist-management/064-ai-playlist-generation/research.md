@@ -11,7 +11,7 @@
 
 ### AI boundary
 - **Finding**: Shared API docs list internal `POST /ai/playlist/generate`; frontend must not call `/ai/*`. Architecture states Python service request/response and deployment details need confirmation.
-- **Decision**: Frontend calls an approved public backend endpoint; backend alone calls AI service. Route and schemas remain approval gates.
+- **Decision**: Frontend calls `POST /api/v1/playlists/ai-generate`; backend alone calls the internal service using `X-Internal-Secret`, a 2.5 second default timeout, and the shared unavailable mapping.
 
 ### Proposal and persistence
 - **Finding**: Proposal is transient; 064 requires 10–20 returned tracks, reasons, edit/remove/reorder, and save as standard private playlist. 061 creates playlists and 062 manages memberships.
@@ -27,3 +27,7 @@
 - Confirm source and meaning of playable/restricted status and how to ensure 10–20 results.
 - Define atomicity/compensation if playlist creation succeeds but track insertion fails.
 - Confirm integration and service ownership with 030/100 and 061/062.
+
+## Implementation Note
+
+The current AI service catalog is a ten-track development fixture. It returns curated keyword-based suggestions with a rationale; it does not connect to a production vector index. The API boundary, 10-track minimum, hydration and restricted-track filtering are implemented, but FR-064-008's production semantic/vector retrieval remains dependent on the catalog/vector service integration.
