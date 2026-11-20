@@ -1,4 +1,5 @@
 # Prototype Index – 010 Authentication
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This file tracks the prototype and screenshot assets used by the group's Use-Case Specifications.
 
@@ -11,6 +12,7 @@ This file tracks the prototype and screenshot assets used by the group's Use-Cas
 | P-010-005 | UC-010-002 | AF-02 | Account Locked | [../../../../../specs/010-authentication/011-local-authentication/ui/10-login-account-locked.png](../../../../../specs/010-authentication/011-local-authentication/ui/10-login-account-locked.png) | Implemented UI | Reused from specs/011 |
 
 ## Asset Rules
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Use descriptive filenames that include the UC ID and flow identifier.
 - Keep image files in this directory unless the group has an agreed shared-asset convention.

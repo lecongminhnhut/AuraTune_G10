@@ -1,8 +1,10 @@
 # Functional Group 010: Authentication – Use-Case Documentation
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ---
 
 ## 1. Group Information
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Attribute | Details |
 |---|---|
@@ -16,11 +18,14 @@
 ---
 
 ## 2. Scope
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 2.1 Purpose and Objectives
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 Functional Group 010 is responsible for the entry point of the AuraTune platform. It ensures that only authorized users can access personalized data while providing a frictionless onboarding experience. It handles account creation, credential verification, social login integration, and secure session maintenance across multiple devices.
 
 ### 2.2 In-Scope Capabilities
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 The verified capabilities within Group 010 comprise:
 1. **Local Authentication (Feature 011)**:
    - Email-based registration with password complexity enforcement.
@@ -36,6 +41,7 @@ The verified capabilities within Group 010 comprise:
    - Global logout (revoke all sessions) and active session monitoring.
 
 ### 2.3 Out-of-Scope Exclusions
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Two-Factor Authentication (2FA)**: Reserved for future security enhancements.
 - **User Profile Management**: Editing display names or avatars after registration is owned by **Group 090**.
 - **Admin Dashboard UI**: The visual management of users is owned by **Group 110**.
@@ -43,6 +49,7 @@ The verified capabilities within Group 010 comprise:
 ---
 
 ## 3. Requirement and Feature Traceability
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Feature ID | Feature Name | Related FR IDs | Spec Kit Specification |
 |---|---|---|---|
@@ -53,6 +60,7 @@ The verified capabilities within Group 010 comprise:
 ---
 
 ## 4. Actors
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Actor | Actor Type | Description | Related Use Cases |
 |---|---|---|---|
@@ -63,6 +71,7 @@ The verified capabilities within Group 010 comprise:
 ---
 
 ## 5. Use-Case Diagram
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ```mermaid
 flowchart LR
@@ -110,6 +119,7 @@ flowchart LR
 ```
 
 ### Diagram Legend
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - **Ovals**: Confirmed Use Cases.
 - **Solid Arrow**: Primary actor invocation.
 - **Dashed Arrow**: External system interaction.
@@ -117,6 +127,7 @@ flowchart LR
 ---
 
 ## 6. Use-Case Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Use-Case Name | Primary Actor | Related FRs | Specification |
 |---|---|---|---|---|
@@ -133,6 +144,7 @@ flowchart LR
 ---
 
 ## 7. Prototype Summary
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | UC ID | Basic Flow Prototype | Alternative Flow Prototypes | Notes |
 |---|---|---|---|
@@ -144,12 +156,14 @@ flowchart LR
 ---
 
 ## 8. Open Issues and Architecture Clarifications
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 1. **Multi-Factor Authentication (MFA)**: Post-MVP consideration for Group 010.
 2. **Session Limit Policy**: Limit of 5 concurrent sessions is enforced by auto-revocation of the oldest entry (`FR-013-012`).
 
 ---
 
 ## 9. References
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 - `docs/proposal/Auratune_Vision_Document.md`
 - `docs/requirements/use-case-model.md`
 - `specs/010-authentication/README.md`

@@ -1,12 +1,15 @@
 # Use-Case Inventory – 070 Listening History
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Purpose
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This inventory lists the approved use cases within 070. Every use case shown in the group's Use-Case Model must be listed here and must have a corresponding specification file.
 
 ## 2. Inventory
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Feature ID | Writer | Reviewer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Feature ID | Original Writer | Reviewer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|---|
 | UC-070-001 | Record Track Play Event | Player / System | None | `071-FR-001..003`, `071-FR-010` | 071 | Mai Đăng Khoa | [FULL NAME] | Draft | [./UC-070-001-record-track-play-event.md](./UC-070-001-record-track-play-event.md) |
 | UC-070-002 | View Listening History | Listener | None | `071-FR-004..007`, `071-FR-009`, `071-FR-011` | 071 | Mai Đăng Khoa | [FULL NAME] | Draft | [./UC-070-002-view-listening-history.md](./UC-070-002-view-listening-history.md) |
@@ -16,6 +19,7 @@ This inventory lists the approved use cases within 070. Every use case shown in 
 | UC-070-007 | Purge Expired History | System | None | `071-FR-012` | 071 | Mai Đăng Khoa | [FULL NAME] | Draft | [./UC-070-007-purge-expired-history.md](./UC-070-007-purge-expired-history.md) |
 
 ## 3. Status Definitions
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Meaning |
 |---|---|
@@ -26,6 +30,7 @@ This inventory lists the approved use cases within 070. Every use case shown in 
 | Approved | Group owner/reviewer accepted the specification and its traceability. |
 
 ## 4. Coverage Check
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Coverage is mapped to the requirements in the three linked `spec.md` files. Note that 071 uses non-sequential FR IDs and includes FR-013.
 
@@ -63,6 +68,7 @@ Coverage is mapped to the requirements in the three linked `spec.md` files. Note
 | 073-FR-009 | Show top genres and group the rest as Other. | UC-070-006 | Covered | |
 | 073-FR-010 | Rank top ten tracks and allow immediate playback. | UC-070-006 | Covered | |
 ## 5. Review Checklist
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [x] Every UC in the diagram is listed in this inventory.
 - [x] Every inventory entry has a corresponding specification file.
@@ -71,3 +77,12 @@ Coverage is mapped to the requirements in the three linked `spec.md` files. Note
 - [x] Feature IDs and Spec Kit paths are valid.
 - [ ] Reviewer names are still placeholders and must be assigned.
 - [ ] Reconcile Draft statuses with the actual specification/prototype review state.
+
+## PA4 catalog additions
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+These existing model/Vision IDs now have Draft specifications. They supplement the original inventory; they are not approved implementation.
+
+| UC ID | Goal | Source | Status | Specification |
+| --- | --- | --- | --- | --- |
+| UC-070-003 | Delete History Record | FR-070-003 (Vision); PA4-D04 | Draft; pending review | [Specification](./UC-070-003-delete-history-record.md) |
