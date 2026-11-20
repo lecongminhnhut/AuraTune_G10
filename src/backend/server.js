@@ -5,6 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import mediaRoutes from './routes/mediaRoutes.js';
 import songRoutes from './routes/songRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
@@ -62,6 +63,7 @@ app.get('/api/health', (req, res) => {
 
 // Mount Feature 010 Auth Routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/media', mediaRoutes);
 // Group 040 Music Player: song metadata & audio stream
 app.use('/api/v1/songs', songRoutes);
 // Group 120 AI Conversational Agent: Feature 121
