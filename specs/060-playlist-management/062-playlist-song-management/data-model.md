@@ -9,8 +9,8 @@
 | `playlist_id` | Parent playlist identity. |
 | `song_id` | Song identity; composite key with playlist prevents duplicate membership. |
 | `added_at` | Association creation timestamp in reference schema. |
-| `sort_order` / position | Required by reorder behavior but absent from reference ER; exact column/type/order semantics require approval. |
-| `added_by_user_id` | Required to display collaborator attribution by 065; absent from reference ER and requires shared schema approval. |
+| `sort_order` | Non-negative integer persisted with a unique `(playlist_id, sort_order)` index. Reorder writes the complete ordered song ID list; later request wins. |
+| `added_by_user_id` | Nullable user reference recording the member who added the track; retained as null if that user is deleted. |
 
 ## UserLikedSong
 
@@ -24,6 +24,6 @@
 
 - A `(playlist_id,song_id)` association exists at most once.
 - Membership changes require owner or active collaborator authorization as defined by 065.
-- Reorder persists a complete valid playlist ordering under the approved conflict policy.
-- Count and duration remain consistent with membership; choose derived reads or atomic persisted aggregates after schema review.
+- Reorder persists a complete valid playlist ordering. Requests are serialized by the backend operation; concurrent complete-order writes use last-write-wins.
+- Count and duration are derived from active song memberships on reads, avoiding stale stored aggregates.
 - Like/unlike changes `user_liked_songs` and its library projection consistently; exact Liked Songs playlist representation is unresolved.

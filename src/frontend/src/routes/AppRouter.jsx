@@ -18,6 +18,7 @@ import StudioPage from '../pages/Studio/StudioPage.jsx'
 import AdminPage from '../pages/Admin/AdminPage.jsx'
 import { NotFound } from '../components/common/ui.jsx'
 import { useLocation } from '../utils/navigation.jsx'
+import { decodeArtistRouteId } from '../utils/artistRoute.js'
 
 const routes = [
   { pattern: /^\/$/, render: () => <HomePage /> },
@@ -38,7 +39,7 @@ const routes = [
   { pattern: /^\/admin$/, render: () => <AdminPage /> },
   { pattern: /^\/playlist\/([^/]+)$/, render: ([id]) => <PlaylistDetailPage key={id} playlistId={decodeURIComponent(id)} /> },
   { pattern: /^\/album\/([^/]+)$/, render: ([id]) => <AlbumPage key={id} albumId={decodeURIComponent(id)} /> },
-  { pattern: /^\/artist\/([^/]+)$/, render: ([id]) => <ArtistPage key={id} artistId={decodeURIComponent(id)} /> },
+  { pattern: /^\/artist\/([^/]+)$/, render: ([id]) => <ArtistPage key={id} artistId={decodeArtistRouteId(id)} /> },
 ]
 
 export default function AppRouter() {

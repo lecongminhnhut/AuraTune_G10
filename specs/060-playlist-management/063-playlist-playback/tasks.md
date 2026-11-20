@@ -10,13 +10,13 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Inspect player, queue, playlist card/detail actions, and existing notification APIs in `src/frontend/src/context/PlayerContext.jsx`, `src/frontend/src/hooks/useMockPlayer.js`, and relevant UI files.
-- [ ] T002 [P] Confirm feature 040/050 public interfaces and record the agreed method/context shape in `specs/060-playlist-management/063-playlist-playback/contracts/playlist-playback.md`.
+- [X] T001 Inspect player, queue, playlist card/detail actions, and notification APIs in `src/frontend/src/context/PlayerContext.jsx`, `src/frontend/src/hooks/useAudioPlayer.js`, and relevant UI files.
+- [X] T002 [P] Confirm feature 040/050 public interfaces and record the agreed method/context shape in `specs/060-playlist-management/063-playlist-playback/contracts/playlist-playback.md`.
 
 ## Phase 2: Foundational Player/Queue Contract
 
-- [ ] T003 Confirm the source playlist metadata and unavailable-track representation with 040/050 and update `specs/060-playlist-management/063-playlist-playback/data-model.md`.
-- [ ] T004 Map existing player queue methods to the required actions without adding a parallel queue abstraction in `src/frontend/src/context/PlayerContext.jsx`.
+- [X] T003 Confirm the source playlist metadata and unavailable-track representation with 040/050 and update `specs/060-playlist-management/063-playlist-playback/data-model.md`.
+- [X] T004 Map existing player queue methods to the required actions without adding a parallel queue abstraction in `src/frontend/src/context/PlayerContext.jsx`.
 
 ## Phase 3: User Story 1 - Full Playlist Playback (Priority: P1)
 
@@ -24,10 +24,10 @@
 
 **Independent Test**: Play a populated playlist and verify ordered queue replacement, first song active, then automatic next-track progression.
 
-- [ ] T005 [US1] Implement ordered playlist replacement/start behavior in `src/frontend/src/context/PlayerContext.jsx` using the agreed queue API.
-- [ ] T006 [US1] Implement empty-playlist notification with no queue/current-track mutation in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` or the existing shared notification owner.
-- [ ] T007 [US1] Connect playlist header and card Play actions in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/components/playlist/PlaylistCard.jsx`.
-- [ ] T008 [US1] Ensure end-of-track progression uses the existing 050/player mechanism and skips unavailable tracks in `src/frontend/src/hooks/useMockPlayer.js` and `src/frontend/src/context/PlayerContext.jsx`.
+- [X] T005 [US1] Implement ordered playlist replacement/start behavior in `src/frontend/src/context/PlayerContext.jsx` using the agreed queue API.
+- [X] T006 [US1] Implement empty-playlist notification with no queue/current-track mutation in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` or the existing shared notification owner.
+- [X] T007 [US1] Connect playlist header and card Play actions in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/components/playlist/PlaylistCard.jsx`.
+- [X] T008 [US1] Ensure end-of-track progression uses the existing player mechanism and skips unavailable tracks in `src/frontend/src/hooks/useAudioPlayer.js`.
 
 ## Phase 4: User Story 2 - Shuffled Playlist Playback (Priority: P1)
 
@@ -35,8 +35,8 @@
 
 **Independent Test**: Shuffle a playlist with distinct tracks; verify every playable track appears once in a randomized queue and playback begins.
 
-- [ ] T009 [US2] Implement playlist shuffle-and-replace in `src/frontend/src/context/PlayerContext.jsx`, preserving uniqueness and using the shared queue operation.
-- [ ] T010 [US2] Connect Shuffle action in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and playlist card/menu entry point to the player operation.
+- [X] T009 [US2] Implement playlist shuffle-and-replace in `src/frontend/src/context/PlayerContext.jsx`, preserving uniqueness and using the shared queue operation.
+- [X] T010 [US2] Connect Shuffle action in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and playlist card/menu entry point to the player operation.
 
 ## Phase 5: User Story 3 - Selective Track Playback (Priority: P2)
 
@@ -44,9 +44,9 @@
 
 **Independent Test**: Select a middle track; verify full queue remains in playlist order and selected track becomes active.
 
-- [ ] T011 [US3] Implement selected-index playlist playback in `src/frontend/src/context/PlayerContext.jsx` following the clarification in `spec.md` (full replacement with selected song active).
-- [ ] T012 [US3] Connect track-row and row-play actions in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` to selected-index playback.
-- [ ] T013 [US3] Synchronize active row styling with PlayerContext current song in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx`.
+- [X] T011 [US3] Implement selected-index playlist playback in `src/frontend/src/context/PlayerContext.jsx` following the clarification in `spec.md` (full replacement with selected song active).
+- [X] T012 [US3] Connect track-row and row-play actions in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` to selected-index playback.
+- [X] T013 [US3] Synchronize active row styling with PlayerContext current song in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx`.
 
 ## Phase 6: User Story 4 - Queueing a Playlist (Priority: P2)
 
@@ -54,8 +54,8 @@
 
 **Independent Test**: Append a playlist during playback; verify queue tail contains its available tracks and current audio continues.
 
-- [ ] T014 [US4] Implement append-playlist operation in `src/frontend/src/context/PlayerContext.jsx` using feature 050 queue APIs and preserving current track state.
-- [ ] T015 [US4] Connect Add to Queue action in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/components/playlist/PlaylistCard.jsx` to the append operation.
+- [X] T014 [US4] Implement append-playlist operation in `src/frontend/src/context/PlayerContext.jsx` using feature 050 queue APIs and preserving current track state.
+- [X] T015 [US4] Connect Add to Queue action in `src/frontend/src/pages/PlaylistDetail/PlaylistDetailPage.jsx` and `src/frontend/src/components/playlist/PlaylistCard.jsx` to the append operation.
 
 ## Phase 7: User Story 5 - Playback Context Awareness (Priority: P3)
 
@@ -63,13 +63,13 @@
 
 **Independent Test**: Start playlist playback and verify playlist label in player; advance to an unrelated queue item and verify label changes.
 
-- [ ] T016 [US5] Store and update playback source metadata in `src/frontend/src/context/PlayerContext.jsx` for play, shuffle, select, append, and unrelated queue transition.
-- [ ] T017 [US5] Render current playback context in `src/frontend/src/components/player/BottomPlayer.jsx` and any existing full-player component.
-- [ ] T018 [US5] Keep source context synchronized through automatic progression in `src/frontend/src/components/player/BottomPlayer.jsx` and `src/frontend/src/components/player/FullScreenPlayer.jsx` using `src/frontend/src/context/PlayerContext.jsx`.
+- [X] T016 [US5] Store and update playback source metadata in `src/frontend/src/context/PlayerContext.jsx` for play, shuffle, select, append, and unrelated queue transition.
+- [X] T017 [US5] Render current playback context in `src/frontend/src/components/player/BottomPlayer.jsx` and any existing full-player component.
+- [X] T018 [US5] Keep source context synchronized through automatic progression in `src/frontend/src/components/player/BottomPlayer.jsx` and `src/frontend/src/components/player/FullScreenPlayer.jsx` using `src/frontend/src/context/PlayerContext.jsx`.
 
 ## Phase 8: Polish and Acceptance
 
-- [ ] T019 Update feature 040/050 integration documentation if shared player/queue interface changes in `specs/060-playlist-management/063-playlist-playback/plan.md` and relevant group docs.
+- [X] T019 Update feature 040/050 integration documentation if shared player/queue interface changes in `specs/060-playlist-management/063-playlist-playback/plan.md` and relevant group docs.
 - [ ] T020 Execute ordered play, shuffle, selected-track, append continuity, empty, unavailable, context transition, and progression scenarios in `specs/060-playlist-management/063-playlist-playback/quickstart.md`.
 
 ## Dependencies and Execution Order

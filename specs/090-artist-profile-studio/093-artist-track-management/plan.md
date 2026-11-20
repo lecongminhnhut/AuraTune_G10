@@ -26,7 +26,7 @@ Keep the existing React/Vite JavaScript frontend, custom router, Express backend
 
 **Project Type**: Web application with separate frontend/backend/database modules and external media boundary.
 
-**Performance Goals**: Preserve SC-002 exactly: upload/edit reflect in Studio catalog and store within **500 ms of submission**. Do not quietly start the clock after transfer or call optimistic insertion persistence. S11 defines measurement environment and feasibility for binary transfer. Vision core metadata query p95 <100 ms and existing range-stream contract apply at integration boundaries.
+**Performance Goals**: Owner-approved SC-002 alignment (2026-11-13): metadata edits retain **500 ms from submission**; binary uploads show progress and measure full submission-to-confirmed-persistence duration separately. Do not start the clock after transfer or call optimistic insertion persistence. See preparation/accepted-design.md; the original binary 500 ms promise is superseded. Vision core metadata query p95 <100 ms and existing range-stream contract apply at integration boundaries.
 
 **Constraints**: Artist-only Studio, authenticated ownership, immediate active publication after validation, no admin override/approval UI, metadata edits limited to title/album/genre/duration, no binary replacement. No invented provider, DB column, endpoint payload, licensing rule or file limit. Recorded Group 090 decisions provide explicit supplemental limits/rights rules with provenance; source alignment is S04.
 

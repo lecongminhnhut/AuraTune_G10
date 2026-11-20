@@ -15,6 +15,14 @@ import {
 
 import { auth } from '../config/firebase.js';
 
+function assertFirebaseClientConfig(providerName) {
+  const requiredConfig = ['apiKey', 'authDomain', 'projectId', 'appId'];
+  const missingConfig = requiredConfig.filter((key) => !auth.app.options[key]);
+  if (missingConfig.length) {
+    throw new Error(`Thiếu cấu hình Firebase cho đăng nhập ${providerName}: ${missingConfig.join(', ')}. Kiểm tra src/frontend/.env rồi khởi động lại frontend.`);
+  }
+}
+
 // Đăng ký bằng Email/Password
 export async function registerWithEmail(email, password) {
   const result = await createUserWithEmailAndPassword(
@@ -45,6 +53,8 @@ export async function loginWithEmail(email, password) {
 
 // Đăng nhập bằng Google OAuth
 export async function loginWithGoogle() {
+  assertFirebaseClientConfig('Google');
+
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
 
@@ -55,6 +65,8 @@ export async function loginWithGoogle() {
 
 // Đăng nhập bằng Facebook OAuth
 export async function loginWithFacebook() {
+  assertFirebaseClientConfig('Facebook');
+
   const provider = new FacebookAuthProvider();
   provider.addScope('email');
   provider.addScope('public_profile');
@@ -69,6 +81,8 @@ export async function loginWithFacebook() {
  * Google account first and then attach the pending Facebook credential.
  */
 export async function linkFacebookForAccount() {
+  assertFirebaseClientConfig('Facebook');
+
   const provider = new FacebookAuthProvider();
   provider.addScope('email');
   provider.addScope('public_profile');

@@ -3,6 +3,26 @@ import { JWT_SECRET } from '../utils/authHelpers.js';
 import { db } from '../repositories/authRepository.js';
 import { db as memDb } from '../db.js';
 
+// Follow capabilities use the existing signed access token, with authoritative
+// account/session checks inside the same database transaction as the operation.
+// No in-memory fallback or optional session is permitted on these endpoints.
+export function authenticateFollowToken(req, res, next) {
+  res.set('Cache-Control', 'private, no-store');
+  const fail = code => res.status(401).json({success:false,message:'Authentication required',data:null,error:{code,details:[]}});
+  const match = /^Bearer\s+(\S+)$/i.exec(req.headers.authorization || '');
+  if (!match) return fail('UNAUTHORIZED');
+  try {
+    const payload = jwt.verify(match[1], JWT_SECRET, {algorithms:['HS256']});
+    if (typeof payload.user_id !== 'string' || !payload.user_id || typeof payload.session_id !== 'string' || !payload.session_id) return fail('UNAUTHORIZED');
+    req.followPrincipal = {userId:payload.user_id,sessionId:payload.session_id,device:req.headers['user-agent'] || null};
+    next();
+  } catch(error) { return fail(error.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'UNAUTHORIZED'); }
+}
+
+export function authenticateStudioToken(req,res,next) {
+  return authenticateFollowToken(req,res,()=>{req.studioPrincipal=req.followPrincipal;next();});
+}
+
 export async function authenticateToken(req, res, next) {
   const isStatsRoute =
     req.baseUrl?.startsWith('/api/v1/users/me/stats') ||
@@ -24,6 +44,12 @@ export async function authenticateToken(req, res, next) {
     req.baseUrl?.startsWith('/api/v1/recommendations') ||
     req.originalUrl?.includes('/recommendations') ||
     req.path?.includes('/recommendations');
+
+  const isPlaylistRoute =
+    req.originalUrl?.startsWith('/api/v1/playlists') ||
+    req.originalUrl?.startsWith('/api/v1/users/me/playlists') ||
+    req.originalUrl?.startsWith('/api/v1/users/me/liked-songs') ||
+    req.originalUrl?.startsWith('/api/v1/songs/');
 
   const sendUnauthorized = (legacyMsg) => {
     if (isMoodRoute) {
@@ -69,6 +95,9 @@ export async function authenticateToken(req, res, next) {
           details: []
         }
       });
+    }
+    if (isPlaylistRoute) {
+      return res.status(401).json({ success: false, message: 'Authentication is required.', data: null, error: { code: 'UNAUTHORIZED', details: [] } });
     }
     return res.status(401).json({
       status: 'error',
