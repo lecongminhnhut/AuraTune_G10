@@ -1,6 +1,8 @@
 # UC-090-007 – Hide or Unhide Track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -12,22 +14,26 @@
 | Related FR IDs | 093-FR-001, 093-FR-007, 093-FR-009 |
 | Related Feature ID | 093 – Artist Track Management |
 | Related Spec Kit File | [093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) |
-| Writer | Thái Hoàng |
-| Reviewer | Not assigned |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Thái Hoàng |
+| Reviewer | Group 10 team |
 | Status | Draft |
 | Last Updated | 2026-11-04 |
 
 ## 2. Goal
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist temporarily hides their own track or makes a self-hidden track public again when it is eligible, without deleting its playback history.
 
 ## 3. Description
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Hide and unhide are opposite directions of one visibility-management goal. Artist-selected visibility and Admin restriction are distinct: removing an Artist self-hide does not clear an Admin restriction or restore a deleted song. The ordinary unhide success path applies to an existing self-hidden track with no remaining restriction preventing publication.
 
 This UC does not upload or replace audio, edit metadata, delete tracks, manage albums or perform administrative moderation. Public discovery and playback enforce their own eligibility rules; this UC documents the visibility consequences supported by the cited sources.
 
 ## 4. Preconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Normal entry is the Artist's own Studio catalog from UC-090-004. A displayed entry is not proof that authentication, ownership or track existence remains valid at submission time.
 - The Basic Flow's ordinary hide branch uses an existing Artist-active track without an active Admin restriction. AF-01 handles eligible public unhide; AF-04 branches at Basic step 2 for either self-hide preference direction while Admin restriction remains active.
@@ -35,10 +41,12 @@ This UC does not upload or replace audio, edit metadata, delete tracks, manage a
 - Unhide is not a restore workflow for a deleted song. Restricted-song owner viewing under 112 does not imply permission to self-unrestrict.
 
 ## 5. Trigger
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Artist chooses the hide or unhide visibility action for a track in their own Studio catalog.
 
 ## 6. Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 1. **Artist:** Chooses the visibility action on their own track: Hide (EyeOff) for an active track, or Unhide (Eye) for a self-hidden track.
 2. **System:** Checks current authentication, Artist permission, ownership, track existence and applicable visibility/moderation constraints. For an allowed preference change on a restricted owned track, use AF-04 before either ordinary transition. For an eligible self-hidden track without active restriction, continue with AF-01; the remaining Basic Flow applies to the hide direction.
@@ -48,8 +56,10 @@ The Artist chooses the hide or unhide visibility action for a track in their own
 The public-profile consequence follows 091-FR-007/008, including omission without revealing hidden items through counts or placeholders. This flow does not add an Artist confirmation or reason prompt. Concurrency follows owner decision G090-D08; Artist-action playback consequences follow G090-D07.
 
 ## 7. Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Unhide an eligible self-hidden track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, before the hide-specific transition at step 3.
 - **Condition:** The Artist selected Unhide at step 1; the owned track exists, is self-hidden, and no active Admin restriction or other applicable publication restriction prevents public availability.
@@ -61,6 +71,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** The use case ends successfully with the track Artist-public and eligible under the applicable restrictions. Playback history is not deleted by the visibility toggle (093 User Story 4).
 
 ### AF-02 – Attempt to bypass Admin restriction
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, including evaluation of AF-01 eligibility.
 - **Condition:** The track has an active Admin restriction and the requested action would self-unrestrict or republish it to bypass that decision.
@@ -71,6 +82,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** The forbidden bypass attempt ends unsuccessfully. This does not reject an allowed self-hide preference-only change; that distinct request follows AF-04 under G090-D05. Neither path clears Admin restriction.
 
 ### AF-03 – Missing or deleted track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, before either direction is applied.
 - **Condition:** The target no longer exists or the request would restore a track already deleted from distribution.
@@ -80,6 +92,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** The use case ends unsuccessfully. The exact response for a retained deleted/removed record requires source alignment; no deleted-song restoration or physical cleanup mechanism is defined here.
 
 ### AF-04 – Change Artist preference while Admin restriction remains active
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2, before the ordinary hide or unhide transition.
 - **Condition:** An eligible Artist-owner requests Hide or Unhide as a change to their own preference for an existing, non-deleted Admin-restricted track.
@@ -90,6 +103,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** The preference-change goal ends successfully, but the track is still non-public and cannot start new playback. After a valid Admin unrestrict, it may become public only if Artist preference is public and the track has not been deleted. No unhide/unrestrict restores deleted content. Source: owner-confirmed session decision G090-D05, 2026-11-04.
 
 ### AF-05 – Repeated or concurrent operation
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or AF-01/AF-04 processing before a change is accepted; also during EX-04 recovery.
 - **Condition:** The same intended request is repeated, or valid operations affecting the track overlap.
@@ -100,8 +114,10 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** Ends with the confirmed saved result when known. If further authorized processing is needed, resume at Basic Flow step 2, then the applicable hide/unhide/preference direction; an uncertain result uses EX-04 first. No specific synchronization, versioning, schema or idempotency-key design is selected. Source: G090-D08.
 
 ## 8. Exception Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EX-01 – Missing or expired authentication
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2.
 - **Condition:** The visibility request has no valid authenticated session, including expiry after the catalog was displayed.
@@ -111,6 +127,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** The request ends unsuccessfully without executing the rejected visibility change. Original 093 does not define its mechanism; current manual recovery follows D08/EX-04 without automatic replay.
 
 ### EX-02 – Artist permission or ownership denied
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2.
 - **Condition:** The requester lacks Artist permission or requests an action on another account's track.
@@ -120,6 +137,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 - **Outcome:** The request ends unsuccessfully without executing the rejected visibility change. Admin moderation rights do not grant Artist Studio rights.
 
 ### EX-03 – Banned account
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2.
 - **Condition:** A successful account ban applies, even if the previously issued token has not expired.
@@ -131,6 +149,7 @@ The public-profile consequence follows 091-FR-007/008, including omission withou
 Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Artist concurrency rule is independently owner-confirmed, not inferred from Admin-only 112 rules.
 
 ### EX-04 – Error or uncertain result with manual recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or AF-01/AF-04 processing.
 - **Condition:** Loading/processing fails, or no definitive response establishes the result of a submitted operation.
@@ -142,8 +161,10 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 - **Outcome:** On a successful read, present the confirmed current result. If further processing is needed, resume at Basic Flow step 2, then the applicable hide/unhide/preference direction. If failure or uncertainty persists, return to EX-04 step 1; if the Artist stops, end without a definitive success claim. Access denial/missing-target outcomes use the existing branches. No old-account request is reassigned to a different account. No automatic retry, persistence atomicity or physical cleanup policy is chosen. Source: G090-D08.
 
 ## 9. Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 9.1 Success Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - G090-D07 blocks new play starts via player/playlist/queue/direct URL after successful hide/delete, skips unavailable queue items and permits only playback already started before success to finish. No replay/repeat while unavailable; hidden-track eligibility requires Artist-public, no Admin restriction and no deletion. No deleted-track restore is introduced.
 
@@ -156,6 +177,7 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 - Playback history and historical play counts are retained in Studio through this temporary visibility goal. No broader preservation guarantee for unspecified data is added.
 
 ### 9.2 Failure Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - G090-D08 requires explicit error/uncertainty feedback and manual recovery; unresolved results do not become definitive saved/unchanged/deleted claims. All ownership/restriction/deleted-state boundaries remain enforced.
 
@@ -163,6 +185,7 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 - For an operation error or unanswered request, no definitive saved state is promised without evidence. This Draft does not assert rollback, atomicity, unchanged data or successful publication when the result is unknown.
 
 ## 10. Special Requirements
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security:** Recheck authentication, role and ownership server-side. Enforce 111's ban and 112's prohibition on Artist moderation bypass.
 - **Performance:** 093-SC-003 requires exclusion of hidden tracks from all public listener searches/catalog queries while retaining historical counts. The 500 ms target in SC-002 names upload and metadata editing, not visibility toggles; no toggle timing target is inferred.
@@ -171,6 +194,7 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 - **Other:** For Admin-restricted/deleted content, 112-FR-021/022 blocks newly loaded discovery and new playback, treating existing playlist/queue entries as unavailable. FR-023 allows already-started playback to finish while blocking replay/repeat/new starts. Artist hide/delete now independently follows owner-confirmed G090-D07 rather than an inferred transfer of moderation policy; Q-02 is resolved. Streaming mechanics remain technical follow-up.
 
 ## 11. Business Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Rule ID | Rule Description | Source |
 |---|---|---|
@@ -186,8 +210,10 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 | BR-10 | Owner-confirmed session decision G090-D08 (2026-11-04), option A: distinguish Studio errors from valid empty/zero results and offer manual retry. An unanswered submitted operation remains explicitly uncertain; reconcile its actual result before a definitive state claim or resubmission. Retrying the same upload submission must not create another track. Concurrent valid operations take effect in successful processing order, with the last successful applicable change prevailing, subject to current ownership, Admin restriction and deletion rules; deleted content cannot be resurrected. No automatic resubmission, schema/API, transaction or deduplication mechanism is selected. | Owner-confirmed session decision G090-D08; not an original 093 requirement or group approval |
 
 ## 12. Prototype and Screenshots
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 12.0 Current Submission Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Author-created Basic Flow and key UI states](./prototypes/UC-090-007-basic-flow-and-key-states.png)
 
@@ -203,6 +229,7 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 
 
 ### 12.1 Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Hide result reference mockup](../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/04-hide-track.png)
 
@@ -213,14 +240,17 @@ Operation errors, uncertainty and manual retry now follow G090-D08/EX-04. The Ar
 The image shows one post-hide state, not the actual transition or a before/after comparison proving retained history or correct totals. It does not prove ownership enforcement, public removal or playback behavior. A separate upload toast remains visible; the footer's metadata-only demo wording is stale against current 093-FR-010 and is not implementation evidence.
 
 ### 12.2 Alternative Flow – AF-01
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The Eye action on the hidden row illustrates an unhide affordance only. No inspected asset demonstrates a completed unhide transition, its green badge/toast or effective public availability after moderation checks. AF-01 evidence is missing.
 
 ### 12.3 Other Alternative and Exception Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 AF-02/03/04 and EX-01–03 lack verified state illustrations, including a preference-only change that stays Admin-restricted. Public discovery, queue/new playback versus in-progress playback, operation failure/retry, uncertain outcomes and conflicting actions also lack evidence. Prototype coverage remains incomplete; no image was created or copied.
 
 ## 13. Related Use Cases
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [UC-090-004 – Access Artist Studio Dashboard](./UC-090-004-access-artist-studio-dashboard.md): catalog entry point; aggregate semantics are now confirmed by G090-D06; other unresolved questions remain open.
 - [UC-090-005 – Upload Audio Track](./UC-090-005-upload-audio-track.md): creates a new track; unhide is not upload.
@@ -230,6 +260,7 @@ AF-02/03/04 and EX-01–03 lack verified state illustrations, including a prefer
 - Group 110 moderation owns Admin restriction/removal/restore; playback and queue features own playback execution.
 
 ## 14. Traceability and Sources
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The three applicable 093 FRs match the [inventory allocation](./use-case-inventory.md#4-coverage-check). Feature-qualified IDs refer to literal IDs in their linked spec; cross-group constraints do not add to the group's count of 57 FRs.
 
@@ -263,6 +294,7 @@ The three applicable 093 FRs match the [inventory allocation](./use-case-invento
 Source assessment: see [S-01](./README.md#source-assessment-s-01) for exact 112 quotations, line references and action/state analysis. Only the confirmation requirement versus one-click execution is retained as a conditional same-action conflict; reason defaults are compatible, and playback/state wording is not declared irreconcilable without matching scopes. Independent 093 Artist behavior remains in force.
 
 ## 15. Open Questions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Question ID | Question | Owner | Status | Resolution |
 |---|---|---|---|---|
@@ -275,3 +307,10 @@ Source assessment: see [S-01](./README.md#source-assessment-s-01) for exact 112 
 | Q-07 | Evidence: obtain unhide-success, moderation boundary, public omission/playback, preserved-history and failure/access illustrations. | Thái Hoàng | Open | Current P-023/P-025/P-026 add unhide, restriction/preference and key access/recovery/result illustrations; public/playback runtime and full sequence evidence remain incomplete |
 
 Earlier unresolved issues remain open; source-answered subquestions and shared follow-ups are tracked in the group README. Reviewer is not assigned; no peer review, approval or complete prototype coverage is claimed.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

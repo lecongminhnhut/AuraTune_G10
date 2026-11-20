@@ -1,6 +1,8 @@
 # UC-090-005 – Upload Audio Track
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Metadata
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Field | Value |
 |---|---|
@@ -12,26 +14,31 @@
 | Related FR IDs | 093-FR-001, 093-FR-004, 093-FR-005, 093-FR-009, 093-FR-010; 111-FR-011 as a protected-access ban constraint |
 | Related Feature ID | 093 – Artist Track Management |
 | Related Spec Kit File | [093 spec](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) |
-| Writer | Thái Hoàng |
-| Reviewer | Not assigned |
+| Writer | Lê Công Minh Nhựt |
+| Original Writer (PA3 draft) | Thái Hoàng |
+| Reviewer | Group 10 team |
 | Status | Draft |
 | Last Updated | 2026-11-04 |
 
 This Draft retains all 15 sections of the extracted UC template. Feature-qualified FR references identify literal requirements in the linked source, not new source IDs. Five 093 FRs apply directly, matching the inventory. File format/size was confirmed by the group owner on 2026-11-04; rights metadata was confirmed by the owner in G090-D03 on 2026-11-04; D08-D14 settle the selected recovery outcomes; technical mechanisms and complete sequence evidence remain separate. No peer review or approval is claimed.
 
 ## 2. Goal
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The artist publishes a new track they have the right to distribute, with its descriptive metadata and genuinely stored playable audio, so it appears in their Studio catalog and becomes available under the platform's public-visibility rules.
 
 ## 3. Description
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 AuraTune accepts a new audio file and the source-defined metadata from its authorized artist-owner, validates the defined inputs, stores the binary audio in cloud media/blob storage and associates its permanent playable URL with the new track. A successful upload creates an active track, displays a success toast and shows it in the artist's catalog. This is a new-track goal, not replacement of a published track's audio, metadata-only editing, album management or moderation.
 
 ### Source limits and supporting-actor boundary
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 [Vision Section 4.1](../../../proposal/Auratune_Vision_Document.md) places media storage among external services and explicitly shows AuraTune services saving uploads to it. [093-FR-010](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) requires binary persistence and a permanent audio URL. Together they support the external upload-storage role named above. This does not infer upload responsibility from CDN delivery or select Cloudinary, Cloudflare, S3, a direct browser-upload architecture or an interface. The shared model's existing actor-name association remains a documentation-alignment question (Q-07); it is not changed here. Internal application/database components are not supporting actors.
 
 ## 4. Preconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - The actor can attempt to access Studio and its new-track upload capability. Successful processing requires current authenticated artist-role access, no active account ban, and the current artist as track owner; checks occur in the flow so denied/expired attempts are not excluded by a contradictory global precondition.
 - Under Vision AD-10, project artist accounts upload only licensed/team-created material they have the right to distribute. The original source does not define the attestation interaction. Owner-confirmed session decision G090-D02 (2026-11-04) now requires a separate, initially unchecked distribution-rights checkbox for each upload. Rights metadata follows owner-confirmed G090-D03; the checkbox is an Artist declaration, not system verification of a license.
@@ -39,10 +46,12 @@ AuraTune accepts a new audio file and the source-defined metadata from its autho
 - File format/size is evaluated during validation under session decision G090-D01 (2026-11-04): MP3 only, at most 52,428,800 bytes (50 MiB), inclusive. This is a newly confirmed owner decision, not a pre-existing 093/API requirement or evidence of implemented validation.
 
 ## 5. Trigger
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The artist selects the new-track upload action from Studio, including the first-upload prompt when their catalog is empty. Dashboard viewing remains [UC-090-004](./UC-090-004-access-artist-studio-dashboard.md).
 
 ## 6. Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This is the source-supported success path for a new track under the current academic rights assumption. Steps 4–5 precede any claimed publication/success. The Draft does not equate choosing a filename, creating metadata or assigning an unusable URL with a completed upload.
 
@@ -56,8 +65,10 @@ This is the source-supported success path for a new track under the current acad
 **Outcome:** Ends successfully only when real audio persistence, the playable URL association and the source-required catalog/result state are achieved. Under the current AD-10 assumption, active content can be publicly available under existing visibility/moderation rules without an invented admin-preapproval stage. This is not a claim of immediate propagation to every cached page or a redefinition of playback. UC-090-004 owns dashboard inspection; its aggregate semantics follow D06 and partial-data recovery follows D14.
 
 ## 7. Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### AF-01 – Required Input Missing or Duration Invalid
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, after submission and before storage/publication.
 - **Condition:** A defined required field is missing or the supplied duration does not match `^\d{1,2}:[0-5]\d$`.
@@ -68,6 +79,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** Resume at Basic Flow step 4 with the corrected submission from step 3. Repeated invalid input repeats AF-01 step 1. This supported correction loop is not an upload/storage retry policy, does not create a duplicate-handling mechanism, and retains entered form values and file selection while accessible under G090-D11.
 
 ### AF-02 – Album Name Omitted
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4.
 - **Condition:** The artist leaves the optional album name empty while the other source-defined inputs are supplied and valid.
@@ -77,6 +89,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** Continue at Basic Flow step 5. No album creation, album-ownership assignment, default album title or replacement of an existing album is specified by this optional input.
 
 ### AF-03 – Missing Authentication or Non-Artist Role
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4 before the affected upload operation is accepted.
 - **Condition:** The requester is unauthenticated or has a role other than artist.
@@ -86,6 +99,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** Ends without accepting the denied upload. A later valid artist request starts at Basic Flow step 1; no automatic submission replay is specified. Artist/Admin permission on separate song-management APIs does not grant an Admin role alone access to this artist Studio goal.
 
 ### AF-04 – Upload Attempts Another Artist's Ownership
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, before persistence/publication for the request.
 - **Condition:** The request attempts to create the track under another artist's identity or otherwise exceeds the authenticated artist's authorized ownership scope.
@@ -95,6 +109,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** The denied request ends without performing that ownership assignment. No owner-selector UI, alternate identity, impersonation or exact error wording is introduced. A fresh valid own-artist request may start at Basic Flow step 1; handling already accepted work under an account switch remains Q-06.
 
 ### AF-05 – Artist Account Is Banned
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4, or a later protected request serving the upload.
 - **Condition:** The authenticated artist account is currently banned, including a ban applied while an existing token remains unexpired.
@@ -104,6 +119,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** The denied protected operation ends without acceptance. Login/unban recovery belongs to the existing authentication/account features; 111 requires sign-in after unban. The outcome of work accepted before the ban is not inferred, and no cleanup, rollback or cancellation of an already accepted upload is promised.
 
 ### AF-06 – Unsupported format or oversized audio
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, before persistence/publication.
 - **Condition:** The selected audio file is not MP3, exceeds 52,428,800 bytes (50 MiB), or both.
@@ -113,6 +129,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** The submission ends unsuccessfully. An MP3 file of exactly 52,428,800 bytes passes the size boundary, subject to the other applicable validations. G090-D11 retains values and accessible file selection while the form remains open for correction/manual retry; no automatic resubmission or exact error layout is selected. Source: owner-confirmed session decision G090-D01, 2026-11-04.
 
 ### AF-07 – Distribution-rights confirmation not selected
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, before any audio upload or track saving begins.
 - **Condition:** The Artist submits without selecting the distribution-rights confirmation checkbox for this upload.
@@ -122,6 +139,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** The submission ends unsuccessfully. The checkbox is initially unchecked for each upload and requires the Artist's affirmative selection. This declaration is not evidence that the system verified the license. G090-D11 retains entered values while the form remains open for correction/manual retry; the checkbox is not automatically selected on the Artist's behalf. Source: owner-confirmed session decision G090-D02, 2026-11-04.
 
 ### AF-08 – Required rights or attribution information missing
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, before any audio upload or track saving begins.
 - **Condition:** The Artist has not selected Self-owned, Licensed or Open license; Licensed/Open license lacks non-empty content-source or distribution-permission-basis text; the attribution-required choice is missing; or attribution is required but its text is empty.
@@ -132,6 +150,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** Resume at Basic Flow step 4 for validation of the corrected submission; if the Artist stops, the submission ends without upload/track saving. Self-owned material does not require an external source/license link; Licensed/Open license requires text declarations but no proof-document upload. The G090-D02 checkbox remains required for every upload. G090-D11 retains entered values and accessible file selection while the form remains open for correction/manual retry. No license-verification mechanism is prescribed. Source: owner-confirmed session decision G090-D03, 2026-11-04.
 
 ### AF-09 – Repeated or concurrent operation
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, 5 or 6 before a change is accepted; also during EX-03 recovery.
 - **Condition:** The same intended request is repeated, or valid operations affecting the track overlap.
@@ -142,6 +161,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** Ends with the confirmed saved result when known. If further authorized processing is needed, resume at Basic Flow step 4 for the same intended submission, then steps 5-6 only if needed; an uncertain result uses EX-03 first. No specific synchronization, versioning, schema or idempotency-key design is selected. Source: G090-D08.
 
 ### AF-10 – Cancel or close before submission
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 3, before the upload submission is sent.
 - **Condition:** The Artist selects Cancel or closes the upload form before submitting it.
@@ -152,6 +172,7 @@ This is the source-supported success path for a new track under the current acad
 - **Outcome:** The interaction ends with pre-submission cancellation, without an upload or success claim. A later new upload begins at Basic Flow step 1 with G090-D02's initially unchecked checkbox. Source: G090-D09.
 
 ### AF-11 – Leave the form after submission
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** After Basic Flow step 3 sends the submission, while step 4, 5 or 6 is pending or its response has not been confirmed.
 - **Condition:** The Artist leaves or closes the submitted upload form.
@@ -166,8 +187,10 @@ This is the source-supported success path for a new track under the current acad
 G090-D11 applies to validation branches while the form remains open: preserve entered values and any selected audio still accessible, give corrective feedback and allow manual correction/retry. Existing checkbox, rights, format/size and duration validations remain enforced. An uncertain submitted result must be reconciled under G090-D08 before resubmission; keeping input is not proof of a saved or unchanged result. Explicit pre-submission upload Cancel and pre-Save edit Cancel retain their discard behavior.
 
 ## 8. Exception Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### EX-01 – Session expiry with account-bound recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 2 or 4, any later protected request, or recovery while this upload/edit interaction is pending.
 - **Condition:** Authenticated access expires or becomes invalid while the Artist is entering data or awaiting a submitted request's outcome.
@@ -179,6 +202,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 - **Outcome:** For the same account with valid access and unsubmitted accessible input, resume the form interaction at Basic Flow step 3; inaccessible values/file must be supplied again before a new submission. For submitted work, use EX-03 before retry or a definitive claim. If recovery fails, access is denied, or a different account becomes current, the old interaction cannot continue as that account; no request is reassigned or assumed rolled back. Existing explicit Cancel/close rules remain separate. Source: owner-confirmed session decision G090-D13.
 
 ### EX-02 – Audio Persistence or Track Completion Definitely Fails
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 5 or 6.
 - **Condition:** The system establishes that required audio persistence, a permanent playable URL association or completion of the track operation failed.
@@ -188,6 +212,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 - **Outcome:** Ends without confirmed successful completion. G090-D08/EX-03 defines manual retry, uncertainty reconciliation and no duplicate track for the same submission. G090-D11 retains values and any accessible selected file while the form remains open; physical cleanup, atomicity and rollback mechanisms remain unselected. No claim is made that all storage or metadata side effects were reversed, or that the catalog necessarily remained unchanged.
 
 ### Remaining File, Cancel and Connection-Loss Outcomes
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **File policy:** MP3-only and inclusive 52,428,800-byte maximum are now defined by session decision G090-D01 and AF-06. Detailed file-inspection/corruption handling and validation mechanisms are not selected by that decision. Missing file selection remains AF-01.
 - **Cancel/close:** G090-D09 defines AF-10 before submission and AF-11 after submission. Leaving a submitted form does not cancel accepted work; actual outcome must be reconciled on return. Storage cleanup and operation-identity mechanisms remain unselected.
@@ -196,6 +221,7 @@ G090-D11 applies to validation branches while the form remains open: preserve en
 These gaps make recovery coverage incomplete; the section does not represent unconfirmed flows as finished specifications.
 
 ### EX-03 – Error or uncertain result with manual recovery
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Starting step:** Basic Flow step 4, 5 or 6.
 - **Condition:** Loading/processing fails, or no definitive response establishes the result of a submitted operation.
@@ -207,8 +233,10 @@ These gaps make recovery coverage incomplete; the section does not represent unc
 - **Outcome:** On a successful read, present the confirmed current result. If further processing is needed, resume at Basic Flow step 4 for the same intended submission, then steps 5-6 only if needed. If failure or uncertainty persists, return to EX-03 step 1; if the Artist stops, end without a definitive success claim. Access denial/missing-target outcomes use the existing branches. No old-account request is reassigned to a different account. No automatic retry, persistence atomicity or physical cleanup policy is chosen. Source: G090-D08.
 
 ## 9. Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 9.1 Success Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Required rights-type, conditional source/distribution-basis and attribution declarations were supplied under G090-D03; this does not establish verified rights/license validity.
 
@@ -220,6 +248,7 @@ These gaps make recovery coverage incomplete; the section does not represent unc
 - Catalog/dashboard visibility is the observable integration outcome; aggregate semantics follow the separately confirmed G090-D06 in UC-090-004. Sample values or metadata-only demo behavior are not proof of this outcome.
 
 ### 9.2 Failure Postconditions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - G090-D13 permits temporary input retention only while accessible in the working session; resumption requires the same account and current authorization. A new account never receives the former account's draft/pending action/result. Submitted work is reconciled before retry and is not presumed cancelled by expiry.
 
@@ -240,6 +269,7 @@ These gaps make recovery coverage incomplete; the section does not represent unc
 - A lost response, expired session or ban occurring after acceptance does not prove that an earlier accepted operation failed or left no side effects. The outcome remains unconfirmed until reconciliation under G090-D08/EX-03 establishes it.
 
 ## 10. Special Requirements
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **Security:** Server-side authenticated artist ownership and least privilege apply to each protected operation; 111-FR-011 blocks banned accounts. [Security principles](../../../design/security/README.md) and [data security rules](../../../design/database/security-rules.md) do not permit frontend-only checks. [Vision](../../../proposal/Auratune_Vision_Document.md), Section 6.2, requires encrypted client/server transmission.
 - **Performance:** 093-SC-002 states catalog/store reflection within 500 ms of submission. This is the current requirement target, not a measured result or a license to report success before binary persistence. File-size/network scope and feasibility require technical validation; no async-metadata shortcut or new timeout is selected.
@@ -248,6 +278,7 @@ These gaps make recovery coverage incomplete; the section does not represent unc
 - **Other:** Rights to distribute are required by Vision AD-10. Do not treat the image's copyright notice as proof of a recorded attestation, verified license or specified rights-schema. Apply the owner-confirmed G090-D01 format/size rule without treating it as a pre-existing source requirement. Apply G090-D02 as an Artist declaration only, not verified licensing. Apply G090-D03 conditional rights/attribution declarations as stated in BR-09, without selecting a schema/API or treating declarations as verified licensing. Do not invent a metadata schema, provider, upload endpoint, transport status, chunking, rollback, automatic retry or deduplication mechanism.
 
 ## 11. Business Rules
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Rule labels below are local references, not new source FR IDs.
 
@@ -265,6 +296,7 @@ Rule labels below are local references, not new source FR IDs.
 | BR-11 | Owner-confirmed session decision G090-D09 (2026-11-04), option A: before submission, Cancel/close dismisses the upload form and discards entered form data without starting audio upload or track saving. After submission, leaving/closing the form does not cancel the submitted operation. On returning, reconcile the actual outcome under G090-D08 before claiming success/failure or retrying the same submission. No cancellation request, rollback, file cleanup or technical persistence mechanism is selected. | Owner-confirmed session decision G090-D09; newly confirmed here, not original source policy or group approval |
 
 ### Upload Input and Policy Register
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Item | Current source-backed rule | Unresolved or conflicting evidence |
 |---|---|---|
@@ -283,8 +315,10 @@ Rule labels below are local references, not new source FR IDs.
 | BR-13 | Owner-confirmed session decision G090-D13 (2026-11-04), option A: on session expiry during upload/edit, retain temporary entered data within the working session only while it remains accessible. Continue only after the same account signs in again and current authorization is rechecked. Reconcile any already-submitted request before retry; expiry does not prove failure or cancellation. A different account must not receive the former account's draft, pending action or delayed result. No durable draft/file retention, automatic replay, authentication mechanism or schema/API is selected. | Owner-confirmed session decision G090-D13; newly confirmed in this conversation, not an original source requirement or group approval |
 
 ## 12. Prototype and Screenshots
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ### 12.0 Current Submission Evidence
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Author-created Basic Flow and key UI states](./prototypes/UC-090-005-basic-flow-and-key-states.png)
 
@@ -300,6 +334,7 @@ Rule labels below are local references, not new source FR IDs.
 
 
 ### 12.1 Basic Flow
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ![Reference mockup of the new-track upload dialog](../../../../specs/090-artist-profile-studio/093-artist-track-management/ui/02-upload-track.png)
 
@@ -314,6 +349,7 @@ G090-D11 retained-input/error/correction/retry states have no verified prototype
 G090-D13 temporary retention, same-account recovery, different-account isolation and submitted-outcome reconciliation have no verified prototype evidence.
 
 ### 12.2 Alternative Flows
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Flow | Evidence status |
 |---|---|
@@ -328,10 +364,12 @@ G090-D13 temporary retention, same-account recovery, different-account isolation
 | AF-06 format/size rejection | No evidence for non-MP3 rejection, exact 52,428,800-byte acceptance, larger-file rejection or appropriate feedback. |
 
 ### 12.3 Exceptions and Missing States
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 No inspected image demonstrates expiry/invalid authentication, storage/completion failure or a successfully persisted playable upload. Format/size policy is confirmed by G090-D01, but its boundary/rejection evidence is missing. The G090-D02 checkbox and unselected-submission rejection are decided but lack visual evidence. G090-D03 rights metadata is decided but lacks suitable prototype evidence. G090-D08/D09 define manual uncertainty recovery, pre-submission discard and post-submission departure/reconciliation, but suitable visual evidence is missing. G090-D11 input retention after validation/operation error is decided but lacks evidence; session-recovery retention follows G090-D13; suitable recovery evidence is missing. There is no screenshot-derived size/unit requirement. Prototype/flow coverage is incomplete; no placeholder links are supplied.
 
 ## 13. Related Use Cases
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [UC-090-004 – Access Artist Studio Dashboard](./UC-090-004-access-artist-studio-dashboard.md): entry and catalog/dashboard inspection after upload. Its Q-01–Q-06, including aggregates and dashboard retry gaps, remain unchanged by this Draft.
 - UC-090-006 – Edit Track Metadata remains a separate goal. Specification: [Draft specification](./UC-090-006-edit-track-metadata.md). It does not establish published-audio replacement.
@@ -340,6 +378,7 @@ No inspected image demonstrates expiry/invalid authentication, storage/completio
 - Authentication and Group 110 ban/moderation operations retain their boundaries. No new include/extend relation or admin review UC is invented.
 
 ## 14. Traceability and Sources
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Source Type | ID / File | Relevant Section |
 |---|---|---|
@@ -380,6 +419,7 @@ No inspected image demonstrates expiry/invalid authentication, storage/completio
 The spec, image and demo do not provide identical input-policy evidence: spec duration text/regex requires manual formatted input; image offers MP3/WAV and copyright notice; implementation uses a broad audio selector and metadata-only state creation. The owner separately confirmed MP3-only and the inclusive 52,428,800-byte limit in G090-D01 on 2026-11-04. The mockup/demo did not establish that rule. G090-D02 separately adds the owner-confirmed checkbox interaction; it is not derived from the mockup/source. No duration extraction or system license verification is added. Current FR-010's genuine audio requirement governs success. Its implementation evidence is missing, not satisfied by the demo.
 
 ## 15. Open Questions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Question IDs are local to this Draft. None changes or closes UC-090-004's existing questions.
 
@@ -396,3 +436,10 @@ Question IDs are local to this Draft. None changes or closes UC-090-004's existi
 | Q-09 | Evidence/review: when will binary storage, URL playability, active publication, ownership/access, validation and failure states be demonstrated and independently reviewed? | Thái Hoàng | Open | One mockup inspected. Metadata-only demo is not FR-010 evidence; Reviewer Not assigned and coverage incomplete. |
 
 Existing dashboard D06/D14 rules and group D18/deferred-album scope are recorded in [UC-090-004](./UC-090-004-access-artist-studio-dashboard.md#15-open-questions) and the [group README](./README.md#8-open-issues-and-decisions), respectively. The submission scope note defers full album management without changing the source or creating a new UC.
+
+## PA4 implementation evidence and acceptance record
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Public artist, follow and Studio read modules and SQL migrations exist. `artistTrackService.js` currently exposes read behavior; full upload/edit/hide/delete acceptance must be checked against the actual routes and UI. The integrated Artist/User/Studio mounts occur after the 404 middleware. Existing preparation/validation records retain their original limited scope.
+
+The flows above state required behavior. This revision records source inspection only; no browser acceptance or new feature-test run is claimed. Before acceptance, execute the basic flow and its applicable alternative/exception flows, checking the documented success and failure postconditions. Record results against this UC ID in [the PA4 review register](../../use-case-model.md#11-pa4-decisions-and-source-review).

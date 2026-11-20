@@ -1,6 +1,8 @@
 # Use-Case Inventory – 090 Artist Profile & Studio
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Purpose
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 This inventory records the eight existing Group 090 use cases from the shared Use-Case Model and maps the current feature requirements to those user goals. It is an inventory for owner review, not an approval baseline or evidence of implemented behavior. Each use case requires a separate specification; UC-090-001 through UC-090-008 now have Drafts. All eight specification files now exist.
 
@@ -12,6 +14,7 @@ This inventory records the eight existing Group 090 use cases from the shared Us
 - Initial scope: inventory only. Subsequent documentation passes created UC-090-001 through UC-090-008 Drafts; this update synchronizes their status, links and evidence notes. The group README now contains its scoped diagram and [prototype index](./prototypes/README.md). New images, shared model/index updates, implementation workflows, commits and pushes remain deferred.
 
 ### Source basis
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Authoring guide read: `C:/Users/Admin/Downloads/AuraTune_Use_Case_Documentation_Guide.md`.
 - Exact extracted template read: `C:/Users/Admin/Downloads/AuraTune_UC_Templates_Extracted/AuraTune_Use_Case_Templates/group/use-case-inventory.template.md`. These external local inputs are not repository dependencies.
@@ -24,10 +27,11 @@ This inventory records the eight existing Group 090 use cases from the shared Us
 - [Feature 093: 093-artist-track-management](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md), Functional Requirements, user scenarios, clarifications and UI asset descriptions.
 
 ## 2. Inventory
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 Related FR identifiers are feature-qualified references: `091-FR-001` means literal `FR-001` in Feature 091, not a newly assigned source ID. Feature links resolve to the source specification. All eight existing Draft specifications are linked below. The group contains ten documentation files: this inventory, the group README and eight UC specifications.
 
-| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Feature ID | Writer | Reviewer | Status | Specification |
+| UC ID | Use-Case Name | Primary Actor | Supporting Actors | Related FR IDs | Feature ID | Original Writer | Reviewer | Status | Specification |
 |---|---|---|---|---|---|---|---|---|---|
 | UC-090-001 | View Public Artist Profile | Guest / Visitor; Listener (inherited public access also available to Artist) | None identified | `091-FR-001`, `091-FR-002`, `091-FR-003`, `091-FR-004`, `091-FR-005`, `091-FR-006`, `091-FR-007`, `091-FR-008`, `091-FR-009`, `091-FR-010`, `091-FR-010A`, `091-FR-010B`, `091-FR-011`, `091-FR-012`, `091-FR-013`, `091-FR-014`, `091-FR-014A`, `091-FR-015`, `091-FR-016`, `091-FR-017`, `091-FR-018`, `091-FR-018A`, `091-FR-019`, `091-FR-020`, `091-FR-021`, `091-FR-022`, `091-FR-023`, `091-FR-024`, `091-FR-025`, `091-FR-026`, `091-FR-027` | [091](../../../../specs/090-artist-profile-studio/091-artist-profile/spec.md) | Thái Hoàng | Not assigned | Draft | [Draft specification](./UC-090-001-view-public-artist-profile.md) |
 | UC-090-002 | Follow or Unfollow Artist | Listener; Artist; Administrator (own account only) | None identified | `092-FR-001`, `092-FR-002`, `092-FR-003`, `092-FR-004`, `092-FR-005`, `092-FR-006`, `092-FR-009`, `092-FR-010`, `092-FR-011`, `092-FR-012`, `092-FR-013`, `092-FR-014`, `092-FR-015`, `092-FR-016` | [092](../../../../specs/090-artist-profile-studio/092-follow-artist/spec.md) | Thái Hoàng | Not assigned | Draft | [Draft specification](./UC-090-002-follow-or-unfollow-artist.md) |
@@ -39,6 +43,7 @@ Related FR identifiers are feature-qualified references: `091-FR-001` means lite
 | UC-090-008 | Delete Track from Studio | Artist | None identified | `093-FR-001`, `093-FR-008`, `093-FR-009` | [093](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) | Thái Hoàng | Not assigned | Draft | [Draft specification](./UC-090-008-delete-track-from-studio.md) |
 
 ### Goal boundaries and actor decisions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - **UC-090-001:** One public-profile discovery goal includes identity, biography, featured songs, albums, related playlists and navigation. These sections form one profile experience; empty states, missing fields, privacy checks, not-found and retry are alternative/exception behavior rather than independent goals. Playback and destination-detail behavior remain owned by their existing features.
 - **UC-090-002:** Follow and unfollow remain combined as management of one personal account–artist relationship, preserving the existing model ID. Duplicate requests, hidden-profile owner unfollow and failed/uncertain outcomes are variants of this goal.
@@ -49,6 +54,7 @@ Related FR identifiers are feature-qualified references: `091-FR-001` means lite
 - **Upload supporting-actor source review:** Vision Section 4.1 explicitly places media storage outside AuraTune and shows its services saving uploads there; 093-FR-010 requires actual binary persistence/permanent playable URL. UC-090-005 therefore records External Cloud Media/Blob Storage Service as the logical supporting upload role. Provider/interface and equivalence to the shared model's CDN label remain open, not inferred from delivery/streaming. No shared actor ID/model or internal-component actor is added.
 
 ## 3. Status Definitions
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Status | Meaning |
 |---|---|
@@ -61,6 +67,7 @@ Related FR identifiers are feature-qualified references: `091-FR-001` means lite
 UC-090-001 through UC-090-008 are Draft because their specification files now exist and contain initial specifications. All eight specification files have been verified to exist; none is Approved. The shared model's Confirmed label identifies catalog entries; it does not establish specification review or approval.
 
 ## 4. Coverage Check
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 All 57 FRs retain their existing UC allocation. **Covered** means the stated FR has corresponding flow/rule text within its source-defined scope, not implemented/tested/approved behavior. **Needs Clarification** identifies an unresolved observable business boundary preventing complete specification. Providers, schemas, physical cleanup and prototype gaps are tracked separately and do not independently downgrade coverage.
 
@@ -129,6 +136,7 @@ Fresh count from actual Functional Requirements bullets: **57 distinct feature-q
 | [093-FR-010](../../../../specs/090-artist-profile-studio/093-artist-track-management/spec.md) | AuraTune MUST persist uploaded audio files to backend cloud media/blob storage (e.g., Cloudinary or S3) and associate the permanent audio URL with the track record for public streaming. | UC-090-005 | Covered | Upload outcome is allocated; UC-090-005 traces the logical external storage boundary to Vision 4.1. Provider/interface and shared CDN-label alignment remain unconfirmed; no CDN upload role inferred from delivery. |
 
 ### Coverage result and outstanding gaps
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - Unallocated FRs: **0**. All 57 source FR rows retain their existing allocation and current Covered status for defined specification scope. This does not resolve Vision scope discrepancies, source alignment, technical work, prototype coverage, implementation/testing or independent review.
 - D01-D18 are present in the [decision register](./README.md#shared-open-issues). B-02 through B-11 are Resolved; earlier decision paragraphs retain historical open-status snapshots and are not current blockers.
@@ -137,6 +145,7 @@ Fresh count from actual Functional Requirements bullets: **57 distinct feature-q
 - The group diagram rendered successfully with Mermaid 11/Chrome; exported SVG/PNG included. The [prototype index](./prototypes/README.md) records 10 new local mockup boards and 16 historical reference PNGs; exact team-host preview remains unverified. All eight UC files remain Draft with Reviewer Not assigned.
 
 ### Scope discrepancies and questions for group confirmation
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 | Issue | Source and observation | Decision needed / current treatment |
 |---|---|---|
@@ -149,6 +158,7 @@ Fresh count from actual Functional Requirements bullets: **57 distinct feature-q
 | Technical contract details | API Contract supports public profiles, follow/unfollow and own lists, and artist-owned song operations, but does not fully settle following-state retrieval, hidden retention/order, upload-service boundary or deletion cleanup. | Preserve explicit 091/092/093 behavioral decisions; do not invent endpoints, schemas, providers, transport responses or cleanup policies. Resolve implementation contracts later. |
 
 ### Prototype evidence and remaining work
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 The [prototype index](./prototypes/README.md) catalogs all 16 source PNGs and every current Basic/Alternative/Exception Flow with Partial/Missing visual status. The [group diagram](./README.md#5-use-case-diagram) retains all eight inventory IDs and explicit role associations. Rendering remains unverified in the actual Markdown preview; source/UC files are unchanged.
 
@@ -168,6 +178,7 @@ The 16 PNG files below exist on disk. Subsequent Draft authoring visually inspec
 Counts: Feature 091 = 6 PNGs; Feature 092 = 5 PNGs; Feature 093 = 5 PNGs. No per-flow prototype coverage is marked complete. Future specifications must classify reused assets as prototypes/wireframes or implementation screenshots only after verification.
 
 ## 5. Review Checklist
+Performed by: Thái Hoàng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 - [x] Every UC in the diagram is listed in this inventory.
 - [x] Every inventory entry has a corresponding specification file.
