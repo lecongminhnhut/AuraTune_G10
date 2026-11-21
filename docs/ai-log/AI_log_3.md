@@ -42,6 +42,7 @@
 | 38 | 2026-11-19 | Thực thi implement cho spec 031 bằng Spec Kit `/speckit-implement` | 030 Search |
 | 39 | 2026-11-20 | Thực thi implement cho spec 032 bằng Spec Kit `/speckit-implement` | 030 Search |
 | 40 | 2026-11-20 | Thực thi implement cho spec 033 bằng Spec Kit `/speckit-implement` | 030 Search |
+| 41 | 2026-11-21 | Cập nhật tài liệu Software Architecture (Tech Stack & C4 Level 1) cho PA4 Phần B | docs |
 
 ---
 
@@ -3947,4 +3948,79 @@ Hãy thực hiện tuần tự các task từ T011 (Phase 2) đến T053 (Phase 
 - [x] Chạy kiểm thử frontend semantic & UI components (`node --import ./tests/register-loader.js --test src/utils/__tests__/semanticQuery.test.js src/utils/semanticSearchAdapter.test.js src/components/search/__tests__/SemanticSearch.test.jsx src/pages/Search/__tests__/SearchPage.test.jsx`): Đạt 6/6 test cases.
 - [x] Chạy toàn bộ test suite frontend (`npm.cmd test`): Đạt 94/94 test cases, không phát sinh hồi quy (regression) sang Feature 031–032 hay Group 080.
 - [x] Kiểm tra cú pháp (`node --check`) và rà soát `tasks.md` xác nhận 100% các task T011–T053 đã được đánh dấu `[x]` và ghi nhận đầy đủ kết quả tại `quickstart.md` và `evaluation/`.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+---
+
+## Mục 41: Cập nhật tài liệu Software Architecture (Tech Stack & C4 Level 1) cho PA4 Phần B
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-21 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | Toàn bộ dự án – Tài liệu Kiến trúc Hệ thống (`docs/design/architecture/system-architecture.md`) |
+| Công cụ AI | GPT-5.6-Luna |
+| Mục đích | Đối chiếu mã nguồn thực tế từ PA1 đến PA4 để chuẩn hóa danh mục Tech Stack, vẽ sơ đồ System Context Diagram (C4 Level 1) bằng Mermaid, phân định rõ ranh giới tích hợp/trạng thái lưu trữ (DB vs. RAM Map/client state/mock fallback) và cập nhật change log `docs/Changes.md` theo quy trình 2 giai đoạn có kiểm duyệt. |
+
+### Prompt đã dùng
+
+```text
+Hãy thực hiện phần B của PA4: Software Architecture: Tech Stack and System Context Diagram (C4 Level 1), trong repo AuraTune_Group10.
+
+Đọc các nguồn sau trước khi thực hiện:
+- "C:\Users\Admin\Downloads\PA4-2026.pdf", đặc biệt phần B (20 points) và Submission Guidelines.
+- "C:\Users\Admin\Downloads\pa4-readiness-checklist.md" (mục B và Submission checks).
+- docs/design/architecture/system-architecture.md (tài liệu gốc hiện có).
+- docs/requirements/use-case-model.md (để đồng bộ danh sách Actors và ranh giới hệ thống).
+- docs/proposal/project_plan.md (mục 2.4.4 Deliverable D-23).
+- Mã nguồn và cấu hình thực tế trong src/:
+  + src/frontend/package.json, src/frontend/vite.config.js, src/frontend/src/config/firebase.js
+  + src/backend/package.json, src/backend/server.js, src/backend/middleware/, src/backend/controllers/firebaseExchangeController.js, src/backend/config/cloudinary.js, src/backend/services/cloudinaryStorageService.js
+  + src/database/supabaseClient.js và src/database/migrations/
+  + src/ai-service/requirements.txt, src/ai-service/main.py, src/ai-service/agent.py
+
+Thực hiện công việc theo quy trình 2 giai đoạn nghiêm ngặt (Tạo bản nháp riêng -> Chờ duyệt -> Merge & ghi Change log):
+
+### GIAI ĐOẠN 1: Tạo bản nháp riêng (KHÔNG ghi đè file gốc ngay)
+1. Đối chiếu mã nguồn thực tế để lập danh mục Tech Stack chính xác từ PA1 đến PA4...
+2. Vẽ sơ đồ C4 Level 1 (System Context Diagram) và viết giải thích...
+3. Xuất bản nháp ra một file riêng biệt tại: `docs/design/architecture/system-architecture.pa4-draft.md`...
+4. Tiêu chuẩn trình bày, văn phong & định dạng (tiếng Anh kỹ thuật tự nhiên, metadata dưới các tiêu đề `#` và `##`, kiểm tra cú pháp Mermaid)...
+5. Dừng lại sau khi tạo xong `docs/design/architecture/system-architecture.pa4-draft.md` và chờ hiệu lệnh duyệt trước khi thực hiện Giai đoạn 2.
+
+### GIAI ĐOẠN 2: Chỉ thực hiện SAU KHI nhận được hiệu lệnh duyệt từ tôi
+1. Merge / cập nhật nội dung đã duyệt từ `docs/design/architecture/system-architecture.pa4-draft.md` vào file gốc `docs/design/architecture/system-architecture.md`, sau đó xóa file tạm `.pa4-draft.md`.
+2. Cập nhật file change log duy nhất của PA4 tại `docs/Changes.md` (chèn ngay trước `## docs/management/pa4-readiness-checklist.md` kèm mã SHA-256 baseline).
+3. Xuất file PDF tương ứng `docs/design/architecture/system-architecture.pdf` và kiểm tra bố cục, hiển thị sơ đồ Mermaid trong PDF.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Giai đoạn 1 (Tạo bản nháp & Đối chiếu source):**
+  - Đọc và đối chiếu toàn diện yêu cầu PA4, checklist, `use-case-model.md`, `project_plan.md` cùng các tệp cấu hình/mã nguồn thực tế trong `src/frontend`, `src/backend`, `src/database` và `src/ai-service`.
+  - Xuất bản nháp tiếng Anh tại `docs/design/architecture/system-architecture.pa4-draft.md` với đầy đủ dòng metadata (`Performed by / Reviewed by / Edited by`) ngay dưới các tiêu đề `#` và `##`, giữ nguyên file gốc `system-architecture.md` và tính mã SHA-256 baseline (`542D502530A9A67DAB9CAA2DA17AA605CA2DD2981B2C2449A7D5599276CE3A6E`).
+  - Lập bảng Tech Stack chi tiết kèm phiên bản thực tế; cập nhật đầy đủ 6 endpoint của Python AI Service (`/ai/agent/stream` qua SSE, `/ai/recommend`, `/ai/recommend/mood`, `/ai/search/lyrics`, `/ai/playlist/generate`, `/ai/health`).
+  - Phân định rõ ranh giới triển khai thực tế: Frontend không gọi trực tiếp Python AI Service; AI Service gọi trực tiếp Supabase REST API (`/rest/v1/songs`); phân biệt các module đã nối PostgreSQL với các phần còn dùng RAM Map (`saved albums`), client state (`Admin`/`History`) hoặc mock/in-memory fallback; làm rõ Spotify chỉ là nguồn dữ liệu offline, không phải external system lúc runtime.
+  - Vẽ sơ đồ C4 Level 1 (System Context Diagram) bằng Mermaid đặt `AuraTune Platform` ở trung tâm cùng 4 nhóm tác nhân con người (`Guest / Visitor`, `Listener`, `Artist`, `Administrator`) và 4 hệ thống bên ngoài (`Supabase PostgreSQL`, `Firebase Authentication`, `Cloudinary`, `Google Gemini API`) với nhãn giao thức (`HTTPS`, `Byte-Range`).
+- **Giai đoạn 2 (Merge, ghi Change log & xuất PDF sau khi được duyệt):**
+  - Hợp nhất nội dung bản nháp vào `docs/design/architecture/system-architecture.md` và xóa tệp tạm `system-architecture.pa4-draft.md`.
+  - Chèn section ghi nhận thay đổi của `docs/design/architecture/system-architecture.md` vào `docs/Changes.md` (dòng 1791, ngay trước mục `## docs/management/pa4-readiness-checklist.md`) kèm mã SHA-256 của bản PA3 baseline (`35d8027`), giữ nguyên toàn bộ nội dung Phần A.
+  - Xuất bản in PDF tại `docs/design/architecture/system-architecture.pdf` (174,442 bytes) bằng Chrome headless và dọn sạch các tệp tạm trong `tmp/`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Quy trình 2 giai đoạn (xuất bản nháp `.pa4-draft.md` -> duyệt -> merge) | Dùng | Đảm bảo người thực hiện kiểm soát chặt chẽ nội dung kiến trúc và mã SHA-256 baseline trước khi ghi đè tài liệu gốc. |
+| Đối chiếu trực tiếp `package.json`, `requirements.txt` và mã nguồn `src/` | Dùng | Loại bỏ hoàn toàn sơ đồ ASCII và các câu hỏi mở lỗi thời từ PA3; đảm bảo phiên bản công nghệ và danh sách endpoint AI chính xác tuyệt đối. |
+| Phân tách rõ module đã nối DB với RAM Map, client state và mock/offline data | Dùng | Tránh suy diễn quá mức trạng thái hoàn thiện; phản ánh trung thực ranh giới runtime của hệ thống theo đúng tiêu chí chấm điểm PA4. |
+| Sơ đồ C4 Level 1 bằng Mermaid với 4 Actors & 4 External Systems | Dùng | Đồng bộ 100% danh sách tác nhân với `use-case-model.md` và thể hiện rõ giao thức tích hợp (`HTTPS`, `Byte-Range`). |
+| Xuất PDF bằng Chrome headless thay cho Mermaid CLI / Poppler | Dùng (ghi nhận hạn chế) | Môi trường không cài sẵn `mmdc` hoặc `pdftoppm`, nên sử dụng Chrome headless để render và kiểm tra hiển thị bố cục/sơ đồ trong `system-architecture.pdf`. |
+
+### Cách kiểm chứng
+
+- [x] Đối chiếu mã nguồn và cấu hình thực tế tại `src/frontend`, `src/backend`, `src/database` và `src/ai-service` với yêu cầu Phần B của `PA4-2026.pdf` và `pa4-readiness-checklist.md`.
+- [x] Kiểm tra cú pháp, cân bằng code fence Mermaid, dòng metadata dưới các tiêu đề `#` / `##` và sự hiện diện đầy đủ của các endpoint/giao thức bắt buộc trong `docs/design/architecture/system-architecture.md`.
+- [x] Kiểm tra vị trí chèn, mã SHA-256 baseline và tính toàn vẹn của `docs/Changes.md` (không làm thay đổi các mục đã có của Phần A).
+- [x] Kiểm tra hiển thị bố cục và sơ đồ context trong `docs/design/architecture/system-architecture.pdf` bằng Chrome headless và rà soát `git status` đảm bảo không tự ý commit/push hay để sót tệp nháp.
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.

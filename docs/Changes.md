@@ -1788,6 +1788,25 @@ After / affected locations:
 
 Review status: source/business questions, missing prototypes and final approval remain as recorded in the model and checklist.
 
+## docs/design/architecture/system-architecture.md
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
+
+Document: [Markdown](design/architecture/system-architecture.md).
+
+Before: existing conceptual architecture document in Vietnamese at the PA3 baseline (`35d8027`); SHA-256 `542D502530A9A67DAB9CAA2DA17AA605CA2DD2981B2C2449A7D5599276CE3A6E`.
+
+After / affected locations:
+
+- Replaced the outdated conceptual ASCII architecture with an English implementation-based PA4 architecture document.
+- Added verified technology versions and responsibilities for the React/Vite/Tailwind frontend, Express backend, Supabase PostgreSQL persistence, Python/FastAPI AI service, Firebase Authentication, and Cloudinary media storage.
+- Added the actual Python AI routes, including the SSE agent stream, recommendation, mood recommendation, lyrics search, playlist generation, and health endpoints.
+- Documented integration boundaries: the frontend does not call the Python AI service directly; the AI service reads Supabase PostgREST `/rest/v1/songs`; Cloudinary supports audio delivery with byte-range requests; Spotify is offline data preparation only.
+- Documented current persistence limits and fallbacks, including the saved-album RAM map, client-side Admin/History behavior, and local/mock catalog paths.
+- Added a Mermaid C4 Level 1 System Context diagram with Guest/Visitor, Listener, Artist, Administrator, Supabase PostgreSQL, Firebase Authentication, Cloudinary, and Google Gemini API.
+- Added English explanations for each actor and external system, plus the current backend entrypoint caveat.
+
+Review status: source verification completed; team review remains required.
+
 ## docs/management/pa4-readiness-checklist.md
 Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
