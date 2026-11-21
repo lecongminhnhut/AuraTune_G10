@@ -1,15 +1,15 @@
 # AuraTune System Architecture: Tech Stack and System Context (C4 Level 1)
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 ## 1. Purpose and scope
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 This document records the implementation-based technology stack and the C4 Level 1 System Context for AuraTune at PA4. It covers the web application, Express API, Supabase persistence, Python AI service, identity integration, cloud media storage, and Google Gemini integration. The system boundary follows the use-case model: the AuraTune application UI, Express API, Python orchestration, and application-owned logic are inside the boundary; identity, media storage, database hosting, and model inference are external services.
 
 The document describes the current repository snapshot. It does not treat a route, UI screen, configured provider, or local fallback as proof that an end-to-end feature is complete or persistent.
 
 ## 2. Technology stack
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 | Layer | Technologies and versions | Responsibilities and actual boundary |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited
 | Cloud media storage | Cloudinary `2.11.0` | Stores uploaded audio and image assets. The backend accepts a validated in-memory multipart upload with Multer, uploads it to Cloudinary, and returns a secure URL. Audio is configured as a Cloudinary `video` resource and is consumed by the player with HTTP byte-range requests for seeking. |
 
 ## 3. Runtime responsibilities and integration boundaries
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 ### Frontend to backend boundary
 
@@ -57,7 +57,7 @@ Spotify is used only as an offline source for preparing or importing metadata. I
 The repository snapshot contains backend entrypoint wiring issues that must be resolved before claiming a clean integrated runtime: `server.js` declares `mediaRoutes` twice, and several route mounts appear after the fallback 404 handler and `listen` call. The architecture below describes the intended boundaries visible in source while retaining this limitation.
 
 ## 4. C4 Level 1: System Context Diagram
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 At C4 Level 1, AuraTune is one software system. The diagram shows only the four human actors required by the use-case model and the four external runtime systems requested for PA4. Internal frontend, backend, database adapter, and AI-service modules are intentionally not separate C4 systems at this level.
 
@@ -87,7 +87,7 @@ flowchart TB
 ```
 
 ## 5. System context explanation
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 ### 5.1 Human actors
 
@@ -112,7 +112,7 @@ The actor names and boundary follow `docs/requirements/use-case-model.md`. Playl
 **Google Gemini API.** Gemini is the external model-inference boundary used by the Python AI service through `google-genai`, primarily for the conversational agent. AuraTune sends prompt/context data from the internal service over HTTPS and streams the result back through the internal AI endpoint as SSE. If Gemini is unavailable or unconfigured, the agent's local fallback can respond; that fallback does not mean that Gemini was called successfully.
 
 ## 6. Source references
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Pending team review | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
 
 - `src/frontend/package.json`, `src/frontend/vite.config.js`, and `src/frontend/src/config/firebase.js`
 - `src/backend/package.json`, `src/backend/server.js`, middleware, Firebase exchange controller, Cloudinary configuration, and media storage service
