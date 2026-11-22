@@ -119,3 +119,151 @@ Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: N
 - `src/database/supabaseClient.js` and `src/database/migrations/`
 - `src/ai-service/requirements.txt`, `src/ai-service/main.py`, and `src/ai-service/agent.py`
 - `docs/requirements/use-case-model.md`, `docs/proposal/project_plan.md` section 2.4.4, and the PA4 readiness checklist
+
+## 7. C4 Level 2: Container diagram
+Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+
+The container diagram expands the AuraTune software system into its independently running or hosted application containers. “Container” here is the C4 term; it does not imply that Docker images are present. In local development the browser uses Vite on port 5173, Express defaults to port 5000, and the Python service is configured separately (normally port 8000). The browser's `/api` calls are proxied by Vite to Express. In deployment, the browser-to-Express edge is HTTPS. Express uses HTTP(S) JSON/SSE to the AI service and the Supabase SDK over HTTPS to Supabase. The Python service also reads Supabase through PostgREST HTTPS; it does not open a direct PostgreSQL socket.
+
+```mermaid
+flowchart TB
+    Person["Guest / Listener / Artist / Administrator<br/>[Person]"]
+    Browser["AuraTune Web Application<br/>[Container: React 18, Vite 5, Tailwind CSS 3]<br/>Routes, session state, feature UI, audio player"]
+    API["AuraTune Backend API<br/>[Container: Node.js, Express 4]<br/>REST endpoints, authorization, feature orchestration, media gateway"]
+    AI["AuraTune AI Service<br/>[Container: Python, FastAPI, Uvicorn]<br/>Agent stream, recommendation, mood, lyrics and playlist endpoints"]
+    Supabase["Supabase Data Platform<br/>[Container: Supabase services, PostgreSQL]<br/>Relational application data and catalog reads"]
+    Firebase["Firebase Authentication<br/>[External Software System]"]
+    Cloudinary["Cloudinary Media Storage<br/>[External Software System]"]
+    Gemini["Google Gemini API<br/>[External Software System]"]
+
+    Person -->|"HTTPS; browser interaction"| Browser
+    Browser -->|"HTTP JSON / SSE / audio range; /api proxy in development, HTTPS in deployment"| API
+    Browser -->|"Firebase SDK HTTPS; sign-in and ID token"| Firebase
+    API -->|"HTTPS JSON via Supabase JS SDK / PostgREST; reads and writes"| Supabase
+    AI -->|"HTTPS PostgREST; catalog and lyrics reads when configured"| Supabase
+    API -->|"HTTP(S) JSON and SSE; internal AI endpoints"| AI
+    API -->|"HTTPS Firebase Admin token verification"| Firebase
+    API -->|"HTTPS media upload"| Cloudinary
+    Browser -->|"HTTPS audio/image delivery; byte-range for audio"| Cloudinary
+    AI -->|"HTTPS model inference; when configured"| Gemini
+```
+
+### Container responsibilities and communication
+
+| Container | Responsibility and technology | Communication |
+| --- | --- | --- |
+| AuraTune Web Application | React 18 UI bundled/served by Vite 5 and styled with Tailwind CSS 3. Contains browser routes, session and feature state, API clients, and the shared audio player. Some screens/data paths still use local demo state. | Calls Express using JSON APIs and SSE; Vite proxies `/api` to `http://localhost:5000` in development. Uses Firebase client SDK for provider sign-in. Requests audio URLs from the API and streams media from the returned Cloudinary URL. |
+| AuraTune Backend API | Node.js ES modules and Express 4. Provides `/api/v1` routes, token/session checks, controllers and services, media upload/streaming, and integration adapters. | Receives browser HTTP(S). Uses Supabase JS SDK (HTTPS), Firebase Admin (HTTPS), Cloudinary SDK (HTTPS), and HTTP(S) fetch to the Python AI service. Agent conversation forwards SSE events from Python to the browser. |
+| AuraTune AI Service | Python FastAPI/Uvicorn service. Implements agent streaming and AI-related endpoints; Gemini-backed response generation has a local fallback, while recommendation/catalog behavior can also be deterministic/local. | Receives backend HTTP(S) requests, returns JSON or SSE, reads Supabase PostgREST over HTTPS when configured, and calls Gemini over HTTPS when configured. The browser does not call this container directly. |
+| Supabase Data Platform | Hosted Supabase services backed by PostgreSQL. SQL migrations define application schemas; actual feature persistence varies by path. | Backend's `@supabase/supabase-js` and AI service PostgREST calls use HTTPS. These are API calls to Supabase, not direct SQL connections from either application container. |
+
+Firebase Authentication and Cloudinary are external systems, not application containers. Firebase handles provider identity verification; AuraTune session and role authorization remain in the backend. Cloudinary stores and serves uploaded binary media. Google Gemini is an optional external model provider called by the AI service. A configured integration is not evidence that the provider is reachable in a particular run.
+
+## 8. C4 Level 3: Representative frontend components
+Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+
+The following Level 3 view selects shared components that participate in navigation, session management and playback, plus a representative feature service. It does not enumerate every page or UI component.
+
+```mermaid
+flowchart TB
+    User["Browser user"]
+    App["App shell / providers<br/>React composition"]
+    Router["AppRouter<br/>Path matching and page selection"]
+    Store["AppStoreProvider<br/>Session restoration, auth context, shared feature state"]
+    Player["PlayerContext / useAudioPlayer<br/>Playback state, queue, HTMLAudioElement"]
+    Pages["Feature pages and components<br/>Home, Search, Library, Playlist, Album, Artist, Studio"]
+    Session["sessionApiClient<br/>Bearer token, refresh and API fetch"]
+    Playlist["playlistApi and feature services<br/>Playlist / album / song API adapters"]
+    Song["songApi<br/>Audio stream URL construction"]
+    Backend["AuraTune Backend API"]
+    Firebase["Firebase JS SDK"]
+    Media["Cloudinary media URL"]
+
+    User --> App
+    App --> Router
+    App --> Store
+    App --> Player
+    Router --> Pages
+    Pages --> Store
+    Pages --> Player
+    Store --> Session
+    Store --> Playlist
+    Session -->|"HTTP JSON, credentials and Bearer token"| Backend
+    Playlist -->|"HTTP JSON"| Backend
+    Store -->|"provider sign-in"| Firebase
+    Player --> Song
+    Song -->|"HTTP(S) stream endpoint resolves/serves media URL"| Backend
+    Backend -->|"audio URL"| Media
+    Player -->|"HTTP(S) audio fetch with range seeking"| Media
+```
+
+| Component | Responsibility | Relationships |
+| --- | --- | --- |
+| App shell and providers | Composes the React application and shared providers for global state and playback. | Renders `AppRouter`; provides AppStore and player context to page components. |
+| AppRouter | Matches the current pathname and selects the corresponding page; scrolls the page content to the top on navigation. | Renders feature pages, which consume shared state and services. |
+| AppStoreProvider | Restores backend sessions using the refresh cookie, maintains auth context and shared application state, and coordinates selected playlist/album/follow operations. The source explicitly retains browser localStorage demo state for some behavior. | Uses `sessionApiClient`, Firebase auth helpers and feature services; exposes state/actions to pages and player-facing UI. |
+| PlayerContext / `useAudioPlayer` | Owns playback track, queue, position, volume, repeat/shuffle and status; controls the browser `HTMLAudioElement`, persists a player snapshot and reports listening progress through available app callbacks. | Consumed by shared player controls and pages. Uses `songApi` to construct the stream endpoint and the browser fetches media bytes from the returned media URL. |
+| Feature pages and components | Present route-level experiences such as search, playlists, albums, artists and Studio. | Read/update AppStore and PlayerContext; invoke feature services for backend-backed operations. Some screens still use mock/demo catalog data. |
+| `sessionApiClient` | Central authenticated fetch wrapper; adds Bearer token, includes cookies and coordinates refresh/revocation handling. | Sends HTTP requests to Express; auth context is configured by AppStoreProvider. |
+| Feature API services (`playlistApi`, album/song clients) | Translate feature operations into endpoint requests and normalize responses where needed. | Called by AppStore or page components; requests flow to Express via the API base URL/Vite proxy. |
+| `songApi` | Builds the backend song/audio endpoint used by playback. | Called by `useAudioPlayer`; the API response/stream path ultimately supplies media consumed by the browser. |
+
+## 9. C4 Level 3: Representative backend components
+Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+
+This Level 3 view follows representative authentication, playlist, agent and media paths. The Express entrypoint currently contains a duplicate `mediaRoutes` import and places some route mounts after the 404 handler and `listen`; the diagram represents source-level module roles and intended call paths, not a claim that every shown route is reachable in the current checkout.
+
+```mermaid
+flowchart TB
+    Browser["React browser client"]
+    Entry["server.js / Express app<br/>Middleware and route mounts"]
+    Routes["Route modules<br/>auth, playlist, agent, media, song"]
+    Auth["Authentication middleware<br/>JWT, session and user checks"]
+    Controllers["Controllers<br/>HTTP validation and response mapping"]
+    Services["Feature services<br/>playlist, conversation and media orchestration"]
+    Repos["Repositories<br/>auth and feature persistence adapters"]
+    SupaClient["Supabase client<br/>@supabase/supabase-js"]
+    Supabase["Supabase Postgres APIs"]
+    AIClient["AI service adapter<br/>fetch / SSE forwarding"]
+    AI["Python FastAPI AI service"]
+    CloudAdapter["Cloudinary storage adapter"]
+    Cloudinary["Cloudinary"]
+    Firebase["Firebase Admin SDK"]
+
+    Browser -->|"HTTP JSON / SSE / multipart / audio"| Entry
+    Entry --> Routes
+    Routes --> Auth
+    Auth -->|"JWT verification; session/user lookup"| Repos
+    Auth -->|"Firebase ID token verification on exchange path"| Firebase
+    Routes --> Controllers
+    Controllers --> Services
+    Services --> Repos
+    Repos --> SupaClient
+    SupaClient -->|"HTTPS SDK / REST requests"| Supabase
+    Services --> AIClient
+    AIClient -->|"HTTP(S) JSON or SSE"| AI
+    Services --> CloudAdapter
+    CloudAdapter -->|"HTTPS upload"| Cloudinary
+```
+
+| Component | Responsibility | Relationships |
+| --- | --- | --- |
+| `server.js` / Express app | Loads environment/configuration, installs CORS/body/cookie middleware, registers feature routes and fallback handling, and starts the HTTP listener. | Dispatches requests to route modules. Current duplicate import and mount ordering caveats are stated above and in section 3. |
+| Route modules | Bind URL and HTTP method to middleware/controller functions. Representative modules include auth, playlist, agent, media and song routes. | Receive dispatch from Express; attach authentication middleware to protected operations; invoke controllers. |
+| Authentication middleware | Verifies AuraTune JWTs, resolves user/session state and attaches the authenticated principal to the request. Specialized middleware enforces route-specific session requirements. | Runs before protected controllers; uses auth repository/in-memory fallback as implemented. Firebase token exchange is verified through Firebase Admin in its controller path. |
+| Controllers | Validate request input, call application services/adapters and map outcomes to HTTP status and response bodies. `agentController` also establishes and manages the browser-facing SSE response. | Called by routes; invoke services and return JSON/SSE/stream responses. |
+| Feature services | Coordinate use-case behavior. `playlistService` handles playlist operations; `agentConversationService` validates and forwards a conversation to the Python service, with a local simulator fallback; media logic coordinates uploads/streaming. | Called by controllers; use repositories, AI adapter or media adapter according to the feature. |
+| Repositories | Encapsulate persistence operations for supported domains such as users, sessions and playlists. Some code paths retain in-memory/demo fallbacks, so persistence is feature-specific. | Called by middleware and services; reach Supabase through the database client where configured. |
+| Supabase client | Creates a backend-only Supabase JS client using service-role credentials when configured. | Repository calls become HTTPS requests to Supabase APIs/PostgREST; no direct PostgreSQL socket is used by this adapter. |
+| AI service adapter | Sends internal JSON requests to AI endpoints; for the agent path, parses upstream SSE events and forwards them through the backend SSE emitter. | Called by services and communicates with FastAPI over HTTP(S). Agent adapter is implemented in `agentConversationService`; recommendation adapters include `clients/aiServiceClient.js`. |
+| Cloudinary storage adapter | Uploads validated audio/image files to Cloudinary and returns secure media metadata/URLs. | Called by media feature logic; communicates with Cloudinary over HTTPS. |
+| Firebase Admin SDK | Verifies Firebase ID tokens submitted during identity exchange. | Used by Firebase exchange/auth controller paths; AuraTune then issues its own session token/cookie. |
+
+## 10. Diagram verification notes
+Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+
+- Development browser-to-API routing is based on `src/frontend/vite.config.js`: Vite listens on 5173 and proxies `/api` to `http://localhost:5000`.
+- The frontend API client uses `fetch`, credentials and Bearer authorization; the backend AI client uses HTTP `fetch` with JSON and an internal-secret header. The agent service forwards SSE rather than presenting a browser-to-AI connection.
+- `src/database/supabaseClient.js` creates a server-side Supabase JS client. AI catalog/lyrics reads use Supabase PostgREST. Both are HTTPS API paths, not direct database sockets.
+- Playback uses the browser audio element and song API URL; media delivery supports byte-range behavior as documented by the backend source and prior audit.
+- Source-level diagrams are complete, but an integrated review after backend startup and route-mount defects are resolved remains outstanding. Marking this final review complete requires checking the actual running application.
