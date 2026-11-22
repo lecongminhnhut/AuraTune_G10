@@ -20,5 +20,8 @@ class Settings:
     AI_SERVICE_PORT: int = int(os.getenv("AI_SERVICE_PORT", "8000"))
     AI_INTERNAL_SECRET: str = os.getenv("AI_INTERNAL_SECRET", "auratune-internal-secret-2026")
     CORS_ORIGINS: list[str] = ["*"]
+    INTERNAL_API_KEY: str = os.getenv("INTERNAL_API_KEY", "")
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
+    SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
 settings = Settings()

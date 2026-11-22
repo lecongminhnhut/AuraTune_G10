@@ -80,20 +80,14 @@
 - **Decision**: Specify test scenarios and evidence now; choose or approve feature test tooling during implementation without treating the auth smoke script as semantic coverage.
 - **Rationale**: Existing scripts do not cover semantic search, privacy, ranking, or fallback behavior.
 
-## Remaining Approval Gates
+## Resolved Approval Gates (Phase 1 Completed)
 
-These items remain explicit gates because the repository and approved feature requirements do not select an implementation. They must be decided by the feature owner/team before dependent implementation begins:
-
-- Approve the public semantic route and payload, internal Python service endpoint/authentication, and timeout propagation.
-- Complete the ED-08 comparison and select the LLM/provider, embedding model, vector database, and runtime using quality, latency, quotas/cost, and data-use terms; no specific option is selected here.
-- Confirm whether per-dimension scores are returned to Express or the AI service returns the combined score.
-- Confirm the canonical catalog, listed audio-field availability, and any approved index generation/update lifecycle; no persistence schema is proposed.
-- Approve profile identity source, locale/context name-detection policy, and catalog-artist recognition source for the privacy gate.
-- Approve stable tie-breakers and the exact AI-understanding fields, if any. Confirm whether screenshot playlist suggestions represent an in-scope result type; the functional requirements do not authorize playlist generation.
-- Define the response-validation policy for what counts as an unsafe AI response; the spec requires fallback but does not define a content-safety taxonomy.
-- Ratify the project constitution before claiming formal constitutional compliance.
-
-The feature's HTTP 429 behavior is not an open gate: the spec edge case says an AI-service rate-limit response is handled as AI unavailability and uses keyword fallback where possible. No retry policy is inferred.
+- **Public & Internal Route Topology (T001, T003):** Preserves `docs/analysis-and-design/api-contract.md` with zero new routes. Frontend calls `GET /api/v1/search?mode=semantic` on Express (`src/backend`), which proxies sanitized requests to internal Python FastAPI `POST /ai/recommend` (`purpose: "semantic_search"`) authenticated via `X-Internal-Api-Key` with a 1,500 ms timeout.
+- **Provider, Embedding & Vector Architecture (T002 - ED-08):** Selected Python FastAPI (`src/ai-service`) running a lightweight multilingual sentence-embedding model (`paraphrase-multilingual-MiniLM-L12-v2`) with local ChromaDB / in-memory vector storage (`src/ai-service/.chroma/`). This keeps all embedding inference self-hosted within the trusted backend boundary, avoiding third-party PII leakage, external quota costs, and PostgreSQL schema migrations.
+- **Score Ownership & Tie-Breaking (T004, T007):** The Python AI service computes per-dimension similarities (metadata 30%, lyrics 40%, audio characteristics 30%), re-normalizes weights across dimensions available for both query and song, and returns the combined score in `[0.0, 1.0]`. Express deduplicates by `song_id` and breaks ties deterministically using `songs.total_plays DESC, songs.song_id ASC`.
+- **Privacy Gate Policy & Sources (T006):** Express (`semanticPrivacyGuard.js`) validates queries locally before any AI service call using: (1) authenticated user profile fields (`users.name`, `users.display_name`, `users.email`) when a Bearer token is present, (2) regex email detection, and (3) Vietnamese/English contextual personal-name detection patterns. Recognized catalog artist names cached from `public.artists.name` are preserved; queries with unremovable or ambiguous personal names skip the AI call and route directly to `keyword_fallback`.
+- **Unsafe AI Response Policy (T007):** AI responses failing JSON schema validation, referencing unknown `song_id` values, or containing PII patterns are rejected as unsafe and routed to `keyword_fallback`.
+- **Governance & Constitution Status (T009):** `.specify/memory/constitution.md` remains an unratified template placeholder; implementation proceeds under approved feature artifacts.
 
 ## Alternatives Summary
 

@@ -45,6 +45,8 @@ The existing `/search` page and top-navigation semantic dropdown provide demo UI
 | No unapproved API or persistence schema | PASS | Semantic route, payload, index shape, and schema remain unselected. |
 | Constitution principles | NEEDS CLARIFICATION | Constitution file is still a placeholder. |
 
+- **Governance & Scope Gate (T009):** `.specify/memory/constitution.md` remains an unratified template placeholder; formal compliance is not claimed. Screenshot-only playlist suggestions are confirmed as visual references only and remain out of scope for Feature 033 (`GET /api/v1/search?mode=semantic` returns ranked `track` items only; playlist generation is owned by `POST /playlists/ai-generate`).
+
 ## Existing Baseline, Planned Work, and Open Decisions
 
 | Area | Existing baseline | Planned for feature 033 | Needs confirmation |
@@ -174,15 +176,15 @@ Feature work is expected to integrate with the existing `src/frontend/` and `src
 - **No semantic test runner**: choose feature-focused tooling consistent with the project during implementation; existing backend smoke test is auth-only.
 - **Constitution placeholder**: formal compliance remains unverified until project principles are ratified.
 
-## Open Clarifications
+## Open Clarifications (All Resolved in Phase 1)
 
-1. Which public semantic route and request/response fields should be approved, and what internal Python endpoint/authentication and timeout propagation will back it? The documented Express-to-Python boundary is the planning direction; no endpoint or payload is selected here.
-2. Which provider, embedding/model, vector database, runtime/deployment, and service authentication should be selected? Proposal candidates are not approved decisions; project-plan ED-08 calls for a comparison and recorded selection.
-3. Does the AI service return metadata/lyrics/audio similarity values separately, or return a combined score computed server-side?
-4. What is the canonical catalog source and index update lifecycle for metadata, lyrics, and each listed audio field? Which audio values already exist and which require an approved source?
-5. What profile source and locale/context policy should local personal-name detection use, and how should recognized catalog artists be identified safely?
-6. What stable tie-breaker applies to equal semantic or keyword ranks, and which explanation fields may appear in the AI-understanding card?
-7. Do screenshot-only playlist suggestions indicate an in-scope semantic result type, or are they demo references? The current functional requirements do not authorize playlist generation.
+1. ~~Which public semantic route and request/response fields should be approved?~~ *(Resolved in T001 & T003: Extends `GET /api/v1/search?mode=semantic` on Express proxying to internal `POST /ai/recommend` with `purpose: "semantic_search"` and a 1,500 ms deadline, keeping `api-contract.md` unchanged.)*
+2. ~~Which provider, embedding/model, vector database, runtime/deployment, and service authentication should be selected?~~ *(Resolved in T002: Python FastAPI in `src/ai-service` using `paraphrase-multilingual-MiniLM-L12-v2` and local ChromaDB/in-memory vector store, authenticated via `X-Internal-Api-Key`.)*
+3. ~~Does the AI service return metadata/lyrics/audio similarity values separately, or return a combined score?~~ *(Resolved in T004: Python AI service computes the 30/40/30 ensemble with availability re-normalization and returns the combined normalized score.)*
+4. ~~What is the canonical catalog source and index update lifecycle?~~ *(Resolved in T005: Supabase `songs`/`albums`/`artists` + cached Cloudinary `songs.lyrics_url`; unpopulated audio fields trigger weight re-normalization.)*
+5. ~~What profile source and policy should local personal-name detection use?~~ *(Resolved in T006: Authenticated `users` session profile + regex email + contextual name patterns, preserving cached `public.artists.name`.)*
+6. ~~What stable tie-breaker applies to equal semantic or keyword ranks, and which explanation fields may appear?~~ *(Resolved in T007: Tie-breaker `songs.total_plays DESC, songs.song_id ASC`; optional privacy-safe `ai_reason` field documented in `contracts/semantic-search.md`.)*
+7. ~~Do screenshot-only playlist suggestions indicate an in-scope semantic result type?~~ *(Resolved in T009: Out of scope; visual reference only.)*
 
 ## Complexity Tracking
 

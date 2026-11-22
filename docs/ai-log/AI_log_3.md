@@ -39,6 +39,10 @@
 | 35 | 2026-11-11 | Thực thi implement cho spec 081 bằng Spec Kit `/speckit-implement` | 08 Album Interaction |
 | 36 | 2026-11-13 | Thực thi implement cho spec 082 bằng Spec Kit `/speckit-implement` | 08 Album Interaction |
 | 37 | 2026-11-13 | Thực thi implement cho spec 083 bằng Spec Kit `/speckit-implement` | 08 Album Interaction |
+| 38 | 2026-11-19 | Thực thi implement cho spec 031 bằng Spec Kit `/speckit-implement` | 030 Search |
+| 39 | 2026-11-20 | Thực thi implement cho spec 032 bằng Spec Kit `/speckit-implement` | 030 Search |
+| 40 | 2026-11-20 | Thực thi implement cho spec 033 bằng Spec Kit `/speckit-implement` | 030 Search |
+| 41 | 2026-11-21 | Cập nhật tài liệu Software Architecture (Tech Stack & C4 Level 1) cho PA4 Phần B | docs |
 
 ---
 
@@ -3632,4 +3636,391 @@ Hãy thực hiện tuần tự các task từ T005 (Phase 2) đến T030 (Phase 
 - [x] Chạy kiểm tra bằng công cụ chẩn đoán (`node --check`) trên terminal.
 - [x] Đối chiếu hành vi mã nguồn với tài liệu chính thức và API schema.
 - [x] Kiểm tra tính bảo mật, các trạng thái ngoại lệ (lỗi nội tuyến) và không có SDK ngoài phạm vi.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+---
+
+## Mục 38: Thực thi implement cho spec 031 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-19 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 031: Metadata Search |
+| Công cụ AI | GPT-6-Luna (Spec Kit `/speckit-implement`) |
+| Mục đích | Triển khai mã nguồn hoàn chỉnh cho Feature 031 (Metadata Search) từ Phase 2 (T004) đến Phase 6 (T047), bao gồm API tìm kiếm công khai trên Express/Supabase, giao diện tìm kiếm React, lưu trữ lịch sử cục bộ và bộ kiểm thử chấp nhận/hồi quy. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement 
+
+Bạn hãy đóng vai trò Fullstack Senior Engineer triển khai hoàn chỉnh Feature 031 (Metadata Search) thuộc Group 030 (Search) của dự án AuraTune.
+
+Giai đoạn 1 (Phase 1: Tasks T001-T003) đã được phê duyệt và giải quyết hoàn toàn. Hãy bắt đầu implement từ Giai đoạn 2 (Phase 2: Task T004) và thực hiện tuần tự đến hết Giai đoạn 6 (Phase 6: Task T047).
+
+Trước khi viết mã, bạn hãy đọc và tuân thủ tuyệt đối các tài liệu nguồn sau:
+- Đặc tả: `specs/030-search/031-metadata-search/spec.md`
+- Kế hoạch: `specs/030-search/031-metadata-search/plan.md`
+- Nghiên cứu kỹ thuật: `specs/030-search/031-metadata-search/research.md`
+- Danh sách task: `specs/030-search/031-metadata-search/tasks.md`
+- Mô hình dữ liệu & Ánh xạ DB: `specs/030-search/031-metadata-search/data-model.md`
+- Hợp đồng API: `specs/030-search/031-metadata-search/contracts/search-api.md` và OpenAPI Schema: `specs/030-search/031-metadata-search/contracts/search-api.json`
+- Kịch bản nghiệm thu & Kiểm thử: `specs/030-search/031-metadata-search/quickstart.md`
+- Hợp đồng API chung toàn dự án: `docs/analysis-and-design/api-contract.md`
+- Kiến trúc hệ thống & Quy trình nhóm: `docs/design/architecture/system-architecture.md`, `docs/management/team-contract.md`, `docs/management/git-workflow.md`
+
+**Yêu cầu về Ngôn ngữ (STRICT Language Directive)**:
+- Hãy giao tiếp, giải thích, báo cáo tiến độ và tương tác với tôi hoàn toàn bằng **Tiếng Việt**.
+- Tuy nhiên, TOÀN BỘ mã nguồn (source code), chú thích trong code (comments), tên biến, thông báo lỗi API theo contract, các file test, và các cập nhật vào file tài liệu (như việc đổi `[ ]` thành `[x]` trong `tasks.md`) BẮT BUỘC phải được viết bằng **Tiếng Anh**. Tuyệt đối không dùng tiếng Việt trong code hoặc trong các tài liệu thiết kế.
+
+**Các nguyên tắc bất biến và Ràng buộc (Invariants - DOs & DON'Ts)**:
+1. **Backend API & Database Mapping (DO)**:
+  - Express backend (`src/backend`) sở hữu endpoint công khai `GET /api/v1/search` (không yêu cầu access token) và truy vấn catalog PostgreSQL thông qua Supabase client có sẵn tại `src/database/supabaseClient.js`.
+  - Tuân thủ chính xác ánh xạ bảng/cột đã chốt trong `data-model.md`:
+    - `tracks` -> `public.songs` (`LEFT JOIN public.albums`, `LEFT JOIN public.artists`).
+    - `artists` -> `public.artists` (`LEFT JOIN public.users`).
+    - `albums` -> `public.albums` (`LEFT JOIN public.artists`, `LEFT JOIN public.songs` khi lọc `genre`).
+    - `playlists` -> `public.playlists` (`LEFT JOIN public.users`, đếm `public.playlist_songs`), **BẮT BUỘC** lọc `playlists.status = 'Public'` (loại bỏ `Private` và `Shared`).
+  - Chuẩn hóa từ khóa `q` đồng nhất giữa backend và frontend: trim khoảng trắng đầu/cuối, không phân biệt chữ hoa/thường, dấu tiếng Việt (Unicode NFD) và dấu câu; giới hạn độ dài `q` từ **2 đến 100 ký tự** sau khi trim.
+2. **Parameter Applicability, Sorting & Pagination (DO)**:
+  - Chỉ chấp nhận 7 tham số hợp lệ: `q`, `type` (`all`, `tracks`, `artists`, `albums`, `playlists`), `limit` (1–50, mặc định `20`), `offset` (`>= 0`, mặc định `0`), `genre`, `release_year`, và `sort` (`relevance`, `plays`, `newest`, `title`). Mọi tham số lạ hoặc kết hợp filter/sort không hợp lệ với `type` phải trả về `400 VALIDATION_ERROR` kèm `error.details`.
+  - Khi `type=all`, kết quả luôn gom nhóm theo thứ tự cố định: `tracks`, `artists`, `albums`, `playlists`. Nếu có `genre` hoặc `release_year` khi `type=all`, chỉ trả về `tracks` và `albums` khớp điều kiện AND, bỏ qua `artists` và `playlists`.
+  - Trả về đúng format envelope `{ success, message, data, pagination, error }` với `pagination = { limit, offset, next_offset, has_more }`.
+3. **Frontend State, History & UI (DO)**:
+  - Trên `SearchPage.jsx`, ẩn các bộ lọc (`genre`, `release_year`) không áp dụng cho tab `type` hiện tại (`artists`, `playlists`).
+  - Hỗ trợ nút **Load More** nối tiếp kết quả theo `pagination.next_offset` khi `has_more === true`, và có cơ chế bảo vệ chống stale response (hủy request cũ hoặc kiểm tra request identity) khi người dùng đổi từ khóa/bộ lọc nhanh.
+  - Lưu tối đa **10 từ khóa tìm kiếm gần đây** trong `LocalStorage` (`searchHistory.js`), hiển thị dropdown khi focus ô tìm kiếm với đầy đủ chức năng chọn lại, xóa từng mục, xóa tất cả và xử lý an toàn khi `LocalStorage` bị khóa/lỗi.
+4. **Database, Scope & Dependencies (DON'T)**:
+  - Tuyệt đối **KHÔNG** tạo mới bảng, cột hay file migration SQL nào trong `src/database/migrations/`.
+  - Tuyệt đối **KHÔNG** tự ý thêm công thức chấm điểm `relevance` tùy chỉnh và **KHÔNG** cài đặt thêm thư viện test bên ngoài nào (sử dụng sẵn test runner và `npm test` đã cấu hình trong `src/backend/package.json` và `src/frontend/package.json` theo `quickstart.md`).
+  - Tuyệt đối **KHÔNG** implement logic tìm kiếm lời bài hát AI (Feature 032) hay tìm kiếm ngữ nghĩa/tâm trạng AI (Feature 033) trong phạm vi này; chỉ giữ nguyên ranh giới điều hướng tab trên `/search`.
+
+**Chỉ thị thực thi (Execution Directive)**:
+Hãy thực hiện tuần tự các task từ T004 (Phase 2) đến T047 (Phase 6). Sau khi hoàn thành mỗi Phase, hãy dừng lại, báo cáo ngắn gọn danh sách file đã tạo/thay đổi và kết quả kiểm thử bằng tiếng Việt, tự động cập nhật file `specs/030-search/031-metadata-search/tasks.md` (chuyển `[ ]` thành `[x]`), sau đó tiếp tục với phase tiếp theo cho đến hết.
+```
+
+### Tóm tắt phản hồi của AI
+
+* **Đọc tài liệu & Xác minh cấu trúc:** AI đã kiểm tra toàn bộ hồ sơ thiết kế của Feature 031 (`spec.md`, `plan.md`, `research.md`, `data-model.md`, `contracts/search-api.md`, `contracts/search-api.json`, `quickstart.md`) cùng các tài liệu quy chuẩn dự án; sử dụng PowerShell tương đương do bash script prerequisite không chạy được trên môi trường hiện tại.
+* **Triển khai Backend (Phase 2):**
+  * Tạo mới `searchNormalization.js` (chuẩn hóa chữ hoa/thường, dấu tiếng Việt NFD, dấu câu), `searchRepository.js` (ánh xạ `songs`, `artists`, `albums`, `playlists`, lọc bắt buộc `playlists.status = 'Public'`, gom nhóm `type=all`, lọc AND `genre`/`release_year`, sắp xếp và phân trang `offset`/`limit`), `searchController.js` (validate 7 tham số hợp lệ, map lỗi `400 VALIDATION_ERROR` và `500 INTERNAL_ERROR`), và `searchRoutes.js` gắn vào `/api/v1/search` trên `server.js`.
+  * Không tạo thêm bảng, cột hay file migration mới trong `src/database/migrations/`.
+* **Triển khai Frontend & Lịch sử tìm kiếm (Phase 3–5):**
+  * Tạo mới `searchNormalization.js` (đồng nhất logic với backend), `searchApi.js` (chỉ serialize 7 tham số được phê duyệt và chuẩn hóa lỗi HTTP/mạng), `useMetadataSearch.js` (quản lý trạng thái truy vấn, reset batch, bảo vệ chống stale response, retry và Load More), và `searchHistory.js` (lưu tối đa 10 từ khóa gần đây vào LocalStorage, xử lý an toàn khi storage bị lỗi/khóa).
+  * Cập nhật `SearchPage.jsx` để tích hợp hook mới, ẩn các bộ lọc không áp dụng cho từng loại kết quả (`artists`, `playlists`), giữ nguyên khả năng phát nhạc qua `PlayerContext` và giữ ranh giới tách biệt với các tab AI Lyrics / Semantic.
+* **Kiểm thử & Cập nhật Checklist (Phase 6):**
+  * Bổ sung các bộ test mới tại `src/backend/tests/search.test.js`, `src/frontend/src/utils/searchHistory.test.js`, và `src/frontend/tests/search/metadata-search.test.js` bằng test runner có sẵn (không cài thêm thư viện ngoài).
+  * Chạy kiểm tra đạt 4/4 test backend search, 5/5 test frontend metadata/history; đo benchmark chuẩn hóa ứng dụng đạt ~20ms cho 10.000 bản ghi.
+  * Cập nhật toàn bộ 47 task (T001–T047) trong `tasks.md` sang trạng thái hoàn thành `[x]` bằng tiếng Anh.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ánh xạ Supabase (`songs`, `artists`, `albums`, `playlists`) và lọc `status = 'Public'` | Dùng | Đảm bảo truy vấn đúng schema thực tế của dự án, bảo vệ quyền riêng tư cho các playlist Private/Shared và không phát sinh migration mới. |
+| Chuẩn hóa Unicode NFD đồng nhất ở cả Backend và Frontend | Dùng | Đảm bảo kết quả khớp từ khóa tiếng Việt không dấu/dấu câu nhất quán giữa giao diện và API. |
+| Quản lý trạng thái tìm kiếm với Stale-Response Protection & Load More | Dùng | Ngăn chặn kết quả của truy vấn cũ ghi đè lên truy vấn mới khi người dùng nhập nhanh và hỗ trợ phân trang mượt mà theo `next_offset`. |
+| Lưu tối đa 10 lịch sử truy vấn trên LocalStorage kèm cơ chế fallback an toàn | Dùng | Tuân thủ FR-019, tránh lưu dữ liệu nhạy cảm hay kết quả tìm kiếm nặng máy, đồng thời không làm sập trang khi trình duyệt chặn storage. |
+| Tận dụng test runner sẵn có và không thêm thư viện ngoài | Dùng | Giữ sạch `package.json`, tuân thủ ràng buộc kỹ thuật đã chốt ở Phase 1. |
+
+### Cách kiểm chứng
+
+- [x] Kiểm tra cú pháp toàn bộ file backend mới bằng `node --check` (không có lỗi).
+- [x] Chạy kiểm thử backend (`node --test tests/search.test.js`): 4/4 test pass (xác nhận envelope thành công, phân trang, gom nhóm `type=all`, lọc/sắp xếp và lỗi `400 VALIDATION_ERROR` / `500 INTERNAL_ERROR`).
+- [x] Chạy kiểm thử frontend mục tiêu (`searchHistory.test.js` và `metadata-search.test.js`): 5/5 test pass (xác nhận giới hạn 10 mục history, khôi phục khi storage lỗi, serialization tham số và chuẩn hóa).
+- [x] Đối chiếu toàn bộ 47 task trong `specs/030-search/031-metadata-search/tasks.md` và mã nguồn thực tế với `contracts/search-api.md` và `data-model.md`.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+---
+
+## Mục 39: Thực thi implement cho spec 032 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-20 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 032: AI Lyrics Search |
+| Công cụ AI | GPT-5.6-Luna  |
+| Mục đích | Triển khai hoàn chỉnh mã nguồn cho Feature 032 (AI Lyrics Search) từ Phase 2 (T010) đến Phase 6 (T049), bao gồm public proxy endpoint trên Express, internal FastAPI endpoint, cơ chế fallback từ khóa theo `public.songs.lyrics`, giao diện React, bảo vệ race-condition và bộ kiểm thử chấp nhận. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement 
+
+Bạn hãy đóng vai trò Fullstack & AI Senior Engineer triển khai hoàn chỉnh Feature 032 (AI Lyrics Search) thuộc Group 030 (Search) của dự án AuraTune.
+
+Giai đoạn 1 (Phase 1: Tasks T001–T009) đã được phê duyệt và giải quyết hoàn toàn. Hãy bắt đầu implement từ Giai đoạn 2 (Phase 2: Task T010) và thực hiện tuần tự đến hết Giai đoạn 6 (Phase 6: Task T049).
+
+Trước khi viết mã, bạn hãy đọc và tuân thủ tuyệt đối các tài liệu nguồn sau:
+- Đặc tả: `specs/030-search/032-ai-lyrics-search/spec.md`
+- Kế hoạch: `specs/030-search/032-ai-lyrics-search/plan.md`
+- Nghiên cứu kỹ thuật: `specs/030-search/032-ai-lyrics-search/research.md`
+- Danh sách task: `specs/030-search/032-ai-lyrics-search/tasks.md`
+- Mô hình dữ liệu & Nguồn lời bài hát: `specs/030-search/032-ai-lyrics-search/data-model.md`
+- Hợp đồng API: `specs/030-search/032-ai-lyrics-search/contracts/lyrics-search.md` và OpenAPI Schema: `specs/030-search/032-ai-lyrics-search/contracts/ai-lyrics-search-api.json`
+- Kịch bản nghiệm thu & Kiểm thử: `specs/030-search/032-ai-lyrics-search/quickstart.md`
+- Hợp đồng API chung toàn dự án: `docs/analysis-and-design/api-contract.md`
+- Kiến trúc hệ thống & Quy trình nhóm: `docs/design/architecture/system-architecture.md`, `docs/management/team-contract.md`, `docs/management/git-workflow.md`
+
+**Yêu cầu về Ngôn ngữ (STRICT Language Directive)**:
+- Hãy giao tiếp, giải thích, báo cáo tiến độ và tương tác với tôi hoàn toàn bằng **Tiếng Việt**.
+- Tuy nhiên, TOÀN BỘ mã nguồn (source code), chú thích trong code (comments), tên biến, thông báo lỗi/hợp đồng API theo contract, các file test, và các cập nhật vào file tài liệu (như việc đổi `[ ]` thành `[x]` trong `tasks.md` hay ghi nhận kết quả trong `quickstart.md`) BẮT BUỘC phải được viết bằng **Tiếng Anh**. Tuyệt đối không dùng tiếng Việt trong code hoặc trong các tài liệu thiết kế (ngoại trừ các chuỗi UI/message đã được cố định nguyên văn trong OpenAPI contract như thông báo lỗi 429/503/500 nếu contract yêu cầu).
+
+**Các nguyên tắc bất biến và Ràng buộc (Invariants - DOs & DON'Ts)**:
+1. **Service Topology & Security Boundary (DO)**:
+   - Express backend (`src/backend`) sở hữu endpoint công khai `GET /api/v1/search/lyrics` (không yêu cầu user access token) và gọi nội bộ sang Python FastAPI AI Service (`src/ai-service`) tại `POST /ai/search/lyrics` với header xác thực `X-Internal-Api-Key` lấy từ biến môi trường `.env` của backend.
+   - Trình duyệt (Frontend) chỉ gọi `GET /api/v1/search/lyrics` qua adapter `aiLyricsSearchApi.js`; tuyệt đối **KHÔNG** gọi trực tiếp vào AI Service hay để lộ secret key ở frontend.
+   - Chỉ chấp nhận 3 query parameter hợp lệ ở public endpoint: `q`, `limit` (1–50, mặc định `20`), `offset` (`>= 0`, mặc định `0`). Mọi tham số lạ hoặc giá trị không hợp lệ phải trả về `400 VALIDATION_ERROR` kèm `error.details`.
+
+2. **Query Validation & Normalization (DO)**:
+   - Áp dụng đồng nhất ở cả Backend và Frontend: trim khoảng trắng đầu/cuối và gộp nhiều khoảng trắng liên tiếp thành một dấu cách trước khi validate.
+   - Truy vấn `q` hợp lệ phải có **ít nhất 3 từ** và **tối đa 200 ký tự** sau khi trim. Nếu rỗng, chỉ có khoảng trắng, `< 3` từ hoặc `> 200` ký tự, Frontend hiển thị phản hồi lỗi cục bộ và **KHÔNG** gửi request.
+   - Chuẩn hóa văn bản cho so khớp fallback: trim, gộp khoảng trắng, chuyển chữ thường (`lowercase`), loại bỏ dấu tiếng Việt (Unicode NFD) và loại bỏ dấu câu.
+
+3. **Canonical Lyric Source, Fallback & Ranking Rules (DO)**:
+   - Nguồn lời bài hát chính thức lấy trực tiếp từ cột văn bản `public.songs.lyrics` trong Supabase PostgreSQL (bỏ qua bài hát có `lyrics IS NULL` hoặc chuỗi rỗng sau khi trim; tuyệt đối **KHÔNG** dùng `lyrics_url` hay tải file lyric từ Cloudinary). Khi nạp vào bộ nhớ đệm (in-memory / local `.cache/` index), loại bỏ các thẻ timestamp LRC nếu có (ví dụ `[00:15.20]`) để trích xuất lời thuần túy.
+   - Ánh xạ thông tin hiển thị và phát nhạc theo `songs.song_id` -> `public.albums` -> `public.artists` đồng nhất với Feature 031, kèm trường `matched_lyric`.
+   - Khi internal AI Service trả về `HTTP 503` hoặc không phản hồi trong **3 giây (`3000ms`)**, Express backend (và cơ chế phòng vệ phía client) tự động chuyển sang tìm kiếm từ khóa dự phòng (**normalized lyrics-only fallback**) và trả về `200 OK` với `meta.search_mode = "keyword_fallback"`.
+   - **Phạm vi & Thứ tự xếp hạng Fallback (BẮT BUỘC)**:
+     - Chỉ tìm trên nội dung lời bài hát đã chuẩn hóa; tuyệt đối **KHÔNG** khớp theo tên bài hát (`title`), nghệ sĩ (`artist`), album hay playlist.
+     - Xếp hạng theo thứ tự tất định: (1) Khớp chính xác cả cụm từ đã chuẩn hóa (`normalizedLyric.includes(normalizedQuery)`), (2) Số lượng từ khóa chuẩn hóa riêng biệt khớp nhiều hơn, (3) Quy tắc phân xử hòa (tie-breaker): `songs.total_plays DESC NULLS LAST, songs.song_id ASC`.
+   - **Phân biệt lỗi**: `HTTP 429` (`RATE_LIMITED`) và các lỗi khác (`400`, `500`) tuyệt đối **KHÔNG** kích hoạt keyword fallback; chỉ hiển thị trạng thái lỗi phù hợp (cho phép thử lại với 429/500) và không hiển thị kết quả cũ của truy vấn trước.
+
+4. **Response Envelope, Frontend State & UI Integration (DO)**:
+   - Tuân thủ chính xác envelope `{ success, message, data, pagination, meta, error }` theo `contracts/ai-lyrics-search-api.json` với `pagination = { limit, offset, next_offset, has_more }` và `meta = { search_mode: "ai" | "keyword_fallback" }`.
+   - Trên `useLyricsSearch.js` và `SearchPage.jsx` (tab `/search?type=lyrics`):
+     - Chặn gửi trùng lặp (duplicate submission) khi cùng một truy vấn đang trong trạng thái loading.
+     - Gắn định danh truy vấn hiện tại (request identity / AbortController) cho mọi request AI, fallback và Load More để loại bỏ hoàn toàn stale response khi người dùng nhập truy vấn mới; reset toàn bộ kết quả cũ, phân trang, lỗi và banner khi submit từ khóa mới.
+     - Hiển thị tối đa **20 bài hát** mỗi batch và hỗ trợ nút **Load More** theo `pagination.next_offset` khi `has_more === true`.
+     - Khi `meta.search_mode === "keyword_fallback"` (hoặc kích hoạt fallback do timeout 3s), hiển thị **dismissible inline banner** phía trên danh sách kết quả; giữ banner cho đến khi người dùng bấm đóng hoặc thực hiện tìm kiếm mới.
+     - Tích hợp phát nhạc qua `PlayerContext` và `AppStore` sử dụng các component hiện có (`SongRow`, `CoverArt`).
+
+5. **Database, Scope & Dependencies (DON'T)**:
+   - Tuyệt đối **KHÔNG** tạo mới bảng, cột hay file migration SQL nào trong `src/database/migrations/`.
+   - Tuyệt đối **KHÔNG** tự ý phát minh thêm trường JSON ngoài contract, không cài đặt thêm thư viện/test runner bên ngoài nếu chưa có trong `package.json` (tận dụng tối đa test tooling sẵn có từ T009).
+   - Tuyệt đối **KHÔNG** chỉnh sửa hay implement lại logic của Feature 031 (Metadata Search) hay Feature 033 (Semantic Search); giữ nguyên ranh giới điều hướng giữa các tab trên `/search`.
+
+**Chỉ thị thực thi (Execution Directive)**:
+Hãy thực hiện tuần tự các task từ T010 (Phase 2) đến T049 (Phase 6). Sau khi hoàn thành mỗi Phase, hãy dừng lại, báo cáo ngắn gọn danh sách file đã tạo/thay đổi và kết quả kiểm thử bằng tiếng Việt, tự động cập nhật file `specs/030-search/032-ai-lyrics-search/tasks.md` (chuyển `[ ]` thành `[x]`), sau đó tiếp tục với phase tiếp theo cho đến hết.
+```
+
+### Tóm tắt phản hồi của AI
+
+* **Kiểm tra tài liệu & Baseline:** Đọc toàn bộ đặc tả, kế hoạch, hợp đồng OpenAPI của Feature 032 cùng kiến trúc chung của dự án; xác nhận Phase 1 (T001–T009) đã chốt, giữ nguyên các thay đổi của Feature 031 và ghi nhận trạng thái placeholder của `constitution.md`.
+* **Triển khai Backend & Internal AI Service (Phase 2):**
+  * Tạo route công khai `GET /api/v1/search/lyrics` (`lyricsSearchRoutes.js`, `lyricsSearchController.js`) kèm kiểm tra tham số đầu vào (`>= 3` từ, `<= 200` ký tự sau trim) và cấu trúc envelope chuẩn.
+  * Xây dựng client giao tiếp nội bộ (`lyricsAiClient.js`) gọi sang FastAPI (`POST /ai/search/lyrics` trong `src/ai-service/main.py`) kèm header `X-Internal-Api-Key` và ngưỡng timeout `3000ms`. Bổ sung bước hardening: tự động trả về unavailable nếu `INTERNAL_API_KEY` chưa cấu hình để kích hoạt fallback an toàn.
+  * Triển khai `lyricsSearchRepository.js` và `lyricsSearch.js` đọc trực tiếp cột `public.songs.lyrics` từ Supabase, loại bỏ timestamp LRC, chuẩn hóa chuỗi (Unicode NFD, lowercase, bỏ dấu câu), xếp hạng fallback theo cụm từ chính xác -> số từ khớp -> `total_plays DESC, song_id ASC`, đồng thời tách bạch lỗi `429 RATE_LIMITED` không kích hoạt fallback.
+* **Triển khai Frontend & UI (Phase 3–5):**
+  * Tạo adapter `aiLyricsSearchApi.js`, bộ matcher dự phòng `lyricsFallbackSearch.js` và hook `useLyricsSearch.js` quản lý vòng đời truy vấn (chặn gửi trùng lặp, hủy request cũ bằng request identity/AbortController, phân trang 20 bài với Load More).
+  * Tích hợp vào tab `/search?type=lyrics` trên `SearchPage.jsx`: hiển thị bài hát khớp kèm câu lời trích dẫn, banner thông báo fallback có thể đóng được (dismissible), các trạng thái rỗng/lỗi/rate-limit rõ ràng và phát nhạc qua `PlayerContext`.
+* **Kiểm thử & Cập nhật tài liệu (Phase 6):**
+  * Bổ sung unit/integration test cho backend (`lyricsSearch.integration.test.js`), frontend (`aiLyricsSearchApi.test.js`, `lyricsFallbackSearch.test.js`) và bộ kiểm thử chấp nhận E2E (`tests/e2e/032-ai-lyrics-search.test.js`).
+  * Cập nhật toàn bộ checkbox T010–T049 thành `[x]` trong `tasks.md` và ghi nhận kết quả nghiệm thu vào `quickstart.md` bằng tiếng Anh.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Ranh giới Express Proxy -> Python FastAPI kèm `X-Internal-Api-Key` & timeout 3000ms | Dùng | Bảo mật khóa nội bộ ở phía server, tránh lộ secret lên trình duyệt và đảm bảo tự động hạ cấp sang keyword fallback đúng ngưỡng 3 giây. |
+| Đọc trực tiếp `public.songs.lyrics` từ Supabase và loại bỏ LRC timestamps | Dùng | Đồng bộ chính xác với thay đổi lưu trữ mới của dự án, loại bỏ phụ thuộc ngoài vào Cloudinary `lyrics_url` và hỗ trợ tìm kiếm nhanh. |
+| Hardening kiểm tra `INTERNAL_API_KEY` trong `src/ai-service/main.py` | Dùng | Ngăn ngừa lỗ hổng truy cập không xác thực khi biến môi trường chưa được thiết lập, buộc hệ thống chuyển sang chế độ fallback an toàn. |
+| Bỏ qua bước build Vite và compile Python trong môi trường sandbox | Dùng (ghi nhận hạn chế) | Lệnh `npm run build` bị chặn do lỗi `esbuild` resolve đường dẫn sandbox và máy thiếu lệnh `py`; đã xác minh đầy đủ qua `node --test` (92/92 frontend, 4/4 backend, 2/2 E2E). |
+
+### Cách kiểm chứng
+
+- [x] Chạy kiểm thử tích hợp hợp đồng backend (`node --test tests/lyricsSearch.integration.test.js`): Đạt 4/4 test cases.
+- [x] Chạy kiểm thử đơn vị frontend (`node --import ./tests/register-loader.js --test src/services/aiLyricsSearchApi.test.js src/utils/lyricsFallbackSearch.test.js` và toàn bộ `npm.cmd test`): Đạt 3/3 test lyrics và 92/92 toàn bộ suite frontend.
+- [x] Chạy kiểm thử chấp nhận E2E (`node --test tests/e2e/032-ai-lyrics-search.test.js`): Đạt 2/2 test cases (luồng AI bình thường, Load More, fallback 503/timeout, 429 không fallback, chống race condition).
+- [x] Kiểm tra định dạng Git (`git diff --check`) và xác nhận toàn bộ task T010–T049 trong `tasks.md` đã được cập nhật chính xác.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+---
+
+## Mục 40: Thực thi implement cho spec 033 bằng Spec Kit
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-20 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | 030 – Search, Feature 033: Semantic Vector Music Search |
+| Công cụ AI | GPT-5.6-Luna (Spec Kit `/speckit-implement`) |
+| Mục đích | Triển khai hoàn chỉnh mã nguồn cho Feature 033 (Semantic Vector Music Search) từ Phase 2 (T011) đến Phase 7 (T053), bao gồm mở rộng endpoint `GET /api/v1/search?mode=semantic`, cổng kiểm soát dữ liệu cá nhân (Privacy Guard), xếp hạng có trọng số 30/40/30, cơ chế fallback 1.500ms, giao diện React và bộ kiểm thử chấp nhận/hồi quy. |
+
+### Prompt đã dùng
+
+```text
+/speckit-implement 
+
+Bạn hãy đóng vai trò Fullstack & AI Senior Engineer triển khai hoàn chỉnh Feature 033 (Semantic Vector Music Search) thuộc Group 030 (Search) của dự án AuraTune.
+
+Giai đoạn 1 (Phase 1: Tasks T001–T010) đã được phê duyệt và giải quyết hoàn toàn. Hãy bắt đầu implement từ Giai đoạn 2 (Phase 2: Task T011) và thực hiện tuần tự đến hết Giai đoạn 7 (Phase 7: Task T053).
+
+Trước khi viết mã, bạn hãy đọc và tuân thủ tuyệt đối các tài liệu nguồn sau:
+- Đặc tả: `specs/030-search/033-semantic-vector-search/spec.md`
+- Kế hoạch: `specs/030-search/033-semantic-vector-search/plan.md`
+- Nghiên cứu kỹ thuật: `specs/030-search/033-semantic-vector-search/research.md`
+- Danh sách task: `specs/030-search/033-semantic-vector-search/tasks.md`
+- Mô hình dữ liệu & Nguồn catalog: `specs/030-search/033-semantic-vector-search/data-model.md`
+- Hợp đồng API: `specs/030-search/033-semantic-vector-search/contracts/semantic-search.md`
+- Kịch bản nghiệm thu & Kiểm thử: `specs/030-search/033-semantic-vector-search/quickstart.md`
+- Hợp đồng API chung toàn dự án: `docs/analysis-and-design/api-contract.md`
+- Kiến trúc hệ thống & Quy trình nhóm: `docs/design/architecture/system-architecture.md`, `docs/management/team-contract.md`, `docs/management/git-workflow.md`
+
+**Yêu cầu về Ngôn ngữ (STRICT Language Directive)**:
+- Hãy giao tiếp, giải thích, báo cáo tiến độ và tương tác với tôi hoàn toàn bằng **Tiếng Việt**.
+- Tuy nhiên, TOÀN BỘ mã nguồn (source code), chú thích trong code (comments), tên biến, thông báo lỗi/hợp đồng API theo contract, các file test, và các cập nhật vào file tài liệu (như việc đổi `[ ]` thành `[x]` trong `tasks.md` hay ghi nhận kết quả trong `quickstart.md` và `evaluation/`) BẮT BUỘC phải được viết bằng **Tiếng Anh**. Tuyệt đối không dùng tiếng Việt trong code hoặc trong các tài liệu thiết kế (ngoại trừ các chuỗi UI/message mẫu hoặc test fixture tiếng Việt cần thiết cho kiểm thử ngữ nghĩa).
+
+**Các nguyên tắc bất biến và Ràng buộc (Invariants - DOs & DON'Ts)**:
+1. **Service Topology & Zero-New-Route Alignment (DO)**:
+   - Giữ nguyên `docs/analysis-and-design/api-contract.md` mà không tạo route API công khai hay nội bộ mới:
+     - Frontend gọi Express backend (`src/backend`) tại `GET /api/v1/search?mode=semantic` qua adapter `semanticSearchAdapter.js` (các request không truyền `mode` hoặc `mode=metadata` tiếp tục chạy Feature 031 bình thường).
+     - Express backend gọi nội bộ sang Python FastAPI AI Service (`src/ai-service`) tại `POST /ai/recommend` với payload `purpose: "semantic_search"` và header xác thực `X-Internal-Api-Key` từ biến môi trường `.env`.
+     - Trình duyệt tuyệt đối **KHÔNG** gọi trực tiếp vào Python AI Service hay bất kỳ dịch vụ AI bên thứ ba nào.
+   - Chỉ chấp nhận 4 query parameter hợp lệ cho chế độ này: `q`, `mode` (`"semantic"`), `limit` (1–50, mặc định `20`), `offset` (`>= 0`, mặc định `0`). Mọi tham số lạ hoặc không hợp lệ trả về `400 VALIDATION_ERROR`.
+
+2. **Query Validation & Strict Local Privacy Gate (DO)**:
+   - Chuẩn hóa bảo toàn ý nghĩa (meaning-preserving normalization): trim khoảng trắng đầu/cuối, giữ nguyên ngôn ngữ hỗ trợ, dấu câu, emoji và các biến thể thông dụng; chấp nhận truy vấn chứa **ít nhất 1 token chữ/số có nghĩa** và **tối đa 150 ký tự** sau khi trim. Từ chối input rỗng/chỉ khoảng trắng hoặc `> 150` ký tự ngay tại local với hướng dẫn rõ ràng và **KHÔNG** gửi request.
+   - **Cổng kiểm soát dữ liệu cá nhân (Privacy Gate - BẮT BUỘC trước mọi lời gọi AI)**:
+     - Thực hiện kiểm tra cục bộ tại Express (`semanticPrivacyGuard.js`) bằng cách: (1) đối chiếu thông tin hồ sơ người dùng đang đăng nhập (`users.name`, `users.display_name`, `users.email` khi có Bearer token hợp lệ), (2) phát hiện địa chỉ email bằng regex, và (3) phát hiện tên riêng theo ngữ cảnh tiếng Việt/tiếng Anh.
+     - **Bảo toàn tên nghệ sĩ**: Các tên trùng khớp với danh sách nghệ sĩ hợp lệ trong catalog (`public.artists.name` đã cache) phải được giữ nguyên để không chặn nhầm truy vấn tìm nghệ sĩ.
+     - Nếu phát hiện PII không thể gỡ bỏ an toàn hoặc còn mơ hồ giữa tên cá nhân và tên nghệ sĩ, tuyệt đối **KHÔNG** gọi AI Service mà chuyển thẳng sang `keyword_fallback`.
+     - Tuyệt đối **KHÔNG** để tên hoặc email người nghe (cả bản gốc lẫn bản đã che/redacted) xuất hiện trong payload gửi AI, nội dung lập chỉ mục, logs chẩn đoán hoặc payload lỗi.
+     - **KHÔNG** thêm tính năng lưu lịch sử tìm kiếm (search history) trong phạm vi Feature 033.
+
+3. **Catalog Sources, Weighted Ensemble Ranking & Deduplication (DO)**:
+   - Sử dụng Python FastAPI (`src/ai-service`) với mô hình `paraphrase-multilingual-MiniLM-L12-v2` và local ChromaDB / in-memory vector store (`src/ai-service/.chroma/`).
+   - Nguồn dữ liệu lập chỉ mục:
+     - Metadata từ `public.songs` -> `public.albums` -> `public.artists` trên Supabase.
+     - Lời bài hát từ cache văn bản thuần trích xuất từ `public.songs.lyrics` (bài hát có `lyrics IS NULL` vẫn hợp lệ để tìm kiếm với chiều lyrics được đánh dấu không khả dụng).
+     - Đặc trưng âm thanh: sử dụng `public.songs.duration` từ PostgreSQL; 12 thuộc tính mở rộng còn lại (`tempo/BPM`, `key`, `mode`, `energy`, `valence`, `danceability`, `acousticness`, `instrumentalness`, `speechiness`, `loudness`, `liveness`, `time_signature`) nếu chưa có dữ liệu trong schema hiện tại thì coi là chiều vắng mặt (absent dimensions) — tuyệt đối **KHÔNG** bịa đặt giá trị mặc định.
+   - **Công thức xếp hạng bắt buộc**:
+     - Tính điểm tương đồng theo tổ hợp có trọng số: **Metadata 30%**, **Lyrics 40%**, **Audio characteristics 30%**.
+     - Với mỗi cặp truy vấn/bài hát, tự động **chuẩn hóa lại trọng số (re-normalize)** chỉ trên các chiều dữ liệu có sẵn ở cả hai phía (`w_d / sum(w_available)`).
+     - Loại bỏ trùng lặp theo `song_id` (giữ điểm cao nhất), sắp xếp giảm dần theo điểm ngữ nghĩa và phân xử hòa (tie-breaker) tất định theo `songs.total_plays DESC NULLS LAST, songs.song_id ASC`.
+
+4. **1,500ms Timeout, Rate Limit & Graceful Fallback (DO)**:
+   - Thiết lập ngưỡng chờ tối đa **1,500 ms** (`AbortSignal.timeout(1500)`) cho lời gọi sang AI Service. Nếu quá 1,500 ms chưa có phản hồi hợp lệ, hoặc AI Service trả về `HTTP 503`, `HTTP 429` (rate limit nội bộ), hoặc phản hồi không đạt kiểm tra schema/an toàn (tham chiếu `song_id` không tồn tại hoặc chứa PII), Express lập tức chuyển sang **keyword fallback** mà **KHÔNG** thử lại (no retry), trả về `200 OK` với `meta.search_mode = "keyword_fallback"`.
+   - Giao diện (`SemanticSearch.jsx` và `SearchPage.jsx`) phải gắn định danh truy vấn hiện tại (request identity / AbortController) để loại bỏ hoàn toàn stale response khi người dùng gõ truy vấn mới, hiển thị rõ ràng trạng thái khi đang ở chế độ `keyword_fallback` (không lộ thông tin nhạy cảm/lỗi nội bộ), và tự động khôi phục semantic search ở lượt tìm sau khi AI Service hoạt động lại.
+
+5. **Database, UI Scope & Dependencies (DON'T)**:
+   - Tuyệt đối **KHÔNG** tạo mới bảng, cột hay file migration SQL nào trong `src/database/migrations/`.
+   - Chỉ trả về danh sách bài hát (`type: "track"`) kèm các trường đã duyệt trong `contracts/semantic-search.md` (kể cả `ai_reason` tùy chọn an toàn PII); tuyệt đối **KHÔNG** implement tính năng tạo playlist AI (`POST /playlists/ai-generate`) hay phát minh thêm trường JSON ngoài hợp đồng.
+   - Tận dụng test runner có sẵn trong `src/backend/package.json` và `src/frontend/package.json` theo `quickstart.md`; không cài đặt thêm thư viện/SDK ngoài danh mục đã chốt.
+   - Tuyệt đối **KHÔNG** chỉnh sửa hay phá vỡ logic của Feature 031 (Metadata Search) và Feature 032 (AI Lyrics Search).
+
+**Chỉ thị thực thi (Execution Directive)**:
+Hãy thực hiện tuần tự các task từ T011 (Phase 2) đến T053 (Phase 7). Sau khi hoàn thành mỗi Phase, hãy dừng lại, báo cáo ngắn gọn danh sách file đã tạo/thay đổi và kết quả kiểm thử bằng tiếng Việt, tự động cập nhật file `specs/030-search/033-semantic-vector-search/tasks.md` (chuyển `[ ]` thành `[x]`), sau đó tiếp tục với phase tiếp theo cho đến hết.
+```
+
+### Tóm tắt phản hồi của AI
+
+* **Đọc tài liệu & Xác nhận ranh giới:** AI đã kiểm tra toàn bộ hồ sơ của Feature 033 (`spec.md`, `plan.md`, `research.md`, `tasks.md`, `data-model.md`, `contracts/semantic-search.md`, `quickstart.md`), xác nhận Phase 1 (T001–T010) đã hoàn tất và checklist đạt chuẩn, đồng thời bảo toàn nguyên vẹn các thay đổi chưa commit của Feature 031–032.
+* **Triển khai Backend & Privacy Gate (Phase 2–6):**
+  * Mở rộng route công khai hiện hành `GET /api/v1/search?mode=semantic` tại `searchController.js` (không tạo route mới), chấp nhận đúng 4 tham số (`q`, `mode`, `limit`, `offset`) và trả về `400 VALIDATION_ERROR` với tham số lạ/không hợp lệ.
+  * Xây dựng chuỗi dịch vụ semantic trên Express gồm: `semanticQuery.js` (chuẩn hóa bảo toàn ý nghĩa, yêu cầu tối thiểu 1 token chữ/số và tối đa 150 ký tự), `semanticProfileLoader.js` & `semanticPrivacyGuard.js` (đối chiếu hồ sơ người dùng qua JWT tùy chọn, regex email, nhận diện tên riêng nhưng bảo toàn tên nghệ sĩ từ `public.artists.name` và chuyển thẳng sang `keyword_fallback` nếu phát hiện PII không thể gỡ an toàn), `semanticCatalogRepository.js`, `semanticDocumentMapper.js` và `semanticRanking.js` (loại bỏ trùng lặp theo `song_id` và tie-breaker `total_plays DESC NULLS LAST, song_id ASC`).
+  * Xây dựng `semanticAiClient.js` và `semanticSearchOrchestrator.js` gọi nội bộ sang `POST /ai/recommend` (`purpose: "semantic_search"`, header `X-Internal-Api-Key`) với ngưỡng timeout **1.500ms**, không retry, tự động hạ cấp sang `keyword_fallback` (`200 OK`) khi timeout, AI trả về `503`/`429` hoặc phản hồi chứa `song_id` không tồn tại / vi phạm an toàn PII (kể cả trong `ai_reason`).
+* **Triển khai Python FastAPI Semantic Engine:**
+  * Cập nhật `src/ai-service/main.py` và tạo `src/ai-service/semantic_engine.py` triển khai tổ hợp xếp hạng có trọng số **Metadata 30% / Lyrics 40% / Audio 30%**, tự động chuẩn hóa lại trọng số trên các chiều có sẵn (không bịa đặt giá trị mặc định cho 12 thuộc tính âm thanh vắng mặt).
+  * Thiết kế engine theo cơ chế optional backend: ưu tiên dùng MiniLM/ChromaDB khi runtime có sẵn dependency và tự động chuyển sang deterministic in-memory fallback khi môi trường chưa cài gói nặng, không làm thay đổi `requirements.txt` hay schema database.
+* **Triển khai Frontend & UI (Phase 3–5):**
+  * Tạo `semanticQuery.js`, `semanticSearchAdapter.js` và `useSemanticSearch.js` quản lý request identity / `AbortController` để loại bỏ stale response, hiển thị trạng thái `keyword_fallback` rõ ràng (không lộ lỗi nội bộ) và tự động khôi phục semantic search ở lượt tìm kế tiếp.
+  * Cập nhật `SemanticSearch.jsx` (dropdown) và `SearchPage.jsx` (tab semantic) dùng chung adapter/hook, hỗ trợ phát nhạc và phân trang Load More mà không xung đột với hook của Feature 031/032.
+* **Kiểm thử & Hoàn thiện tài liệu (Phase 7):**
+  * Bổ sung đầy đủ unit/integration/component tests cho backend (`semantic-ranking.test.js`, `semanticPrivacy.test.js`, `semanticPrivacyBoundary.test.js`, `semantic-fallback.test.js`, `semantic-search-route.test.js`), frontend (`semanticQuery.test.js`, `semanticSearchAdapter.test.js`, `SemanticSearch.test.jsx`, `SearchPage.test.jsx`) và acceptance/regression specs (`semantic-search.spec.js`, `semantic-search-regression.spec.js`).
+  * Cập nhật toàn bộ 53 task (T001–T053) thành `[x]` trong `tasks.md`, hoàn thiện `quickstart.md` và ghi nhận báo cáo đánh giá tại `src/backend/evaluation/semantic-search-relevance.md` và `semantic-search-results.md` bằng tiếng Anh.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Giữ nguyên topology `GET /api/v1/search?mode=semantic` & `POST /ai/recommend` | Dùng | Tuân thủ tuyệt đối `api-contract.md` (zero-new-route), không làm ảnh hưởng đến Feature 031 và 032. |
+| Thực thi Local Privacy Gate & Artist Allowlist trước khi gọi AI | Dùng | Đảm bảo PII của người nghe (tên, email) không bao giờ lọt vào payload AI hoặc logs, đồng thời tránh chặn nhầm truy vấn tìm nghệ sĩ hợp lệ. |
+| Công thức ensemble 30/40/30 tự chuẩn hóa lại trọng số trên chiều khả dụng | Dùng | Xử lý trung thực dữ liệu khuyết (`lyrics IS NULL` hoặc 12 trường audio chưa có trong schema) mà không bịa đặt giá trị giả. |
+| Cơ chế optional backend trong `semantic_engine.py` | Dùng | Cho phép chạy ngay trên môi trường hiện tại mà không cần tự ý cài đặt thêm thư viện ngoài hay thay đổi `requirements.txt`. |
+| Ghi nhận ngoại lệ đánh giá thủ công 100 truy vấn và build Vite sandbox | Dùng (ghi nhận hạn chế) | Chưa có catalog snapshot và evaluator credentials được phê duyệt cho đánh giá thủ công; lệnh `npm run build` bị chặn bởi lỗi quyền truy cập đường dẫn Windows/esbuild sẵn có của môi trường. |
+
+### Cách kiểm chứng
+
+- [x] Chạy kiểm thử backend semantic (`node --test tests/semantic-ranking.test.js tests/semanticPrivacy.test.js tests/semanticPrivacyBoundary.test.js tests/semantic-fallback.test.js tests/semantic-search-route.test.js`): Đạt 10/10 test cases.
+- [x] Chạy kiểm thử frontend semantic & UI components (`node --import ./tests/register-loader.js --test src/utils/__tests__/semanticQuery.test.js src/utils/semanticSearchAdapter.test.js src/components/search/__tests__/SemanticSearch.test.jsx src/pages/Search/__tests__/SearchPage.test.jsx`): Đạt 6/6 test cases.
+- [x] Chạy toàn bộ test suite frontend (`npm.cmd test`): Đạt 94/94 test cases, không phát sinh hồi quy (regression) sang Feature 031–032 hay Group 080.
+- [x] Kiểm tra cú pháp (`node --check`) và rà soát `tasks.md` xác nhận 100% các task T011–T053 đã được đánh dấu `[x]` và ghi nhận đầy đủ kết quả tại `quickstart.md` và `evaluation/`.
+- [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.
+
+---
+
+## Mục 41: Cập nhật tài liệu Software Architecture (Tech Stack & C4 Level 1) cho PA4 Phần B
+
+| Trường | Nội dung |
+|---|---|
+| Ngày | 2026-11-21 |
+| Người thực hiện | Nguyễn Khánh Đăng |
+| Nhóm tính năng liên quan | Toàn bộ dự án – Tài liệu Kiến trúc Hệ thống (`docs/design/architecture/system-architecture.md`) |
+| Công cụ AI | GPT-5.6-Luna |
+| Mục đích | Đối chiếu mã nguồn thực tế từ PA1 đến PA4 để chuẩn hóa danh mục Tech Stack, vẽ sơ đồ System Context Diagram (C4 Level 1) bằng Mermaid, phân định rõ ranh giới tích hợp/trạng thái lưu trữ (DB vs. RAM Map/client state/mock fallback) và cập nhật change log `docs/Changes.md` theo quy trình 2 giai đoạn có kiểm duyệt. |
+
+### Prompt đã dùng
+
+```text
+Hãy thực hiện phần B của PA4: Software Architecture: Tech Stack and System Context Diagram (C4 Level 1), trong repo AuraTune_Group10.
+
+Đọc các nguồn sau trước khi thực hiện:
+- "C:\Users\Admin\Downloads\PA4-2026.pdf", đặc biệt phần B (20 points) và Submission Guidelines.
+- "C:\Users\Admin\Downloads\pa4-readiness-checklist.md" (mục B và Submission checks).
+- docs/design/architecture/system-architecture.md (tài liệu gốc hiện có).
+- docs/requirements/use-case-model.md (để đồng bộ danh sách Actors và ranh giới hệ thống).
+- docs/proposal/project_plan.md (mục 2.4.4 Deliverable D-23).
+- Mã nguồn và cấu hình thực tế trong src/:
+  + src/frontend/package.json, src/frontend/vite.config.js, src/frontend/src/config/firebase.js
+  + src/backend/package.json, src/backend/server.js, src/backend/middleware/, src/backend/controllers/firebaseExchangeController.js, src/backend/config/cloudinary.js, src/backend/services/cloudinaryStorageService.js
+  + src/database/supabaseClient.js và src/database/migrations/
+  + src/ai-service/requirements.txt, src/ai-service/main.py, src/ai-service/agent.py
+
+Thực hiện công việc theo quy trình 2 giai đoạn nghiêm ngặt (Tạo bản nháp riêng -> Chờ duyệt -> Merge & ghi Change log):
+
+### GIAI ĐOẠN 1: Tạo bản nháp riêng (KHÔNG ghi đè file gốc ngay)
+1. Đối chiếu mã nguồn thực tế để lập danh mục Tech Stack chính xác từ PA1 đến PA4...
+2. Vẽ sơ đồ C4 Level 1 (System Context Diagram) và viết giải thích...
+3. Xuất bản nháp ra một file riêng biệt tại: `docs/design/architecture/system-architecture.pa4-draft.md`...
+4. Tiêu chuẩn trình bày, văn phong & định dạng (tiếng Anh kỹ thuật tự nhiên, metadata dưới các tiêu đề `#` và `##`, kiểm tra cú pháp Mermaid)...
+5. Dừng lại sau khi tạo xong `docs/design/architecture/system-architecture.pa4-draft.md` và chờ hiệu lệnh duyệt trước khi thực hiện Giai đoạn 2.
+
+### GIAI ĐOẠN 2: Chỉ thực hiện SAU KHI nhận được hiệu lệnh duyệt từ tôi
+1. Merge / cập nhật nội dung đã duyệt từ `docs/design/architecture/system-architecture.pa4-draft.md` vào file gốc `docs/design/architecture/system-architecture.md`, sau đó xóa file tạm `.pa4-draft.md`.
+2. Cập nhật file change log duy nhất của PA4 tại `docs/Changes.md` (chèn ngay trước `## docs/management/pa4-readiness-checklist.md` kèm mã SHA-256 baseline).
+3. Xuất file PDF tương ứng `docs/design/architecture/system-architecture.pdf` và kiểm tra bố cục, hiển thị sơ đồ Mermaid trong PDF.
+```
+
+### Tóm tắt phản hồi của AI
+
+- **Giai đoạn 1 (Tạo bản nháp & Đối chiếu source):**
+  - Đọc và đối chiếu toàn diện yêu cầu PA4, checklist, `use-case-model.md`, `project_plan.md` cùng các tệp cấu hình/mã nguồn thực tế trong `src/frontend`, `src/backend`, `src/database` và `src/ai-service`.
+  - Xuất bản nháp tiếng Anh tại `docs/design/architecture/system-architecture.pa4-draft.md` với đầy đủ dòng metadata (`Performed by / Reviewed by / Edited by`) ngay dưới các tiêu đề `#` và `##`, giữ nguyên file gốc `system-architecture.md` và tính mã SHA-256 baseline (`542D502530A9A67DAB9CAA2DA17AA605CA2DD2981B2C2449A7D5599276CE3A6E`).
+  - Lập bảng Tech Stack chi tiết kèm phiên bản thực tế; cập nhật đầy đủ 6 endpoint của Python AI Service (`/ai/agent/stream` qua SSE, `/ai/recommend`, `/ai/recommend/mood`, `/ai/search/lyrics`, `/ai/playlist/generate`, `/ai/health`).
+  - Phân định rõ ranh giới triển khai thực tế: Frontend không gọi trực tiếp Python AI Service; AI Service gọi trực tiếp Supabase REST API (`/rest/v1/songs`); phân biệt các module đã nối PostgreSQL với các phần còn dùng RAM Map (`saved albums`), client state (`Admin`/`History`) hoặc mock/in-memory fallback; làm rõ Spotify chỉ là nguồn dữ liệu offline, không phải external system lúc runtime.
+  - Vẽ sơ đồ C4 Level 1 (System Context Diagram) bằng Mermaid đặt `AuraTune Platform` ở trung tâm cùng 4 nhóm tác nhân con người (`Guest / Visitor`, `Listener`, `Artist`, `Administrator`) và 4 hệ thống bên ngoài (`Supabase PostgreSQL`, `Firebase Authentication`, `Cloudinary`, `Google Gemini API`) với nhãn giao thức (`HTTPS`, `Byte-Range`).
+- **Giai đoạn 2 (Merge, ghi Change log & xuất PDF sau khi được duyệt):**
+  - Hợp nhất nội dung bản nháp vào `docs/design/architecture/system-architecture.md` và xóa tệp tạm `system-architecture.pa4-draft.md`.
+  - Chèn section ghi nhận thay đổi của `docs/design/architecture/system-architecture.md` vào `docs/Changes.md` (dòng 1791, ngay trước mục `## docs/management/pa4-readiness-checklist.md`) kèm mã SHA-256 của bản PA3 baseline (`35d8027`), giữ nguyên toàn bộ nội dung Phần A.
+  - Xuất bản in PDF tại `docs/design/architecture/system-architecture.pdf` (174,442 bytes) bằng Chrome headless và dọn sạch các tệp tạm trong `tmp/`.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Quy trình 2 giai đoạn (xuất bản nháp `.pa4-draft.md` -> duyệt -> merge) | Dùng | Đảm bảo người thực hiện kiểm soát chặt chẽ nội dung kiến trúc và mã SHA-256 baseline trước khi ghi đè tài liệu gốc. |
+| Đối chiếu trực tiếp `package.json`, `requirements.txt` và mã nguồn `src/` | Dùng | Loại bỏ hoàn toàn sơ đồ ASCII và các câu hỏi mở lỗi thời từ PA3; đảm bảo phiên bản công nghệ và danh sách endpoint AI chính xác tuyệt đối. |
+| Phân tách rõ module đã nối DB với RAM Map, client state và mock/offline data | Dùng | Tránh suy diễn quá mức trạng thái hoàn thiện; phản ánh trung thực ranh giới runtime của hệ thống theo đúng tiêu chí chấm điểm PA4. |
+| Sơ đồ C4 Level 1 bằng Mermaid với 4 Actors & 4 External Systems | Dùng | Đồng bộ 100% danh sách tác nhân với `use-case-model.md` và thể hiện rõ giao thức tích hợp (`HTTPS`, `Byte-Range`). |
+| Xuất PDF bằng Chrome headless thay cho Mermaid CLI / Poppler | Dùng (ghi nhận hạn chế) | Môi trường không cài sẵn `mmdc` hoặc `pdftoppm`, nên sử dụng Chrome headless để render và kiểm tra hiển thị bố cục/sơ đồ trong `system-architecture.pdf`. |
+
+### Cách kiểm chứng
+
+- [x] Đối chiếu mã nguồn và cấu hình thực tế tại `src/frontend`, `src/backend`, `src/database` và `src/ai-service` với yêu cầu Phần B của `PA4-2026.pdf` và `pa4-readiness-checklist.md`.
+- [x] Kiểm tra cú pháp, cân bằng code fence Mermaid, dòng metadata dưới các tiêu đề `#` / `##` và sự hiện diện đầy đủ của các endpoint/giao thức bắt buộc trong `docs/design/architecture/system-architecture.md`.
+- [x] Kiểm tra vị trí chèn, mã SHA-256 baseline và tính toàn vẹn của `docs/Changes.md` (không làm thay đổi các mục đã có của Phần A).
+- [x] Kiểm tra hiển thị bố cục và sơ đồ context trong `docs/design/architecture/system-architecture.pdf` bằng Chrome headless và rà soát `git status` đảm bảo không tự ý commit/push hay để sót tệp nháp.
 - [x] Người thực hiện đã xem xét và chịu trách nhiệm về nội dung cuối cùng.

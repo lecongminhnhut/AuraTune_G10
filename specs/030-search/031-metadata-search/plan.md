@@ -32,6 +32,8 @@ The repository currently has a working `/search` page, `SearchPage`, `SemanticSe
 
 ## Constitution Check
 
+- **Governance Gate (T003):** `.specify/memory/constitution.md` remains an unratified template/placeholder with no project-level updates requested by the project lead. Constitutional compliance is not claimed for this feature; implementation follows the approved `spec.md`, `plan.md`, and `contracts/search-api.md`.
+
 *GATE: Must pass before implementation tasks are generated.*
 
 The repository constitution file is still the Spec Kit placeholder template and contains no ratified project principles or governance rules. Therefore there is no project-specific constitutional rule to evaluate. This is recorded as a repository governance gap, not treated as permission to add requirements or technology.

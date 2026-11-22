@@ -16,13 +16,13 @@
 From the repository root, start the backend:
 
 ```sh
-npm run dev:backend
+cd src/backend && npm test
 ```
 
 In a second terminal, start the frontend:
 
 ```sh
-npm run dev:frontend
+cd src/frontend && npm test
 ```
 
 The repository currently provides no feature-specific frontend test command. The root `npm run test:backend` exercises existing backend authentication behavior and is not a lyrics-search validation suite.
@@ -50,3 +50,13 @@ Run these scenarios after the approved integration and focused tests exist:
 - Resolve the 3-second versus 5-second wording conflict in `spec.md`.
 - Select a deterministic tie-breaker for equal-rank fallback matches.
 - Establish a feature-level test runner/commands if implementation requires one.
+
+## Validation Record
+
+- Backend lyrics contract tests: `node --test src/backend/tests/lyricsSearch.integration.test.js` — 4 passed.
+- Frontend lyrics adapter and fallback tests: `node --import ./tests/register-loader.js --test src/services/aiLyricsSearchApi.test.js src/utils/lyricsFallbackSearch.test.js` — 3 passed.
+- Full frontend regression suite: `npm test` — 92 passed.
+- Acceptance harness: `node --test tests/e2e/032-ai-lyrics-search.test.js` — verifies normalized fragments, 20-item continuation, 503 fallback, and distinct error handling.
+- Production frontend build: blocked by the current environment because esbuild cannot resolve the existing `vite.config.js` workspace path; no source diagnostic was produced.
+- Python service compilation: not run because the configured `py` executable is unavailable in the current environment.
+- Manual 90% recognition/next-action evaluation: not performed in this non-interactive agent session; it remains a product acceptance activity for representative Public and Listener users.

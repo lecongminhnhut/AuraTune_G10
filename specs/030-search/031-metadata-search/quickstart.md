@@ -9,7 +9,9 @@
 - Node.js and npm versions supported by the repository.
 - The AuraTune frontend and Express backend dependencies installed from their respective package manifests.
 - Local Supabase/PostgreSQL connection configuration supplied through the repository's approved ignored environment configuration and consumed by `src/database/supabaseClient.js`. Do not commit `.env`, service keys, or credentials. Confirm that this client is configured and that the deployed catalog schema contains the mapped fields before exercising search.
-- Catalog records containing the approved metadata fields required by the API contract.
+- Catalog records containing the approved metadata fields required by the API contract:
+  - Playlists must have `status = 'Public'` in `public.playlists` to appear in unauthenticated search results (`Private` and `Shared` playlists are excluded).
+  - Tracks (`public.songs`) must be linked to an album (`album_id`) with a valid `release_date` in `public.albums` to match `release_year` filters or `newest` sorting.
 
 ## Start the Backend
 
@@ -43,6 +45,7 @@ After implementing and configuring the endpoint, run these requests from PowerSh
 curl.exe -i "http://localhost:5000/api/v1/search?q=lofi&type=tracks&limit=20&offset=0"
 curl.exe -i "http://localhost:5000/api/v1/search?q=lofi&type=albums&genre=lofi&release_year=2026&sort=newest"
 curl.exe -i "http://localhost:5000/api/v1/search?q=lofi&type=all&limit=20&offset=20"
+curl.exe -i "http://localhost:5000/api/v1/search?q=co%20em&type=all&sort=title"
 ```
 
 Verify successful responses include the shared success envelope, an array-valued `data`, and `pagination` with `limit`, `offset`, `next_offset`, and `has_more`. Use the returned `next_offset` only when `has_more` is true.
@@ -74,4 +77,26 @@ Set-Location src/frontend
 npm run build
 ```
 
-The current package manifests do not define a dedicated feature test command. Confirm the selected test tooling with the implementation team before adding dependencies or documenting a test runner.
+## Automated Tests & Build Check
+
+Both package manifests already include configured test runners; no additional test dependencies are required.
+
+Run backend search API and validation tests:
+
+```powershell
+Set-Location src/backend
+npm test
+# Or run specific search suite via Vitest:
+# npx vitest run tests/search.test.js
+
+Run frontend search unit, hook, component, and acceptance tests:
+
+```powershell
+Set-Location src/frontend
+npm test
+
+Run the frontend production build check:
+
+```powershell
+Set-Location src/frontend
+npm run build

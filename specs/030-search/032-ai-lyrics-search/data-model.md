@@ -3,9 +3,14 @@
 **Feature**: [032 AI Lyrics Search](./spec.md)  
 **Status**: Logical feature model only; no persistence schema is proposed.
 
-## Persistence Decision
+## Persistence Decision (Resolved - T004)
 
-The feature specification and inspected code do not establish a production lyric catalog schema. Existing lyric data in frontend fixtures is demo-only. This feature plan therefore proposes no database table, migration, or storage technology. The approved lyrics source and song identity mapping must be confirmed before implementation.
+No new PostgreSQL table, column migration, or database persistence is introduced for Feature 032.
+
+* **Canonical Lyric Source:** Raw lyric content (plain text or `.lrc`-formatted lines) is stored directly in the verified `public.songs.lyrics` column in Supabase PostgreSQL (no external Cloudinary lyric file or `lyrics_url` column is used). Songs where `lyrics` is `NULL` or empty after trimming are excluded from lyric indexing.
+* **In-Memory & Local Disk Index Cache:** To satisfy the 3-second AI latency budget and support instantaneous normalized-lyrics keyword fallback without repeated full-table lyric scans during user searches, the backend / AI service maintains an in-memory index (optionally backed by a local `.cache/` JSON file) populated from `public.songs.lyrics` on server warm-up and refreshed upon song creation/updates.
+* **LRC Stripping & Normalization:** When ingesting `public.songs.lyrics` content into the search index, any embedded timestamp tags (e.g., `[00:15.20]`) are stripped to extract plain lyric lines, which are then normalized (trimmed, lowercased, diacritic- and punctuation-stripped) for fallback matching.
+* **Song Identity & Playback Mapping:** Matched `song_id` keys from either the AI index or the fallback cache resolve display and playback metadata (`id`, `type: "track"`, `title`, `artist`, `artist_id`, `album`, `album_id`, `genre`, `release_date`, `duration_seconds`, `play_count`, `cover_url`) from `public.songs` joined with `public.albums` and `public.artists`, identical to Feature 031.
 
 ## Logical Entities
 
@@ -49,9 +54,8 @@ Fallback Results -> Notice Dismissed
 ```
 
 ## Open Data Decisions
-
-- Canonical lyric source/index and availability/rights assumptions.
-- Song identity and playback metadata mapping for AI/fallback results.
-- Approved API response fields and pagination continuation format.
-- Exact normalization rules for punctuation and diacritics.
-- Deterministic ordering among fallback candidates with equal primary rank.
+* ~~Canonical lyric source/index and availability/rights assumptions.~~ (Resolved in T004: Direct public.songs.lyrics text column in Supabase PostgreSQL indexed into backend/AI service in-memory cache; public catalog songs only.)
+* ~~Song identity and playback metadata mapping for AI/fallback results.~~ (Resolved in T004: Mapped via songs.song_id -> albums -> artists, aligned with Feature 031 track projection.)
+* Approved API response fields and pagination continuation format (Tracked in T002).
+* Exact normalization rules for punctuation and diacritics (Tracked in T007).
+* Deterministic ordering among fallback candidates with equal primary rank (Tracked in T007)
