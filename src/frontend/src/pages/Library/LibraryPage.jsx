@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Heart, Plus, Sparkles } from 'lucide-react'
+import { Heart, ListMusic, Plus, Sparkles } from 'lucide-react'
 import PlaylistCard from '../../components/playlist/PlaylistCard.jsx'
 import { AlbumCard, ArtistCard } from '../../components/playlist/MediaCards.jsx'
 import { EmptyState, ErrorState, LoginRequired, PageHeader, SectionHeading, chipClass, primaryButton, secondaryButton } from '../../components/common/ui.jsx'
@@ -73,7 +73,22 @@ export default function LibraryPage() {
         {(filter === 'all' || filter === 'playlists') && (
           <section className="mt-8">
             <SectionHeading title="Playlist" />
-            {shownPlaylists.length ? <div className={grid}>{shownPlaylists.map((playlist) => <PlaylistCard key={playlist.id} playlist={playlist} onPlayPlaylist={player.playPlaylist} />)}</div> : <div className="mt-4"><EmptyState compact icon={Heart} title="Không có playlist phù hợp" /></div>}
+            {store.playlistsStatus === 'loading' ? (
+              <p role="status" aria-live="polite" className="py-4 text-zinc-400">Đang tải playlist…</p>
+            ) : store.playlistsStatus === 'error' ? (
+              <div className="mt-4"><ErrorState compact title="Không tải được playlist" description="Dịch vụ playlist đang gặp sự cố. Dữ liệu của bạn vẫn an toàn." onRetry={store.refreshRemoteLibrary} /></div>
+            ) : (
+              <>
+                {shownPlaylists.length ? <div className={grid}>{shownPlaylists.map((playlist) => <PlaylistCard key={playlist.id} playlist={playlist} onPlayPlaylist={player.playPlaylist} />)}</div> : <div className="mt-4"><EmptyState compact icon={Heart} title="Không có playlist phù hợp" description="Thử tìm bằng tên khác." /></div>}
+                {!needle && store.userPlaylists.length === 0 && (
+                  <div className="mt-4">
+                    <EmptyState compact icon={ListMusic} title="Bạn chưa tạo playlist nào" description="Tạo playlist đầu tiên để gom những bài bạn muốn nghe cùng nhau.">
+                      <button type="button" onClick={() => store.openCreatePlaylist()} className={primaryButton}><Plus size={15} /> Tạo playlist</button>
+                    </EmptyState>
+                  </div>
+                )}
+              </>
+            )}
           </section>
         )}
         {(filter === 'all' || filter === 'albums') && (

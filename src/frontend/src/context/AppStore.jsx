@@ -11,6 +11,8 @@ import { logoutFirebase } from '../services/firebaseAuth.js'
 import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
 import { formatTime, getDurationSeconds } from '../utils/playback.js'
 import { playlistApi } from '../services/playlistApi.js'
+import { fromApiHistoryEntry, historyApi } from '../services/historyApi.js'
+import { fetchSongMetadata } from '../services/songApi.js'
 
 // Toàn bộ dữ liệu ở đây là dữ liệu demo lưu trong localStorage của trình duyệt.
 // Khi có backend, các hàm trong store sẽ được thay bằng lời gọi API tương ứng.
@@ -62,8 +64,45 @@ const createInitialState = () => ({
   },
   studioTracks: [],
   trackStatus: {},
+  // Bài trong danh mục Supabase (phát từ Tìm kiếm, đọc lại từ lịch sử) để trình phát và Lịch sử nhận ra sau khi tải lại trang.
+  knownTracks: {},
   aiAvailable: true,
 })
+
+const MAX_KNOWN_TRACKS = 300
+
+// Chuẩn hóa bài hát từ API (search, history, songs) về dạng track của giao diện.
+export const toCatalogTrack = (song) => {
+  const id = String(song?.id ?? song?.song_id ?? '')
+  if (!id) return null
+  const seconds = song.duration_seconds ?? song.duration
+  return {
+    id,
+    title: song.title ?? '',
+    artist: song.artist ?? '',
+    artistId: song.artistId ?? song.artist_id ?? null,
+    album: song.album ?? '',
+    albumId: song.albumId ?? song.album_id ?? null,
+    genre: song.genre ?? null,
+    duration: typeof seconds === 'number' ? formatTime(seconds) : (seconds ?? '0:00'),
+    cover: song.cover ?? 'aurora',
+    coverUrl: song.coverUrl ?? song.cover_url ?? null,
+    ...(song.audioUrl ? { audioUrl: song.audioUrl } : {}),
+  }
+}
+
+// Ngày thêm bài vào playlist (added_at từ Supabase) theo kiểu của dữ liệu mẫu: "Hôm nay", "Hôm qua", "3 ngày trước"…
+export const formatAddedAt = (iso, now = new Date()) => {
+  const date = new Date(iso)
+  if (!iso || Number.isNaN(date.getTime())) return ''
+  const startOfDay = (value) => new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime()
+  const days = Math.round((startOfDay(now) - startOfDay(date)) / 86400000)
+  if (days <= 0) return 'Hôm nay'
+  if (days === 1) return 'Hôm qua'
+  if (days < 7) return `${days} ngày trước`
+  if (days < 35) return `${Math.floor(days / 7)} tuần trước`
+  return date.toLocaleDateString('vi-VN')
+}
 
 const loadState = () => {
   try {
@@ -81,7 +120,7 @@ const fromApiPlaylist = (playlist) => ({
   id: String(playlist.id),
   title: playlist.title || playlist.name || '',
   cover: playlist.cover || 'aurora',
-  songs: (playlist.songs || []).map((song) => ({ ...song, id: String(song.song_id ?? song.id), artist: song.artist || song.artist_name || '', cover: song.cover || 'aurora', duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), addedByName: song.added_by?.display_name || (song.added_by_user_id ? 'Thành viên trước đây' : null) })),
+  songs: (playlist.songs || []).map((song) => ({ ...song, id: String(song.song_id ?? song.id), artist: song.artist || song.artist_name || '', cover: song.cover || 'aurora', duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), added: song.added_at ? formatAddedAt(song.added_at) : (song.added ?? ''), addedByName: song.added_by?.display_name || (song.added_by_user_id ? 'Thành viên trước đây' : null) })),
   trackIds: playlist.trackIds || playlist.songs?.map((song) => String(song.song_id ?? song.id)) || [],
   collaborators: (playlist.collaborators || []).map((user) => typeof user === 'string' ? user : user.id),
   collaboratorDetails: (playlist.collaborators || []).filter((user) => typeof user === 'object'),
@@ -118,6 +157,11 @@ export const formatTotalDuration = (seconds) => {
     const [ui, setUi] = useState({ playlistDialog: null, addToPlaylistTrack: null, queueOpen: false })
     const [remotePlaylists, setRemotePlaylists] = useState(null)
     const [remoteLikedIds, setRemoteLikedIds] = useState(null)
+    // 061 T010: trạng thái tải playlist từ backend để Thư viện hiển thị đang tải / lỗi có thể thử lại.
+    const [playlistsStatus, setPlaylistsStatus] = useState('idle')
+    // Lịch sử nghe lưu trên Supabase khi đăng nhập bằng tài khoản backend (Group 040, 041-FR-014).
+    const [remoteHistory, setRemoteHistory] = useState(null)
+    const historyServerIds = useRef(new Map())
     const [albumDetailsById, setAlbumDetailsById] = useState({})
     const albumRequestSequence = useRef(0)
     const albumRequestIds = useRef(new Map())
@@ -335,29 +379,87 @@ export const formatTotalDuration = (seconds) => {
     emptyLibrary()
   const library = {
     ...storedLibrary,
+    history: remoteHistory ?? storedLibrary.history,
     savedAlbumIds: currentUser ? (savedAlbumIdsByUser[currentUser.id] ?? []) : [],
   }
 
+  const rememberTracks = useCallback((songs) => {
+    const incoming = (songs || []).map(toCatalogTrack).filter((track) => track && !seedTracks.some((seed) => seed.id === track.id))
+    if (!incoming.length) return
+    setState((previous) => {
+      const known = { ...(previous.knownTracks || {}) }
+      let changed = false
+      for (const track of incoming) {
+        if (JSON.stringify(known[track.id]) === JSON.stringify(track)) continue
+        delete known[track.id]
+        known[track.id] = track
+        changed = true
+      }
+      if (!changed) return previous
+      const ids = Object.keys(known)
+      for (const id of ids.slice(0, Math.max(0, ids.length - MAX_KNOWN_TRACKS))) delete known[id]
+      return { ...previous, knownTracks: known }
+    })
+  }, [])
+
+  // Bài trong danh mục Supabase mà giao diện chưa biết (vd. bài đã thích từ Tìm kiếm): tải metadata một lần.
+  const ensureTrackMetadata = useCallback((songIds) => {
+    const unknown = [...new Set((songIds || []).map(String))]
+      .filter((id) => !seedTracks.some((track) => track.id === id) && !stateRef.current.knownTracks?.[id])
+      .slice(0, 50)
+    if (!unknown.length) return
+    Promise.all(unknown.map(fetchSongMetadata)).then((songs) => rememberTracks(songs.filter(Boolean)))
+  }, [rememberTracks])
+
   const refreshRemoteLibrary = useCallback(async () => {
+    setPlaylistsStatus((current) => current === 'ready' ? current : 'loading')
     try {
       const [playlists, likedIds] = await Promise.all([playlistApi.list(), playlistApi.liked()])
+      rememberTracks((playlists || []).flatMap((playlist) => playlist.songs || []))
       setRemotePlaylists((playlists || []).map(fromApiPlaylist))
-      setRemoteLikedIds(likedIds || [])
+      setRemoteLikedIds((likedIds || []).map(String))
+      ensureTrackMetadata(likedIds)
+      setPlaylistsStatus('ready')
       return true
     } catch (error) {
+      setPlaylistsStatus((current) => current === 'ready' ? current : 'error')
       toast(error.message || 'Không tải được playlist.', 'error')
       return false
     }
-  }, [toast])
+  }, [toast, rememberTracks, ensureTrackMetadata])
 
   useEffect(() => {
     if (state.session?.source !== 'backend' || !currentUser) {
       setRemotePlaylists(null)
       setRemoteLikedIds(null)
+      setPlaylistsStatus('idle')
       return
     }
+    setPlaylistsStatus('loading')
     refreshRemoteLibrary()
   }, [state.session?.source, state.session?.userId, currentUser?.id, refreshRemoteLibrary])
+
+  const refreshRemoteHistory = useCallback(async () => {
+    try {
+      const entries = await historyApi.list(200)
+      rememberTracks((entries || []).map((entry) => entry.song).filter(Boolean))
+      setRemoteHistory((entries || []).map(fromApiHistoryEntry))
+      return true
+    } catch (error) {
+      setRemoteHistory([])
+      toast(error.message || 'Không tải được lịch sử nghe.', 'error')
+      return false
+    }
+  }, [rememberTracks, toast])
+
+  useEffect(() => {
+    historyServerIds.current = new Map()
+    if (state.session?.source !== 'backend' || !currentUser) {
+      setRemoteHistory(null)
+      return
+    }
+    refreshRemoteHistory()
+  }, [state.session?.source, state.session?.userId, currentUser?.id, refreshRemoteHistory])
 
   const updateLibrary = useCallback((updater) => {
     setState((previous) => {
@@ -379,7 +481,7 @@ export const formatTotalDuration = (seconds) => {
   const allTracks = useMemo(() => [...seedTracks, ...state.studioTracks], [state.studioTracks])
   const trackStatus = (trackId) => state.trackStatus[trackId] ?? 'active'
   const publicTracks = useMemo(() => allTracks.filter((track) => (state.trackStatus[track.id] ?? 'active') === 'active'), [allTracks, state.trackStatus])
-  const findTrack = useCallback((id) => allTracks.find((track) => track.id === id) ?? null, [allTracks])
+  const findTrack = useCallback((id) => allTracks.find((track) => track.id === id) ?? state.knownTracks?.[id] ?? null, [allTracks, state.knownTracks])
   const isPlayable = useCallback((trackId) => (state.trackStatus[trackId] ?? 'active') === 'active', [state.trackStatus])
 
   const loadAlbumDetails = useCallback(async (albumId) => {
@@ -433,7 +535,13 @@ export const formatTotalDuration = (seconds) => {
     isLiked: true,
   }) : null, [currentUser, library.likedIds, remoteLikedIds])
 
-  const getPlaylistTracks = useCallback((playlist) => (playlist?.trackIds ?? []).map((id) => findTrack(id) ?? playlist?.songs?.find((song) => String(song.id ?? song.song_id) === String(id))).filter((track) => track && isPlayable(track.id)), [findTrack, isPlayable])
+  // Catalog metadata comes from findTrack; the membership (date added, contributor) from the playlist itself.
+  const getPlaylistTracks = useCallback((playlist) => (playlist?.trackIds ?? []).map((id) => {
+    const member = playlist?.songs?.find((song) => String(song.id ?? song.song_id) === String(id))
+    const known = findTrack(id)
+    if (!known) return member
+    return member ? { ...known, added: member.added || known.added, addedByName: member.addedByName ?? known.addedByName } : known
+  }).filter((track) => track && isPlayable(track.id)), [findTrack, isPlayable])
 
   const describePlaylist = useCallback((playlist) => {
     if (!playlist) return null
@@ -686,7 +794,7 @@ export const formatTotalDuration = (seconds) => {
       const currentlyLiked = previousIds.includes(trackId)
       const next = currentlyLiked ? previousIds.filter((id) => id !== trackId) : [...previousIds, trackId]
       setRemoteLikedIds(next)
-      playlistApi.setLiked(trackId, !currentlyLiked).then((ids) => setRemoteLikedIds(ids)).catch((error) => {
+      playlistApi.setLiked(trackId, !currentlyLiked).then((ids) => { setRemoteLikedIds((ids || []).map(String)); ensureTrackMetadata(ids) }).catch((error) => {
         setRemoteLikedIds((current) => current?.includes(trackId) === !currentlyLiked ? previousIds : current)
         toast(error.message, 'error')
       })
@@ -697,7 +805,7 @@ export const formatTotalDuration = (seconds) => {
       likedIds: current.likedIds.includes(trackId) ? current.likedIds.filter((id) => id !== trackId) : [...current.likedIds, trackId],
     }))
     return true
-  }, [updateLibrary, remoteLikedIds, toast])
+  }, [updateLibrary, remoteLikedIds, toast, ensureTrackMetadata])
 
   const createPlaylist = useCallback(async ({ title, description = '', trackIds = [], cover = 'aurora', isCollaborative = false }) => {
     if (stateRef.current.session?.source === 'backend') {
@@ -794,7 +902,8 @@ export const formatTotalDuration = (seconds) => {
       const trackIds = [...playlist.trackIds]
       const [moved] = trackIds.splice(from, 1)
       trackIds.splice(to, 0, moved)
-      setRemotePlaylists((items) => items.map((item) => item.id === playlistId ? { ...item, trackIds } : item))
+      // The detail page renders `songs`, so reorder them together with `trackIds` for an immediate update.
+      setRemotePlaylists((items) => items.map((item) => item.id === playlistId ? { ...item, trackIds, songs: item.songs ? trackIds.map((id) => item.songs.find((song) => song.id === id)).filter(Boolean) : item.songs } : item))
       return playlistApi.reorder(playlistId, trackIds).then(refreshRemoteLibrary).catch(async (error) => { toast(error.message, 'error'); await refreshRemoteLibrary(); return false })
     }
     return updateOwnedPlaylist(playlistId, (playlist) => {
@@ -889,19 +998,59 @@ export const formatTotalDuration = (seconds) => {
   const isFollowing = (artistId) => library.follows.some((item) => item.artistId === artistId)
 
   // ---------- Lịch sử nghe (G07 / spec 101) ----------
-  const recordPlay = useCallback((trackId) => {
+  // Tài khoản backend: ghi vào Supabase qua /users/me/history; tài khoản demo: lưu trong localStorage như trước.
+  const recordPlay = useCallback((trackId, listenedSeconds = 0) => {
     if (!stateRef.current.session) return null
     const id = uid('h')
-    updateLibrary((current) => ({ ...current, history: [{ id, trackId, playedAt: new Date().toISOString(), listened: 0 }, ...current.history].slice(0, 500) }))
+    const entry = { id, trackId, playedAt: new Date().toISOString(), listened: Math.round(listenedSeconds) }
+    if (stateRef.current.session.source === 'backend') {
+      setRemoteHistory((current) => [entry, ...(current ?? [])].slice(0, 500))
+      const pending = historyApi.record(trackId, listenedSeconds)
+        .then((saved) => {
+          setRemoteHistory((current) => (current ?? []).map((item) => item.id === id ? { ...fromApiHistoryEntry(saved), listened: Math.max(item.listened, saved.listened_duration) } : item))
+          return String(saved.id)
+        })
+        .catch((error) => {
+          setRemoteHistory((current) => (current ?? []).filter((item) => item.id !== id))
+          toast(error.message, 'error')
+          return null
+        })
+      historyServerIds.current.set(id, pending)
+      return id
+    }
+    updateLibrary((current) => ({ ...current, history: [entry, ...current.history].slice(0, 500) }))
     return id
-  }, [updateLibrary])
+  }, [updateLibrary, toast])
 
   const updateListened = useCallback((entryId, seconds) => {
     if (!entryId) return
-    updateLibrary((current) => ({ ...current, history: current.history.map((entry) => entry.id === entryId ? { ...entry, listened: Math.max(entry.listened, Math.round(seconds)) } : entry) }))
+    const listened = Math.round(seconds)
+    const raise = (entry) => entry.id === entryId ? { ...entry, listened: Math.max(entry.listened, listened) } : entry
+    if (stateRef.current.session?.source === 'backend') {
+      const pending = historyServerIds.current.get(entryId)
+      if (!pending) return
+      pending.then((serverId) => {
+        if (!serverId) return
+        setRemoteHistory((current) => current?.map((entry) => entry.id === serverId ? { ...entry, listened: Math.max(entry.listened, listened) } : entry) ?? current)
+        return historyApi.updateListened(serverId, listened)
+      }).catch(() => {
+        // Thời lượng nghe là thông tin bổ sung; lượt phát đã được lưu khi đạt ngưỡng.
+      })
+      setRemoteHistory((current) => current?.map(raise) ?? current)
+      return
+    }
+    updateLibrary((current) => ({ ...current, history: current.history.map(raise) }))
   }, [updateLibrary])
 
-  const clearHistory = useCallback(() => updateLibrary((current) => ({ ...current, history: [] })), [updateLibrary])
+  const clearHistory = useCallback(() => {
+    if (stateRef.current.session?.source === 'backend') {
+      return historyApi.clear()
+        .then(() => { historyServerIds.current = new Map(); setRemoteHistory([]); return true })
+        .catch((error) => { toast(error.message, 'error'); return false })
+    }
+    updateLibrary((current) => ({ ...current, history: [] }))
+    return Promise.resolve(true)
+  }, [updateLibrary, toast])
 
   // ---------- Bình luận ----------
   const addComment = useCallback((trackId, text) => {
@@ -955,12 +1104,12 @@ export const formatTotalDuration = (seconds) => {
     state, currentUser, library, toasts, ui, toast,
     artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
     loadAlbumDetails, getAlbumDetailsCache, getAlbumDetailsStatus, loadArtistAlbums,
-    likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks,
+    likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks, playlistsStatus, refreshRemoteLibrary,
     register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, bookmarkPlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
     saveAlbum, removeSavedAlbum, savedAlbumsLoading, savedAlbumsError, isAlbumSaved, getAlbum,
-    setFollow, isFollowing,
-    recordPlay, updateListened, clearHistory,
+    setFollow, isFollowing, followingList,
+    recordPlay, updateListened, clearHistory, refreshRemoteHistory, rememberTracks,
     comments: state.comments, addComment, deleteComment,
     uploadTrack, updateStudioTrack, deleteStudioTrack, setTrackStatus,
     setUserBanned, setUserRole, aiAvailable: state.aiAvailable, setAiAvailable, resetDemo,

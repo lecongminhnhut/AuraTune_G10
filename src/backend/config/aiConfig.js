@@ -5,6 +5,8 @@ dotenv.config();
 export const aiConfig = {
   aiServiceUrl: process.env.AI_SERVICE_URL || 'http://localhost:8000',
   aiServiceTimeoutMs: parseInt(process.env.AI_SERVICE_TIMEOUT_MS || '2500', 10),
+  // Feature 064: one Gemini call over the catalog takes a few seconds, longer than recommendations.
+  aiPlaylistTimeoutMs: parseInt(process.env.AI_PLAYLIST_TIMEOUT_MS || '20000', 10),
   internalSecret: process.env.AI_INTERNAL_SECRET || 'auratune-internal-secret-2026',
 };
 

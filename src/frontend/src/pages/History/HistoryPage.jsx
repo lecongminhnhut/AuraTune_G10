@@ -38,11 +38,6 @@ export default function HistoryPage() {
   const [loadingStats, setLoadingStats] = useState(false)
   const [statsError, setStatsError] = useState(null)
 
-  // Guard unauthenticated visitors (FR-005, T026)
-  if (!store?.currentUser) {
-    return <LoginRequired description="Đăng nhập để xem lịch sử nghe và thống kê của bạn." />
-  }
-
   const history = store.library?.history || []
 
   // Eligible history entries for the 'Lịch sử' tab
@@ -66,7 +61,7 @@ export default function HistoryPage() {
 
   // Fetch listening analysis dynamically on tab switch or range filter change (FR-013)
   useEffect(() => {
-    if (tab !== 'stats') return
+    if (tab !== 'stats' || !store.currentUser) return
 
     let cancelled = false
     setLoadingStats(true)
@@ -100,6 +95,12 @@ export default function HistoryPage() {
       cancelled = true
     }
   }, [tab, range, history, store.currentUser?.id])
+
+  // Guard unauthenticated visitors (FR-005, T026). It comes after every hook: the session is restored
+  // asynchronously after a reload, and an early return would change the hook order between renders.
+  if (!store?.currentUser) {
+    return <LoginRequired description="Đăng nhập để xem lịch sử nghe và thống kê của bạn." />
+  }
 
   const maxGenreSeconds = statsData?.topGenres?.[0]?.accumulatedSeconds || 1
 
@@ -271,10 +272,10 @@ export default function HistoryPage() {
             </button>
             <button
               type="button"
-              onClick={() => {
-                store.clearHistory?.()
+              onClick={async () => {
                 setConfirmClear(false)
-                store.toast?.('Đã xóa lịch sử nghe.')
+                const cleared = await store.clearHistory?.()
+                if (cleared !== false) store.toast?.('Đã xóa lịch sử nghe.')
               }}
               className="inline-flex h-10 items-center rounded-full bg-rose-400 px-5 text-xs font-bold text-zinc-950 transition hover:bg-rose-300"
             >

@@ -10,12 +10,15 @@ const run = (operation, { auth = true, status, message } = {}) => (req, res) => 
   return handle(req, res);
 };
 const auth = (req, res, next) => authenticateToken(req, res, next);
+// Reading one playlist: anyone may read a public playlist; with a token, the owner and
+// collaborators can also read a private one (without this the owner got 404).
+const optionalAuth = (req, res, next) => (/^Bearer\s+\S+/i.test(req.headers.authorization || '') ? authenticateToken(req, res, next) : next());
 
 router.get('/users/me/playlists', auth, run(operations.list));
 router.get('/playlists', run(operations.publicList));
 router.get('/users/me/liked-songs', auth, run(operations.liked));
 router.post('/playlists', auth, run(operations.create, { status: 201 }));
-router.get('/playlists/:id', run(operations.get, { auth: false }));
+router.get('/playlists/:id', optionalAuth, run(operations.get, { auth: false }));
 router.put('/playlists/:id', auth, run(operations.update));
 router.delete('/playlists/:id', auth, run(operations.remove));
 router.post('/playlists/:id/songs', auth, run(operations.addSongs));

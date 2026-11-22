@@ -19,6 +19,7 @@ export default function AIPlaylistPage() {
   const [prompt, setPrompt] = useState('')
   const [status, setStatus] = useState('idle')
   const [proposal, setProposal] = useState(null)
+  const [noMatchReason, setNoMatchReason] = useState('')
 
   if (!store.currentUser) return <LoginRequired description="Đăng nhập để tạo và lưu playlist bằng AI." />
 
@@ -31,7 +32,8 @@ export default function AIPlaylistPage() {
     try {
       if (store.state.session?.source === 'backend') {
         const result = await playlistApi.generate(prompt.trim())
-        if (result.noMatch || !result.tracks?.length) { setStatus('no-match'); return }
+        if (result.noMatch || !result.tracks?.length) { setProposal(null); setNoMatchReason(result.reason || ''); setStatus('no-match'); return }
+        store.rememberTracks(result.tracks)
         const proposedTracks = result.tracks.map((song) => store.findTrack(song.song_id) || ({
           ...song, id: String(song.song_id), artist: song.artist || song.artist_name || '',
           duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), cover: 'aurora',
@@ -89,7 +91,7 @@ export default function AIPlaylistPage() {
           </div>
         )}
 
-        {status === 'no-match' && <p role="status" className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-300">Chưa tìm thấy bài hát phù hợp. Hãy thử mô tả khác hoặc tạo playlist thủ công.</p>}
+        {status === 'no-match' && <p role="status" className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-zinc-300">{noMatchReason || 'Chưa tìm thấy bài hát phù hợp.'} Hãy thử mô tả rộng hơn hoặc tạo playlist thủ công.</p>}
         {status === 'error' && <p role="alert" className="mt-6 text-sm text-rose-300">Không thể tạo đề xuất lúc này. Bạn có thể thử lại.</p>}
 
         {proposal && status !== 'loading' && (

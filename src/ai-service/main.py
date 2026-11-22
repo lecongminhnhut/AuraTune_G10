@@ -16,7 +16,8 @@ from urllib.request import Request as UrlRequest, urlopen
 import unicodedata
 
 from config import settings
-from agent import stream_agent
+from agent import stream_agent, get_gemini_client
+from playlist_generator import PlaylistGenerationUnavailable, gemini_caller, generate_playlist as generate_ai_playlist, load_supabase_catalog
 from tools import CATALOG_TRACKS, CATALOG_PLAYLISTS
 from semantic_engine import SemanticEngine
 
@@ -121,34 +122,27 @@ async def search_lyrics(req: LyricsSearchRequest, request: Request):
 class PlaylistGenerateRequest(BaseModel):
     prompt: str = Field(..., min_length=1, max_length=200)
 
+def _playlist_unavailable(code: str, message: str) -> JSONResponse:
+    return JSONResponse(status_code=503, content={"success": False, "message": message, "data": None, "error": {"code": code, "details": []}})
+
+# Feature 064: Gemini picks 10-20 songs from the Supabase catalog (playlist_generator.py).
+# Without a key, or when Gemini or the catalog fails, the answer is 503 so the app shows its
+# fallback (manual playlist creation) instead of a made-up list.
 @app.post("/ai/playlist/generate")
 async def generate_playlist(req: PlaylistGenerateRequest, x_internal_secret: Optional[str] = Header(default=None)):
     if x_internal_secret != settings.AI_INTERNAL_SECRET:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    prompt = req.prompt.strip().lower()
-    normalized = "".join(char for char in unicodedata.normalize("NFD", prompt.replace("đ", "d")) if unicodedata.category(char) != "Mn")
-    words = set(normalized.split())
-    keyword_groups = {
-        "focus": {"focus", "hoc", "study", "code", "lam", "viec", "tap", "trung"},
-        "chill": {"chill", "lofi", "mua", "rain", "thu", "gian", "nhe"},
-        "indie": {"indie", "viet", "di", "du", "lich", "chuyen"},
-        "energy": {"chay", "workout", "nang", "luong", "vui", "nhay"},
-    }
-    matched = next((name for name, terms in keyword_groups.items() if words & terms or any(term in normalized for term in terms)), None)
-    if not matched:
-        return {"title": req.prompt.strip()[:80], "reason": "Chưa tìm thấy nhóm nhạc phù hợp với mô tả này.", "tracks": []}
-    order = {
-        "focus": ["t10", "t8", "t9", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        "chill": ["t8", "t9", "t10", "t1", "t2", "t3", "t4", "t5", "t6", "t7"],
-        "indie": ["t2", "t5", "t7", "t1", "t3", "t4", "t6", "t8", "t9", "t10"],
-        "energy": ["t4", "t5", "t3", "t7", "t6", "t1", "t2", "t8", "t9", "t10"],
-    }[matched]
-    tracks = [{"song_id": song_id, **CATALOG_TRACKS[song_id]} for song_id in order if song_id in CATALOG_TRACKS]
-    return {
-        "title": req.prompt.strip()[:80],
-        "reason": f"Đề xuất theo ngữ cảnh {matched}, kết hợp nhạc phù hợp từ danh mục AuraTune.",
-        "tracks": tracks[:10],
-    }
+    if not settings.GEMINI_API_KEY:
+        return _playlist_unavailable("AI_NOT_CONFIGURED", "AI playlist generation is not configured")
+    try:
+        return await generate_ai_playlist(
+            req.prompt,
+            load_catalog=lambda: load_supabase_catalog(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY),
+            ask_model=gemini_caller(get_gemini_client(), settings.GEMINI_PLAYLIST_MODEL),
+        )
+    except PlaylistGenerationUnavailable as error:
+        print(f"[AI Playlist] unavailable: {error} ({error.__cause__!r})")
+        return _playlist_unavailable("AI_SERVICE_UNAVAILABLE", "AI playlist generation is temporarily unavailable")
 
 @app.get("/")
 @app.get("/health")

@@ -118,7 +118,7 @@ export async function getMoodRecommendations({
 
 export async function getPlaylistGeneration({
   prompt,
-  timeoutMs = aiConfig.aiServiceTimeoutMs,
+  timeoutMs = aiConfig.aiPlaylistTimeoutMs,
   baseUrl = aiConfig.aiServiceUrl,
   fetchImpl = fetch,
 } = {}) {

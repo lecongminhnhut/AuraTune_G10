@@ -15,11 +15,22 @@ export function PlaylistFormDialog() {
   const [description, setDescription] = useState(editing?.description ?? '')
   const [cover, setCover] = useState(editing?.cover ?? 'aurora')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   const submit = async (event) => {
     event.preventDefault()
+    if (submitting) return
     if (!title.trim()) { setError('Vui lòng đặt tên cho playlist.'); return }
     if (title.trim().length > 80) { setError('Tên playlist tối đa 80 ký tự.'); return }
+    setSubmitting(true)
+    try {
+      await save()
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const save = async () => {
     if (editing) {
       try {
         await store.updatePlaylist(editing.id, { title: title.trim(), description: description.trim(), cover })
@@ -60,7 +71,7 @@ export function PlaylistFormDialog() {
         {error && <p role="alert" className="text-xs text-rose-300">{error}</p>}
         <div className="flex justify-end gap-2 pt-1">
           <button type="button" onClick={store.closePlaylistDialog} className={secondaryButton}>Hủy</button>
-          <button type="submit" className={primaryButton}>{editing ? 'Lưu thay đổi' : 'Tạo playlist'}</button>
+          <button type="submit" disabled={submitting} aria-busy={submitting} className={`${primaryButton} disabled:cursor-wait disabled:opacity-60`}>{submitting ? 'Đang lưu…' : editing ? 'Lưu thay đổi' : 'Tạo playlist'}</button>
         </div>
       </form>
     </Modal>

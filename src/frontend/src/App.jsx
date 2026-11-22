@@ -44,7 +44,7 @@ function AppShell() {
   // 30 giây hoặc nửa bài (playCounted). Thời lượng nghe được cập nhật khi đổi bài, tạm dừng hoặc rời trang.
   const sessionRef = useRef(null)
   const userId = store.currentUser?.id
-  const { recordPlay, updateListened } = store
+  const { recordPlay, updateListened, rememberTracks } = store
   const playSessionKey = `${userId}:${player.track.id}:${player.playKey}`
 
   useEffect(() => {
@@ -55,8 +55,13 @@ function AppShell() {
     }
     if (!userId || !player.playCounted) return
     if (sessionRef.current) sessionRef.current.listened = player.listened
-    else sessionRef.current = { key: playSessionKey, entryId: recordPlay(player.track.id), listened: player.listened }
+    else sessionRef.current = { key: playSessionKey, entryId: recordPlay(player.track.id, player.listened), listened: player.listened }
   }, [playSessionKey, userId, player.playCounted, player.listened, player.track.id, recordPlay, updateListened])
+
+  // Bài từ danh mục Supabase (vd. phát từ Tìm kiếm) được ghi nhớ để Lịch sử và việc khôi phục trình phát nhận ra.
+  useEffect(() => {
+    if (player.track?.id && !store.findTrack(player.track.id)) rememberTracks([player.track])
+  }, [player.track, store.findTrack, rememberTracks])
 
   useEffect(() => {
     const flush = () => { if (sessionRef.current) updateListened(sessionRef.current.entryId, sessionRef.current.listened) }

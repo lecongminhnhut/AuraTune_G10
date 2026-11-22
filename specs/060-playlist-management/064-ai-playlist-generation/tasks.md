@@ -29,7 +29,7 @@
 - [X] T007 [US1] Enforce authenticated access and prompt length of at most 200 characters in `src/backend/controllers/aiPlaylistController.js` and `src/backend/services/aiPlaylistService.js` using the established auth middleware.
 - [X] T008 [US1] Implement the approved public generation route in `src/backend/routes/aiPlaylistRoutes.js` and mount it in `src/backend/server.js` using T003's route contract.
 - [X] T009 [US1] Implement the backend-only internal AI client with the approved timeout and shared `503 AI_SERVICE_UNAVAILABLE` mapping in `src/backend/services/aiPlaylistClient.js`.
-- [ ] T010 [US1] Normalize AI response and filter unplayable/restricted tracks using the approved catalog source in `src/backend/services/aiPlaylistService.js`; return 10–20 eligible tracks and the approved explanation fields.
+- [X] T010 [US1] Normalize AI response and filter unplayable/restricted tracks using the approved catalog source in `src/backend/services/aiPlaylistService.js`; return 10–20 eligible tracks and the approved explanation fields.
 - [X] T011 [US1] Implement the frontend request adapter for the approved public route in `src/frontend/src/services/aiPlaylistApi.js`; do not call `/ai/*` from the browser.
 - [X] T012 [US1] Connect authenticated prompt submission and loading/result state to the public API in `src/frontend/src/pages/AIPlaylist/AIPlaylistPage.jsx` against the T003-approved contract.
 - [X] T013 [US1] Enforce the 200-character limit and display clear validation feedback in `src/frontend/src/pages/AIPlaylist/AIPlaylistPage.jsx` before sending a request.
