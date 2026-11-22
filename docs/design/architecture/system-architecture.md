@@ -1,5 +1,5 @@
 # AuraTune System Architecture: Tech Stack and System Context (C4 Level 1)
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Purpose and scope
 Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
@@ -267,3 +267,66 @@ Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edit
 - `src/database/supabaseClient.js` creates a server-side Supabase JS client. AI catalog/lyrics reads use Supabase PostgREST. Both are HTTPS API paths, not direct database sockets.
 - Playback uses the browser audio element and song API URL; media delivery supports byte-range behavior as documented by the backend source and prior audit.
 - Source-level diagrams are complete, but an integrated review after backend startup and route-mount defects are resolved remains outstanding. Marking this final review complete requires checking the actual running application.
+
+## 11. Deployment (D-26)
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+The demo configuration uses one Windows development machine and hosted provider services. The local processes are separate logical deployment nodes, as permitted by Part D of `docs/PA/PA4-2026.pdf` (page 3). This maps all four containers in section 7 to their execution environments. Vite is an additional development server that delivers the Web Application to the browser. No Docker image, public application host or TLS terminator is claimed here.
+
+The diagram describes source configuration checked on 2026-11-22. Dashed connections are configured paths whose successful runtime operation has not been verified in this review. Group 10 team is the designated reviewer; independent peer review remains pending.
+
+```mermaid
+flowchart TB
+    subgraph Local["Windows demo machine: separate logical nodes"]
+        Web["Browser node<br/>AuraTune Web Application<br/>React UI, session state, audio player"]
+        Vite["Frontend server node<br/>Vite development server<br/>localhost:5173"]
+        API["Application server node<br/>AuraTune Backend API / Express<br/>PORT or 5000; startup blocked"]
+        AI["AI server node<br/>AuraTune AI Service / FastAPI + Uvicorn<br/>port 8000 in launch scripts"]
+    end
+    DB["Supabase cloud node<br/>Supabase Data Platform container<br/>Hosted APIs and PostgreSQL"]
+    Auth["Firebase cloud node<br/>Firebase Authentication"]
+    Media["Cloudinary cloud node<br/>Media storage and delivery"]
+    Model["Google cloud node<br/>Gemini inference API"]
+    Web -.->|"HTTP 5173: assets; development WebSocket"| Vite
+    Web -.->|"HTTP 5000: JSON, SSE, multipart, audio range"| API
+    Vite -.->|"HTTP 5000: proxy relative /api requests"| API
+    API -.->|"HTTP 8000: JSON and SSE"| AI
+    API -.->|"HTTPS 443: Supabase SDK APIs"| DB
+    AI -.->|"HTTPS 443: PostgREST catalog reads"| DB
+    Web -.->|"HTTPS 443: identity SDK"| Auth
+    API -.->|"HTTPS 443: Firebase Admin verification"| Auth
+    API -.->|"HTTPS 443: media uploads"| Media
+    Web -.->|"HTTPS 443: images and audio byte ranges"| Media
+    AI -.->|"HTTPS 443: GenAI SDK"| Model
+```
+
+### 11.1 Nodes and container placement
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+| Node / infrastructure | Hosted container or component | Connections and configuration |
+| --- | --- | --- |
+| Browser on the local Windows machine | Section 7 Web Application: React routes, AppStore, player and API clients | Loads assets from Vite over HTTP. Most session/song clients default to `http://localhost:5000/api/v1`; search and lyrics clients default to `http://localhost:5000` and append their API path. Firebase sign-in and Cloudinary media use provider HTTPS URLs. |
+| Local frontend server process | Vite 5 development server, serving the Web Application bundle | `npm run dev:frontend` from the repository root. `vite.config.js` requests port 5173, leaves host at the Vite localhost default and does not set `strictPort`; a busy port can cause selection of another port. Relative `/api` requests proxy to `http://localhost:5000`. Vite's development WebSocket supports hot reload; application chat uses SSE. |
+| Local application server process | Section 7 Backend API: Express routes, middleware, controllers, services and repositories | `npm start` from the root runs `node src/backend/server.js`; `npm run dev:backend` enables watch mode. `app.listen(PORT)` uses `process.env.PORT` or 5000 with no explicit bind host, so it is not restricted to loopback by source. The printed localhost URL is an access URL, not a bind restriction. No TLS listener is configured. Outbound calls reach AI over HTTP and cloud providers over HTTPS. |
+| Local Python process | Section 7 AI Service: FastAPI endpoints and agent orchestration | Root `npm run dev:ai` uses `py -3.13 -m uvicorn main:app --app-dir src/ai-service --port 8000 --reload`, with Uvicorn's default loopback host. `start-all.bat` and `src/ai-service/start.ps1` / `start.bat` instead pass `--host 0.0.0.0`. Direct execution of `main.py` uses `AI_SERVICE_HOST` (default `0.0.0.0`) and `AI_SERVICE_PORT` (default 8000). CLI launch arguments govern the npm/script launch path. |
+| Supabase managed cloud service | Section 7 Supabase Data Platform, including hosted PostgreSQL | Backend repositories use server-side Supabase JS SDK calls over HTTPS; Python reads `/rest/v1/songs` over HTTPS. Neither application process opens a direct PostgreSQL TCP connection. Feature-specific memory and demo fallbacks described in section 3 still apply. |
+| Firebase managed cloud service | External Authentication service from section 7 | Browser client SDK obtains identity tokens; the backend Firebase Admin path verifies them over HTTPS and AuraTune issues its own session. |
+| Cloudinary managed cloud service | External media storage and delivery from section 7 | Backend sends uploads over HTTPS. Browser loads returned image/audio URLs over HTTPS, with byte-range requests for audio seeking. API audio routes also participate in playback. |
+| Google managed cloud service | External Gemini inference service from section 7 | Python calls Gemini through `google-genai` over HTTPS when configured. Local agent fallback responses do not verify this edge. |
+
+### 11.2 Configuration and verification boundary
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+`start-all.bat` records the intended three-process local demo. The individual commands above allow each process to be inspected separately. These commands describe how to start the application; they are not a record of a successful demo run.
+
+The backend recommendation adapter reads `AI_SERVICE_URL`, while the agent adapter reads `AI_AGENT_SERVICE_URL`; both default to `http://localhost:8000` (`config/aiConfig.js` and `config/agentConfig.js`). Both must target the Python listener if its address changes. Frontend `VITE_API_BASE_URL` overrides are client-specific: session clients expect a base containing `/api/v1`, while search clients append that prefix themselves. The Vite proxy target is fixed at port 5000, so changing Express `PORT` alone does not update the proxy. A Vite port change may also require updating `CORS_ALLOWED_ORIGINS`; Express's development allowlist includes localhost and 127.0.0.1 on 5173 and 3000.
+
+Environment loading also depends on the entrypoint and working directory. Express calls `dotenv.config()`; the database client additionally checks root `.env`, `src/backend/.env` and `src/.env`. Python checks `src/ai-service/.env` before root `.env`. Provider keys stay on the server; this document does not reproduce credential values or infer provider reachability from their presence.
+
+| Verification on 2026-11-22 | Evidence and remaining work |
+| --- | --- |
+| Source mapping and configured ports checked | Read root/frontend/backend package scripts, `start-all.bat`, Vite configuration, Express entrypoint, both AI adapters, Python config/start scripts and Supabase client. Ports 5173, 5000 and 8000 are supported configuration values, not observed listening sockets. |
+| Backend entrypoint checked | `node --check src/backend/server.js` fails at line 20 because `mediaRoutes` is declared twice. Artist/user/studio mounts also remain after the unconditional 404 handler. Application code was left unchanged under this documentation scope. |
+| Integrated local demo still open | After the entrypoint is repaired, capture actual listener addresses and ports, verify Vite asset delivery, direct and proxied API health, and backend-to-Python JSON/SSE through the running entrypoint. Confirm which launch command is used for the demo. |
+| Cloud connections still open | Verify Supabase reads/persistence, Firebase token exchange, Cloudinary upload/playback and Gemini inference in the demo environment. Record successful normal paths separately from fallback responses. |
+| Consistency and peer review | All section 7 containers and external services are mapped above, with the direct browser API path made explicit. Section 7's general HTTPS deployment wording describes a possible hosted setup; this local demo uses HTTP for local hops. Independent team review and runtime confirmation remain open. |
