@@ -28,9 +28,11 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 22  | 2026-10-31 | Làm rõ spec 073 – time ranges (4 weeks, 6 months, all time), ranking algorithm                              | 07   |
 | 23  | 2026-11-03 | Lập implementation plan cho Feature 010 – Authentication bằng `$speckit-plan` (011, 012, 013)              | 01   |
 | 24  | 2026-11-05 | Thực thi implementation cho Feature 010 bằng `$speckit-implement`                                           | 01   |
-| 25  | 2026-11-07 | Dùng AI rà soát và sửa lỗi sau implement Authentication: repository bất đồng bộ, session và password recovery | 01   |
+| 25  | 2026-11-07 | Sửa lỗi sau implement Feature 010 – Authentication: repository bất đồng bộ, session và password recovery | 01   |
 | 26  | 2026-11-09 | Hoàn thiện plan và tasks cho Group 060 – Playlist Management (061–065)                                         | 06   |
 | 27  | 2026-11-09 | Hoàn thiện plan và tasks cho Group 070 – Listening History (071–073)                                           | 07   |
+| 28  | 2026-11-13 | Implement Group 060 – Playlist Management theo plan/tasks đã lập                               | 06   |
+| 29  | 2026-11-22 | Bổ sung sơ đồ kiến trúc C4 Level 2/3 và mô tả component trong system-architecture.md | 00   |
 
 ---
 
@@ -930,7 +932,7 @@ Specify the feature 073-top-artists-and-genres for AuraTune. This feature belong
 | Trường                   | Nội dung |
 | ------------------------ | -------- |
 | Ngày                     | 2026-11-03 |
-| Người thực hiện          | Mai Đăng Khoa |
+| Người thực hiện          | Chưa ghi nhận trong nguồn hiện có |
 | Nhóm tính năng liên quan | 01 – Authentication, Feature 010: Authentication (011 Local Authentication, 012 OAuth Authentication, 013 Session Management) |
 | Công cụ AI               | Gemini 3.5, `$speckit-plan` |
 | Mục đích                 | Tạo kế hoạch triển khai thống nhất cho ba feature con, dựa trên spec và các quyết định đã chốt. |
@@ -970,7 +972,7 @@ Lập implementation plan cho Feature 010 – Authentication. Đọc các spec 0
 | Trường                   | Nội dung |
 | ------------------------ | -------- |
 | Ngày                     | 2026-11-05 |
-| Người thực hiện          | Mai Đăng Khoa |
+| Người thực hiện          | Codex (GPT-6) |
 | Nhóm tính năng liên quan | 01 – Authentication, Feature 010: Authentication (011 Local Authentication, 012 OAuth Authentication, 013 Session Management) |
 | Công cụ AI               | Gemini 3.5, `$speckit-implement` |
 | Mục đích                 | Thực thi các task đã sinh trong Spec Kit cho luồng xác thực cục bộ, OAuth và quản lý phiên. |
@@ -1005,7 +1007,7 @@ Implement Feature 010 – Authentication theo tasks.md của các feature 011, 0
 
 ---
 
-## Mục 25: Dùng AI sửa lỗi sau implement Feature 010 – Authentication
+## Mục 25: Sửa lỗi sau implement Feature 010 – Authentication
 
 | Trường                   | Nội dung |
 | ------------------------ | -------- |
@@ -1125,3 +1127,79 @@ Rà soát và sửa các lỗi trong Feature 010 – Authentication sau khi impl
 - Không chạy test hoặc implement vì thay đổi trong lượt này là tài liệu đặc tả và kế hoạch.
 
 **Kết quả kiểm chứng:** Có plan và danh sách task cho các feature 071–073; các task implementation chưa được thực thi và vẫn để trạng thái chưa hoàn thành.
+
+---
+
+## Mục 28: Implement Group 060 – Playlist Management
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-13 |
+| Người thực hiện          | Chưa ghi nhận trong nguồn hiện có |
+| Nhóm tính năng liên quan | 06 – Playlist Management (Features 061–065) |
+| Công cụ AI               | Codex (GPT-6) |
+| Mục đích                 | Dùng AI hỗ trợ triển khai các tính năng quản lý playlist dựa trên đặc tả, plan và tasks của Group 060. |
+
+### Prompt đã dùng
+
+Không lưu nguyên văn prompt trong nhật ký. Nội dung công việc được ghi nhận là triển khai Group 060 theo các artifacts hiện có trong `specs/060-playlist-management/`.
+
+### Tóm tắt phản hồi của AI
+
+- Hỗ trợ implement các luồng thuộc 061–065 theo cấu trúc frontend/backend hiện có.
+- Công việc bao gồm các phần playlist CRUD, quản lý bài hát, playback, tạo playlist bằng AI và cộng tác playlist theo phạm vi của từng feature.
+- Ghi nhận implementation còn có task mở; không xem toàn bộ Group 060 là đã nghiệm thu chỉ dựa trên việc có source.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Plan, tasks và spec của Group 060 | Dùng làm căn cứ triển khai | Giữ phạm vi theo artifacts đã chuẩn bị cho 061–065. |
+| Đánh dấu toàn bộ feature đã hoàn tất | Bỏ | Một số tasks và bước acceptance/integration vẫn còn mở. |
+
+### Cách kiểm chứng
+
+- Đối chiếu source Group 060 với các feature 061–065 và trạng thái tasks hiện tại.
+- Không ghi nhận một kết quả chạy test cụ thể cho lần implement ngày 13/11 trong mục này.
+
+**Kết quả kiểm chứng:** Có implementation cho Group 060 trong source; trạng thái hoàn tất và acceptance cần căn cứ vào tasks/evidence riêng, không suy ra chỉ từ implementation.
+
+---
+
+## Mục 29: Bổ sung sơ đồ kiến trúc C4 Level 2/3
+
+| Trường                   | Nội dung |
+| ------------------------ | -------- |
+| Ngày                     | 2026-11-22 |
+| Người thực hiện          | Codex (GPT-6) |
+| Nhóm tính năng liên quan | 00 – Kiến trúc hệ thống (liên quan các nhóm frontend/backend) |
+| Công cụ AI               | Codex (GPT-6) |
+| Mục đích                 | Đọc source triển khai để mô tả các container và component tiêu biểu, cùng ranh giới giao tiếp thực tế của AuraTune. |
+
+### Prompt đã dùng
+
+```text
+Rà soát source AuraTune và bổ sung sơ đồ C4 Level 2, Level 3 cho frontend/backend cùng mô tả trách nhiệm và giao tiếp của các container/component trong tài liệu kiến trúc hiện có.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Rà soát cấu hình Vite, frontend API clients, AppStore, AppRouter, audio player, Express routes/middleware/controllers/services, AI service client và Supabase client.
+- Bổ sung Mermaid C4 Level 2 cùng bảng trách nhiệm/giao tiếp container; bổ sung Mermaid C4 Level 3 cho frontend và backend cùng mô tả trách nhiệm, quan hệ giữa component trong `docs/design/architecture/system-architecture.md`.
+- Ghi rõ Vite proxy, HTTP(S), JSON/SSE, Supabase SDK/PostgREST qua HTTPS, Cloudinary và Firebase; không mô tả kết nối Supabase như kết nối SQL socket trực tiếp.
+- Ghi chú rằng sơ đồ phản ánh vai trò module trong source; kiểm tra runtime tích hợp còn phụ thuộc xử lý các lỗi entrypoint đã quan sát.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần | Quyết định | Lý do |
+|---|---|---|
+| Sơ đồ Mermaid và mô tả container/component | Dùng | Đối chiếu với cấu trúc source và các adapter hiện có. |
+| Ghi Supabase SDK/PostgREST là kết nối SQL trực tiếp | Bỏ | Các adapter gọi Supabase qua HTTPS API. |
+| Khẳng định mọi feature đã chạy tích hợp | Bỏ | Chưa thực hiện xác minh trên ứng dụng đang chạy; entrypoint có lỗi wiring được ghi nhận. |
+
+### Cách kiểm chứng
+
+- Đối chiếu nội dung với các file source được dẫn trong tài liệu kiến trúc.
+- Chạy `git diff --check`; không chạy test vì thay đổi trong mục này là tài liệu.
+
+**Kết quả kiểm chứng:** Các sơ đồ và mô tả đã được thêm vào tài liệu kiến trúc và đối chiếu source; kiểm tra runtime tích hợp vẫn chưa được thực hiện.
