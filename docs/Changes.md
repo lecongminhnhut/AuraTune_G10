@@ -15,6 +15,37 @@ Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: L�
 
 Each section identifies a revised source document, its earlier state and the changes made. The Performed by correction follows PA3 group ownership; where the original field was absent, the responsible human author is taken from the original group inventory/README and Team Contract. The original model retains its Primary Authors credit. New documents without a PA3 counterpart use their existing group responsibility. Existing UC IDs and filenames are preserved; new drafts fill model/Vision goals that previously lacked a specification. Earlier human draft credits remain labeled as original metadata. No application code, Spec Kit specification, plan or task is changed.
 
+## docs/design/architecture/system-architecture.md (D-26, 2026-11-22)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Document: [Markdown](design/architecture/system-architecture.md), section 11 and matching PDF.
+
+Before: the architecture contained the section 7 Container diagram and component views, but no deployment section. The readiness checklist still reflected an earlier snapshot.
+
+After / affected locations:
+
+- Added an English Mermaid deployment diagram and node descriptions mapping the Web Application, Backend API, AI Service and Supabase Data Platform to local logical nodes and managed cloud infrastructure. Included Firebase, Cloudinary and Gemini connections from section 7.
+- Checked launch commands, bind hosts, port overrides, direct browser API calls, Vite proxy routing and HTTP/HTTPS boundaries against current source. Recorded configuration separately from successful runtime connections.
+- Preserved all existing Performed by values. The new architecture section inherits Nguyễn Khánh Đăng from its containing document; its editor is Lê Công Minh Nhựt and designated reviewer is Group 10 team.
+
+Review status: independent team review and live demo verification remain pending. `node --check src/backend/server.js` still fails on the duplicate `mediaRoutes` declaration at line 20. No application code was changed.
+
+## docs/management/pa4-readiness-checklist.md (D-26, 2026-11-22)
+Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+
+Document: [Markdown](management/pa4-readiness-checklist.md), Part D and the D row in Overall status, with matching PDF.
+
+Before: Part D reported no infrastructure mapping and listed unverified development port examples.
+
+After / affected locations:
+
+- Recorded the completed source mapping, per-node descriptions and configuration comparison with section 7. Kept actual listener/integration verification and independent team review open.
+- Updated the Overall status D assessment without marking D ready for submission. Other assignment sections retain their earlier audit state.
+
+Validation: Mermaid rendering and PDF export use the existing temporary Markdown-it, Mermaid and headless Chrome toolchain from the earlier PA4 exports. The architecture, checklist and this change log have matching PDF exports. The deployment image is checked in the exported architecture PDF; live provider connections remain unverified.
+
+Review status: pending independent team review. Reviewed by records the assigned team only.
+
 ## docs/requirements/use-cases/010-authentication/prototypes/README.md
 Performed by: Lê Công Minh Nhựt | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 

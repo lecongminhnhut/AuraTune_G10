@@ -44,6 +44,7 @@ _Mỗi lần dùng AI được ghi thành một mục riêng theo trình tự th
 | 38  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 102 – Personalized Recommendations bằng `/speckit-implement`                       | 10 – AI Recommendations                           |
 | 39  | 2026-11-11 | Triển khai hoàn chỉnh mã nguồn và kiểm thử cho Feature 103 – Mood and Context Recommendations bằng `/speckit-implement`                   | 10 – AI Recommendations                           |
 | 40  | 2026-11-20 | Rà soát và hoàn thiện phần A PA4: sửa use-case model/specifications, ghi Changes.md, chuẩn hóa attribution và xuất PDF                    | PA4 / Toàn bộ 12 nhóm chức năng (010–120)         |
+| 41  | 2026-11-22 | Hoàn thiện phần D PA4 (D-26): đối chiếu Container và cấu hình chạy, viết Deployment, render Mermaid và xuất PDF                          | PA4 / Deployment (D-26)                          |
 
 ---
 
@@ -6460,3 +6461,80 @@ Báo lại các file đã sửa, kết quả kiểm tra và những việc còn 
 - [x] Đối chiếu đề `docs/PA/PA4-2026.pdf`, tài liệu PA3, Vision, spec/contract và code; kiểm tra 446 tham chiếu FR đầy đủ tiền tố. Các tham chiếu viết tắt hoặc theo khoảng được đối chiếu qua inventory và nguồn liên quan.
 - [x] Kiểm tra checksum các bản Markdown/PDF đã ghi, kiểm tra `git diff --check` và xác nhận 962 file code/spec/proposal được bảo vệ không bị đổi trong lượt sửa tài liệu. Khi khôi phục Performed by, kiểm tra riêng rằng Reviewed by và Edited by được giữ nguyên. `git check-ignore` xác nhận checklist Markdown/PDF bị bỏ qua, còn `docs/Changes.md` và `.pdf` được Git nhận.
 - [x] Người thực hiện và cả team hoàn tất việc rà soát nội dung, prototype còn thiếu và xác nhận phê duyệt cuối cùng. Việc ghi tên người review không tự hoàn tất bước này.
+
+---
+
+## Mục 41: Hoàn thiện phần D PA4 – Deployment (D-26)
+
+| Trường                   | Nội dung                                                                                                                           |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Ngày                     | 2026-11-22                                                                                                                         |
+| Người thực hiện          | Lê Công Minh Nhựt                                                                                                                  |
+| Nhóm tính năng liên quan | PA4 phần D; Deployment (D-26), đối chiếu Container ở phần C                                                                         |
+| Công cụ AI               | Codex (GPT-6), skill `humanizer:humanizer`                                                                                         |
+| Mục đích                 | Đối chiếu yêu cầu và source hiện tại, bổ sung Deployment bằng tiếng Anh, cập nhật checklist và Changes.md, render Mermaid và PDF. |
+
+### Prompt đã dùng
+
+```text
+$humanizer:humanizer
+
+Tiếp tục hoàn thiện phần D (Deployment, D-26) trong docs/management/pa4-readiness-checklist.md.
+
+Đọc yêu cầu phần D trong docs/PA/PA4-2026.pdf, tài liệu kiến trúc hiện tại và cấu hình chạy ứng dụng. Checklist được lập từ snapshot cũ, nên hãy đối chiếu với code hiện tại trước khi kết luận còn thiếu gì.
+
+Thực hiện:
+1. Kiểm tra sơ đồ Container ở phần C và xác định các thành phần cần đưa vào deployment.
+2. Xác minh cách khởi chạy, host, cổng và giao thức từ source/config. Các cổng 5173, 5000 và 8000 trong checklist chỉ là giá trị cần kiểm tra.
+3. Hoàn thiện phần Deployment trong tài liệu kiến trúc hiện có bằng tiếng Anh, gồm sơ đồ Mermaid và mô tả từng node: máy hoặc dịch vụ cloud, container/component được chạy trên đó, kết nối và giao thức giữa các node.
+4. Dùng mô hình triển khai phù hợp với môi trường demo thực tế. Có thể biểu diễn các tiến trình local thành những logical node riêng theo yêu cầu đề. Phân biệt rõ cấu hình dự kiến và kết nối đã kiểm chứng.
+5. Kiểm tra sơ đồ khớp với phần C và source hiện tại. Render Mermaid, xuất lại PDF tương ứng nếu repo có quy trình xuất, rồi kiểm tra hình trong PDF.
+6. Cập nhật các checkbox phần D và dòng đánh giá D trong Overall status theo bằng chứng đã có. Mục chưa kiểm chứng thì giữ mở và ghi rõ việc còn lại.
+7. Ghi thay đổi vào docs/Changes.md theo cấu trúc hiện có.
+
+Quy tắc ghi nhận đóng góp:
+- Giữ nguyên mọi giá trị “Performed by” đã có trong các tài liệu và section được chỉnh sửa.
+- “Reviewed by” ghi “Group 10 team”.
+- “Edited by” ghi “Lê Công Minh Nhựt”.
+- Đặt dòng thông tin này ngay sau tiêu đề theo định dạng hiện có.
+- Việc ghi tên nhóm ở Reviewed by không tự động xác nhận đã hoàn thành peer review; giữ trạng thái review đúng với bằng chứng thực tế.
+- Nếu tạo section mới, lấy Performed by từ tài liệu chứa section nếu có; không tự gán tác giả cho nội dung cũ.
+
+Dùng humanizer để viết phần thuyết minh tự nhiên, cụ thể, giữ nguyên ý nghĩa kỹ thuật, tên, đường dẫn và số liệu đã xác minh.
+
+Khi xong, báo các file đã sửa, kết quả kiểm tra/render/export và những mục phần D còn mở. Chỉ thực hiện phạm vi tài liệu phần D và các cập nhật liên quan; chưa commit hoặc push.
+```
+
+### Tóm tắt phản hồi của AI
+
+- Đọc phần D trong đề PA4 bằng `pdftotext`; xác nhận đề cho phép các container chạy trên cùng máy được biểu diễn thành những logical node riêng.
+- Đối chiếu section 7 của `docs/design/architecture/system-architecture.md`, đã có Container diagram, với package scripts, `start-all.bat`, Vite, Express, cấu hình Python, AI adapters và Supabase client. Checklist cũ chưa phản ánh phần Container hiện có.
+- Bổ sung section 11 bằng tiếng Anh, gồm Mermaid deployment và mô tả browser, Vite, Express, FastAPI/Uvicorn, Supabase, Firebase, Cloudinary và Gemini. Dùng humanizer để viết thuyết minh cụ thể, giữ ranh giới giữa cấu hình và kết nối đã chạy thành công.
+- Ghi rõ Vite yêu cầu cổng 5173 nhưng có thể chuyển cổng; Express dùng `PORT` hoặc 5000; các script Uvicorn dùng 8000. Lệnh npm AI dùng host loopback mặc định, còn `start-all.bat` và script trong AI service dùng `0.0.0.0`. Phân biệt browser gọi thẳng API với request tương đối đi qua proxy Vite.
+- Chạy `node --check src/backend/server.js`, vẫn lỗi khai báo trùng `mediaRoutes` tại dòng 20. Ghi nhận các mount artist/user/studio nằm sau 404 handler; giữ mở kiểm chứng runtime, cloud và independent peer review, không sửa code.
+- Cập nhật riêng phần D và dòng D trong Overall status, thêm các mục theo cấu trúc `docs/Changes.md`. Giữ Performed by hiện có; section Deployment kế thừa Nguyễn Khánh Đăng từ tài liệu kiến trúc, Reviewed by là Group 10 team và Edited by là Lê Công Minh Nhựt.
+- Tái sử dụng Markdown-it, Mermaid và Chrome headless từ bộ công cụ xuất PA4 trong thư mục tạm. Sau khi sandbox chặn tải thư viện PDF và khởi tạo Chrome bị timeout, chạy lại với quyền được cấp; dùng PyMuPDF để rasterize trang PDF và kiểm tra hình.
+- Xuất lại PDF kiến trúc, checklist và Changes. Checklist Markdown/PDF tiếp tục bị `.gitignore` loại trừ theo cấu hình sẵn có. Không commit hoặc push.
+
+### Phần đã sử dụng / chỉnh sửa / bỏ
+
+| Phần                                                   | Quyết định               | Lý do                                                                                                               |
+| ------------------------------------------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Mô hình local logical nodes và các dịch vụ cloud        | Dùng                     | Phù hợp launcher demo trong source và yêu cầu phần D; ánh xạ đủ container cùng external service trong section 7.      |
+| Cổng 5173, 5000 và 8000                                 | Dùng sau đối chiếu       | Có căn cứ trong config/scripts; ghi rõ override và bind host, không coi là cổng đã quan sát khi chạy.                 |
+| Nhận định checklist cũ rằng chưa có Container diagram   | Không dùng cho phần D    | Section 7 hiện đã có sơ đồ; phần Deployment được đối chiếu trực tiếp với tài liệu và source hiện tại.                 |
+| HTTPS cho mọi kết nối giữa các tiến trình demo local    | Không dùng               | Cấu hình local dùng HTTP; các kết nối provider dùng HTTPS, Supabase được gọi qua API thay vì direct SQL socket.       |
+| Tên Group 10 team đồng nghĩa peer review đã hoàn tất    | Không dùng               | Chưa có bằng chứng review độc lập; thông tin reviewer chỉ ghi nhóm được phân công.                                   |
+| Kết luận phần D đã sẵn sàng nộp hoặc demo đã chạy đủ     | Không dùng               | Backend còn lỗi entrypoint; listener, JSON/SSE và các đường chạy cloud chưa được kiểm chứng trực tiếp.                |
+| Sửa code, thay đổi phần B/C/E hoặc commit/push           | Không thực hiện          | Phạm vi được giao là tài liệu phần D và cập nhật liên quan.                                                          |
+
+### Cách kiểm chứng
+
+- [x] Đọc yêu cầu phần D và đối chiếu Container section 7 với cấu hình khởi chạy, host, cổng, đường gọi API, AI adapters và Supabase client.
+- [x] Chạy `node --check src/backend/server.js`; ghi nhận kết quả thất bại do duplicate `mediaRoutes` tại dòng 20, không báo backend đã khởi chạy thành công.
+- [x] Render thành công cả 5 sơ đồ Mermaid trong tài liệu kiến trúc; xuất lại `docs/design/architecture/system-architecture.pdf`, `docs/management/pa4-readiness-checklist.pdf` và `docs/Changes.pdf`.
+- [x] Rasterize và xem trực tiếp trang 11 của PDF kiến trúc (12 trang); sơ đồ Deployment hiển thị đủ node và nhãn, không bị cắt.
+- [x] Chạy `git diff --check`, không có lỗi khoảng trắng; kiểm tra checklist vẫn bị `.gitignore` loại trừ và không thay đổi code ứng dụng trong lượt làm D-26.
+- [ ] Sau khi sửa entrypoint, xác minh listener thực tế và demo tích hợp frontend/API/AI, gồm cả đường gọi trực tiếp, proxy, JSON và SSE.
+- [ ] Xác minh Supabase persistence, Firebase token exchange, Cloudinary upload/playback và Gemini inference; tách kết quả normal path khỏi fallback.
+- [ ] Hoàn tất independent team review đối với sơ đồ và môi trường demo chạy thực tế; không coi thông tin Reviewed by là bằng chứng phê duyệt.
