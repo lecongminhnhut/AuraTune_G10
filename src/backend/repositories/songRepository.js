@@ -46,6 +46,7 @@ export function normalizeSong(row) {
     duration: parseDurationSeconds(row.duration ?? row.duration_seconds),
     cover_url: row.image_url ?? album?.image_url ?? null,
     audio_url: row.audio_url ?? row.file_url ?? null,
+    lyrics: typeof row.lyrics === 'string' ? row.lyrics : null,
     is_active: !row.deleted_at && (row.is_active ?? (row.status ? row.status === 'active' : true)),
     source: 'database',
   };

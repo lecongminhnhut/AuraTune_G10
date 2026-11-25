@@ -1,6 +1,7 @@
 import { findSongById, SongLookupError } from '../repositories/songRepository.js';
 import { resolveAudioSource } from '../utils/audioSource.js';
 import { parseByteRange } from '../utils/httpRange.js';
+import { parseLyrics } from '../utils/lyrics.js';
 
 // Endpoint bài hát cho trình phát (Group 040: 041 điều khiển phát, 042 tiến trình/tua).
 
@@ -50,6 +51,29 @@ export async function getSong(req, res) {
         duration: song.duration,
         is_active: song.is_active,
         stream_url: `/api/v1/songs/${encodeURIComponent(song.song_id)}/stream`,
+      },
+    });
+  } catch (error) {
+    return handleUnexpected(res, error);
+  }
+}
+
+// GET /api/v1/songs/:id/lyrics — Feature 044 (T031): time-stamped lines from `songs.lyrics`,
+// or plain lyrics when there are no time stamps; both empty when the song has no lyrics.
+export async function getSongLyrics(req, res) {
+  try {
+    const song = await findRequestedSong(req, res);
+    if (!song) return undefined;
+    if (!song.is_active) return sendError(res, 410, 'song_unavailable', 'Bài hát này hiện không khả dụng.');
+    const { synced, plain } = parseLyrics(song.lyrics);
+    res.set('Cache-Control', 'public, max-age=300');
+    return res.json({
+      success: true,
+      data: {
+        song_id: song.song_id,
+        has_lyrics: synced.length > 0 || plain !== null,
+        synced,
+        plain,
       },
     });
   } catch (error) {

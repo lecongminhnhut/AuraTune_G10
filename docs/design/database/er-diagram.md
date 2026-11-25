@@ -24,6 +24,8 @@ erDiagram
     USERS ||--o{ LISTENING_HISTORY : "có lượt nghe"
     SONGS ||--o{ LISTENING_HISTORY : "được nghe"
     USERS ||--o| USER_LISTENING_STATS : "có thống kê"
+    USERS ||--o{ SONG_COMMENTS : "bình luận"
+    SONGS ||--o{ SONG_COMMENTS : "có bình luận"
 ```
 
 ## 3. Thực thể và khóa
@@ -42,6 +44,7 @@ erDiagram
 | `user_liked_songs` | `(user_id, song_id)` | Tham chiếu user và song |
 | `listening_history` | `history_id` | `user_id` và `song_id` tham chiếu user/song |
 | `user_listening_stats` | `user_id` | `user_id` tham chiếu `users.user_id` |
+| `song_comments` | `comment_id` | `song_id` tham chiếu `songs.song_id`, `user_id` tham chiếu `users.user_id` (cả hai `ON DELETE CASCADE`); `content` 1–300 ký tự (migration 009, Feature 046) |
 
 ## 4. Ghi chú quan trọng
 
