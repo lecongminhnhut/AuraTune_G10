@@ -101,11 +101,12 @@ description: "Dependency-ordered implementation tasks for Group 040 Music Player
 ## Phase 9: Polish and Cross-cutting
 
 - [X] T035 Verify in the browser on desktop and mobile: playback, seek and buffering, lyric seek, auto-advance, stop at end, repeat one, error and retry, restore after reload, play threshold.
-- [ ] T036 Map `normalizeSong` to the final `songs` migration columns once Group 080 publishes it.
-- [ ] T037 Plug Group 090 media storage into `utils/audioSource.js`, so uploaded tracks get `audio_url`.
-- [ ] T038 Send the play event to `POST /api/v1/users/me/history` when Group 070 exposes it (currently stored by `AppStore.recordPlay`).
+- [X] T036 Map `normalizeSong` to the real Supabase catalog: `songs(song_id, title, album_id, audio_url, duration, genre, total_plays, image_url)` joined to `albums` and `artists`, the schema used by `scripts/seedMusicCatalog.js` and `searchRepository`. Falls back to flat columns when the relations cannot be embedded; soft-deleted rows are inactive. Unit tests are in `tests/listeningHistory.test.js`.
+- [X] T037 Cloudinary media: catalog rows store the Cloudinary `secure_url` in `audio_url`, which `utils/audioSource.js` serves as a 302 redirect. `config/cloudinary.js` now configures the SDK on first use, so the API starts without Cloudinary credentials and only uploads fail (503).
+- [X] T038 Persist play events in Supabase: `POST/PATCH/GET/DELETE /api/v1/users/me/history` ([contracts/history-api.md](./contracts/history-api.md)), `repositories/listeningHistoryRepository.js` with no in-memory fallback, migration `src/database/migrations/007_listening_history.sql`, and `services/historyApi.js` called by `AppStore.recordPlay`, `updateListened` and `clearHistory` for backend sessions. History, Home and Recommendations read the entries back from the API. Tests are in `tests/listeningHistory.test.js`.
+- [ ] T039 Run [quickstart.md](./quickstart.md) rows 13–15 against the team Supabase project (play → database row → read-back after restarting the backend and reloading the browser) and record the evidence in `docs/test/PA4_Section_E_evidence.md`.
 
 ## Dependencies
 
 - Phase 2 → Phase 3 → Phases 4–8. Phases 5–8 depend only on Phase 3 and can proceed in parallel.
-- T031, T036, T037 and T038 wait on other groups (080, 090, 070).
+- T031 waits on lyric columns in the catalog (Group 080). T039 needs the team Supabase credentials and migration 007 applied.

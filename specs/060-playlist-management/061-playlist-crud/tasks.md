@@ -33,7 +33,7 @@
 - [X] T007 [US1] Implement create and owner-library operations in `src/backend/routes/playlistRoutes.js`, `src/backend/controllers/playlistController.js`, and `src/backend/services/playlistService.js` using approved contract T005.
 - [X] T008 [US1] Enforce required name (maximum 80 characters), optional description (maximum 300 characters), private default, and default cover in `src/backend/services/playlistService.js`.
 - [X] T009 [US1] Connect `src/frontend/src/pages/Library/LibraryPage.jsx` and `src/frontend/src/context/AppStore.jsx` to `src/frontend/src/services/playlistApi.js` and route successful creation to playlist detail.
-- [ ] T010 [US1] Render create validation, loading, empty-library, and recoverable service-error states in `src/frontend/src/pages/Library/LibraryPage.jsx` and `src/frontend/src/components/playlist/PlaylistDialogs.jsx`.
+- [X] T010 [US1] Render create validation, loading, empty-library, and recoverable service-error states in `src/frontend/src/pages/Library/LibraryPage.jsx` and `src/frontend/src/components/playlist/PlaylistDialogs.jsx`.
 
 ## Phase 4: User Story 2 - Update Playlist Metadata (Priority: P2)
 

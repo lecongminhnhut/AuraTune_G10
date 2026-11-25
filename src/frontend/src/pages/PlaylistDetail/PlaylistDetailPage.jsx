@@ -4,11 +4,12 @@ import Icon from '../../components/common/Icon.jsx'
 import CoverArt from '../../components/playlist/CoverArt.jsx'
 import SongTable from '../../components/song/SongTable.jsx'
 import { EmptyState, LoginRequired, Modal, NotFound, inputClass, primaryButton, secondaryButton } from '../../components/common/ui.jsx'
-import { LIKED_PLAYLIST_ID, formatTotalDuration, useStore } from '../../context/AppStore.jsx'
+import { LIKED_PLAYLIST_ID, formatAddedAt, formatTotalDuration, toCatalogTrack, useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import { normalizeText } from '../../utils/aiMockData.js'
 import { navigate } from '../../utils/navigation.jsx'
 import { playlistApi } from '../../services/playlistApi.js'
+import { searchMetadata } from '../../services/searchApi.js'
 import { formatTime } from '../../utils/playback.js'
 
 export default function PlaylistDetailPage({ playlistId }) {
@@ -27,14 +28,18 @@ export default function PlaylistDetailPage({ playlistId }) {
     setLoadingPlaylist(true)
     const load = (initial = false) => playlistApi.get(playlistId).then((row) => {
       if (!active) return
-      const songs = (row.songs || []).map((song) => ({ ...song, id: String(song.song_id), artist: song.artist || song.artist_name || '', cover: song.cover || 'aurora', duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), addedByName: song.added_by?.display_name || 'Thành viên trước đây' }))
+      const songs = (row.songs || []).map((song) => ({ ...song, id: String(song.song_id), artist: song.artist || song.artist_name || '', cover: song.cover || 'aurora', duration: typeof (song.duration ?? song.duration_seconds) === 'number' ? formatTime(song.duration ?? song.duration_seconds) : (song.duration ?? song.duration_seconds), added: formatAddedAt(song.added_at), addedByName: song.added_by?.display_name || 'Thành viên trước đây' }))
       setRemotePlaylist({ ...row, id: String(row.id), title: row.title, trackIds: songs.map((song) => song.id), songs, collaborators: (row.collaborators || []).map((user) => user.id), collaboratorDetails: row.collaborators || [], saved: Boolean(row.isBookmarked), duration: formatTotalDuration(row.duration || 0) })
     }).catch(() => { if (initial) setRemotePlaylist(null) }).finally(() => active && setLoadingPlaylist(false))
     load(true)
     const timer = window.setInterval(() => load(false), 10000)
     return () => { active = false; window.clearInterval(timer) }
   }, [playlistId, store.findPlaylistById])
-  const tracks = useMemo(() => playlist?.songs?.length ? playlist.songs.map((track) => store.findTrack(track.id) || track).filter((track) => store.isPlayable(track.id)) : store.getPlaylistTracks(playlist), [store, playlist])
+  // Catalog metadata from findTrack, membership details (date added, contributor) from the playlist row.
+  const tracks = useMemo(() => playlist?.songs?.length ? playlist.songs.map((track) => {
+    const known = store.findTrack(track.id)
+    return known ? { ...known, added: track.added || known.added, addedByName: track.addedByName ?? known.addedByName } : track
+  }).filter((track) => store.isPlayable(track.id)) : store.getPlaylistTracks(playlist), [store, playlist])
 
   if (!playlist) {
     if (playlistId === LIKED_PLAYLIST_ID && !store.currentUser) return <LoginRequired description="Đăng nhập để xem những bài hát bạn đã thích." />
@@ -126,12 +131,42 @@ export default function PlaylistDetailPage({ playlistId }) {
   )
 }
 
+// Backend playlists only accept songs from the Supabase catalog, so in a backend session the
+// picker searches it through GET /api/v1/search (type=tracks) instead of the demo tracks.
+function useCatalogTrackSearch(query, enabled) {
+  const [result, setResult] = useState({ tracks: [], loading: false, error: null })
+  const [attempt, setAttempt] = useState(0)
+  useEffect(() => {
+    const q = query.trim()
+    if (!enabled || q.length < 2) { setResult({ tracks: [], loading: false, error: null }); return undefined }
+    const controller = new AbortController()
+    setResult((previous) => ({ ...previous, loading: true, error: null }))
+    const timer = setTimeout(() => {
+      searchMetadata({ q, type: 'tracks', limit: 30 }, { signal: controller.signal })
+        .then((response) => setResult({ tracks: (response.data || []).filter((item) => item.type === 'track').map(toCatalogTrack).filter(Boolean), loading: false, error: null }))
+        .catch((error) => { if (error.name !== 'AbortError') setResult({ tracks: [], loading: false, error }) })
+    }, 250)
+    return () => { clearTimeout(timer); controller.abort() }
+  }, [query, enabled, attempt])
+  return { ...result, retry: () => setAttempt((count) => count + 1) }
+}
+
 function AddSongsDialog({ playlist, onClose }) {
   const store = useStore()
   const [query, setQuery] = useState('')
+  const backend = store.state.session?.source === 'backend'
+  const catalog = useCatalogTrackSearch(query, backend)
   const current = store.findPlaylistById(playlist.id) ?? playlist
   const needle = normalizeText(query.trim())
-  const results = store.publicTracks.filter((track) => !needle || normalizeText(`${track.title} ${track.artist} ${track.album}`).includes(needle)).slice(0, 30)
+  const recentCatalog = Object.values(store.state.knownTracks || {}).filter((track) => /^\d+$/.test(track.id)).slice(0, 30)
+  const results = backend
+    ? (query.trim().length < 2 ? recentCatalog : catalog.tracks)
+    : store.publicTracks.filter((track) => !needle || normalizeText(`${track.title} ${track.artist} ${track.album}`).includes(needle)).slice(0, 30)
+  const add = async (track) => {
+    if (backend) store.rememberTracks([track])
+    const success = await store.addTrackToPlaylist(playlist.id, track.id)
+    if (success) store.toast(`Đã thêm “${track.title}” vào playlist.`)
+  }
 
   return (
     <Modal title="Thêm bài hát" description={`Vào playlist “${playlist.title}”`} onClose={onClose} labelledBy="add-songs-title">
@@ -146,11 +181,13 @@ function AddSongsDialog({ playlist, onClose }) {
             <div key={track.id} className="flex items-center gap-3 rounded-lg p-2 hover:bg-white/[0.05]">
               <CoverArt variant={track.cover} className="h-10 w-10 shrink-0 rounded-md [&_span]:text-xl" />
               <div className="min-w-0 flex-1"><p className="truncate text-[13px] font-medium text-white">{track.title}</p><p className="truncate text-[11px] text-zinc-500">{track.artist}</p></div>
-              <button type="button" disabled={added} onClick={async () => { const success = await store.addTrackToPlaylist(playlist.id, track.id); if (success) store.toast(`Đã thêm “${track.title}” vào playlist.`) }} className="rounded-full border border-white/20 px-3 py-1 text-[11px] font-semibold text-white transition hover:border-white/50 disabled:border-transparent disabled:text-violet-300">{added ? 'Đã thêm' : 'Thêm'}</button>
+              <button type="button" disabled={added} onClick={() => add(track)} className="rounded-full border border-white/20 px-3 py-1 text-[11px] font-semibold text-white transition hover:border-white/50 disabled:border-transparent disabled:text-violet-300">{added ? 'Đã thêm' : 'Thêm'}</button>
             </div>
           )
         })}
-        {!results.length && <p className="py-6 text-center text-xs text-zinc-500">Không tìm thấy bài hát phù hợp.</p>}
+        {backend && catalog.loading && <p className="py-6 text-center text-xs text-zinc-500" role="status">Đang tìm trong kho nhạc…</p>}
+        {backend && catalog.error && <p className="py-6 text-center text-xs text-rose-300" role="alert">Không tải được kho nhạc. <button type="button" onClick={catalog.retry} className="underline">Thử lại</button></p>}
+        {!results.length && !catalog.loading && !catalog.error && <p className="py-6 text-center text-xs text-zinc-500">{backend && query.trim().length < 2 ? 'Nhập ít nhất 2 ký tự để tìm bài hát trong kho nhạc.' : 'Không tìm thấy bài hát phù hợp.'}</p>}
       </div>
     </Modal>
   )

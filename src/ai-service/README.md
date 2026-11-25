@@ -30,7 +30,8 @@ Service "Bộ não AI" cho nền tảng âm nhạc thông minh **AuraTune**, đ�
 
 ### Yêu cầu tiên quyết
 - Python 3.10+ (Đã xác thực hoạt động ổn định trên Python 3.13 standard build `py -3.13`).
-- Đã cấu hình `GEMINI_API_KEY` trong file `.env` ở root project hoặc `src/ai-service/.env`.
+- Đã cấu hình `GEMINI_API_KEY` trong `src/ai-service/.env`, `src/.env` (dùng chung với backend) hoặc `.env` ở root project. Service đọc cả ba file nếu có; file đứng trước được ưu tiên.
+- Tạo playlist bằng AI (`/ai/playlist/generate`) còn cần `SUPABASE_URL` và `SUPABASE_SERVICE_ROLE_KEY` để đọc kho nhạc; `src/.env` của backend đã có hai biến này.
 
 ### Cài đặt thư viện
 ```bash
@@ -53,6 +54,7 @@ py -3.13 -m pip install -r src/ai-service/requirements.txt
 | :--- | :--- | :--- |
 | `GET` | `/health` hoặc `/ai/health` | Kiểm tra trạng thái service, model Gemini, số lượng catalog |
 | `POST` | `/ai/agent/stream` | Stream hội thoại và phát lệnh điều khiển âm nhạc qua SSE |
+| `POST` | `/ai/playlist/generate` | Feature 064: Gemini chọn 10–20 bài từ kho nhạc Supabase theo mô tả (`playlist_generator.py`); thiếu key hoặc Gemini lỗi → 503 |
 
 ---
 
@@ -61,4 +63,11 @@ py -3.13 -m pip install -r src/ai-service/requirements.txt
 Chạy kịch bản kiểm thử luồng tương tác và kết nối Gemini:
 ```bash
 py -3.13 src/ai-service/test_agent.py
+```
+
+Kiểm thử tự động cho tạo playlist bằng AI (Gemini và Supabase được thay bằng bản giả):
+```bash
+cd src/ai-service
+python -m pip install -r requirements.txt pytest
+python -m pytest tests
 ```

@@ -1,7 +1,7 @@
 import { supabase } from '../../database/supabaseClient.js';
-import { demoSongs } from '../data/demoSongs.js';
-import { playlistRepository as repo } from '../repositories/playlistRepository.js';
+import { isCatalogSongId, playlistRepository as repo } from '../repositories/playlistRepository.js';
 import { getPlaylistGeneration } from '../clients/aiServiceClient.js';
+import { normalizeAiPlaylistResponse } from './aiPlaylistService.js';
 
 const fail = (status, code, message) => Object.assign(new Error(message), { status, code });
 const minutes = (song) => Number(song.duration ?? song.duration_seconds ?? 0) || 0;
@@ -38,7 +38,7 @@ export async function getPlaylist(id, userId = null) {
   if (row.status !== 'Public' && !owner && !collab) throw fail(404, 'NOT_FOUND', 'Playlist not found.');
   const [songs, members, saved] = await Promise.all([
     repo.getSongs(id),
-    supabase.from('playlist_shared_users').select(owner ? 'shared_with_user_id, users!playlist_shared_users_shared_with_user_id_fkey(id, email, display_name, avatar_url)' : 'shared_with_user_id, users!playlist_shared_users_shared_with_user_id_fkey(id, display_name, avatar_url)').eq('playlist_id', id),
+    supabase.from('playlist_shared_users').select(owner ? 'shared_with_user_id, users!shared_with_user_id(id, email, display_name, avatar_url)' : 'shared_with_user_id, users!shared_with_user_id(id, display_name, avatar_url)').eq('playlist_id', id),
     userId ? supabase.from('playlist_bookmarks').select('playlist_id').eq('user_id', userId).eq('playlist_id', id).maybeSingle() : Promise.resolve({ data: null, error: null }),
   ]);
   if (members.error) throw members.error;
@@ -91,43 +91,51 @@ export async function authorizeTrackEdit(id, userId) {
 export async function addSongs(id, userId, ids) {
   if (!Array.isArray(ids) || !ids.length || ids.length > 100) throw fail(400, 'VALIDATION_ERROR', 'Provide between 1 and 100 song IDs.');
   await authorizeTrackEdit(id, userId);
-  await repo.addSongs(id, userId, ids);
+  const { added, invalid } = await repo.addSongs(id, userId, ids);
+  if (!added && invalid) throw fail(422, 'SONG_NOT_IN_CATALOG', 'These songs are not in the AuraTune catalog, so they cannot be added to a playlist.');
   return getPlaylist(id, userId);
 }
 export async function removeSong(id, userId, songId) { await authorizeTrackEdit(id, userId); await repo.removeSong(id, songId); return getPlaylist(id, userId); }
 export async function reorderSongs(id, userId, ids) {
   await authorizeTrackEdit(id, userId);
   if (!Array.isArray(ids)) throw fail(400, 'VALIDATION_ERROR', 'songIds must be an array.');
-  await repo.reorder(id, ids);
+  try {
+    await repo.reorder(id, ids);
+  } catch (error) {
+    if (error.code === '22023') throw fail(400, 'VALIDATION_ERROR', 'The new order must list every song in the playlist exactly once.');
+    throw error;
+  }
   return getPlaylist(id, userId);
 }
 
 export async function setLiked(userId, songId, liked) {
   const db = supabase;
   if (!db) throw fail(503, 'INTERNAL_ERROR', 'Playlist storage is not configured.');
+  if (!isCatalogSongId(songId)) throw fail(404, 'NOT_FOUND', 'Song not found in the AuraTune catalog.');
   const result = liked
     ? await db.from('user_liked_songs').upsert({ user_id: userId, song_id: songId }, { onConflict: 'user_id,song_id', ignoreDuplicates: true })
     : await db.from('user_liked_songs').delete().eq('user_id', userId).eq('song_id', songId);
+  if (result.error?.code === '23503') throw fail(404, 'NOT_FOUND', 'Song not found in the AuraTune catalog.');
   if (result.error) throw result.error;
   return listLiked(userId);
 }
 export async function listLiked(userId) {
-  const { data, error } = await supabase.from('user_liked_songs').select('song_id').eq('user_id', userId).order('created_at');
+  const { data, error } = await supabase.from('user_liked_songs').select('song_id').eq('user_id', userId).order('liked_at');
   if (error) throw error;
-  return (data || []).map((row) => row.song_id);
+  return (data || []).map((row) => String(row.song_id));
 }
 
 export async function bookmark(id, userId) {
   const playlist = await repo.findById(id);
   if (!playlist || playlist.status !== 'Public') throw fail(404, 'NOT_FOUND', 'Public playlist not found.');
-  const result = await supabase.from('playlist_bookmarks').upsert({ user_id: userId, playlist_id: id }, { onConflict: 'user_id,playlist_id', ignoreDuplicates: true });
+  const result = await supabase.from('playlist_bookmarks').upsert({ user_id: userId, playlist_id: Number(id) }, { onConflict: 'user_id,playlist_id', ignoreDuplicates: true });
   if (result.error) throw result.error;
   return { saved: true };
 }
 
 export async function setCollaboration(id, userId, enabled) {
   await owned(id, userId);
-  const { error } = await supabase.rpc('set_playlist_collaboration', { p_playlist_id: id, p_enabled: Boolean(enabled) });
+  const { error } = await supabase.rpc('set_playlist_collaboration', { p_playlist_id: Number(id), p_enabled: Boolean(enabled) });
   if (error) throw error;
   const data = await repo.findById(id);
   return normalize(data, await repo.getSongs(id), await loadOwner(userId));
@@ -144,7 +152,7 @@ export async function inviteCollaborator(id, userId, email) {
   if (lookupError) throw lookupError;
   if (!target) throw fail(404, 'NOT_FOUND', 'This email does not belong to a registered AuraTune user.');
   if (target.id === userId) throw fail(400, 'VALIDATION_ERROR', 'The owner is already a playlist member.');
-  const { error } = await supabase.from('playlist_shared_users').upsert({ playlist_id: id, shared_with_user_id: target.id }, { onConflict: 'playlist_id,shared_with_user_id', ignoreDuplicates: true });
+  const { error } = await supabase.from('playlist_shared_users').upsert({ playlist_id: Number(id), shared_with_user_id: target.id }, { onConflict: 'playlist_id,shared_with_user_id', ignoreDuplicates: true });
   if (error) throw error;
   return target;
 }
@@ -158,16 +166,7 @@ export async function generatePlaylist(prompt) {
   if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 200) throw fail(400, 'VALIDATION_ERROR', 'Prompt must be between 1 and 200 characters.');
   try {
     const response = await getPlaylistGeneration({ prompt: prompt.trim() });
-    const candidates = Array.isArray(response?.tracks) ? response.tracks : [];
-    const ids = [...new Set(candidates.map((track) => String(track.song_id ?? track.id ?? '')).filter(Boolean))];
-    if (!ids.length) return { title: response?.title || prompt.trim().slice(0, 80), reason: response?.reason || '', tracks: [] };
-    const { data: tracks, error } = await supabase.from('songs').select('*').in('song_id', ids);
-    if (error && !['42P01', '42703', 'PGRST200', 'PGRST205'].includes(error.code)) throw error;
-    const catalog = error ? demoSongs : tracks || [];
-    const byId = new Map(catalog.filter((song) => song.is_active !== false && !song.deleted_at && !['restricted', 'inactive', 'unavailable', 'deleted', 'hidden'].includes(String(song.status || '').toLowerCase())).map((song) => [String(song.song_id), song]));
-    const ordered = ids.map((id) => byId.get(id)).filter(Boolean);
-    if (ordered.length < 10) return { title: response?.title || prompt.trim().slice(0, 80), reason: response?.reason || '', tracks: [], noMatch: true };
-    return { title: response?.title || prompt.trim().slice(0, 80), reason: response?.reason || '', tracks: ordered.slice(0, 20) };
+    return await normalizeAiPlaylistResponse(response, prompt);
   } catch (error) {
     throw fail(503, 'AI_SERVICE_UNAVAILABLE', 'AI playlist generation is temporarily unavailable.');
   }

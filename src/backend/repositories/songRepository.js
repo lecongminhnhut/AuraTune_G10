@@ -3,10 +3,13 @@ import { demoSongs } from '../data/demoSongs.js';
 
 // Tra cứu bài hát cho trình phát (Group 040).
 // Thứ tự: bảng `songs` trên Supabase (khi đã cấu hình và đã có bảng) -> danh mục demo.
-// Tầng dữ liệu chính thức do Group 080 xây dựng; khi schema được chốt chỉ cần sửa normalizeSong.
+// Schema thật (scripts/seedMusicCatalog.js, searchRepository): songs(song_id, title, album_id,
+// audio_url = URL Cloudinary, duration, genre, total_plays, image_url) -> albums -> artists.
 
 const MISSING_TABLE_CODES = new Set(['42P01', 'PGRST205']);
-const INVALID_INPUT_CODES = new Set(['22P02']); // ví dụ: song_id là uuid nhưng mã truyền vào là 't1'
+const INVALID_INPUT_CODES = new Set(['22P02']); // ví dụ: song_id là bigint nhưng mã truyền vào là 't1'
+const MISSING_RELATION_CODES = new Set(['42703', 'PGRST200']); // thiếu cột hoặc quan hệ để nhúng album/nghệ sĩ
+const SONG_SELECT = '*, albums(album_id, title, image_url, artists(artist_id, name))';
 
 let songsTableMissing = false;
 
@@ -27,22 +30,42 @@ export function parseDurationSeconds(value) {
   return parts.reduce((total, part) => total * 60 + part, 0);
 }
 
-function normalizeSong(row) {
+const relation = (value) => (Array.isArray(value) ? value[0] ?? null : value ?? null);
+
+export function normalizeSong(row) {
+  const album = relation(row.albums);
+  const artist = relation(row.artists) ?? relation(album?.artists);
   return {
     song_id: String(row.song_id ?? row.id),
     title: row.title ?? '',
-    artist: row.artist ?? row.artist_name ?? null,
-    album: row.album ?? row.album_title ?? null,
+    artist: artist?.name ?? row.artist ?? row.artist_name ?? null,
+    artist_id: artist?.artist_id != null ? String(artist.artist_id) : null,
+    album: album?.title ?? row.album ?? row.album_title ?? null,
+    album_id: row.album_id != null ? String(row.album_id) : null,
+    genre: row.genre ?? null,
     duration: parseDurationSeconds(row.duration ?? row.duration_seconds),
+    cover_url: row.image_url ?? album?.image_url ?? null,
     audio_url: row.audio_url ?? row.file_url ?? null,
-    is_active: row.is_active ?? (row.status ? row.status === 'active' : true),
+    is_active: !row.deleted_at && (row.is_active ?? (row.status ? row.status === 'active' : true)),
     source: 'database',
   };
 }
 
+let embedUnavailable = false;
+
+// Lấy kèm album/nghệ sĩ; nếu Supabase chưa có quan hệ để nhúng thì đọc riêng bảng songs.
+async function selectSongs(applyFilter) {
+  if (!embedUnavailable) {
+    const result = await applyFilter(supabase.from('songs').select(SONG_SELECT));
+    if (!result.error || !MISSING_RELATION_CODES.has(result.error.code)) return result;
+    embedUnavailable = true;
+  }
+  return applyFilter(supabase.from('songs').select('*'));
+}
+
 async function findInDatabase(songId) {
   if (!supabase || songsTableMissing) return { song: null };
-  const { data, error } = await supabase.from('songs').select('*').eq('song_id', songId).maybeSingle();
+  const { data, error } = await selectSongs((query) => query.eq('song_id', songId).maybeSingle());
   if (!error) return { song: data ? normalizeSong(data) : null };
   if (MISSING_TABLE_CODES.has(error.code)) {
     songsTableMissing = true;
@@ -60,4 +83,27 @@ export async function findSongById(songId) {
   if (demo) return { ...demo };
   if (error) throw new SongLookupError(error);
   return null;
+}
+
+// Metadata cho nhiều bài (đọc lại lịch sử nghe). Mã không có trong database thì lấy từ danh mục demo;
+// lỗi database không chặn việc đọc lịch sử, chỉ làm thiếu metadata.
+export async function findSongsByIds(songIds) {
+  const ids = [...new Set(songIds.map(String))];
+  const found = new Map();
+  const numericIds = ids.filter((id) => /^\d+$/.test(id));
+  if (supabase && !songsTableMissing && ids.length) {
+    let { data, error } = await selectSongs((query) => query.in('song_id', ids));
+    // Cột song_id kiểu số không nhận mã 't1': thử lại chỉ với các mã dạng số.
+    if (error && INVALID_INPUT_CODES.has(error.code) && numericIds.length) {
+      ({ data, error } = await selectSongs((query) => query.in('song_id', numericIds)));
+    }
+    if (error) console.warn('Không đọc được metadata bài hát cho lịch sử nghe:', error.message);
+    for (const row of data ?? []) found.set(String(row.song_id ?? row.id), normalizeSong(row));
+  }
+  for (const id of ids) {
+    if (found.has(id)) continue;
+    const demo = demoSongs.find((item) => item.song_id === id);
+    if (demo) found.set(id, { ...demo });
+  }
+  return found;
 }

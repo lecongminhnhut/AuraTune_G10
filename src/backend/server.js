@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
 import songRoutes from './routes/songRoutes.js';
+import historyRoutes from './routes/historyRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
 import assistanceRoutes from './routes/assistanceRoutes.js';
@@ -17,7 +18,6 @@ import moodRecommendationRoutes from './routes/moodRecommendationRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
 import lyricsSearchRoutes from './routes/lyricsSearchRoutes.js';
 import playlistRoutes from './routes/playlistRoutes.js';
-import mediaRoutes from './routes/mediaRoutes.js';
 import artistRoutes from './routes/artistRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import studioRoutes from './routes/studioRoutes.js';
@@ -50,7 +50,7 @@ app.use(
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Firebase-ID-Token']
   })
 );
@@ -84,6 +84,12 @@ app.use('/api/v1/recommendations', recommendationRoutes);
 app.use('/api/v1', searchRoutes);
 app.use('/api/v1', lyricsSearchRoutes);
 app.use('/api/v1', playlistRoutes);
+// Group 040 Music Player: persisted play events (041-FR-014)
+app.use('/api/v1/users/me/history', historyRoutes);
+// Group 090 Artist Profile & Studio: Features 091-093
+app.use('/api/v1/artists', artistRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/studio', studioRoutes);
 // Firebase Authentication -> AuraTune Session
 app.post(
   '/api/v1/auth/firebase/exchange',
@@ -101,14 +107,12 @@ app.use((req, res) => {
   res.status(404).json({ error: 'not_found', message: `Route ${req.method} ${req.url} not found` });
 });
 
+// Error handlers run after every route has been registered.
+app.use(followTransportError);
+
 export { app };
 
-app.use(followTransportError);
 app.listen(PORT, () => {
   console.log(`🚀 AuraTune Backend Server is running on http://localhost:${PORT}`);
   console.log(`🔐 Auth API base URL: http://localhost:${PORT}/api/v1/auth`);
 });
-app.use('/api/v1/media', mediaRoutes);
-app.use('/api/v1/artists', artistRoutes);
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/studio', studioRoutes);

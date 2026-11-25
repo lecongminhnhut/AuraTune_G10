@@ -65,7 +65,7 @@ export function createSearchRepository(client = defaultSupabase) {
     async search({ q, type = 'all', limit = 20, offset = 0, genre, release_year: releaseYear, sort = 'relevance' }) {
       const need = type === 'all' ? GROUPS : [type]
       const groups = {}
-      if (need.includes('tracks')) groups.tracks = (await fetchRows(client, 'songs', 'song_id,title,album_id,genre,duration,total_plays,image_url,albums:albums(album_id,title,release_date,image_url,artists:artists(artist_id,name)),artists:artists(artist_id,name)')).map(mapTrack)
+      if (need.includes('tracks')) groups.tracks = (await fetchRows(client, 'songs', 'song_id,title,album_id,genre,duration,total_plays,image_url,albums:albums(album_id,title,release_date,image_url,artists:artists(artist_id,name))')).map(mapTrack)
       if (need.includes('artists')) groups.artists = (await fetchRows(client, 'artists', 'artist_id,name,image_url,users:user_id(role,avatar_url)')).map(mapArtist)
       if (need.includes('albums')) groups.albums = (await fetchRows(client, 'albums', 'album_id,title,artist_id,release_date,image_url,artists:artists(artist_id,name),songs: songs(genre)')).map(mapAlbum)
       if (need.includes('playlists')) groups.playlists = (await fetchRows(client, 'playlists', 'playlist_id,name,status,user_id_creator,users:user_id_creator(display_name,name),playlist_songs(playlist_id)')).filter((row) => row.status === 'Public').map(mapPlaylist)

@@ -33,3 +33,13 @@
 - Approve the bookmark relation/API and behavior for deleted or no-longer-public referenced playlists.
 - Verify deployed playlist columns, default cover implementation, and FK/delete behavior against actual migrations.
 - Constitution remains an unfilled Spec Kit template; no ratified principles are inferred.
+
+## Live Database Check (2026-11-22, PA4 Section E)
+
+Checked against the shared Supabase project through the PostgREST schema and live API runs (`docs/test/PA4_Section_E_evidence.md`, L4-L7).
+
+- **Columns**: the project follows the team ER design: `playlists(playlist_id bigint, user_id_creator -> users.user_id, name, status, created_at)`, `playlist_songs(playlist_id, song_id bigint, added_at)`, `playlist_shared_users(playlist_id, shared_with_user_id, shared_at)`, `user_liked_songs(user_id, song_id, liked_at)`. Migration 003 (text `id`, `title`) never matched it. Migration `008_playlist_schema_alignment.sql`, applied on 2026-11-22, adds `description`, `cover_url`, `cover_key`, `is_official`, `is_collaborative`, `updated_at`, `playlist_songs.sort_order` and `added_by_user_id`, the `playlist_bookmarks` table, and the reorder and collaboration functions. The repository maps `playlist_id`/`name` to the API fields `id`/`title`.
+- **Default cover**: `cover_key` defaults to `aurora` in the column and in `playlistRepository.create`; a chosen cover is stored as its key (live: `violet`).
+- **Aggregates**: song count and total duration are computed when the playlist is read, from `playlist_songs` joined to `songs.duration` (live: 3 songs, 10 minutes; 4 songs after adding "Vintage").
+- **Bookmarks**: stored in `playlist_bookmarks(user_id, playlist_id)` with `ON DELETE CASCADE` to both parents (created by migration 008). The bookmark approval gate above still needs the group owner's sign-off.
+- **Delete / foreign keys**: the original foreign keys from `playlist_songs` and `playlist_shared_users` to `playlists` have no cascade on the live project: deleting a playlist with songs failed with 23503. `playlistRepository.delete` now removes bookmarks, members and songs before the playlist (live re-run: 200, no rows left). To close T004, read the exact rules in the SQL editor: `select conrelid::regclass, conname, confdeltype from pg_constraint where confrelid = 'public.playlists'::regclass;` (`a` = no action, `c` = cascade).
