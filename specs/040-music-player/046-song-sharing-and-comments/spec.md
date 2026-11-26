@@ -121,7 +121,8 @@ As a signed-in listener, I want to post and remove my comments so that I can tak
 
 These gaps do not change the requirements. They record where the current UI differs from this specification.
 
-- Comments are stored locally in the prototype, so permissions are enforced only in the client.
+- Resolved in iteration 2 (2026-11-25): comments of catalog songs are stored in Supabase `song_comments` and the backend enforces the permissions ([contracts/comments-api.md](../contracts/comments-api.md)). Demo tracks (`t1`…`t10`) still use the local prototype comments.
+- Share links open a search for the track instead of the album page, because the album page cannot load albums until `GET /api/v1/albums/:id` exists (Group 080).
 
 ## UI Screenshots
 

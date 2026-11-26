@@ -84,7 +84,7 @@ description: "Dependency-ordered implementation tasks for Group 040 Music Player
 
 - [X] T029 [P] [US044] `components/player/LyricsPanel.jsx`: emphasized current line, dimmed previous and next lines, instrumental intro marker, plain-lyrics fallback, "no lyrics" notice (FR-001..FR-009).
 - [X] T030 [US044] Tapping a line calls `playFrom(line.time)` (FR-012).
-- [ ] T031 [US044] Load lyrics from a backend `GET /api/v1/songs/:id/lyrics` once the songs schema has lyric columns (blocked on the Group 080 data layer).
+- [X] T031 [US044] Load lyrics from `GET /api/v1/songs/:id/lyrics`: `utils/lyrics.js` parses `songs.lyrics` (LRC or plain), `getSongLyrics` serves it, and `hooks/useTrackLyrics.js` loads it for catalog songs while the lyrics tab is open, with loading and error states in `LyricsPanel`. Tests: `tests/songLyrics.test.js`, `services/commentApi.test.js` (lyrics client), `tests/components/PlayerPanels.test.jsx`.
 
 ---
 
@@ -106,7 +106,23 @@ description: "Dependency-ordered implementation tasks for Group 040 Music Player
 - [X] T038 Persist play events in Supabase: `POST/PATCH/GET/DELETE /api/v1/users/me/history` ([contracts/history-api.md](./contracts/history-api.md)), `repositories/listeningHistoryRepository.js` with no in-memory fallback, migration `src/database/migrations/007_listening_history.sql`, and `services/historyApi.js` called by `AppStore.recordPlay`, `updateListened` and `clearHistory` for backend sessions. History, Home and Recommendations read the entries back from the API. Tests are in `tests/listeningHistory.test.js`.
 - [ ] T039 Run [quickstart.md](./quickstart.md) rows 13–15 against the team Supabase project (play → database row → read-back after restarting the backend and reloading the browser) and record the evidence in `docs/test/PA4_Section_E_evidence.md`.
 
+---
+
+## Phase 10: Feature 046 — Song Sharing and Comments (P1, iteration 2)
+
+**Independent test**: [quickstart.md](./quickstart.md) rows 17–22.
+
+- [X] T040 [US046] Migration `src/database/migrations/009_song_comments.sql`: `song_comments` with foreign keys to `songs` and `users`, a 1–300 character CHECK, RLS on and no client grants.
+- [X] T041 [US046] `repositories/commentRepository.js`, `controllers/commentController.js` and `routes/commentRoutes.js` mounted at `/api/v1` ([contracts/comments-api.md](./contracts/comments-api.md)): public list with optional token for `can_delete`, signed-in post, author/admin delete with 403 otherwise (FR-006..FR-012). `/api/v1/comments/` added to the JSON 401 envelope in `authMiddleware.js`.
+- [X] T042 [P] [US046] `tests/songComments.test.js`: guest read, newest first, `can_delete` per viewer, invalid token, limits, validation (empty, whitespace, 301 characters, emoji count), 401/403/404/410/503, repository query shape and missing-table mapping.
+- [X] T043 [US046] `services/commentApi.js`, `hooks/useTrackComments.js`, `components/player/CommentThread.jsx` and `TrackComments.jsx`: backend comments for catalog songs, prototype comments for demo tracks, loading/error/empty states, text kept on a failed post (FR-013), sign-in prompt (FR-015).
+- [X] T044 [US046] Sharing: Web Share → Clipboard API → text-field copy in `utils/share.js`; share links open a search for the track while the album page cannot load albums (FR-002..FR-005).
+- [X] T045 [P] [US046] Tests: `utils/share.test.js`, `utils/relativeTime.test.js`, `services/commentApi.test.js`, `tests/components/PlayerPanels.test.jsx`.
+- [X] T046 [US046] Browser check on 2026-11-25 (guest): lyrics request and "no lyrics" notice for a catalog song; share from the track menu copies `/search?q=Glad%20To%20Be%20Stuck%20Inside`, which lists the track; comments panel shows the 503 fallback before migration 009.
+- [X] T047 [US046] Migration 009 applied to the team Supabase project on 2026-11-25; [quickstart.md](./quickstart.md) rows 18, 19 and 21 pass live (guest read, post → 201 and a `song_comments` row, read-back after a backend restart, author delete → 200 and the row gone). Row 20: guest `can_delete: false` and 401 without a token were checked live; 403 for another account and admin deletion are covered by `tests/songComments.test.js`. Evidence: [docs/test/040_Music_Player_iteration2_evidence.md](../../docs/test/040_Music_Player_iteration2_evidence.md).
+
 ## Dependencies
 
 - Phase 2 → Phase 3 → Phases 4–8. Phases 5–8 depend only on Phase 3 and can proceed in parallel.
-- T031 waits on lyric columns in the catalog (Group 080). T039 needs the team Supabase credentials and migration 007 applied.
+- T039 needs the team Supabase credentials and migration 007 applied. T047 needs migration 009 applied in the Supabase SQL Editor.
+- Album share links wait on `GET /api/v1/albums/:id` (Group 080).

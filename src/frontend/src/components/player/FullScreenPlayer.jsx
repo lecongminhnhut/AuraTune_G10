@@ -6,6 +6,7 @@ import TrackComments from './TrackComments.jsx'
 import LyricsPanel from './LyricsPanel.jsx'
 import PlaybackAlert from './PlaybackAlert.jsx'
 import { Link } from '../../utils/navigation.jsx'
+import useTrackLyrics from '../../hooks/useTrackLyrics.js'
 
 const playerThemes = {
   ocean: { top: '#257bad', middle: '#286f9a', bottom: '#203f58' },
@@ -28,6 +29,8 @@ export default function FullScreenPlayer({ isOpen, onClose, player, playlistCont
   const { track, isPlaying, elapsed, duration, shuffle, repeatMode, volume, muted, status, error, isBuffering } = player
   const theme = track.playerTheme ?? playerThemes[track.cover] ?? playerThemes.ocean
   const RepeatIcon = repeatMode === 'one' ? Repeat1 : Repeat
+  // Catalog songs load lyrics only while the lyrics tab of the open player is shown (T031).
+  const lyrics = useTrackLyrics(track, { enabled: isOpen && panel === 'lyrics' })
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -89,9 +92,9 @@ export default function FullScreenPlayer({ isOpen, onClose, player, playlistCont
               <button type="button" role="tab" aria-selected={panel === 'comments'} onClick={() => setPanel('comments')} className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold transition ${panel === 'comments' ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white'}`}><MessageCircle size={12} aria-hidden="true" /> Bình luận</button>
             </div>
             {panel === 'lyrics' ? (
-              <LyricsPanel track={track} elapsed={elapsed} onSeekLine={player.playFrom} />
+              <LyricsPanel track={{ ...track, lyrics: lyrics.synced, plainLyrics: lyrics.plain }} status={lyrics.status} onRetry={lyrics.retry} elapsed={elapsed} onSeekLine={player.playFrom} />
             ) : (
-              <TrackComments track={track} onNavigateAway={onClose} />
+              <TrackComments track={track} active={isOpen} onNavigateAway={onClose} />
             )}
 
             <div className="now-playing-controls rounded-[20px] border border-white/[0.12] bg-white/[0.12] px-[18px] pb-[14px] pt-[14px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_12px_40px_rgba(10,25,40,0.06)] backdrop-blur-2xl">

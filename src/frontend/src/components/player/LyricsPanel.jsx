@@ -1,12 +1,32 @@
+import { Loader2, RotateCw } from 'lucide-react'
 import { findActiveLyricIndex, formatTime } from '../../utils/playback.js'
 
 // Feature 044 — Lời bài hát trong trình phát toàn màn hình.
 // - Lời có mốc thời gian: nhấn mạnh dòng đang hát, dòng trước/sau mờ hơn, chạm để tua (FR-002..005, FR-012).
 // - Chỉ có lời thường: hiển thị nguyên văn, không nhấn mạnh (FR-006).
 // - Không có lời: hiển thị thông báo, nhạc vẫn phát (FR-007, FR-008).
-export default function LyricsPanel({ track, elapsed, onSeekLine }) {
+// - Catalog songs load their lyrics from the backend (T031): `status` is 'loading' or 'error' meanwhile.
+export default function LyricsPanel({ track, elapsed, onSeekLine, status = 'ready', onRetry }) {
   const synced = Array.isArray(track.lyrics) && track.lyrics.length ? track.lyrics : null
   const plain = !synced && typeof track.plainLyrics === 'string' && track.plainLyrics.trim() ? track.plainLyrics.trim() : null
+
+  if (status === 'loading') {
+    return (
+      <div className="now-playing-lyrics text-center" role="status">
+        <p className="inline-flex items-center gap-2 text-[14px] text-white/60"><Loader2 size={15} className="animate-spin" aria-hidden="true" /> Đang tải lời bài hát…</p>
+      </div>
+    )
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="now-playing-lyrics text-center" role="alert">
+        <p className="text-[15px] font-semibold text-white/80">Không tải được lời bài hát.</p>
+        <p className="mt-1 text-[13px] text-white/50">Nhạc vẫn tiếp tục phát.</p>
+        {onRetry && <button type="button" onClick={onRetry} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/25"><RotateCw size={12} aria-hidden="true" /> Thử lại</button>}
+      </div>
+    )
+  }
 
   if (synced) {
     const active = findActiveLyricIndex(synced, elapsed)

@@ -50,6 +50,7 @@ export async function authenticateToken(req, res, next) {
     req.originalUrl?.startsWith('/api/v1/users/me/playlists') ||
     req.originalUrl?.startsWith('/api/v1/users/me/liked-songs') ||
     req.originalUrl?.startsWith('/api/v1/songs/') ||
+    req.originalUrl?.startsWith('/api/v1/comments/') ||
     req.originalUrl?.startsWith('/api/v1/users/me/history');
 
   const sendUnauthorized = (legacyMsg) => {

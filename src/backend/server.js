@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
 import songRoutes from './routes/songRoutes.js';
 import historyRoutes from './routes/historyRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
 import agentRoutes from './routes/agentRoutes.js';
 import intentRoutes from './routes/intentRoutes.js';
 import assistanceRoutes from './routes/assistanceRoutes.js';
@@ -68,6 +69,8 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/media', mediaRoutes);
 // Group 040 Music Player: song metadata & audio stream
 app.use('/api/v1/songs', songRoutes);
+// Group 040 Music Player: song comments (Feature 046)
+app.use('/api/v1', commentRoutes);
 // Group 120 AI Conversational Agent: Feature 121
 app.use('/api/v1/agent', agentRoutes);
 // Group 120 AI Conversational Agent: Feature 122 (Music Intent Understanding)

@@ -103,7 +103,7 @@ As a listener, I want a clear state when timed lyrics do not exist so that I do 
 
 These gaps do not change the requirements. They record where the current UI differs from this specification.
 
-- Lyrics come from mock data and only the timed form is implemented.
+- Resolved in iteration 2 (2026-11-25): catalog songs load lyrics from `GET /api/v1/songs/:id/lyrics` (`songs.lyrics`, LRC or plain). Demo tracks keep their lyrics in mock data. No catalog song has lyrics yet.
 - The prototype shows three lines at a time; smooth scrolling through the full text is not implemented.
 
 ## UI Screenshots

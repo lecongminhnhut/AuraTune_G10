@@ -59,3 +59,23 @@
 
 - **Decision**: Publish title, artist and album, and handle play, pause, previous, next and seekto.
 - **Rationale**: Hardware media keys and lock-screen controls then drive the same engine, and external pauses are synced back into state.
+
+## R9. Lyrics format in `songs.lyrics` (T031)
+
+- **Decision**: Read the existing text column and accept LRC (`[mm:ss.xx]` tags, several tags per line, `[offset:±ms]`, enhanced `<mm:ss.xx>` word tags), a JSON array of `{ time, text }`, or plain text. Parse on the server and return `{ synced, plain }`, the shape `LyricsPanel` already used for mock data.
+- **Rationale**: The shared schema already has `songs.lyrics text` (Group 030's lyrics search reads it), so no migration is needed. LRC is the common time-stamped format. Parsing on the server keeps one implementation and lets the response be cached (`Cache-Control: public, max-age=300`).
+- **Alternatives considered**: A separate `song_lyrics` table with one row per line; rejected because the column already exists and lyrics are read whole.
+- **Data on 2026-11-25**: none of the 17 catalog songs has lyrics.
+
+## R10. Comment storage and permissions (Feature 046)
+
+- **Decision**: New table `song_comments(comment_id, song_id, user_id, content, created_at)` with `ON DELETE CASCADE` to `songs` and `users`, a CHECK of 1–300 characters after trimming, RLS on and no grants to `anon`/`authenticated`. The backend checks permissions: public read, signed-in post, author or `role = 'admin'` delete. Lists are newest first, 50 per request (at most 100).
+- **Rationale**: The ER design has no comment entity, and the API contract fixes the routes (`/songs/:id/comments`, `/comments/:id`). Keeping all access in the backend matches the other Group 040 tables (`listening_history`) and keeps FR-012 in one place. The optional `timestamp_seconds` of the API contract is not stored, because the spec does not use it.
+- **Order**: the spec's screenshots disagree (oldest first in the thread view, "appears at the top" after posting). Newest first was chosen so a new comment is visible without scrolling.
+- **Alternatives considered**: Supabase RLS policies for direct client access; rejected because the frontend authenticates against the backend's own tokens, not Supabase Auth.
+
+## R11. Share links and copying (Feature 046)
+
+- **Decision**: Web Share API → Clipboard API → hidden text field with `execCommand('copy')`. Links open `/search?q=<title>`.
+- **Rationale**: The Clipboard API is missing on pages that are not served over HTTPS or localhost and is refused in some embedded browsers (verified on 2026-11-25: "Write permission denied" in the desktop app's browser pane), where the text-field copy still works. The album page (Group 080) requests `GET /api/v1/albums/:id`, which the backend does not serve, so album links open an error page; a search for the title lists the track for everyone (FR-005, SC-001).
+- **Alternatives considered**: A dedicated `/track/:id` page; more work than the spec needs while the search already lists the track.

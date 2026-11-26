@@ -1,8 +1,8 @@
 # Implementation Plan: Music Player — Core Playback & Stream (Group 040)
 
-**Branch**: `feature/040-music-player-implement` | **Date**: 2026-11-10 | **Specs**: [041](./041-playback-controls/spec.md), [042](./042-playback-progress-and-volume/spec.md), [043](./043-shuffle-and-repeat/spec.md), [044](./044-synchronized-lyrics/spec.md), [045](./045-persistent-bottom-player/spec.md)
+**Branch**: `feature/040-music-player-implement` | **Date**: 2026-11-10, iteration 2 on 2026-11-25 | **Specs**: [041](./041-playback-controls/spec.md), [042](./042-playback-progress-and-volume/spec.md), [043](./043-shuffle-and-repeat/spec.md), [044](./044-synchronized-lyrics/spec.md), [045](./045-persistent-bottom-player/spec.md), [046](./046-song-sharing-and-comments/spec.md)
 
-**Input**: Feature specifications 041–045 in `specs/040-music-player/`. Feature 046 (sharing and comments) is outside this iteration.
+**Input**: Feature specifications 041–046 in `specs/040-music-player/`. Iteration 1 covered 041–045. Iteration 2 adds the lyrics API (044, T031) and Feature 046 (sharing and comments); see [Iteration 2](#iteration-2-lyrics-api-and-feature-046).
 
 ## Summary
 
@@ -57,7 +57,9 @@ specs/040-music-player/
 ├── research.md              # Design decisions and alternatives
 ├── data-model.md            # Player state, listening session, snapshot, song and audio source
 ├── quickstart.md            # Run and verify
-├── contracts/songs-api.md   # GET /api/v1/songs/:id and /stream
+├── contracts/songs-api.md   # GET /api/v1/songs/:id, /stream and /lyrics
+├── contracts/history-api.md # Play events (041-FR-014)
+├── contracts/comments-api.md # Song comments (Feature 046)
 ├── tasks.md                 # Dependency-ordered tasks with status
 └── 041-…046-*/spec.md       # Feature specifications
 ```
@@ -124,8 +126,58 @@ src/frontend/src/
 
 - **Songs schema (Group 080 data layer):** `normalizeSong` reads `song_id`, `title`, `duration`, `audio_url`, `is_active`/`status`. Confirm these columns once the migration lands.
 - **Media storage (Group 090):** `utils/audioSource.js` is where the storage adapter plugs in. Artist-uploaded tracks have no audio yet, so playing one shows the error state.
-- **Lyrics API:** `GET /api/v1/songs/:id/lyrics` is not built. The panel reads `lyrics` (synced) or `plainLyrics` from track data.
-- **Feature 046 (sharing and comments):** UI unchanged; it has no backend yet.
+- **Lyrics data:** `GET /api/v1/songs/:id/lyrics` reads `songs.lyrics` (iteration 2). On 2026-11-25 none of the 17 catalog songs has lyrics (the catalog is instrumental lo-fi, soundtrack and soul), so catalog songs show the "no lyrics" notice until lyrics are added.
+- **Feature 046 comments:** migration 009 was applied to the team Supabase project on 2026-11-25. Where it is missing, the comments panel shows "Bình luận tạm thời không khả dụng." (503 `comments_unavailable`).
+- **Album page (Group 080):** the album page loads `GET /api/v1/albums/:id`, which the backend does not serve, so every album page shows "Album details unavailable". Share links therefore open a search for the track (`ALBUM_SHARE_LINKS = false` in `utils/share.js`) until that endpoint exists.
+- **Comment moderation (Group 110):** administrators can delete any comment from the full player; a platform-wide moderation list is Group 110's.
 - **Group 050:** the 50-track queue cap (051-FR-013 / 052-FR-012) is not enforced by this change.
-- **Group 070:** history is still written to the local store. `POST /users/me/history` belongs to that group.
+- **Group 070:** play events are stored in Supabase through `/api/v1/users/me/history` (T038); statistics stay with Groups 070 and 100.
 - **Environment:** the frontend on `main` fails to start without the `VITE_FIREBASE_*` variables. This is unrelated to this change.
+
+## Iteration 2: Lyrics API and Feature 046
+
+**Date**: 2026-11-25. **Scope**: T031 (lyrics from the backend) and Feature 046 (sharing and comments).
+
+### Source Code
+
+```text
+src/database/migrations/009_song_comments.sql   # song_comments table, length check, RLS
+src/backend/
+├── utils/lyrics.js                   # parseLyrics: LRC time tags, offset, word tags, JSON, plain text
+├── controllers/songController.js     # + getSongLyrics (GET /api/v1/songs/:id/lyrics)
+├── repositories/commentRepository.js # Supabase song_comments, author embedded from users
+├── controllers/commentController.js  # Validation, permissions, can_delete
+├── routes/commentRoutes.js           # GET/POST /songs/:id/comments, DELETE /comments/:id
+└── tests/songLyrics.test.js, tests/songComments.test.js
+
+src/frontend/src/
+├── services/songApi.js               # + isCatalogSongId, fetchSongLyrics
+├── services/commentApi.js            # list, create, remove; readable errors
+├── hooks/useTrackLyrics.js           # Lazy load and session cache for catalog songs
+├── hooks/useTrackComments.js         # Load, post (keeps text on failure), delete
+├── components/player/CommentThread.jsx   # List, empty/loading/error states, input, sign-in prompt
+├── components/player/TrackComments.jsx   # Backend for catalog songs, prototype for demo tracks
+├── components/player/LyricsPanel.jsx     # + loading and error states
+└── utils/share.js, utils/relativeTime.js
+```
+
+### Approach
+
+1. **Lyrics (T031).** `songs.lyrics` is a text column. The backend parses it once per request: lines with LRC time tags become `synced` lines sorted by time (an `[offset:]` tag shifts them, word-level tags are removed, an empty timed line becomes "♪"); without time tags the text is returned as `plain`. The full player asks for lyrics only while its lyrics tab is open, keeps them for the session, and shows loading, error with Retry, and the existing "no lyrics" notice. Demo tracks keep their lyrics in the app.
+2. **Comments (046).** One table `song_comments` keyed by `comment_id`, referencing `songs` and `users` with `ON DELETE CASCADE`. The backend is the only client (RLS on, no grants to `anon`/`authenticated`), so the permission rules live in `commentController`: reading is public, posting needs a valid session, deleting needs the author or `role = 'admin'`. `GET` accepts an optional token only to compute `can_delete`, which drives whether the delete action is shown.
+3. **Comments UI.** Catalog songs (numeric ids) use the API; demo tracks keep the prototype comments, so the demo catalog still works without a database. The list is newest first. A failed post keeps the text and shows the error under the input. A signed-in account without a backend session (local demo account) is asked to sign in with an AuraTune account instead of seeing an input that cannot work.
+4. **Sharing (046).** The Web Share sheet when the device has one; otherwise the Clipboard API; if that is missing (page not on HTTPS) or refuses (permission denied, as in embedded browsers), a hidden text field and `execCommand('copy')`. Cancelling the share sheet shows nothing. Links open a search for the track while the album page cannot load albums (see Open Items).
+
+### Requirement Coverage (iteration 2)
+
+| Requirement | Implementation |
+| --- | --- |
+| 044-FR-001..009 with catalog lyrics | `GET /songs/:id/lyrics` → `useTrackLyrics` → `LyricsPanel` (synced, plain or notice) |
+| 046-FR-001 share from the full player and track menus | `FullScreenPlayer` Share button and `TrackMenu` "Chia sẻ" → `App.share` |
+| 046-FR-002..004 share sheet, copy, confirm, silent cancel | `shareLink` results `shared`/`copied`/`failed`/`cancelled`; toast for all but `cancelled` |
+| 046-FR-005 link opens content with the track | `trackSharePath` → `/search?q=<title>` (album link once Group 080 serves album details) |
+| 046-FR-006/007/014 read, author + relative time + text, empty state | `GET /songs/:id/comments`, `CommentThread`, `formatRelativeTime` |
+| 046-FR-008/015 only signed-in users post; prompt for guests | `authenticateToken` on POST; `CommentThread` sign-in prompt |
+| 046-FR-009 1–300 characters | `normalizeCommentContent`, table CHECK, `maxLength` and counter in the input |
+| 046-FR-010/011/012 author or admin deletes; hidden otherwise; server-enforced | `canDeleteComment` on DELETE (403) and in `can_delete` |
+| 046-FR-013 keep unsent text on failure | `CommentThread.submit` clears the input only on success |

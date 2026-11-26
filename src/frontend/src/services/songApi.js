@@ -17,3 +17,22 @@ export async function fetchSongMetadata(songId) {
     return null
   }
 }
+
+// Songs of the Supabase catalog have numeric ids; demo tracks (t1…t10) keep their data in the app.
+export const isCatalogSongId = (id) => /^\d{1,18}$/.test(String(id ?? ''))
+
+// Feature 044 (T031): lyrics of one catalog song (GET /api/v1/songs/:id/lyrics).
+// Resolves to { synced: [{ time, text }], plain: string | null }; throws when the request fails.
+export async function fetchSongLyrics(songId, { signal, fetchImpl = fetch } = {}) {
+  const response = await fetchImpl(`${API_BASE_URL}/songs/${encodeURIComponent(songId)}/lyrics`, { signal })
+  const payload = await response.json().catch(() => null)
+  if (!response.ok || !payload?.success) {
+    const error = new Error(payload?.message || 'Không tải được lời bài hát.')
+    error.status = response.status
+    throw error
+  }
+  return {
+    synced: Array.isArray(payload.data?.synced) ? payload.data.synced : [],
+    plain: typeof payload.data?.plain === 'string' ? payload.data.plain : null,
+  }
+}

@@ -70,6 +70,7 @@ Validation on restore:
 | `title`, `artist`, `album` | `title`, `artist`/`artist_name`, `album`/`album_title` | Display metadata |
 | `duration` | `duration` or `duration_seconds` | Seconds, or `m:ss` / `h:mm:ss` |
 | `audio_url` | `audio_url` or `file_url` | Remote URL or path relative to `MEDIA_DIR` |
+| `lyrics` | `lyrics` | Text: LRC or plain lyrics; parsed by `utils/lyrics.js` (T031) |
 | `is_active` | `is_active`, or `status === 'active'` | Defaults to active |
 | `source` | — | `database` or `demo` |
 
@@ -80,3 +81,27 @@ Validation on restore:
 | `redirect` | `url` | 302 to the remote storage URL |
 | `file` | `size`, `contentType`, `createReadStream({ start, end })` | 200/206 from disk |
 | `demo` | same as `file`; `contentType: audio/wav` | 200/206, generated per range |
+
+## Lyrics (backend response, `GET /api/v1/songs/:id/lyrics`)
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `has_lyrics` | boolean | False when the song has no lyrics |
+| `synced` | `[{ time, text }]` | Seconds, sorted; empty when not time-stamped |
+| `plain` | string or null | Only when the lyrics have no time tags |
+
+## Comment (Supabase `song_comments`, Feature 046)
+
+| Column | Type | Rules |
+| --- | --- | --- |
+| `comment_id` | bigint identity | Primary key; returned as `id` |
+| `song_id` | bigint | References `songs.song_id`, `ON DELETE CASCADE` |
+| `user_id` | text | References `users.user_id`, `ON DELETE CASCADE`; the author |
+| `content` | text | 1–300 characters after trimming (CHECK) |
+| `created_at` | timestamptz | Default `now()` |
+
+In the API, a comment also has `author` (`id`, `name` from `display_name` or `name`, `avatar_url`) and `can_delete` for the viewer. Only the author or an administrator may delete it.
+
+## ShareLink (frontend, `utils/share.js`)
+
+`/search?q=<track title>` for every track while the album page cannot load albums; `/album/<albumId>?track=<id>` when `ALBUM_SHARE_LINKS` is turned on. Results of sharing: `shared`, `copied`, `cancelled` (no message) or `failed`.

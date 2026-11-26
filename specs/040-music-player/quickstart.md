@@ -14,8 +14,9 @@ cd ../frontend && npm install && npm run dev       # http://localhost:5173
 ## Automated tests
 
 ```bash
-cd src/backend && npm test      # Range parsing, metadata, 200/206/416/410, media files, path traversal
-cd src/frontend && npm test     # next/previous, shuffle + Play Next, play threshold, lyrics index, snapshot restore
+cd src/backend && npm test      # Range parsing, stream, history, lyrics parsing and API, comments API and permissions
+cd src/frontend && npm test     # next/previous, shuffle + Play Next, play threshold, lyrics index, snapshot restore,
+                                # sharing and copy fallbacks, comment client and panel states
 ```
 
 ## Manual verification
@@ -37,3 +38,10 @@ cd src/frontend && npm test     # next/previous, shuffle + Play Next, play thres
 | 13 | Backend account (Supabase in `src/.env`, migration 007 applied): search a catalog song, play it for 30 s or more | Network shows `POST /api/v1/users/me/history → 201`; Supabase `listening_history` has a new row with your `user_id`, the `song_id` and `listened_duration ≥ 30` |
 | 14 | Pause, then stop and restart the backend; reload the browser and sign in again | History lists the song with the listened time (`GET /api/v1/users/me/history → 200`); Home shows it under recently played |
 | 15 | History → Xóa lịch sử | `DELETE /api/v1/users/me/history → 200`; the rows are gone in Supabase and stay gone after reload |
+| 16 | Play a catalog song, open the full player on Lời bài hát | `GET /api/v1/songs/:id/lyrics → 200`; synced or plain lyrics, or "Bài hát này chưa có lời." when the song has none |
+| 17 | Share from the full player and from a track menu "Chia sẻ" | Share sheet, or "Đã sao chép liên kết vào bộ nhớ tạm."; the copied link (`/search?q=<title>`) lists the track. Cancelling the share sheet shows nothing |
+| 18 | Migration 009 applied. As a guest, open Bình luận on a catalog song | Comments newest first with author, relative time and text (or the empty state); "Đăng nhập để bình luận." instead of the input; no delete buttons |
+| 19 | Sign in (backend account), post a comment, reload, restart the backend | `POST /api/v1/songs/:id/comments → 201`; the comment is first with "Vừa xong" and a delete button; a row in `song_comments`; still there after the restart |
+| 20 | Another account opens the same song | The comment is visible without a delete button; `DELETE /api/v1/comments/:id` with that account's token → 403 |
+| 21 | Author deletes the comment | `DELETE /api/v1/comments/:id → 200`; it disappears, and the row is gone in Supabase |
+| 22 | Before migration 009, or with the database unreachable | The comments panel shows "Bình luận tạm thời không khả dụng." with Thử lại; playback is unaffected |
