@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || 'http://localhost:5000'
+import { API_BASE_URL } from './sessionApiClient.js'
 const allowedParameters = ['q', 'limit', 'offset']
 
 export class LyricsSearchApiError extends Error {
@@ -15,7 +15,7 @@ export async function searchLyrics(parameters, { signal, fetchImpl = fetch } = {
   const query = new URLSearchParams()
   for (const key of allowedParameters) if (parameters[key] !== undefined && parameters[key] !== '') query.set(key, parameters[key])
   let response
-  try { response = await fetchImpl(`${API_BASE_URL}/api/v1/search/lyrics?${query.toString()}`, { signal, headers: { Accept: 'application/json' } }) } catch (error) {
+  try { response = await fetchImpl(`${API_BASE_URL}/search/lyrics?${query.toString()}`, { signal, headers: { Accept: 'application/json' } }) } catch (error) {
     if (error.name === 'AbortError') throw error
     throw new LyricsSearchApiError('Lyrics search service is unavailable.', { code: 'AI_SERVICE_UNAVAILABLE', status: 503 })
   }

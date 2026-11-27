@@ -60,10 +60,8 @@ export const shareMessage = (result) => ({
   failed: 'Không thể chia sẻ lúc này. Hãy thử sao chép liên kết từ thanh địa chỉ.',
 })[result]
 
-// FR-005: a link that opens content containing the track. The spec prefers the album page, but the
-// album page (Group 080) loads GET /api/v1/albums/:id, which the backend does not serve yet, so an
-// album link opens an error page. Until it does, every track is shared as a search for its title,
-// which lists the track for guests and signed-in listeners alike.
+// FR-005: album links are available now that the backend serves public album details.
+// Keep song sharing search-first by default; callers may opt into album links when useful.
 export const ALBUM_SHARE_LINKS = false
 
 export const trackSharePath = (track, { albumLinks = ALBUM_SHARE_LINKS } = {}) => (albumLinks && track.albumId

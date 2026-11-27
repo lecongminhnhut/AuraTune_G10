@@ -1,7 +1,7 @@
-# Listening History Contract (Draft)
+# Listening History Contract (Current Implementation)
 
 **Feature**: [071 Listening History](../spec.md)  
-**Status**: User-visible boundary requirements captured; routes and payloads require approval.  
+**Status**: Implemented contract for the current AuraTune application.  
 **Shared conventions**: [AuraTune API Contract](../../../../docs/analysis-and-design/api-contract.md)
 
 ## Confirmed Behavior
@@ -15,15 +15,17 @@
 
 ## Shared API Rules
 
-Use the documented `{success,message,data,error}` envelope, authentication/authorization conventions, and safe errors when a public API is approved. The shared API document does not define a history endpoint or cursor schema. Do not infer route names, HTTP methods, field names, or a database from this draft.
+History uses the documented success/error envelope and authenticated owner scoping.
 
-## Approval Required Before Implementation
+## Current API and Storage
 
-1. Public route/methods and event/list response shape.
-2. Pagination cursor and deterministic ordering for equal timestamps.
-3. Playback event idempotency key and whether listened seconds are sent or measured server-side.
-4. Clear-all atomicity and partial-failure response.
-5. Canonical storage source and retention-job owner/schedule.
+- Storage is the shared PostgreSQL/Supabase `public.listening_history` table with columns `history_id`, `user_id`, `song_id`, `played_at`, and `duration_listened`. API responses map the primary key and duration to `id` and `listened_duration`.
+- `POST /api/v1/users/me/history` accepts `{ songId, listenedSeconds }`; user ownership comes from the authenticated token.
+- `GET /api/v1/users/me/history?limit=50&cursor=...` returns `{ success, data, nextCursor }`. `data` is an array and `nextCursor` is an opaque base64url keyset cursor over `(played_at, history_id)`, both ordered descending.
+- `PATCH /api/v1/users/me/history/:entryId` raises listened duration without lowering it. `DELETE /api/v1/users/me/history` physically removes only the authenticated user's rows.
+- Reads, analytics, and recommendation signals use the latest 365 days. Migration `010_listening_history_retention_pagination.sql` installs the pagination index and daily `pg_cron` cleanup when the extension is available; read paths exclude expired records even without a scheduler.
+- Analytics and recommendation queries use `duration_listened`. Live database errors surface as errors rather than silently substituting demo history for signed-in users.
+- All player playback, including playback initiated by the AI assistant, goes through the shared player session tracker. Tracks under 30 seconds qualify at 90% completion; other tracks qualify at 30 seconds.
 
 ## Security and Privacy
 

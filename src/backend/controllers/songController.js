@@ -1,4 +1,4 @@
-import { findSongById, SongLookupError } from '../repositories/songRepository.js';
+import { findSongById, listCatalogSongs, SongLookupError } from '../repositories/songRepository.js';
 import { resolveAudioSource } from '../utils/audioSource.js';
 import { parseByteRange } from '../utils/httpRange.js';
 import { parseLyrics } from '../utils/lyrics.js';
@@ -6,6 +6,17 @@ import { parseLyrics } from '../utils/lyrics.js';
 // Endpoint bài hát cho trình phát (Group 040: 041 điều khiển phát, 042 tiến trình/tua).
 
 const SONG_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
+
+export async function listSongs(req, res) {
+  const limit = Math.min(200, Math.max(1, Number.parseInt(req.query.limit, 10) || 100));
+  const offset = Math.max(0, Number.parseInt(req.query.offset, 10) || 0);
+  try {
+    const songs = await listCatalogSongs({ limit, offset });
+    return res.json({ success: true, data: songs, error: null });
+  } catch (error) {
+    return handleUnexpected(res, error);
+  }
+}
 
 function sendError(res, status, error, message) {
   return res.status(status).json({ success: false, error, message });

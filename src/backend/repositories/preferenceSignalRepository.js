@@ -25,7 +25,6 @@ const inMemoryFollowedArtists = [
 ];
 
 let useInMemoryOnly = process.env.NODE_ENV === 'test';
-const SCHEMA_FALLBACK_CODES = new Set(['42P01', '42703', 'PGRST205', 'PGRST200']);
 
 export function setUseInMemory(value) {
   useInMemoryOnly = Boolean(value);
@@ -69,12 +68,13 @@ export async function getUserPreferenceSignals(userId, options = {}) {
 
   if (supabase && !useInMemoryOnly && !options.useInMemory) {
     try {
-      // 1. Qualifying listening history: duration >= 30 seconds
+      // 1. Qualifying listening history: 30 seconds, or 90% of a short track.
       const historyPromise = supabase
         .from('listening_history')
-        .select('song_id, listened_duration, played_at')
+        .select('song_id, duration_listened, played_at, songs(duration)')
         .eq('user_id', userId)
-        .gte('listened_duration', 30)
+        .gt('duration_listened', 0)
+        .gte('played_at', new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString())
         .not('song_id', 'is', null)
         .order('played_at', { ascending: false });
 
@@ -98,33 +98,31 @@ export async function getUserPreferenceSignals(userId, options = {}) {
         followsPromise,
       ]);
 
-      if (
-        (historyRes.error && SCHEMA_FALLBACK_CODES.has(historyRes.error.code)) ||
-        (likesRes.error && SCHEMA_FALLBACK_CODES.has(likesRes.error.code)) ||
-        (followsRes.error && SCHEMA_FALLBACK_CODES.has(followsRes.error.code))
-      ) {
-        return getInMemoryPreferenceSignals(userId);
-      }
-
-      if (!historyRes.error && !likesRes.error && !followsRes.error) {
-        const qualifyingPlays = historyRes.data || [];
-        const likedSongs = likesRes.data || [];
-        const followedArtists = followsRes.data || [];
-
-        const playedSongIds = [...new Set(qualifyingPlays.map((r) => r.song_id).filter(Boolean))];
-        const likedSongIds = [...new Set(likedSongs.map((r) => r.song_id).filter(Boolean))];
-        const followedArtistIds = [...new Set(followedArtists.map((r) => r.artist_id).filter(Boolean))];
-
-        return {
-          user_id: userId,
-          played_song_ids: playedSongIds,
-          qualifying_plays_count: qualifyingPlays.length,
-          liked_song_ids: likedSongIds,
-          followed_artist_ids: followedArtistIds,
-        };
-      }
+      const failed = [historyRes, likesRes, followsRes].find((result) => result.error);
+      if (failed) throw failed.error;
+      const qualifyingPlays = (historyRes.data || []).filter((row) => {
+        const rawDuration = Array.isArray(row.songs) ? row.songs[0]?.duration : row.songs?.duration;
+        const trackDuration = typeof rawDuration === 'number' ? rawDuration : (() => {
+          if (typeof rawDuration !== 'string') return null;
+          if (/^\d+(\.\d+)?$/.test(rawDuration.trim())) return Number(rawDuration);
+          return rawDuration.split(':').map(Number).reduce((sum, part) => sum * 60 + part, 0);
+        })();
+        return row.duration_listened >= 30 || (trackDuration > 0 && trackDuration < 30 && row.duration_listened >= trackDuration * 0.9);
+      });
+      const likedSongs = likesRes.data || [];
+      const followedArtists = followsRes.data || [];
+      const playedSongIds = [...new Set(qualifyingPlays.map((r) => r.song_id).filter(Boolean))];
+      const likedSongIds = [...new Set(likedSongs.map((r) => r.song_id).filter(Boolean))];
+      const followedArtistIds = [...new Set(followedArtists.map((r) => r.artist_id).filter(Boolean))];
+      return {
+        user_id: userId,
+        played_song_ids: playedSongIds,
+        qualifying_plays_count: qualifyingPlays.length,
+        liked_song_ids: likedSongIds,
+        followed_artist_ids: followedArtistIds,
+      };
     } catch (err) {
-      console.warn('Supabase signals query error, falling back to in-memory store:', err.message);
+      throw new Error(`Could not load listening preference signals: ${err.message}`);
     }
   }
 

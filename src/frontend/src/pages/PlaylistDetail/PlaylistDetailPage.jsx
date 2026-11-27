@@ -3,6 +3,7 @@ import { Pencil, Plus, Search, Share2, Shuffle, Trash2, Users, X } from 'lucide-
 import Icon from '../../components/common/Icon.jsx'
 import CoverArt from '../../components/playlist/CoverArt.jsx'
 import SongTable from '../../components/song/SongTable.jsx'
+import TrackCover from '../../components/song/TrackCover.jsx'
 import { EmptyState, LoginRequired, Modal, NotFound, inputClass, primaryButton, secondaryButton } from '../../components/common/ui.jsx'
 import { LIKED_PLAYLIST_ID, formatAddedAt, formatTotalDuration, toCatalogTrack, useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
@@ -52,7 +53,10 @@ export default function PlaylistDetailPage({ playlistId }) {
   const canEdit = isLiked || isOwner || Boolean(playlist.collaborators?.includes(store.currentUser?.id))
   const removeTrack = async (track) => {
     const removed = await store.removeTrackFromPlaylist(playlist.id, track.id)
-    if (removed !== false) store.toast(`Đã xóa “${track.title}” khỏi ${playlist.title}.`)
+    if (removed !== false) {
+      setRemotePlaylist((current) => current ? { ...current, trackIds: current.trackIds.filter((id) => id !== track.id), songs: (current.songs || []).filter((song) => song.id !== track.id), count: Math.max(0, (current.count || current.trackIds.length) - 1) } : current)
+      store.toast(`Đã xóa “${track.title}” khỏi ${playlist.title}.`)
+    }
   }
 
   const deletePlaylist = async () => {
@@ -117,7 +121,12 @@ export default function PlaylistDetailPage({ playlistId }) {
         {playlist.official && <p className="mt-7 text-xs text-zinc-500">Cập nhật gần đây · {tracks.length} bài hát trong bản xem trước</p>}
       </section>
 
-      {addOpen && <AddSongsDialog playlist={playlist} onClose={() => setAddOpen(false)} />}
+      {addOpen && <AddSongsDialog playlist={playlist} onClose={() => setAddOpen(false)} onTrackAdded={(track) => setRemotePlaylist((current) => {
+        const base = current || playlist
+        if (base.trackIds?.includes(track.id)) return base
+        const songs = [...(base.songs || []), track]
+        return { ...base, songs, trackIds: [...(base.trackIds || []), track.id], count: songs.length }
+      })} />}
       {collabOpen && <CollaboratorsDialog playlist={playlist} onClose={() => setCollabOpen(false)} />}
       {confirmDelete && (
         <Modal title="Xóa playlist?" description={`“${playlist.title}” sẽ bị xóa khỏi thư viện của bạn. Không thể hoàn tác.`} onClose={() => setConfirmDelete(false)} labelledBy="delete-playlist-title">
@@ -151,7 +160,7 @@ function useCatalogTrackSearch(query, enabled) {
   return { ...result, retry: () => setAttempt((count) => count + 1) }
 }
 
-function AddSongsDialog({ playlist, onClose }) {
+function AddSongsDialog({ playlist, onClose, onTrackAdded }) {
   const store = useStore()
   const [query, setQuery] = useState('')
   const backend = store.state.session?.source === 'backend'
@@ -165,7 +174,10 @@ function AddSongsDialog({ playlist, onClose }) {
   const add = async (track) => {
     if (backend) store.rememberTracks([track])
     const success = await store.addTrackToPlaylist(playlist.id, track.id)
-    if (success) store.toast(`Đã thêm “${track.title}” vào playlist.`)
+    if (success) {
+      onTrackAdded?.(track)
+      store.toast(`Đã thêm “${track.title}” vào playlist.`)
+    }
   }
 
   return (
@@ -179,7 +191,7 @@ function AddSongsDialog({ playlist, onClose }) {
           const added = current.trackIds.includes(track.id)
           return (
             <div key={track.id} className="flex items-center gap-3 rounded-lg p-2 hover:bg-white/[0.05]">
-              <CoverArt variant={track.cover} className="h-10 w-10 shrink-0 rounded-md [&_span]:text-xl" />
+              <TrackCover track={track} className="h-10 w-10 shrink-0 rounded-md" />
               <div className="min-w-0 flex-1"><p className="truncate text-[13px] font-medium text-white">{track.title}</p><p className="truncate text-[11px] text-zinc-500">{track.artist}</p></div>
               <button type="button" disabled={added} onClick={() => add(track)} className="rounded-full border border-white/20 px-3 py-1 text-[11px] font-semibold text-white transition hover:border-white/50 disabled:border-transparent disabled:text-violet-300">{added ? 'Đã thêm' : 'Thêm'}</button>
             </div>
@@ -197,7 +209,10 @@ function CollaboratorsDialog({ playlist, onClose }) {
   const store = useStore()
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
+  const [collaborationEnabled, setCollaborationEnabled] = useState(Boolean(playlist.isCollaborative))
+  const [updatingCollaboration, setUpdatingCollaboration] = useState(false)
   const current = store.findPlaylistById(playlist.id) ?? playlist
+  useEffect(() => setCollaborationEnabled(Boolean(current.isCollaborative)), [current.isCollaborative])
   const collaborators = current.collaboratorDetails?.length
     ? current.collaboratorDetails
     : (current.collaborators ?? []).map((id) => store.state.users.find((user) => user.id === id)).filter(Boolean)
@@ -215,7 +230,14 @@ function CollaboratorsDialog({ playlist, onClose }) {
     <Modal title="Playlist cộng tác" description="Người được mời có thể thêm, xóa và sắp xếp bài hát cùng bạn." onClose={onClose} labelledBy="collab-title">
       <label className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.04] px-4 py-3 text-sm text-zinc-200">
         Cho phép cộng tác
-        <input type="checkbox" checked={Boolean(current.isCollaborative)} onChange={async (event) => { try { await store.updatePlaylist(playlist.id, { isCollaborative: event.target.checked }) } catch (toggleError) { store.toast(toggleError.message, 'error') } }} className="h-4 w-4 accent-violet-300" />
+        <input type="checkbox" checked={collaborationEnabled} disabled={updatingCollaboration} onChange={async (event) => {
+          const enabled = event.target.checked
+          setCollaborationEnabled(enabled)
+          setUpdatingCollaboration(true)
+          try { await store.updatePlaylist(playlist.id, { isCollaborative: enabled }) }
+          catch (toggleError) { setCollaborationEnabled(!enabled); store.toast(toggleError.message, 'error') }
+          finally { setUpdatingCollaboration(false) }
+        }} className="h-4 w-4 accent-violet-300 disabled:opacity-60" />
       </label>
       <form onSubmit={invite} className="mt-4">
         <label className="block text-xs font-semibold text-zinc-200">Mời bằng email

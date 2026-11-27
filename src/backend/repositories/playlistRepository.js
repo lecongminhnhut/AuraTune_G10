@@ -128,32 +128,28 @@ export function createPlaylistRepository(client = supabase) {
       const seen = new Set(current.map((row) => String(row.song_id)));
       const requested = [...new Set(songIds.map(String))];
       const additions = requested.filter((songId) => !seen.has(songId));
-      if (!additions.length) return { added: 0, invalid: 0 };
+      if (!additions.length) return { added: 0, invalid: 0, songIds: [] };
       const catalog = await findSongsByIds(additions.filter(isCatalogSongId));
       const valid = additions.filter((songId) => isCatalogSongId(songId) && catalog.get(songId)?.source === 'database' && catalog.get(songId).is_active !== false);
       const invalid = additions.length - valid.length;
-      if (!valid.length) return { added: 0, invalid };
+      if (!valid.length) return { added: 0, invalid, songIds: [] };
       const nextOrder = current.reduce((max, row) => Math.max(max, Number(row.sort_order) + 1), 0);
       const rows = valid.map((songId, index) => ({ playlist_id: Number(id), song_id: Number(songId), sort_order: nextOrder + index, added_by_user_id: userId }));
       const { error } = await db.from('playlist_songs').insert(rows);
       if (error) throw error;
       await this.touch(id);
-      return { added: rows.length, invalid };
+      return { added: rows.length, invalid, songIds: valid };
     },
     async removeSong(id, songId) {
       if (!isCatalogSongId(songId)) return;
       const db = requireDb();
+      const { data: current, error: readError } = await db.from('playlist_songs').select('song_id, sort_order').eq('playlist_id', id).order('sort_order');
+      if (readError) throw readError;
       const { error } = await db.from('playlist_songs').delete().eq('playlist_id', id).eq('song_id', songId);
       if (error) throw error;
-      const { data, error: readError } = await db.from('playlist_songs').select('song_id, sort_order').eq('playlist_id', id).order('sort_order');
-      if (readError) throw readError;
-      // Close the gap from the top down; each row moves into the slot just freed, so the unique order index holds.
-      for (const [index, row] of (data || []).entries()) {
-        if (row.sort_order === index) continue;
-        const result = await db.from('playlist_songs').update({ sort_order: index }).eq('playlist_id', id).eq('song_id', row.song_id);
-        if (result.error) throw result.error;
-      }
-      await this.touch(id);
+      const remainingIds = (current || []).filter((row) => String(row.song_id) !== String(songId)).map((row) => String(row.song_id));
+      const { error: reorderError } = await db.rpc('reorder_playlist_songs', { p_playlist_id: Number(id), p_song_ids: remainingIds.map(Number) });
+      if (reorderError) throw reorderError;
     },
     async reorder(id, ids) {
       if (!ids.every(isCatalogSongId)) throw Object.assign(new Error('Invalid playlist order'), { code: '22023' });

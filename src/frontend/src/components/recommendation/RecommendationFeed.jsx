@@ -1,15 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useStore } from '../../context/AppStore.jsx';
 import { getPersonalizedRecommendations } from '../../services/recommendationService.js';
+import { sessionIdentity } from '../../services/sessionApiClient.js';
 import RecommendedItemCard from './RecommendedItemCard.jsx';
-import FallbackNoticeBanner from './FallbackNoticeBanner.jsx';
-import { mockPopularFallbackItems } from '../../services/mock/mockRecommendationService.js';
 
 const gridClass = 'grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+const recommendationCache = new Map();
+const recommendationRequests = new Map();
+
+function getRecommendationOnce(key, load) {
+  if (recommendationCache.has(key)) return Promise.resolve(recommendationCache.get(key));
+  if (recommendationRequests.has(key)) return recommendationRequests.get(key);
+
+  const request = load()
+    .then((result) => {
+      recommendationCache.set(key, result);
+      while (recommendationCache.size > 24) recommendationCache.delete(recommendationCache.keys().next().value);
+      return result;
+    })
+    .finally(() => recommendationRequests.delete(key));
+  recommendationRequests.set(key, request);
+  return request;
+}
 
 /**
  * RecommendationFeed (Feature 102 - T017, T023, T027, T031)
- * Container feed managing recommendation state, fallback banners, and polymorphic card grid.
+ * Container feed managing catalog-backed recommendations and the polymorphic card grid.
  */
 export default function RecommendationFeed({
   type = 'all',
@@ -19,14 +35,19 @@ export default function RecommendationFeed({
 }) {
   const store = useStore?.() || {};
   const { currentUser } = store;
+  const userId = currentUser?.id || currentUser?.user_id || null;
+  const session = store.state?.session;
+  const catalogKey = (store.publicTracks || []).map((track) => track.id).join(',');
+  const sessionKey = sessionIdentity(session) || (userId ? `${userId}:${session?.expiresAt || 'active'}` : 'anonymous');
+
+  const catalogItems = () => (store.publicTracks || []).slice(0, limit).map((track) => ({
+    id: track.id, target_id: track.id, type: 'song', title: track.title, subtitle: track.artist,
+    image_url: track.coverUrl || null,
+    extra: { artist_id: track.artistId, album_id: track.albumId, duration: track.duration, audio_url: track.audioUrl, cover: track.cover },
+  }));
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isFallback, setIsFallback] = useState(false);
-  const [fallbackReason, setFallbackReason] = useState(null);
-  const [fallbackMessage, setFallbackMessage] = useState(null);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -34,49 +55,40 @@ export default function RecommendationFeed({
     async function loadRecommendations() {
       // T031: If unauthenticated, serve public trending items without calling private API
       if (!currentUser) {
-        setItems(mockPopularFallbackItems.slice(0, limit));
-        setIsFallback(true);
-        setFallbackReason('COLD_START');
+        setItems(catalogItems());
         setLoading(false);
         return;
       }
 
       setLoading(true);
-      setError(null);
+      const cacheKey = `${sessionKey}:${type}:${limit}`;
 
       try {
         const token = store.token || store.accessToken || null;
-        const res = await getPersonalizedRecommendations({
-          type,
+        const res = await getRecommendationOnce(cacheKey, () => getPersonalizedRecommendations({
+          type: 'song',
           limit,
           token,
           options: {
-            userId: currentUser.id || currentUser.user_id,
+            userId,
             history: store.library?.history || [],
           },
-        });
+        }));
 
         if (!active) return;
 
         if (res && res.success && res.data) {
-          setItems(res.data.items || []);
-          setIsFallback(Boolean(res.data.is_fallback));
-          setFallbackReason(res.data.fallback_reason || null);
-          setFallbackMessage(res.data.message || null);
+          const liveItems = (res.data.items || []).filter((item) => store.isPlayable?.(item.target_id || item.id));
+          setItems(liveItems.length ? liveItems : catalogItems());
         } else {
-          // Graceful fallback to mock popular items if API returns an error
-          setItems(mockPopularFallbackItems.slice(0, limit));
-          setIsFallback(true);
-          setFallbackReason('AI_SERVICE_UNAVAILABLE');
-          setFallbackMessage('Hiển thị nội dung thịnh hành do hệ thống gợi ý đang bảo trì');
+          // Keep the feed useful from the live catalog if recommendations are unavailable.
+          setItems(catalogItems());
         }
       } catch (err) {
         if (!active) return;
         console.warn('Error loading recommendations, falling back to popular items:', err.message);
-        setItems(mockPopularFallbackItems.slice(0, limit));
-        setIsFallback(true);
-        setFallbackReason('AI_SERVICE_UNAVAILABLE');
-        setFallbackMessage('Hiển thị nội dung thịnh hành do hệ thống gợi ý đang bảo trì');
+        recommendationCache.set(cacheKey, { success: false });
+        setItems(catalogItems());
       } finally {
         if (active) setLoading(false);
       }
@@ -87,7 +99,9 @@ export default function RecommendationFeed({
     return () => {
       active = false;
     };
-  }, [currentUser, type, limit, store.token, store.library?.history]);
+  // Listening duration is updated continuously during playback. Do not refetch
+  // the feed for each history tick; re-run only when the identity or query changes.
+  }, [sessionKey, userId, type, limit, catalogKey]);
 
   if (loading) {
     return (
@@ -108,14 +122,6 @@ export default function RecommendationFeed({
 
   return (
     <div className={`recommendation-feed-container ${className}`} data-testid="recommendation-feed">
-      {/* Non-intrusive alert notice when AI service is unavailable (US3 / EF-01) */}
-      {isFallback && fallbackReason === 'AI_SERVICE_UNAVAILABLE' && !bannerDismissed && (
-        <FallbackNoticeBanner
-          message={fallbackMessage}
-          onDismiss={() => setBannerDismissed(true)}
-        />
-      )}
-
       {items.length === 0 ? (
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-8 text-center text-sm text-zinc-400">
           Chưa có nội dung gợi ý phù hợp. Hãy khám phá thêm bài hát yêu thích của bạn!

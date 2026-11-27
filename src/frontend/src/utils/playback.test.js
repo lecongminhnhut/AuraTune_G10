@@ -16,9 +16,10 @@ describe('getDurationSeconds', () => {
 })
 
 describe('playThresholdSeconds (041-FR-014)', () => {
-  test('counts a play after 30 seconds, or half of a short track', () => {
+  test('counts a play after 30 seconds, or 90% of a track shorter than 30 seconds', () => {
     assert.equal(playThresholdSeconds(261), 30)
-    assert.equal(playThresholdSeconds(40), 20)
+    assert.equal(playThresholdSeconds(20), 18)
+    assert.equal(playThresholdSeconds(40), 30)
     assert.equal(playThresholdSeconds(0), 30)
   })
 })

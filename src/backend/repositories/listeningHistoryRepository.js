@@ -46,12 +46,17 @@ export function createListeningHistoryRepository(client = defaultClient) {
       return existing.data;
     },
 
-    async listRecent(userId, limit) {
-      const { data, error } = await table()
+    async listRecent(userId, limit, cursor = null) {
+      let query = table()
         .select(COLUMNS)
         .eq('user_id', userId)
+        .gte('played_at', new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString())
         .order('played_at', { ascending: false })
-        .limit(limit);
+        .order('history_id', { ascending: false });
+      if (cursor) {
+        query = query.or(`played_at.lt.${cursor.playedAt},and(played_at.eq.${cursor.playedAt},history_id.lt.${cursor.id})`);
+      }
+      const { data, error } = await query.limit(limit);
       if (error) throw error;
       return data ?? [];
     },

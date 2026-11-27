@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDown, ArrowUp, GripVertical, ListMusic, Play, X } from 'lucide-react'
-import CoverArt from '../playlist/CoverArt.jsx'
+import { GripVertical, ListMusic, ListPlus, Play, X } from 'lucide-react'
+import TrackCover from '../song/TrackCover.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
 import useSwipeDown from '../../hooks/useSwipeDown.js'
 
-// Hàng chờ (G05): xem bài tiếp theo, phát ngay, xóa, kéo thả hoặc dùng nút mũi tên để sắp xếp.
-export default function QueuePanel({ isOpen, onClose }) {
+// Queue panel actions: play, add to a playlist, remove, and drag to reorder.
+export default function QueuePanel({ isOpen, onClose, onAddToPlaylist }) {
   const player = usePlayer()
   const panelRef = useRef(null)
   const closeRef = useRef(onClose)
@@ -42,7 +42,7 @@ export default function QueuePanel({ isOpen, onClose }) {
         <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4 scrollbar-thin">
           <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-500">Đang phát</p>
           <div className="mt-2 flex items-center gap-3 rounded-xl bg-violet-300/[0.08] p-2.5">
-            <CoverArt variant={track.cover} className="h-11 w-11 shrink-0 rounded-md [&_span]:text-2xl" />
+            <TrackCover track={track} className="h-11 w-11 shrink-0 rounded-md" />
             <div className="min-w-0">
               <p className="truncate text-[13px] font-semibold text-violet-100">{track.title}</p>
               <p className="truncate text-[11px] text-zinc-400">{track.artist}</p>
@@ -70,7 +70,7 @@ export default function QueuePanel({ isOpen, onClose }) {
                 >
                   <span className="cursor-grab text-zinc-600 group-hover:text-zinc-300" title="Kéo để sắp xếp"><GripVertical size={15} aria-hidden="true" /></span>
                   <button type="button" onClick={() => player.playFromQueue(item.id)} aria-label={`Phát ngay ${item.title}`} className="relative shrink-0 overflow-hidden rounded-md">
-                    <CoverArt variant={item.cover} className="h-10 w-10 [&_span]:text-xl" />
+                    <TrackCover track={item} className="h-10 w-10" />
                     <span className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition group-hover:opacity-100"><Play size={14} fill="currentColor" /></span>
                   </button>
                   <div className="min-w-0 flex-1">
@@ -78,8 +78,7 @@ export default function QueuePanel({ isOpen, onClose }) {
                     <p className="truncate text-[11px] text-zinc-500">{item.artist}</p>
                   </div>
                   <div className="flex shrink-0 items-center">
-                    <button type="button" disabled={index === 0} onClick={() => player.moveInQueue(index, index - 1)} aria-label={`Đưa ${item.title} lên`} className="rounded p-1 text-zinc-500 transition hover:text-white disabled:opacity-30"><ArrowUp size={14} /></button>
-                    <button type="button" disabled={index === upcoming.length - 1} onClick={() => player.moveInQueue(index, index + 1)} aria-label={`Đưa ${item.title} xuống`} className="rounded p-1 text-zinc-500 transition hover:text-white disabled:opacity-30"><ArrowDown size={14} /></button>
+                    <button type="button" onClick={() => onAddToPlaylist?.(item)} aria-label={`Thêm ${item.title} vào playlist`} title="Thêm vào playlist" className="rounded p-1 text-zinc-500 transition hover:text-violet-300"><ListPlus size={16} /></button>
                     <button type="button" onClick={() => player.removeFromQueue(item.id)} aria-label={`Xóa ${item.title} khỏi danh sách chờ`} className="rounded p-1 text-zinc-500 transition hover:text-rose-300"><X size={15} /></button>
                   </div>
                 </li>

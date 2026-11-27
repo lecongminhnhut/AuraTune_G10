@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from 'react'
-import CoverArt from '../playlist/CoverArt.jsx'
+import TrackCover from '../song/TrackCover.jsx'
 
 const parkedAngle = -14
 const playingAngle = 16
@@ -63,13 +63,13 @@ export default function RecordDeck({ track, isOpen, isPlaying }) {
           <span className="vinyl-groove-highlight" />
           <span className="vinyl-rim-mark" />
           <div className="absolute inset-[35%] grid place-items-center overflow-hidden rounded-full border border-white/10 bg-[#b2aca0]">
-            {track.artwork ? <img src={track.artwork} alt="" className="h-full w-full object-cover opacity-70" /> : <span className="text-[8px] font-bold tracking-widest text-black/60">AURA</span>}
+        <TrackCover track={track} className="h-full w-full opacity-70" />
             <span className="absolute h-2 w-2 rounded-full bg-[#18191a] ring-2 ring-black/10" />
           </div>
         </div>
       </div>
       <div key={track.id} className="record-sleeve absolute left-0 top-0 aspect-square w-[78%] overflow-hidden rounded-[7px] bg-slate-900 shadow-[3px_14px_26px_rgba(0,0,0,0.25)]">
-        {track.artwork ? <img src={track.artwork} alt="" className="h-full w-full object-cover" /> : <CoverArt variant={track.cover} title={track.title} showLabel className="h-full w-full [&_.cover-motif]:text-8xl" />}
+        <TrackCover track={track} className="h-full w-full" />
       </div>
       <div ref={armRef} aria-hidden="true" className="record-tonearm absolute right-[3%] top-[-2%] h-[70%] w-[13%]">
         <div className="tonearm-counterweight" /><div className="tonearm-pivot" /><div className="tonearm-shaft" /><div className="tonearm-head" />
