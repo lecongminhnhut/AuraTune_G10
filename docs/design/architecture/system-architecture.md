@@ -1,5 +1,5 @@
-# AuraTune System Architecture: Tech Stack and System Context (C4 Level 1)
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+﻿# AuraTune System Architecture: Tech Stack and System Context (C4 Level 1)
+Performed by: Nguyễn Khánh Đăng, Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
 
 ## 1. Purpose and scope
 Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
@@ -21,7 +21,7 @@ Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: N
 | Cloud media storage | Cloudinary `2.11.0` | Stores uploaded audio and image assets. The backend accepts a validated in-memory multipart upload with Multer, uploads it to Cloudinary, and returns a secure URL. Audio is configured as a Cloudinary `video` resource and is consumed by the player with HTTP byte-range requests for seeking. |
 
 ## 3. Runtime responsibilities and integration boundaries
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 ### Frontend to backend boundary
 
@@ -52,9 +52,9 @@ The current source mixes persistence levels. Authentication/session repositories
 
 Spotify is used only as an offline source for preparing or importing metadata. It is not an external runtime system in the AuraTune context diagram and is not called by the deployed user-facing flow.
 
-### Current entrypoint caveat
+### Current entrypoint status
 
-The repository snapshot contains backend entrypoint wiring issues that must be resolved before claiming a clean integrated runtime: `server.js` declares `mediaRoutes` twice, and several route mounts appear after the fallback 404 handler and `listen` call. The architecture below describes the intended boundaries visible in source while retaining this limitation.
+`server.js` imports each router once and registers feature routes before the fallback 404 and error handlers. The Express app starts listening after route registration. Syntax and representative route reachability have been smoke-checked; full end-to-end acceptance and external provider operations are summarized in section 11.
 
 ## 4. C4 Level 1: System Context Diagram
 Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Nguyễn Khánh Đăng
@@ -121,7 +121,7 @@ Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: N
 - `docs/requirements/use-case-model.md`, `docs/proposal/project_plan.md` section 2.4.4, and the PA4 readiness checklist
 
 ## 7. C4 Level 2: Container diagram
-Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 The container diagram expands the AuraTune software system into its independently running or hosted application containers. “Container” here is the C4 term; it does not imply that Docker images are present. In local development the browser uses Vite on port 5173, Express defaults to port 5000, and the Python service is configured separately (normally port 8000). The browser's `/api` calls are proxied by Vite to Express. In deployment, the browser-to-Express edge is HTTPS. Express uses HTTP(S) JSON/SSE to the AI service and the Supabase SDK over HTTPS to Supabase. The Python service also reads Supabase through PostgREST HTTPS; it does not open a direct PostgreSQL socket.
 
@@ -160,7 +160,7 @@ flowchart TB
 Firebase Authentication and Cloudinary are external systems, not application containers. Firebase handles provider identity verification; AuraTune session and role authorization remain in the backend. Cloudinary stores and serves uploaded binary media. Google Gemini is an optional external model provider called by the AI service. A configured integration is not evidence that the provider is reachable in a particular run.
 
 ## 8. C4 Level 3: Representative frontend components
-Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 The following Level 3 view selects shared components that participate in navigation, session management and playback, plus a representative feature service. It does not enumerate every page or UI component.
 
@@ -209,9 +209,9 @@ flowchart TB
 | `songApi` | Builds the backend song/audio endpoint used by playback. | Called by `useAudioPlayer`; the API response/stream path ultimately supplies media consumed by the browser. |
 
 ## 9. C4 Level 3: Representative backend components
-Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
-This Level 3 view follows representative authentication, playlist, agent and media paths. The Express entrypoint currently contains a duplicate `mediaRoutes` import and places some route mounts after the 404 handler and `listen`; the diagram represents source-level module roles and intended call paths, not a claim that every shown route is reachable in the current checkout.
+This Level 3 view represents authentication, playlist, agent and media paths through the current Express application.
 
 ```mermaid
 flowchart TB
@@ -248,7 +248,7 @@ flowchart TB
 
 | Component | Responsibility | Relationships |
 | --- | --- | --- |
-| `server.js` / Express app | Loads environment/configuration, installs CORS/body/cookie middleware, registers feature routes and fallback handling, and starts the HTTP listener. | Dispatches requests to route modules. Current duplicate import and mount ordering caveats are stated above and in section 3. |
+| `server.js` / Express app | Loads environment/configuration, installs CORS/body/cookie middleware, registers feature routes and fallback handling, and starts the HTTP listener. | Dispatches requests through registered route modules and then to fallback handling. |
 | Route modules | Bind URL and HTTP method to middleware/controller functions. Representative modules include auth, playlist, agent, media and song routes. | Receive dispatch from Express; attach authentication middleware to protected operations; invoke controllers. |
 | Authentication middleware | Verifies AuraTune JWTs, resolves user/session state and attaches the authenticated principal to the request. Specialized middleware enforces route-specific session requirements. | Runs before protected controllers; uses auth repository/in-memory fallback as implemented. Firebase token exchange is verified through Firebase Admin in its controller path. |
 | Controllers | Validate request input, call application services/adapters and map outcomes to HTTP status and response bodies. `agentController` also establishes and manages the browser-facing SSE response. | Called by routes; invoke services and return JSON/SSE/stream responses. |
@@ -260,27 +260,28 @@ flowchart TB
 | Firebase Admin SDK | Verifies Firebase ID tokens submitted during identity exchange. | Used by Firebase exchange/auth controller paths; AuraTune then issues its own session token/cookie. |
 
 ## 10. Diagram verification notes
-Performed by: Codex (repository audit) | Reviewed by: Pending team review | Edited by: Codex
+Performed by: Mai Đăng Khoa | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 - Development browser-to-API routing is based on `src/frontend/vite.config.js`: Vite listens on 5173 and proxies `/api` to `http://localhost:5000`.
 - The frontend API client uses `fetch`, credentials and Bearer authorization; the backend AI client uses HTTP `fetch` with JSON and an internal-secret header. The agent service forwards SSE rather than presenting a browser-to-AI connection.
 - `src/database/supabaseClient.js` creates a server-side Supabase JS client. AI catalog/lyrics reads use Supabase PostgREST. Both are HTTPS API paths, not direct database sockets.
 - Playback uses the browser audio element and song API URL; media delivery supports byte-range behavior as documented by the backend source and prior audit.
-- Source-level diagrams are complete, but an integrated review after backend startup and route-mount defects are resolved remains outstanding. Marking this final review complete requires checking the actual running application.
+- Integrated runtime smoke checks: `node --check src/backend/server.js` passed. Express `/api/health` and Vite `/` returned HTTP 200; the Vite `/api/health` proxy also returned 200. Representative Artist invalid-ID, Studio/User unauthenticated, and unmatched paths returned the expected 400, 401, 401 and 404 responses, confirming the tested route handling before fallback.
+- Backend-to-AI checks: FastAPI `/health` returned 200; the backend AI client received a JSON recommendation response, and the agent service received `thinking`, `text` and `done` SSE events. The AI service had no Gemini key, so the agent response used its local fallback; this does not verify external Gemini inference.
 
 ## 11. Deployment (D-26)
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 The demo configuration uses one Windows development machine and hosted provider services. The local processes are separate logical deployment nodes, as permitted by Part D of `docs/PA/PA4-2026.pdf` (page 3). This maps all four containers in section 7 to their execution environments. Vite is an additional development server that delivers the Web Application to the browser. No Docker image, public application host or TLS terminator is claimed here.
 
-The diagram describes source configuration checked on 2026-11-22. Dashed connections are configured paths whose successful runtime operation has not been verified in this review. Group 10 team is the designated reviewer; independent peer review remains pending.
+The diagram shows the configured local demo topology. Dashed arrows show communication paths between local processes and hosted services. Smoke checks confirmed the browser-to-Vite page, Vite-to-Express health proxy and backend-to-AI JSON/SSE paths; cloud-provider operations remain unverified. Independent peer review remains pending.
 
 ```mermaid
 flowchart TB
     subgraph Local["Windows demo machine: separate logical nodes"]
         Web["Browser node<br/>AuraTune Web Application<br/>React UI, session state, audio player"]
         Vite["Frontend server node<br/>Vite development server<br/>localhost:5173"]
-        API["Application server node<br/>AuraTune Backend API / Express<br/>PORT or 5000; startup blocked"]
+        API["Application server node<br/>AuraTune Backend API / Express<br/>PORT or 5000; local startup smoke-checked"]
         AI["AI server node<br/>AuraTune AI Service / FastAPI + Uvicorn<br/>port 8000 in launch scripts"]
     end
     DB["Supabase cloud node<br/>Supabase Data Platform container<br/>Hosted APIs and PostgreSQL"]
@@ -301,7 +302,7 @@ flowchart TB
 ```
 
 ### 11.1 Nodes and container placement
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 | Node / infrastructure | Hosted container or component | Connections and configuration |
 | --- | --- | --- |
@@ -315,7 +316,7 @@ Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: L
 | Google managed cloud service | External Gemini inference service from section 7 | Python calls Gemini through `google-genai` over HTTPS when configured. Local agent fallback responses do not verify this edge. |
 
 ### 11.2 Configuration and verification boundary
-Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Lê Công Minh Nhựt
+Performed by: Nguyễn Khánh Đăng | Reviewed by: Group 10 team | Edited by: Mai Đăng Khoa
 
 `start-all.bat` records the intended three-process local demo. The individual commands above allow each process to be inspected separately. These commands describe how to start the application; they are not a record of a successful demo run.
 
@@ -323,10 +324,11 @@ The backend recommendation adapter reads `AI_SERVICE_URL`, while the agent adapt
 
 Environment loading also depends on the entrypoint and working directory. Express calls `dotenv.config()`; the database client additionally checks root `.env`, `src/backend/.env` and `src/.env`. Python checks `src/ai-service/.env` before root `.env`. Provider keys stay on the server; this document does not reproduce credential values or infer provider reachability from their presence.
 
-| Verification on 2026-11-22 | Evidence and remaining work |
+| Verification | Evidence and remaining work |
 | --- | --- |
-| Source mapping and configured ports checked | Read root/frontend/backend package scripts, `start-all.bat`, Vite configuration, Express entrypoint, both AI adapters, Python config/start scripts and Supabase client. Ports 5173, 5000 and 8000 are supported configuration values, not observed listening sockets. |
-| Backend entrypoint checked | `node --check src/backend/server.js` fails at line 20 because `mediaRoutes` is declared twice. Artist/user/studio mounts also remain after the unconditional 404 handler. Application code was left unchanged under this documentation scope. |
-| Integrated local demo still open | After the entrypoint is repaired, capture actual listener addresses and ports, verify Vite asset delivery, direct and proxied API health, and backend-to-Python JSON/SSE through the running entrypoint. Confirm which launch command is used for the demo. |
-| Cloud connections still open | Verify Supabase reads/persistence, Firebase token exchange, Cloudinary upload/playback and Gemini inference in the demo environment. Record successful normal paths separately from fallback responses. |
-| Consistency and peer review | All section 7 containers and external services are mapped above, with the direct browser API path made explicit. Section 7's general HTTPS deployment wording describes a possible hosted setup; this local demo uses HTTP for local hops. Independent team review and runtime confirmation remain open. |
+| Source mapping and configured ports | Root/frontend/backend scripts, Vite, Express, AI adapters, Python configuration/start scripts and the Supabase client were checked against the diagrams. Configured ports describe runtime settings, not deployment evidence. |
+| Backend entrypoint and representative routes | `node --check src/backend/server.js` passes. `/api/health` returned 200; representative Artist, Studio and User paths reached their validation/authentication handlers, and an unmatched path reached the 404 handler. Feature routes are registered before fallback handling. |
+| Frontend and API proxy | Vite served `/`; its `/api/health` proxy reached Express. Both returned HTTP 200. |
+| Backend-to-AI communication | FastAPI health returned 200. The recommendation adapter returned JSON data and the agent adapter received SSE events. With no Gemini key configured, the agent used its local fallback. |
+| External provider paths | Supabase operations, Firebase token exchange, Cloudinary upload/playback and live Gemini inference were not verified in these runtime checks. |
+| Diagram consistency and peer review | The C4 views and component relationships were cross-checked against current source. Independent team review remains outstanding. |
