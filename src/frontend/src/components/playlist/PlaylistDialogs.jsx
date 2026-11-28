@@ -14,6 +14,7 @@ export function PlaylistFormDialog() {
   const [title, setTitle] = useState(editing?.title ?? '')
   const [description, setDescription] = useState(editing?.description ?? '')
   const [cover, setCover] = useState(editing?.cover ?? 'aurora')
+  const [status, setStatus] = useState(editing?.status ?? 'Private')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -33,7 +34,7 @@ export function PlaylistFormDialog() {
   const save = async () => {
     if (editing) {
       try {
-        await store.updatePlaylist(editing.id, { title: title.trim(), description: description.trim(), cover })
+        await store.updatePlaylist(editing.id, { title: title.trim(), description: description.trim(), cover, status })
         store.toast('Đã cập nhật playlist.')
       } catch (submitError) { setError(submitError.message); return }
     } else {
@@ -57,6 +58,10 @@ export function PlaylistFormDialog() {
           Mô tả <span className="font-normal text-zinc-500">(không bắt buộc)</span>
           <textarea value={description} onChange={(event) => setDescription(event.target.value)} maxLength={300} rows={3} placeholder="Playlist này dành cho…" className={`${inputClass} h-auto resize-none py-2.5`} />
         </label>
+        {editing && <label className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.04] px-4 py-3 text-sm text-zinc-200">
+          <span><span className="block font-semibold">Công khai playlist</span><span className="mt-0.5 block text-xs font-normal text-zinc-500">{status === 'Public' ? 'Mọi người có thể xem playlist.' : 'Chỉ bạn và cộng tác viên có thể xem.'}</span></span>
+          <input type="checkbox" checked={status === 'Public'} onChange={(event) => setStatus(event.target.checked ? 'Public' : 'Private')} className="h-4 w-4 accent-violet-300" aria-label="Công khai playlist" />
+        </label>}
         <fieldset>
           <legend className="text-xs font-semibold text-zinc-200">Ảnh bìa</legend>
           <div className="mt-2 flex flex-wrap gap-2">

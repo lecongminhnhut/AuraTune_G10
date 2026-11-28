@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import Icon from '../../components/common/Icon.jsx'
 import Logo from '../../components/common/Logo.jsx'
@@ -32,6 +32,8 @@ const getFirebaseAuthErrorMessage = (error, provider = 'google') => {
     return 'Trình duyệt không đủ dung lượng để lưu phiên đăng nhập. Hãy giải phóng dung lượng ổ đĩa, tải lại trang và thử lại.'
   }
   if (text.includes('thiếu cấu hình firebase')) return error.message
+
+  if (error?.code === 'auth/cancelled-popup-request') return `Đang có yêu cầu đăng nhập ${providerName} khác. Hãy chờ popup hiện tại hoặc đóng popup rồi thử lại.`
 
   const messages = {
     'auth/argument-error': `Cấu hình đăng nhập ${providerName} chưa hợp lệ. Hãy kiểm tra cấu hình Firebase phía giao diện rồi khởi động lại ứng dụng.`,
@@ -76,6 +78,8 @@ export default function AuthPage({ mode }) {
   const [notice, setNotice] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showNotFoundModal, setShowNotFoundModal] = useState(false)
+  const [oauthLoading, setOauthLoading] = useState(null)
+  const oauthInFlight = useRef(false)
 
   useEffect(() => { setErrors({}); setFormError(''); setNotice(''); setShowNotFoundModal(false) }, [mode])
 
@@ -154,6 +158,9 @@ export default function AuthPage({ mode }) {
     }
 
     const handleOAuthClick = async (provider) => {
+      if (oauthInFlight.current) return
+      oauthInFlight.current = true
+      setOauthLoading(provider)
       setFormError('')
 
       try {
@@ -193,7 +200,7 @@ export default function AuthPage({ mode }) {
               return
             }
             setFormError(
-              getFirebaseAuthErrorMessage({ code: result.code, message: result.error })
+              getFirebaseAuthErrorMessage({ code: result.code, status: result.status, message: result.error })
             )
             return
           }
@@ -271,6 +278,9 @@ export default function AuthPage({ mode }) {
         }
 
         setFormError(getFirebaseAuthErrorMessage(error, provider))
+      } finally {
+        oauthInFlight.current = false
+        setOauthLoading(null)
       }
     }
 
@@ -319,14 +329,14 @@ export default function AuthPage({ mode }) {
         </div>
 
         <div className="mt-7 grid grid-cols-2 gap-3">
-          <button type="button" onClick={() => handleOAuthClick('google')} className={`flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] sm:text-sm ${isRegister ? 'col-span-2' : ''}`}>
+          <button type="button" onClick={() => handleOAuthClick('google')} disabled={Boolean(oauthLoading)} aria-busy={oauthLoading === 'google'} className={`flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] disabled:cursor-wait disabled:opacity-60 sm:text-sm ${isRegister ? 'col-span-2' : ''}`}>
             <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-xs font-bold text-zinc-900">G</span>
-            Google
+            {oauthLoading === 'google' ? 'Đang kết nối...' : 'Google'}
           </button>
           {!isRegister && (
-            <button type="button" onClick={() => handleOAuthClick('facebook')} className="flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] sm:text-sm">
+            <button type="button" onClick={() => handleOAuthClick('facebook')} disabled={Boolean(oauthLoading)} aria-busy={oauthLoading === 'facebook'} className="flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 text-xs font-semibold text-white transition hover:border-white/35 hover:bg-white/[0.04] disabled:cursor-wait disabled:opacity-60 sm:text-sm">
               <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1877f2] text-sm font-bold text-white">f</span>
-              Facebook
+              {oauthLoading === 'facebook' ? 'Đang kết nối...' : 'Facebook'}
             </button>
           )}
         </div>

@@ -5,7 +5,6 @@ import { AlbumCard, ArtistCard } from '../../components/playlist/MediaCards.jsx'
 import { EmptyState, ErrorState, LoginRequired, PageHeader, SectionHeading, chipClass, primaryButton, secondaryButton } from '../../components/common/ui.jsx'
 import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
-import { getArtist } from '../../utils/mockData.js'
 import { Link } from '../../utils/navigation.jsx'
 import { normalizeText } from '../../utils/aiMockData.js'
 
@@ -27,7 +26,7 @@ function SavedAlbumCard({ album, artistName }) {
 
   return (
     <div className={pending ? 'opacity-60' : ''}>
-      <AlbumCard album={album} artistName={artistName} />
+      <AlbumCard album={{ ...album, cover: album.cover ?? album.coverArt, releaseDate: album.releaseDate ?? (album.releaseYear ? String(album.releaseYear) : undefined) }} artistName={artistName ?? album.artist?.name} />
       <button type="button" onClick={removeAlbum} disabled={pending} className="mt-2 w-full rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-rose-300/50 hover:text-rose-200 disabled:cursor-not-allowed disabled:opacity-50">
         {pending ? 'Removing...' : 'Remove from saved'}
       </button>
@@ -45,7 +44,7 @@ export default function LibraryPage() {
   const matches = (text) => !needle || normalizeText(text).includes(needle)
 
   const playlists = [store.likedPlaylist, ...store.userPlaylists].filter(Boolean).map((playlist) => store.findPlaylistById(playlist.id) ?? playlist)
-  const albums = store.library.savedAlbumIds.map(store.getAlbum).filter(Boolean)
+  const albums = store.library.savedAlbums
   const artists = store.followingList.artists
 
   if (!store.currentUser) return <LoginRequired description="Đăng nhập để xem playlist, album đã lưu và nghệ sĩ bạn theo dõi." />
@@ -94,7 +93,7 @@ export default function LibraryPage() {
         {(filter === 'all' || filter === 'albums') && (
           <section className="mt-10">
             <SectionHeading title="Album đã lưu" />
-            {shownAlbums.length ? <div className={grid}>{shownAlbums.map((album) => <SavedAlbumCard key={album.id} album={album} artistName={getArtist(album.artistId)?.name} />)}</div> : <div className="mt-4"><EmptyState compact title="Chưa lưu album nào" description="Bấm “Lưu album” trên trang album để thêm vào đây." /></div>}
+            {store.savedAlbumsLoading ? <p role="status" className="py-4 text-zinc-400">Đang tải album đã lưu...</p> : store.savedAlbumsError ? <button type="button" onClick={store.refreshSavedAlbums} className="py-4 text-sm text-violet-300 hover:underline">Không tải được album đã lưu. Thử lại.</button> : shownAlbums.length ? <div className={grid}>{shownAlbums.map((album) => <SavedAlbumCard key={album.id} album={album} artistName={album.artist?.name} />)}</div> : <div className="mt-4"><EmptyState compact title="Chưa lưu album nào" description="Bấm “Lưu album” trên trang album để thêm vào đây." /></div>}
           </section>
         )}
         {(filter === 'all' || filter === 'artists') && (

@@ -80,12 +80,12 @@ export function createSafePlayerBridge(player) {
  * Automatic listening history dispatch helper (FR-010, SC-005 - T040)
  * Sends POST /api/v1/users/me/history with ISO8601 timestamp upon assisted playback start.
  */
-export async function recordAssistedListeningHistory(songId, { token } = {}) {
-  if (!songId) return false;
+export async function recordAssistedListeningHistory(songId, { token, listenedSeconds = 0 } = {}) {
+  const qualifiedSeconds = Math.max(0, Math.round(Number(listenedSeconds) || 0));
+  if (!songId || qualifiedSeconds < 30) return false;
   const payload = {
     songId,
-    listenedAt: new Date().toISOString(),
-    source: 'ai_assistant',
+    listenedSeconds: qualifiedSeconds,
   };
 
   try {

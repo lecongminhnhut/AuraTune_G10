@@ -48,6 +48,20 @@ function songSummary(song) {
   };
 }
 
+function parseCursor(value) {
+  if (!value) return null;
+  try {
+    const parsed = JSON.parse(Buffer.from(value, 'base64url').toString('utf8'));
+    if (!parsed || !/^\d+$/.test(String(parsed.id)) || !Number.isFinite(Date.parse(parsed.playedAt))) return undefined;
+    if (BigInt(parsed.id) > 9223372036854775807n) return undefined;
+    return { id: String(parsed.id), playedAt: new Date(parsed.playedAt).toISOString() };
+  } catch { return undefined; }
+}
+
+function encodeCursor(row) {
+  return Buffer.from(JSON.stringify({ id: String(row.id), playedAt: row.played_at })).toString('base64url');
+}
+
 export function createHistoryController({ repository, findSong, findSongs }) {
   const userIdOf = (req) => String(req.user?.user_id ?? req.user?.id ?? '');
 
@@ -113,10 +127,15 @@ export function createHistoryController({ repository, findSong, findSongs }) {
       if (!(limit >= 1 && limit <= MAX_LIMIT)) return sendError(res, 400, 'invalid_limit', `limit phải từ 1 đến ${MAX_LIMIT}.`);
 
       try {
-        const rows = await repository.listRecent(userId, limit);
+        const cursor = parseCursor(req.query.cursor);
+        if (cursor === undefined) return sendError(res, 400, 'invalid_cursor', 'Cursor không hợp lệ.');
+        const fetched = await repository.listRecent(userId, limit + 1, cursor);
+        const hasMore = fetched.length > limit;
+        const rows = fetched.slice(0, limit);
         const songs = rows.length ? await findSongs(rows.map((row) => String(row.song_id))) : new Map();
         res.set('Cache-Control', 'private, no-store');
-        return res.json({ success: true, data: rows.map((row) => toEntry(row, songSummary(songs.get(String(row.song_id))))) });
+        const nextCursor = hasMore && rows.length ? encodeCursor(rows[rows.length - 1]) : null;
+        return res.json({ success: true, data: rows.map((row) => toEntry(row, songSummary(songs.get(String(row.song_id))))), nextCursor });
       } catch (error) {
         return fail(res, error);
       }

@@ -1,8 +1,8 @@
 import { Loader2, Maximize2, Repeat1, RotateCcw, Sparkles, VolumeX } from 'lucide-react'
 import Icon from '../common/Icon.jsx'
-import CoverArt from '../playlist/CoverArt.jsx'
 import WaveformSeekBar from './WaveformSeekBar.jsx'
 import PlaybackAlert from './PlaybackAlert.jsx'
+import TrackCover from '../song/TrackCover.jsx'
 
 export default function BottomPlayer({ player, playlistContext, liked, onToggleLike, onDownloadTrack, onOpenChat, chatOpen, onExpand, fullScreenOpen, onTogglePlayback, onOpenQueue, queueOpen }) {
   const { track, isPlaying, elapsed, duration, shuffle, repeatMode, volume, muted, status, error, isBuffering } = player
@@ -15,7 +15,7 @@ export default function BottomPlayer({ player, playlistContext, liked, onToggleL
         <div className="flex min-w-0 items-center gap-3">
           <button type="button" onClick={onExpand} aria-label={`Mở trình phát toàn màn hình: ${track.title}`} aria-expanded={fullScreenOpen} aria-controls="full-screen-player" title="Mở giao diện đang phát" className="group flex min-w-0 flex-1 items-center gap-3 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
             <div className="relative shrink-0 overflow-hidden rounded-md">
-              {track.artwork ? <img src={track.artwork} alt={`Bìa ${track.album}`} className="h-10 w-10 object-cover shadow-lg sm:h-12 sm:w-12" /> : <CoverArt variant={track.cover} className="h-10 w-10 shadow-lg sm:h-12 sm:w-12 [&_span]:text-3xl" />}
+              <TrackCover track={track} className="h-10 w-10 shadow-lg sm:h-12 sm:w-12" />
               <span className="absolute inset-0 grid place-items-center bg-black/40 text-white opacity-0 transition group-hover:opacity-100"><Maximize2 size={17} aria-hidden="true" /></span>
             </div>
             <div className="min-w-0">
@@ -67,7 +67,7 @@ function CompactPlayer({ track, isPlaying, isBuffering, error, onRetry, onExpand
     <section aria-label="Trình phát thu gọn" className="fixed inset-x-2 bottom-[60px] z-40 flex h-14 items-center gap-1 rounded-xl border border-white/[0.08] bg-[#1b1b22]/95 pl-2 pr-1 shadow-xl shadow-black/50 backdrop-blur-2xl md:hidden">
       <button type="button" onClick={onExpand} aria-label={`Mở trình phát toàn màn hình: ${track.title}`} aria-expanded={fullScreenOpen} aria-controls="full-screen-player" className="flex min-w-0 flex-1 items-center gap-3 self-stretch rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
         <span className="shrink-0 overflow-hidden rounded-md">
-          {track.artwork ? <img src={track.artwork} alt={`Bìa ${track.album}`} className="h-10 w-10 object-cover" /> : <CoverArt variant={track.cover} className="h-10 w-10 [&_span]:text-2xl" />}
+          <TrackCover track={track} className="h-10 w-10" />
         </span>
         <span className="min-w-0">
           <span className="block truncate text-[13px] font-semibold text-white">{track.title}</span>

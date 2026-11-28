@@ -1,17 +1,85 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import MoodChipBar from './MoodChipBar.jsx';
 import MoodItemCard from './MoodItemCard.jsx';
 import MoodEmptyState from './MoodEmptyState.jsx';
-import MoodDegradedBanner from './MoodDegradedBanner.jsx';
-import {
-  getMoodContextTags,
-  getMoodContextRecommendations,
-} from '../../services/moodRecommendationService.js';
+import { getMoodContextTags } from '../../services/moodRecommendationService.js';
 import { MOCK_PRESET_TAGS } from '../../services/mock/mockMoodRecommendationService.js';
 import { PlayerContext } from '../../context/PlayerContext.jsx';
+import { useStore } from '../../context/AppStore.jsx';
+
+const MOOD_GENRES = {
+  chill: ['lofi', 'chill', 'rnb'],
+  energetic: ['vpop', 'rnb'],
+  melancholy: ['indie', 'ballad'],
+  focus: ['lofi', 'chill'],
+  study_work: ['lofi', 'chill'],
+  workout: ['vpop', 'rnb'],
+  late_night: ['lofi', 'indie', 'ballad'],
+  travel_commute: ['indie', 'vpop', 'rnb'],
+};
+const MOOD_ITEM_COUNT = 5;
+
+function catalogMoodItemsByTag(tracks) {
+  const moodIds = Object.keys(MOOD_GENRES);
+  const rankedTracks = Object.fromEntries(moodIds.map((tag) => {
+    const preferredGenres = MOOD_GENRES[tag];
+    const ordered = [...tracks].sort((a, b) => {
+      const aGenre = preferredGenres.indexOf(a.genre);
+      const bGenre = preferredGenres.indexOf(b.genre);
+      const aRank = aGenre < 0 ? preferredGenres.length : aGenre;
+      const bRank = bGenre < 0 ? preferredGenres.length : bGenre;
+      return aRank - bRank || (b.playCount || 0) - (a.playCount || 0);
+    });
+    return [tag, ordered];
+  }));
+  const assignments = Object.fromEntries(moodIds.map((tag) => [tag, []]));
+  const usageCount = new Map();
+
+  // Give each tab up to two distinct songs before any song is reused.
+  for (let slot = 0; slot < 2; slot += 1) {
+    for (const tag of moodIds) {
+      const track = rankedTracks[tag].find((candidate) => !usageCount.has(String(candidate.id)));
+      if (track) {
+        assignments[tag].push(track);
+        usageCount.set(String(track.id), 1);
+      }
+    }
+  }
+
+  // Fill remaining slots with the least-reused tracks, keeping genre fit as the tie-breaker.
+  for (const tag of moodIds) {
+    while (assignments[tag].length < MOOD_ITEM_COUNT) {
+      const track = rankedTracks[tag]
+        .filter((candidate) => !assignments[tag].some((item) => String(item.id) === String(candidate.id)))
+        .sort((a, b) => (usageCount.get(String(a.id)) || 0) - (usageCount.get(String(b.id)) || 0))[0];
+      if (!track) break;
+      assignments[tag].push(track);
+      usageCount.set(String(track.id), (usageCount.get(String(track.id)) || 0) + 1);
+    }
+  }
+
+  return Object.fromEntries(moodIds.map((tag) => [tag, assignments[tag].map((track) => {
+    const [minutes, seconds] = String(track.duration || '0:00').split(':').map(Number);
+    return {
+      id: String(track.id),
+      target_id: String(track.id),
+      type: 'song',
+      title: track.title,
+      subtitle: track.artist,
+      image_url: track.coverUrl || null,
+      extra: {
+        cover: track.cover,
+        duration: (minutes || 0) * 60 + (seconds || 0),
+        artist_id: track.artistId,
+        audio_url: track.audioUrl,
+      },
+    };
+  })]));
+}
 
 export default function MoodDiscoverySection({ initialTag = 'chill' }) {
   const player = useContext(PlayerContext);
+  const store = useStore();
   const [tags, setTags] = useState(MOCK_PRESET_TAGS);
   const [selectedTag, setSelectedTag] = useState(initialTag);
   const [loading, setLoading] = useState(true);
@@ -22,10 +90,6 @@ export default function MoodDiscoverySection({ initialTag = 'chill' }) {
     alternative_suggestions: [],
     fallback_shortcuts: [],
   });
-  const [error, setError] = useState(null);
-  const [isUnauthorized, setIsUnauthorized] = useState(false);
-
-  const abortControllerRef = useRef(null);
 
   // Load preset tags on mount
   useEffect(() => {
@@ -46,62 +110,12 @@ export default function MoodDiscoverySection({ initialTag = 'chill' }) {
     };
   }, []);
 
-  // Fetch recommendations whenever selectedTag changes (with AbortController AF-01)
+  // Allocate catalog tracks across all tabs to keep their lists distinct.
   useEffect(() => {
-    // Abort previous in-flight request if user rapidly toggles chips
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    setLoading(true);
-    setError(null);
-    setIsUnauthorized(false);
-
-    async function loadRecommendations() {
-      try {
-        const res = await getMoodContextRecommendations(selectedTag, {
-          signal: controller.signal,
-        });
-
-        if (controller.signal.aborted) return;
-
-        if (res.error?.code === 'UNAUTHORIZED') {
-          setIsUnauthorized(true);
-          return;
-        }
-
-        if (res.success && res.data) {
-          setData({
-            items: res.data.items || [],
-            total_items: res.data.total_items ?? (res.data.items?.length || 0),
-            is_service_degraded: Boolean(res.data.is_service_degraded),
-            alternative_suggestions: res.data.alternative_suggestions || [],
-            fallback_shortcuts: res.data.fallback_shortcuts || [],
-          });
-        } else {
-          setError(res.message || 'Không thể tải gợi ý');
-        }
-      } catch (err) {
-        if (err.name === 'AbortError' || controller.signal.aborted) {
-          return; // Ignore aborted requests
-        }
-        setError(err.message || 'Không thể kết nối đến máy chủ');
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadRecommendations();
-
-    return () => {
-      controller.abort();
-    };
-  }, [selectedTag]);
+    const items = catalogMoodItemsByTag(store.publicTracks)[selectedTag] || [];
+    setData({ items, total_items: items.length, is_service_degraded: false, alternative_suggestions: [], fallback_shortcuts: [] });
+    setLoading(false);
+  }, [selectedTag, store.publicTracks]);
 
   const handleSelectTag = (newTag) => {
     if (newTag === selectedTag) return;
@@ -109,16 +123,8 @@ export default function MoodDiscoverySection({ initialTag = 'chill' }) {
   };
 
   const handlePlaySong = (item) => {
-    if (player?.playTrack) {
-      player.playTrack({
-        id: item.target_id || item.id,
-        title: item.title,
-        artist: item.subtitle,
-        duration: item.extra?.duration,
-        audioUrl: item.extra?.audio_url || `/api/v1/songs/${item.target_id || item.id}/stream`,
-        cover: item.image_url,
-      });
-    }
+    const track = store.findTrack(item.target_id || item.id);
+    if (track && player?.playTrack) player.playTrack(track);
   };
 
   return (
@@ -133,16 +139,6 @@ export default function MoodDiscoverySection({ initialTag = 'chill' }) {
         onSelectTag={handleSelectTag}
         disabled={loading}
       />
-
-      {/* Graceful Degradation Notice (US3 / EF-01) */}
-      {data.is_service_degraded && !loading && (
-        <div className="mt-4">
-          <MoodDegradedBanner
-            message="Hệ thống gợi ý AI đang bận. Đang hiển thị danh sách phát tâm trạng phổ biến."
-            fallbackShortcuts={data.fallback_shortcuts}
-          />
-        </div>
-      )}
 
       {/* Main content area */}
       <div className="mt-5">
@@ -161,28 +157,6 @@ export default function MoodDiscoverySection({ initialTag = 'chill' }) {
                 <div className="mt-2 h-3 w-1/2 rounded bg-white/[0.04]" />
               </div>
             ))}
-          </div>
-        ) : isUnauthorized ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-sky-400/20 bg-sky-400/5 px-6 py-10 text-center">
-            <h3 className="text-base font-semibold text-white">Yêu cầu đăng nhập</h3>
-            <p className="mt-1 text-xs text-zinc-400">Vui lòng đăng nhập để nhận các đề xuất âm nhạc theo tâm trạng dành riêng cho bạn.</p>
-            <a
-              href="/login"
-              className="mt-4 rounded-full bg-sky-400 px-5 py-2 text-xs font-bold text-zinc-950 transition hover:bg-sky-300"
-            >
-              Đăng nhập ngay
-            </a>
-          </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/5 py-8 text-center">
-            <p className="text-sm text-rose-300">{error}</p>
-            <button
-              type="button"
-              onClick={() => setSelectedTag((t) => `${t}`)}
-              className="mt-3 rounded-full border border-rose-400/30 px-4 py-1.5 text-xs font-semibold text-rose-200 hover:bg-rose-500/10"
-            >
-              Thử lại
-            </button>
           </div>
         ) : data.items.length === 0 ? (
           /* Empty matches with alternative suggestions (US2 / AF-02) */

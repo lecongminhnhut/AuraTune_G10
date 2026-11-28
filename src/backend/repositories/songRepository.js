@@ -9,7 +9,7 @@ import { demoSongs } from '../data/demoSongs.js';
 const MISSING_TABLE_CODES = new Set(['42P01', 'PGRST205']);
 const INVALID_INPUT_CODES = new Set(['22P02']); // ví dụ: song_id là bigint nhưng mã truyền vào là 't1'
 const MISSING_RELATION_CODES = new Set(['42703', 'PGRST200']); // thiếu cột hoặc quan hệ để nhúng album/nghệ sĩ
-const SONG_SELECT = '*, albums(album_id, title, image_url, artists(artist_id, name))';
+const SONG_SELECT = '*, albums(album_id, title, image_url, release_date, artists(artist_id, name))';
 
 let songsTableMissing = false;
 
@@ -45,6 +45,7 @@ export function normalizeSong(row) {
     genre: row.genre ?? null,
     duration: parseDurationSeconds(row.duration ?? row.duration_seconds),
     cover_url: row.image_url ?? album?.image_url ?? null,
+    release_date: album?.release_date ? String(album.release_date).slice(0, 10) : '',
     audio_url: row.audio_url ?? row.file_url ?? null,
     lyrics: typeof row.lyrics === 'string' ? row.lyrics : null,
     is_active: !row.deleted_at && (row.is_active ?? (row.status ? row.status === 'active' : true)),
@@ -84,6 +85,15 @@ export async function findSongById(songId) {
   if (demo) return { ...demo };
   if (error) throw new SongLookupError(error);
   return null;
+}
+
+export async function listCatalogSongs({ limit = 100, offset = 0 } = {}) {
+  if (!supabase) throw new SongLookupError(new Error('Supabase is not configured'));
+  const { data, error } = await selectSongs((query) => query
+    .order('total_plays', { ascending: false })
+    .range(offset, offset + limit - 1));
+  if (error) throw new SongLookupError(error);
+  return (data || []).map(normalizeSong).filter((song) => song.is_active);
 }
 
 // Metadata cho nhiều bài (đọc lại lịch sử nghe). Mã không có trong database thì lấy từ danh mục demo;

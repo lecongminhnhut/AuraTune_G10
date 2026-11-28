@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import Icon from '../common/Icon.jsx';
 import CoverArt from '../playlist/CoverArt.jsx';
+import TrackCover from '../song/TrackCover.jsx';
+import MediaCardInfo from '../common/MediaCardInfo.jsx';
 import { ArtistAvatar } from '../playlist/MediaCards.jsx';
 import { Link, navigate } from '../../utils/navigation.jsx';
 import { PlayerContext } from '../../context/PlayerContext.jsx';
@@ -91,6 +93,8 @@ export default function RecommendedItemCard({ item, onPlaySong }) {
             <div className="mx-auto h-full w-full overflow-hidden rounded-full shadow-xl">
               <ArtistAvatar artist={{ cover: image_url, name: title }} />
             </div>
+          ) : type === 'song' ? (
+            <TrackCover track={{ id: targetId, title, coverUrl: image_url, cover: extra?.cover }} className="h-full w-full rounded-lg shadow-xl" />
           ) : (
             <CoverArt
               variant={image_url}
@@ -120,17 +124,19 @@ export default function RecommendedItemCard({ item, onPlaySong }) {
           )}
         </div>
 
-        <p className="mt-3 truncate text-sm font-semibold text-white group-hover:underline">
-          {title}
-        </p>
-        <p className="mt-1 truncate text-xs text-zinc-400">
-          {subtitle}
-        </p>
+        <MediaCardInfo
+          className="mt-3"
+          title={<p className="truncate text-sm font-semibold text-white group-hover:underline">{title}</p>}
+          artist={subtitle}
+          artistClassName="mt-1 truncate text-xs text-zinc-400"
+        />
       </div>
 
-      <div className="mt-2 text-[10px] text-zinc-500 uppercase tracking-widest font-medium">
-        {type === 'song' ? 'Bài hát' : type === 'album' ? 'Album' : type === 'artist' ? 'Nghệ sĩ' : 'Tuyển tập'}
-      </div>
+      {type !== 'song' && (
+        <div className="mt-2 text-[10px] text-zinc-500 uppercase tracking-widest font-medium">
+          {type === 'album' ? 'Album' : type === 'artist' ? 'Nghệ sĩ' : 'Tuyển tập'}
+        </div>
+      )}
     </article>
   );
 

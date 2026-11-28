@@ -27,7 +27,7 @@ export default function App() {
 
 function AppShell() {
   const store = useStore()
-  const player = useAudioPlayer({ findTrack: store.findTrack, isPlayable: store.isPlayable })
+  const player = useAudioPlayer({ findTrack: store.findTrack, isPlayable: store.isPlayable, catalogTracks: store.publicTracks, catalogReady: store.catalogLoaded })
   const activePlaylist = player.playlistId ? store.findPlaylistById(player.playlistId) : null
   const playlistContext = activePlaylist && activePlaylist.trackIds?.includes(player.track.id) ? activePlaylist.title : (player.playlistId ? 'Danh sách chờ' : null)
   const [chatOpen, setChatOpen] = useState(false)
@@ -230,7 +230,7 @@ function AppShell() {
             queueOpen={queueOpen}
           />
           <AIHostChat isOpen={chatOpen} onClose={closeChat} onPlayPlaylist={toggleChatPlaylist} currentPlaylistId={player.playlistId} isPlaying={player.isPlaying} />
-          <QueuePanel isOpen={queueOpen} onClose={closeQueue} />
+          <QueuePanel isOpen={queueOpen} onClose={closeQueue} onAddToPlaylist={requestAddToPlaylist} />
         </div>
         <FullScreenPlayer
           isOpen={fullScreenOpen}

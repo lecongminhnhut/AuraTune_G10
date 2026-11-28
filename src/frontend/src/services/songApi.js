@@ -6,6 +6,15 @@ export const songStreamUrl = (trackId) => `${API_BASE_URL}/songs/${encodeURIComp
 
 export const trackAudioUrl = (track) => track.audioUrl || songStreamUrl(track.id)
 
+export async function fetchCatalogSongs({ signal, fetchImpl = fetch } = {}) {
+  const response = await fetchImpl(`${API_BASE_URL}/songs?limit=200`, { signal, headers: { Accept: 'application/json' } })
+  const payload = await response.json().catch(() => null)
+  if (!response.ok || !payload?.success || !Array.isArray(payload.data)) {
+    throw new Error(payload?.message || 'Không tải được kho nhạc.')
+  }
+  return payload.data
+}
+
 // Metadata of one catalog song (GET /api/v1/songs/:id); null when it cannot be loaded.
 export async function fetchSongMetadata(songId) {
   try {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { GripVertical } from 'lucide-react'
 import Icon from '../common/Icon.jsx'
-import CoverArt from '../playlist/CoverArt.jsx'
+import TrackCover from './TrackCover.jsx'
 import TrackMenu from './TrackMenu.jsx'
 import { useStore } from '../../context/AppStore.jsx'
 import { usePlayer } from '../../context/PlayerContext.jsx'
@@ -57,7 +57,7 @@ export default function SongRow({ track, index, onPlay, onDownloadTrack, compact
       </div>
       <div className="flex min-w-0 items-center gap-3">
         <button type="button" disabled={disabled} onClick={() => onPlay(track)} aria-label={disabled ? `${track.title}: ${disabledReason}` : `Play ${track.title}`} className="shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 disabled:cursor-not-allowed">
-          <CoverArt variant={track.cover} coverArt={track.coverArt} title={track.title} className="h-10 w-10 rounded-md [&_span]:text-2xl" />
+          <TrackCover track={track} className="h-10 w-10 rounded-md" />
         </button>
         <div className="min-w-0">
           <button disabled={disabled} onClick={() => onPlay(track)} className={`block max-w-full truncate text-left font-medium transition hover:underline disabled:cursor-not-allowed disabled:no-underline ${isCurrent ? 'text-violet-200' : 'text-white'}`}>{track.title}</button>

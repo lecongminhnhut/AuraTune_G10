@@ -8,11 +8,11 @@ import {
 import { useArtistFollowing } from '../hooks/useArtistFollowing.js'
 import { getAlbumDetails, getArtistAlbums } from '../services/albumDetailsService.js'
 import { logoutFirebase } from '../services/firebaseAuth.js'
-import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists, tracks as seedTracks } from '../utils/mockData.js'
+import { albums, artists, getAlbum, getArtist, playlists as officialPlaylists } from '../utils/mockData.js'
 import { formatTime, getDurationSeconds } from '../utils/playback.js'
 import { playlistApi } from '../services/playlistApi.js'
 import { fromApiHistoryEntry, historyApi } from '../services/historyApi.js'
-import { fetchSongMetadata } from '../services/songApi.js'
+import { fetchCatalogSongs, fetchSongMetadata, isCatalogSongId } from '../services/songApi.js'
 
 // Toàn bộ dữ liệu ở đây là dữ liệu demo lưu trong localStorage của trình duyệt.
 // Khi có backend, các hàm trong store sẽ được thay bằng lời gọi API tương ứng.
@@ -70,6 +70,12 @@ const createInitialState = () => ({
 })
 
 const MAX_KNOWN_TRACKS = 300
+const FALLBACK_COVERS = ['aurora', 'night', 'ocean', 'rose', 'sunset', 'forest', 'violet']
+const fallbackCoverFor = (id) => {
+  let hash = 2166136261
+  for (const character of String(id)) hash = Math.imul(hash ^ character.charCodeAt(0), 16777619)
+  return FALLBACK_COVERS[(hash >>> 0) % FALLBACK_COVERS.length]
+}
 
 // Chuẩn hóa bài hát từ API (search, history, songs) về dạng track của giao diện.
 export const toCatalogTrack = (song) => {
@@ -85,11 +91,21 @@ export const toCatalogTrack = (song) => {
     albumId: song.albumId ?? song.album_id ?? null,
     genre: song.genre ?? null,
     duration: typeof seconds === 'number' ? formatTime(seconds) : (seconds ?? '0:00'),
-    cover: song.cover ?? 'aurora',
+    cover: song.cover ?? fallbackCoverFor(id),
     coverUrl: song.coverUrl ?? song.cover_url ?? null,
-    ...(song.audioUrl ? { audioUrl: song.audioUrl } : {}),
+    releaseDate: song.releaseDate ?? song.release_date ?? null,
+    ...((song.audioUrl ?? song.audio_url) ? { audioUrl: song.audioUrl ?? song.audio_url } : {}),
+    playCount: song.play_count ?? song.total_plays ?? 0,
   }
 }
+
+const normalizeSavedAlbum = (album) => ({
+  ...album,
+  id: String(album?.id ?? ''),
+  cover: album?.cover ?? album?.coverArt ?? null,
+  artistId: album?.artistId ?? album?.artist?.id ?? null,
+  releaseDate: album?.releaseDate ?? (album?.releaseYear ? String(album.releaseYear) : ''),
+})
 
 // Ngày thêm bài vào playlist (added_at từ Supabase) theo kiểu của dữ liệu mẫu: "Hôm nay", "Hôm qua", "3 ngày trước"…
 export const formatAddedAt = (iso, now = new Date()) => {
@@ -161,12 +177,19 @@ export const formatTotalDuration = (seconds) => {
     const [playlistsStatus, setPlaylistsStatus] = useState('idle')
     // Lịch sử nghe lưu trên Supabase khi đăng nhập bằng tài khoản backend (Group 040, 041-FR-014).
     const [remoteHistory, setRemoteHistory] = useState(null)
+    const [catalogTracks, setCatalogTracks] = useState([])
+    const [catalogLoaded, setCatalogLoaded] = useState(false)
+    const [remoteHistoryOwnerId, setRemoteHistoryOwnerId] = useState(null)
+    const [remoteHistoryCursor, setRemoteHistoryCursor] = useState(null)
+    const [remoteHistoryLoadingMore, setRemoteHistoryLoadingMore] = useState(false)
     const historyServerIds = useRef(new Map())
+    const historyLoadSequence = useRef(0)
     const [albumDetailsById, setAlbumDetailsById] = useState({})
     const albumRequestSequence = useRef(0)
     const albumRequestIds = useRef(new Map())
     const savedAlbumsRequestSequence = useRef(0)
     const [savedAlbumIdsByUser, setSavedAlbumIdsByUser] = useState({})
+    const [savedAlbumDetailsByUser, setSavedAlbumDetailsByUser] = useState({})
     const [savedAlbumsLoading, setSavedAlbumsLoading] = useState(false)
     const [savedAlbumsError, setSavedAlbumsError] = useState(null)
     const stateRef = useRef(state)
@@ -341,50 +364,57 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [sessionRestoring, state.session, currentUser])
 
-  useEffect(() => {
-    const userId = currentUser?.id
+  const loadSavedAlbums = useCallback(async (userId) => {
     const requestId = ++savedAlbumsRequestSequence.current
 
     setSavedAlbumsError(null)
     if (!userId) {
       setSavedAlbumIdsByUser({})
+      setSavedAlbumDetailsByUser({})
       setSavedAlbumsLoading(false)
-      return undefined
+      return
     }
 
     setSavedAlbumIdsByUser({})
+    setSavedAlbumDetailsByUser({})
     setSavedAlbumsLoading(true)
-    albumApi.getSavedAlbums()
-      .then((response) => {
-        if (requestId !== savedAlbumsRequestSequence.current || !response.success) {
-          throw new Error(response.message || 'Could not load saved albums.')
-        }
-        const savedAlbumIds = Array.isArray(response.data?.savedAlbumIds) ? response.data.savedAlbumIds : []
-        setSavedAlbumIdsByUser({ [userId]: savedAlbumIds })
-      })
-      .catch((error) => {
-        if (requestId === savedAlbumsRequestSequence.current) {
-          setSavedAlbumsError(error.message || 'Could not load saved albums.')
-        }
-      })
-      .finally(() => {
-        if (requestId === savedAlbumsRequestSequence.current) setSavedAlbumsLoading(false)
-      })
+    try {
+      const response = await albumApi.getSavedAlbums()
+      if (requestId !== savedAlbumsRequestSequence.current) return
+      if (!response.success) throw new Error(response.message || 'Could not load saved albums.')
+      const savedAlbumIds = Array.isArray(response.data?.savedAlbumIds) ? response.data.savedAlbumIds : []
+      const albums = Array.isArray(response.data?.albums) ? response.data.albums.map(normalizeSavedAlbum) : []
+      setSavedAlbumIdsByUser({ [userId]: savedAlbumIds.map(String) })
+      setSavedAlbumDetailsByUser({ [userId]: albums })
+    } catch (error) {
+      if (requestId === savedAlbumsRequestSequence.current) {
+        setSavedAlbumsError(error.message || 'Could not load saved albums.')
+      }
+    } finally {
+      if (requestId === savedAlbumsRequestSequence.current) setSavedAlbumsLoading(false)
+    }
+  }, [])
 
-    return undefined
-  }, [currentUser?.id])
+  useEffect(() => {
+    loadSavedAlbums(currentUser?.id)
+  }, [currentUser?.id, loadSavedAlbums])
+
+  const refreshSavedAlbums = useCallback(() => loadSavedAlbums(currentUser?.id), [currentUser?.id, loadSavedAlbums])
 
   const storedLibrary =
     (currentUser && state.libraries[currentUser.id]) ||
     emptyLibrary()
   const library = {
     ...storedLibrary,
-    history: remoteHistory ?? storedLibrary.history,
+    history: state.session?.source === 'backend'
+      ? (remoteHistoryOwnerId === currentUser?.id ? (remoteHistory ?? []) : [])
+      : (remoteHistory ?? storedLibrary.history),
     savedAlbumIds: currentUser ? (savedAlbumIdsByUser[currentUser.id] ?? []) : [],
+    savedAlbums: currentUser ? (savedAlbumDetailsByUser[currentUser.id] ?? []) : [],
   }
 
   const rememberTracks = useCallback((songs) => {
-    const incoming = (songs || []).map(toCatalogTrack).filter((track) => track && !seedTracks.some((seed) => seed.id === track.id))
+    const incoming = (songs || []).map(toCatalogTrack).filter((track) => track && isCatalogSongId(track.id))
     if (!incoming.length) return
     setState((previous) => {
       const known = { ...(previous.knownTracks || {}) }
@@ -402,10 +432,24 @@ export const formatTotalDuration = (seconds) => {
     })
   }, [])
 
+  useEffect(() => {
+    const controller = new AbortController()
+    fetchCatalogSongs({ signal: controller.signal })
+      .then((songs) => { setCatalogTracks(songs.map(toCatalogTrack).filter(Boolean)); setCatalogLoaded(true) })
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          console.error('Catalog could not be loaded:', error.message)
+          setCatalogTracks([])
+          setCatalogLoaded(true)
+        }
+      })
+    return () => controller.abort()
+  }, [])
+
   // Bài trong danh mục Supabase mà giao diện chưa biết (vd. bài đã thích từ Tìm kiếm): tải metadata một lần.
   const ensureTrackMetadata = useCallback((songIds) => {
     const unknown = [...new Set((songIds || []).map(String))]
-      .filter((id) => !seedTracks.some((track) => track.id === id) && !stateRef.current.knownTracks?.[id])
+      .filter((id) => isCatalogSongId(id) && !stateRef.current.knownTracks?.[id])
       .slice(0, 50)
     if (!unknown.length) return
     Promise.all(unknown.map(fetchSongMetadata)).then((songs) => rememberTracks(songs.filter(Boolean)))
@@ -440,24 +484,57 @@ export const formatTotalDuration = (seconds) => {
   }, [state.session?.source, state.session?.userId, currentUser?.id, refreshRemoteLibrary])
 
   const refreshRemoteHistory = useCallback(async () => {
+    const requestId = ++historyLoadSequence.current
+    const ownerId = currentUser?.id
     try {
-      const entries = await historyApi.list(200)
+      const page = await historyApi.listPage({ limit: 50 })
+      if (requestId !== historyLoadSequence.current || stateRef.current.session?.userId !== ownerId) return false
+      const entries = page.entries
       rememberTracks((entries || []).map((entry) => entry.song).filter(Boolean))
       setRemoteHistory((entries || []).map(fromApiHistoryEntry))
+      setRemoteHistoryCursor(page.nextCursor)
       return true
     } catch (error) {
+      if (requestId !== historyLoadSequence.current || stateRef.current.session?.userId !== ownerId) return false
       setRemoteHistory([])
+      setRemoteHistoryCursor(null)
       toast(error.message || 'Không tải được lịch sử nghe.', 'error')
       return false
     }
-  }, [rememberTracks, toast])
+  }, [currentUser?.id, rememberTracks, toast])
+
+  const loadMoreRemoteHistory = useCallback(async () => {
+    if (!remoteHistoryCursor || remoteHistoryLoadingMore) return false
+    const requestId = ++historyLoadSequence.current
+    const ownerId = currentUser?.id
+    setRemoteHistoryLoadingMore(true)
+    try {
+      const page = await historyApi.listPage({ limit: 50, cursor: remoteHistoryCursor })
+      if (requestId !== historyLoadSequence.current || stateRef.current.session?.userId !== ownerId) return false
+      rememberTracks((page.entries || []).map((entry) => entry.song).filter(Boolean))
+      setRemoteHistory((current) => [...(current || []), ...(page.entries || []).map(fromApiHistoryEntry)])
+      setRemoteHistoryCursor(page.nextCursor)
+      return true
+    } catch (error) {
+      if (requestId !== historyLoadSequence.current || stateRef.current.session?.userId !== ownerId) return false
+      toast(error.message || 'KhÃ´ng táº£i thÃªm Ä‘Æ°á»£c lá»‹ch sá»­ nghe.', 'error')
+      return false
+    } finally {
+      setRemoteHistoryLoadingMore(false)
+    }
+  }, [currentUser?.id, remoteHistoryCursor, remoteHistoryLoadingMore, rememberTracks, toast])
 
   useEffect(() => {
+    historyLoadSequence.current += 1
     historyServerIds.current = new Map()
     if (state.session?.source !== 'backend' || !currentUser) {
       setRemoteHistory(null)
+      setRemoteHistoryOwnerId(null)
+      setRemoteHistoryCursor(null)
       return
     }
+    setRemoteHistoryOwnerId(currentUser.id)
+    setRemoteHistory([])
     refreshRemoteHistory()
   }, [state.session?.source, state.session?.userId, currentUser?.id, refreshRemoteHistory])
 
@@ -478,11 +555,11 @@ export const formatTotalDuration = (seconds) => {
     })
   }, [])
   // ---------- Danh mục bài hát (gồm bài nghệ sĩ tải lên trong Studio) ----------
-  const allTracks = useMemo(() => [...seedTracks, ...state.studioTracks], [state.studioTracks])
+  const allTracks = catalogTracks
   const trackStatus = (trackId) => state.trackStatus[trackId] ?? 'active'
   const publicTracks = useMemo(() => allTracks.filter((track) => (state.trackStatus[track.id] ?? 'active') === 'active'), [allTracks, state.trackStatus])
-  const findTrack = useCallback((id) => allTracks.find((track) => track.id === id) ?? state.knownTracks?.[id] ?? null, [allTracks, state.knownTracks])
-  const isPlayable = useCallback((trackId) => (state.trackStatus[trackId] ?? 'active') === 'active', [state.trackStatus])
+  const findTrack = useCallback((id) => allTracks.find((track) => track.id === String(id)) ?? (isCatalogSongId(id) ? state.knownTracks?.[id] : null) ?? null, [allTracks, state.knownTracks])
+  const isPlayable = useCallback((trackId) => isCatalogSongId(trackId) && (state.trackStatus[trackId] ?? 'active') === 'active' && Boolean(findTrack(trackId)), [state.trackStatus, findTrack])
 
   const loadAlbumDetails = useCallback(async (albumId) => {
     const requestId = ++albumRequestSequence.current
@@ -672,11 +749,21 @@ export const formatTotalDuration = (seconds) => {
 
         const firebaseIdToken = await firebaseUser.getIdToken()
 
-        const response = await authApi.firebaseExchange(
-          firebaseIdToken,
-          termsAccepted,
-          displayName
-        )
+        let response
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          try {
+            response = await authApi.firebaseExchange(
+              firebaseIdToken,
+              termsAccepted,
+              displayName
+            )
+            break
+          } catch (error) {
+            const retryable = error.name === 'TypeError' || error.status === 408 || error.status >= 500
+            if (!retryable || attempt === 1) throw error
+            await new Promise((resolve) => setTimeout(resolve, 700))
+          }
+        }
 
         if (!response.success || !response.data?.session?.access_token) {
           return {
@@ -816,7 +903,12 @@ export const formatTotalDuration = (seconds) => {
         await playlistApi.remove(playlist.id).catch(() => {})
         throw error
       }
+      // Keep the new playlist visible immediately, even if the follow-up library refresh fails.
+      setRemotePlaylists((current) => [playlist, ...(current ?? []).filter((item) => item.id !== playlist.id)])
       await refreshRemoteLibrary()
+      // A list request can race with playlist creation and return a stale snapshot.
+      // Retain this created item until a later refresh returns it from the server.
+      setRemotePlaylists((current) => [playlist, ...(current ?? []).filter((item) => item.id !== playlist.id)])
       return playlist.id
     }
     const id = uid('pl')
@@ -880,7 +972,15 @@ export const formatTotalDuration = (seconds) => {
       return true
     }
     if (stateRef.current.session?.source === 'backend') {
-      return playlistApi.addSongs(playlistId, [trackId]).then(async (playlist) => { await refreshRemoteLibrary(); return playlist.trackIds?.includes(trackId) ?? true }).catch((error) => { toast(error.message, 'error'); return false })
+      return playlistApi.addSongs(playlistId, [trackId]).then((result) => {
+        if (result?.added) {
+          const track = stateRef.current.knownTracks?.[trackId]
+          setRemotePlaylists((items) => items?.map((playlist) => playlist.id === String(playlistId)
+            ? { ...playlist, trackIds: [...new Set([...playlist.trackIds, String(trackId)])], songs: track ? [...(playlist.songs || []), track] : playlist.songs, count: (playlist.count || playlist.trackIds.length) + 1 }
+            : playlist))
+        }
+        return Boolean(result?.added)
+      }).catch((error) => { toast(error.message, 'error'); return false })
     }
     const existing = Object.values(stateRef.current.libraries).flatMap((ownerLibrary) => ownerLibrary.playlists).find((playlist) => playlist.id === playlistId)
     if (!existing || existing.trackIds.includes(trackId)) return false
@@ -890,7 +990,12 @@ export const formatTotalDuration = (seconds) => {
 
   const removeTrackFromPlaylist = useCallback((playlistId, trackId) => {
     if (playlistId === LIKED_PLAYLIST_ID) return toggleLike(trackId)
-    if (stateRef.current.session?.source === 'backend') return playlistApi.removeSong(playlistId, trackId).then(refreshRemoteLibrary).catch((error) => { toast(error.message, 'error'); return false })
+    if (stateRef.current.session?.source === 'backend') return playlistApi.removeSong(playlistId, trackId).then(() => {
+      setRemotePlaylists((items) => items?.map((playlist) => playlist.id === String(playlistId)
+        ? { ...playlist, trackIds: playlist.trackIds.filter((id) => id !== String(trackId)), songs: (playlist.songs || []).filter((song) => song.id !== String(trackId) && String(song.song_id) !== String(trackId)), count: Math.max(0, (playlist.count || playlist.trackIds.length) - 1) }
+        : playlist))
+      return true
+    }).catch((error) => { toast(error.message, 'error'); return false })
     updateOwnedPlaylist(playlistId, (playlist) => ({ ...playlist, trackIds: playlist.trackIds.filter((id) => id !== trackId) }))
     return true
   }, [updateOwnedPlaylist, toggleLike, refreshRemoteLibrary, toast])
@@ -938,33 +1043,44 @@ export const formatTotalDuration = (seconds) => {
   const saveAlbum = useCallback(async (albumId) => {
     const userId = stateRef.current.session?.userId
     if (!userId) return { ok: false, code: 'UNAUTHORIZED', error: 'Please sign in to save this album.' }
+    const normalizedAlbumId = String(albumId)
 
     try {
-      const response = await albumApi.saveAlbum(albumId)
+      const response = await albumApi.saveAlbum(normalizedAlbumId)
       if (!response.success) return { ok: false, code: response.error?.code, error: response.message || 'Could not save this album.' }
       if (stateRef.current.session?.userId === userId) {
         setSavedAlbumIdsByUser((previous) => ({
           ...previous,
-          [userId]: [...new Set([...(previous[userId] ?? []), albumId])],
+          [userId]: [...new Set([...(previous[userId] ?? []), normalizedAlbumId])],
+        }))
+        const album = albumDetailsById[normalizedAlbumId]?.data
+        if (album) setSavedAlbumDetailsByUser((previous) => ({
+          ...previous,
+          [userId]: [...(previous[userId] ?? []).filter((item) => String(item.id) !== normalizedAlbumId), normalizeSavedAlbum(album)],
         }))
       }
       return { ok: true, message: response.message }
     } catch (error) {
       return { ok: false, error: error.message || 'Could not save this album.' }
     }
-  }, [])
+  }, [albumDetailsById])
 
   const removeSavedAlbum = useCallback(async (albumId) => {
     const userId = stateRef.current.session?.userId
     if (!userId) return { ok: false, code: 'UNAUTHORIZED', error: 'Please sign in to manage saved albums.' }
+    const normalizedAlbumId = String(albumId)
 
     try {
-      const response = await albumApi.removeSavedAlbum(albumId)
+      const response = await albumApi.removeSavedAlbum(normalizedAlbumId)
       if (!response.success) return { ok: false, code: response.error?.code, error: response.message || 'Could not remove this album.' }
       if (stateRef.current.session?.userId === userId) {
         setSavedAlbumIdsByUser((previous) => ({
           ...previous,
-          [userId]: (previous[userId] ?? []).filter((id) => id !== albumId),
+          [userId]: (previous[userId] ?? []).filter((id) => id !== normalizedAlbumId),
+        }))
+        setSavedAlbumDetailsByUser((previous) => ({
+          ...previous,
+          [userId]: (previous[userId] ?? []).filter((item) => String(item.id) !== normalizedAlbumId),
         }))
       }
       return { ok: true, message: response.message }
@@ -973,7 +1089,7 @@ export const formatTotalDuration = (seconds) => {
     }
   }, [])
 
-  const isAlbumSaved = useCallback((albumId) => library.savedAlbumIds.includes(albumId), [library.savedAlbumIds])
+  const isAlbumSaved = useCallback((albumId) => library.savedAlbumIds.includes(String(albumId)), [library.savedAlbumIds])
 
   // ---------- Theo dõi nghệ sĩ (spec 092) ----------
   // Mô phỏng một lời gọi mạng để giao diện có trạng thái "đang cập nhật".
@@ -1045,7 +1161,7 @@ export const formatTotalDuration = (seconds) => {
   const clearHistory = useCallback(() => {
     if (stateRef.current.session?.source === 'backend') {
       return historyApi.clear()
-        .then(() => { historyServerIds.current = new Map(); setRemoteHistory([]); return true })
+        .then(() => { historyServerIds.current = new Map(); setRemoteHistory([]); setRemoteHistoryCursor(null); return true })
         .catch((error) => { toast(error.message, 'error'); return false })
     }
     updateLibrary((current) => ({ ...current, history: [] }))
@@ -1081,7 +1197,7 @@ export const formatTotalDuration = (seconds) => {
   const deleteStudioTrack = useCallback((trackId) => setState((previous) => ({
     ...previous,
     studioTracks: previous.studioTracks.filter((track) => track.id !== trackId),
-    trackStatus: seedTracks.some((track) => track.id === trackId) ? { ...previous.trackStatus, [trackId]: 'removed' } : previous.trackStatus,
+    trackStatus: isCatalogSongId(trackId) ? { ...previous.trackStatus, [trackId]: 'removed' } : previous.trackStatus,
   })), [])
 
   const setTrackStatus = useCallback((trackId, status) => setState((previous) => ({ ...previous, trackStatus: { ...previous.trackStatus, [trackId]: status } })), [])
@@ -1102,14 +1218,15 @@ export const formatTotalDuration = (seconds) => {
 
   const value = {
     state, currentUser, library, toasts, ui, toast,
-    artists, albums, allTracks, publicTracks, findTrack, isPlayable, trackStatus,
+    artists, albums, allTracks, publicTracks, catalogLoaded, findTrack, isPlayable, trackStatus,
     loadAlbumDetails, getAlbumDetailsCache, getAlbumDetailsStatus, loadArtistAlbums,
     likedPlaylist, userPlaylists: userPlaylistsVisible, findPlaylistById, getPlaylistTracks, playlistsStatus, refreshRemoteLibrary,
     register, login, loginWithFirebase, logout, logoutFromAllDevices, getActiveSessions, loginWithOAuth, linkFacebook, unlinkOAuthProvider,
     isLiked, toggleLike, createPlaylist, updatePlaylist, deletePlaylist, bookmarkPlaylist, addTrackToPlaylist, removeTrackFromPlaylist, moveTrackInPlaylist, addCollaborator, removeCollaborator,
-    saveAlbum, removeSavedAlbum, savedAlbumsLoading, savedAlbumsError, isAlbumSaved, getAlbum,
+    saveAlbum, removeSavedAlbum, savedAlbumsLoading, savedAlbumsError, refreshSavedAlbums, isAlbumSaved, getAlbum,
     setFollow, isFollowing, followingList,
-    recordPlay, updateListened, clearHistory, refreshRemoteHistory, rememberTracks,
+    recordPlay, updateListened, clearHistory, refreshRemoteHistory, loadMoreRemoteHistory,
+    remoteHistoryHasMore: remoteHistoryOwnerId === currentUser?.id && Boolean(remoteHistoryCursor), remoteHistoryLoadingMore, rememberTracks,
     comments: state.comments, addComment, deleteComment,
     uploadTrack, updateStudioTrack, deleteStudioTrack, setTrackStatus,
     setUserBanned, setUserRole, aiAvailable: state.aiAvailable, setAiAvailable, resetDemo,

@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import Icon from '../common/Icon.jsx';
 import CoverArt from '../playlist/CoverArt.jsx';
+import TrackCover from '../song/TrackCover.jsx';
+import MediaCardInfo from '../common/MediaCardInfo.jsx';
 import { Link, navigate } from '../../utils/navigation.jsx';
 import { PlayerContext } from '../../context/PlayerContext.jsx';
 import { useStore } from '../../context/AppStore.jsx';
@@ -63,7 +65,9 @@ export default function MoodItemCard({ item, onPlaySong }) {
     >
       {/* Artwork container */}
       <div className="relative mb-3 aspect-square w-full overflow-hidden rounded-xl bg-zinc-900">
-        <CoverArt cover={image_url} title={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        {isSong
+          ? <TrackCover track={{ id: targetId, title, coverUrl: image_url, cover: extra?.cover }} className="h-full w-full transition-transform duration-500 group-hover:scale-105" />
+          : <CoverArt variant={image_url} title={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />}
 
         {/* Badge */}
         {badge && (
@@ -102,49 +106,31 @@ export default function MoodItemCard({ item, onPlaySong }) {
       </div>
 
       {/* Item info */}
-      <div className="flex flex-1 flex-col justify-between">
-        <div>
-          {isSong ? (
-            <button
-              type="button"
-              onClick={handlePlaySong}
-              className="block w-full text-left font-bold text-zinc-100 transition-colors hover:text-sky-300"
-            >
-              <span className="line-clamp-1 text-sm">{title}</span>
-            </button>
-          ) : (
-            <Link
-              href={playlistUrl}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(playlistUrl);
-              }}
-              className="block font-bold text-zinc-100 transition-colors hover:text-sky-300"
-            >
-              <span className="line-clamp-1 text-sm">{title}</span>
-            </Link>
-          )}
-
-          <p className="mt-1 line-clamp-1 text-xs text-zinc-400">
-            {subtitle}
-          </p>
-        </div>
-
-        {/* Additional metadata info footer */}
-        <div className="mt-2.5 flex items-center justify-between text-[11px] text-zinc-400">
-          <span className="capitalize text-zinc-400">
-            {isSong ? 'Bài hát' : 'Playlist'}
-          </span>
-          {isSong && extra?.duration ? (
-            <span>
-              {Math.floor(extra.duration / 60)}:
-              {String(extra.duration % 60).padStart(2, '0')}
-            </span>
-          ) : !isSong && extra?.track_count ? (
-            <span>{extra.track_count} bài</span>
-          ) : null}
-        </div>
-      </div>
+      <MediaCardInfo
+        className="flex flex-1 flex-col justify-between"
+        title={isSong ? (
+          <button
+            type="button"
+            onClick={handlePlaySong}
+            className="block w-full text-left font-bold text-zinc-100 transition-colors hover:text-sky-300"
+          >
+            <span className="line-clamp-1 text-sm">{title}</span>
+          </button>
+        ) : (
+          <Link
+            href={playlistUrl}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(playlistUrl);
+            }}
+            className="block font-bold text-zinc-100 transition-colors hover:text-sky-300"
+          >
+            <span className="line-clamp-1 text-sm">{title}</span>
+          </Link>
+        )}
+        artist={subtitle}
+        artistClassName="mt-1 line-clamp-1 text-xs text-zinc-400"
+      />
     </article>
   );
 }

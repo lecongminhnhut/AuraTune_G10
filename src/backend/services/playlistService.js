@@ -91,11 +91,15 @@ export async function authorizeTrackEdit(id, userId) {
 export async function addSongs(id, userId, ids) {
   if (!Array.isArray(ids) || !ids.length || ids.length > 100) throw fail(400, 'VALIDATION_ERROR', 'Provide between 1 and 100 song IDs.');
   await authorizeTrackEdit(id, userId);
-  const { added, invalid } = await repo.addSongs(id, userId, ids);
+  const { added, invalid, songIds } = await repo.addSongs(id, userId, ids);
   if (!added && invalid) throw fail(422, 'SONG_NOT_IN_CATALOG', 'These songs are not in the AuraTune catalog, so they cannot be added to a playlist.');
-  return getPlaylist(id, userId);
+  return { id: String(id), added, songIds };
 }
-export async function removeSong(id, userId, songId) { await authorizeTrackEdit(id, userId); await repo.removeSong(id, songId); return getPlaylist(id, userId); }
+export async function removeSong(id, userId, songId) {
+  await authorizeTrackEdit(id, userId);
+  await repo.removeSong(id, songId);
+  return { id: String(id), removedSongId: String(songId) };
+}
 export async function reorderSongs(id, userId, ids) {
   await authorizeTrackEdit(id, userId);
   if (!Array.isArray(ids)) throw fail(400, 'VALIDATION_ERROR', 'songIds must be an array.');

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Ban, BarChart3, Music2, RotateCcw, Settings2, ShieldCheck, Users } from 'lucide-react'
-import CoverArt from '../../components/playlist/CoverArt.jsx'
+import TrackCover from '../../components/song/TrackCover.jsx'
 import { Forbidden, LoginRequired, PageHeader, chipClass, secondaryButton } from '../../components/common/ui.jsx'
 import { useStore } from '../../context/AppStore.jsx'
 import { normalizeText } from '../../utils/aiMockData.js'
@@ -80,7 +80,7 @@ export default function AdminPage() {
               const status = store.trackStatus(track.id)
               return (
                 <div key={track.id} className="flex flex-wrap items-center gap-3 border-b border-white/[0.04] px-4 py-3 last:border-0">
-                  <CoverArt variant={track.cover} className="h-10 w-10 shrink-0 rounded-md [&_span]:text-xl" />
+                  <TrackCover track={track} className="h-10 w-10 shrink-0 rounded-md" />
                   <div className="min-w-0 flex-1"><p className="truncate text-[13px] font-semibold text-white">{track.title}</p><p className="truncate text-[11px] text-zinc-500">{track.artist} · {format(track.playCount)} lượt nghe · {(store.comments[track.id] ?? []).length} bình luận</p></div>
                   <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${status === 'active' ? 'bg-emerald-400/10 text-emerald-300' : status === 'hidden' ? 'bg-amber-300/10 text-amber-200' : 'bg-rose-400/10 text-rose-300'}`}>{statusLabel[status]}</span>
                   {status === 'removed' ? (

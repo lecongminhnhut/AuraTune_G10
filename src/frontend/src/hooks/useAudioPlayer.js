@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { featuredTrack, tracks } from '../utils/mockData.js'
 import { getDurationSeconds, pickAdjacentTrack, playThresholdSeconds } from '../utils/playback.js'
 import { browserStorage, loadPlayerSnapshot, savePlayerSnapshot } from '../utils/playerStorage.js'
 import { trackAudioUrl } from '../services/songApi.js'
@@ -12,10 +11,11 @@ import { trackAudioUrl } from '../services/songApi.js'
 // mỗi thao tác tính state mới rồi `commit` đồng bộ phần tử <audio> theo state đó.
 // Mỗi lần một bài bắt đầu phát từ đầu, playKey tăng lên để tạo một phiên nghe mới.
 
-const libraryQueue = [featuredTrack, ...tracks.filter((track) => track.id !== featuredTrack.id)]
-const defaultFindTrack = (id) => tracks.find((track) => track.id === id)
-const sessionKey = (state) => `${state.track.id}#${state.playKey}`
-const upcomingOf = (state) => state.queue.slice(state.queue.findIndex((track) => track.id === state.track.id) + 1)
+const idleTrack = { id: '', title: 'Chưa phát nhạc', artist: '', album: '', duration: 0, cover: 'aurora' }
+const libraryQueue = []
+const defaultFindTrack = () => null
+const sessionKey = (state) => `${state.track?.id || ''}#${state.playKey}`
+const upcomingOf = (state) => state.queue.slice(state.queue.findIndex((track) => track.id === state.track?.id) + 1)
 const clampVolume = (value) => Math.max(0, Math.min(100, Math.round(Number(value) || 0)))
 
 const ERROR_MESSAGES = {
@@ -27,7 +27,7 @@ const ERROR_MESSAGES = {
 
 function initialState(options) {
   return {
-    track: featuredTrack, queue: libraryQueue, playlistId: null, elapsed: 0,
+    track: idleTrack, queue: libraryQueue, playlistId: null, elapsed: 0,
     shuffle: false, repeatMode: 'off', pinnedNextIds: [],
     ...loadPlayerSnapshot(browserStorage(), options),
     isPlaying: false, playKey: 0,
@@ -59,6 +59,7 @@ function createEngine({ refs, setState, setStatus, setError, setListen, setMedia
 
   // Nạp nguồn âm thanh cho phiên nghe hiện tại (chỉ khi cần phát, tránh tải trước lúc mở trang).
   const loadSource = (state) => {
+    if (!state.track?.id) return
     const key = sessionKey(state)
     if (loadedKeyRef.current === key && !audio.error) return
     const url = new URL(trackAudioUrl(state.track), window.location.href).href
@@ -87,7 +88,7 @@ function createEngine({ refs, setState, setStatus, setError, setListen, setMedia
     }
     if (!audio) return
 
-    if (next.isPlaying) {
+    if (next.isPlaying && next.track?.id) {
       loadSource(next)
       if (seekTo !== null) applySeek(seekTo)
       if (audio.paused) {
@@ -107,6 +108,7 @@ function createEngine({ refs, setState, setStatus, setError, setListen, setMedia
   const actions = {
     togglePlayback() {
       const state = stateRef.current
+      if (!state.track?.id) return
       if (state.isPlaying) return commit({ ...state, isPlaying: false })
       if (state.elapsed >= durationRef.current - 0.5) return commit({ ...state, elapsed: 0, isPlaying: true, playKey: state.playKey + 1 })
       return commit({ ...state, isPlaying: true })
@@ -167,6 +169,19 @@ function createEngine({ refs, setState, setStatus, setError, setListen, setMedia
       const state = stateRef.current
       const first = shuffle ? collectionTracks[Math.floor(Math.random() * collectionTracks.length)] : collectionTracks[0]
       commit(startTrack(state, first, { isPlaying: true, playlistId, queue: collectionTracks, shuffle: shuffle || state.shuffle, pinnedNextIds: [] }))
+    },
+
+    setCatalog(catalogTracks) {
+      const state = stateRef.current
+      const valid = new Set(catalogTracks.map((track) => track.id))
+      const restored = loadPlayerSnapshot(browserStorage(), optionsRef.current)
+      const currentIsValid = state.track?.id && valid.has(state.track.id)
+      const track = currentIsValid ? state.track : (restored?.track || catalogTracks[0] || idleTrack)
+      const queue = currentIsValid
+        ? state.queue.filter((item) => valid.has(item.id))
+        : (restored?.queue?.length ? restored.queue : catalogTracks)
+      const nextQueue = track.id && !queue.some((item) => item.id === track.id) ? [track, ...queue] : queue
+      commit({ ...state, track, queue: nextQueue, playlistId: currentIsValid ? state.playlistId : (restored?.playlistId ?? null), elapsed: currentIsValid ? state.elapsed : (restored?.elapsed ?? 0), isPlaying: false })
     },
 
     // ---------- Hàng chờ (Group 050) ----------
@@ -298,8 +313,8 @@ function createEngine({ refs, setState, setStatus, setError, setListen, setMedia
   return { audio, actions, handlers }
 }
 
-export default function useAudioPlayer({ findTrack, isPlayable } = {}) {
-  const options = { findTrack: findTrack ?? defaultFindTrack, isPlayable: isPlayable ?? (() => true) }
+export default function useAudioPlayer({ findTrack, isPlayable, catalogTracks = [], catalogReady = true } = {}) {
+  const options = { findTrack: findTrack ?? defaultFindTrack, isPlayable: isPlayable ?? (() => true), catalogTracks }
   const [state, setState] = useState(() => initialState(options))
   const [status, setStatus] = useState('idle') // idle | loading | buffering | ready | error
   const [error, setError] = useState(null)
@@ -327,6 +342,10 @@ export default function useAudioPlayer({ findTrack, isPlayable } = {}) {
   const { audio, actions, handlers } = engine
 
   useEffect(() => {
+    if (catalogReady) actions.setCatalog(catalogTracks)
+  }, [catalogTracks, catalogReady])
+
+  useEffect(() => {
     if (!audio) return undefined
     Object.entries(handlers).forEach(([event, handler]) => audio.addEventListener(event, handler))
     return () => {
@@ -345,19 +364,22 @@ export default function useAudioPlayer({ findTrack, isPlayable } = {}) {
   // 045-FR-012: lưu bài, hàng chờ và vị trí (làm tròn 5 giây) để khôi phục sau khi tải lại trang.
   const elapsedBucket = Math.floor(state.elapsed / 5)
   useEffect(() => {
+    if (!catalogReady) return
     savePlayerSnapshot(browserStorage(), refs.stateRef.current)
-  }, [state.track, state.queue, state.playlistId, state.shuffle, state.repeatMode, state.pinnedNextIds, elapsedBucket])
+  }, [catalogReady, state.track, state.queue, state.playlistId, state.shuffle, state.repeatMode, state.pinnedNextIds, elapsedBucket])
 
   useEffect(() => {
+    if (!catalogReady) return undefined
     const save = () => savePlayerSnapshot(browserStorage(), refs.stateRef.current)
     window.addEventListener('pagehide', save)
     return () => window.removeEventListener('pagehide', save)
-  }, [])
+  }, [catalogReady])
 
   // Phím media và điều khiển trên màn hình khóa của hệ điều hành.
   useEffect(() => {
     if (typeof navigator === 'undefined' || !navigator.mediaSession || typeof window.MediaMetadata !== 'function') return
     const { track } = state
+    if (!track?.id) { navigator.mediaSession.metadata = null; return }
     navigator.mediaSession.metadata = new window.MediaMetadata({
       title: track.title, artist: track.artist, album: track.album ?? '',
       artwork: track.artwork ? [{ src: track.artwork }] : [],

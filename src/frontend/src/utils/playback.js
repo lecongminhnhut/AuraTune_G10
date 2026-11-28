@@ -16,7 +16,9 @@ export const formatTime = (seconds, padMinutes = false) => {
 export const PLAY_THRESHOLD_SECONDS = 30
 
 export const playThresholdSeconds = (durationSeconds) => (
-  durationSeconds > 0 ? Math.min(PLAY_THRESHOLD_SECONDS, durationSeconds / 2) : PLAY_THRESHOLD_SECONDS
+  durationSeconds > 0 && durationSeconds < PLAY_THRESHOLD_SECONDS
+    ? durationSeconds * 0.9
+    : PLAY_THRESHOLD_SECONDS
 )
 
 // Chọn bài kế tiếp (direction = 1) hoặc bài trước (direction = -1) trong hàng chờ.

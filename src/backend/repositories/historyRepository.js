@@ -18,7 +18,6 @@ const inMemoryHistory = [
   { id: 'h-seed-9', user_id: 'u-demo', song_id: 't4', listened_duration: 192, played_at: new Date(Date.now() - 123 * 3600 * 1000).toISOString() },
 ];
 
-const SCHEMA_FALLBACK_CODES = new Set(['42P01', '42703', 'PGRST205', 'PGRST200']);
 let useInMemoryOnly = process.env.NODE_ENV === 'test';
 
 export function setUseInMemory(value) {
@@ -81,10 +80,10 @@ export async function findListeningAnalysis(userId, range = 'all', options = {})
       let query = supabase
         .from('listening_history')
         .select(`
-          id,
+          history_id,
           user_id,
           song_id,
-          listened_duration,
+          duration_listened,
           played_at,
           songs (
             song_id,
@@ -95,7 +94,8 @@ export async function findListeningAnalysis(userId, range = 'all', options = {})
         .eq('user_id', userId)
         .not('user_id', 'is', null)
         .not('song_id', 'is', null)
-        .gt('listened_duration', 0);
+        .gt('duration_listened', 0)
+        .gte('played_at', new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString());
 
       if (cutoffDate) {
         query = query.gte('played_at', cutoffDate.toISOString());
@@ -106,18 +106,15 @@ export async function findListeningAnalysis(userId, range = 'all', options = {})
         return processRawPlaybackRows(data, options);
       }
       if (error) {
-        if (SCHEMA_FALLBACK_CODES.has(error.code)) {
-          // Schema/relationship not yet established on Supabase, fallback to in-memory store
-          return executeInMemoryAggregation(userId, cutoffDate, options);
-        }
         const dbErr = new Error(`Database aggregation error: ${error.message}`);
         dbErr.code = 'DATABASE_ERROR';
         throw dbErr;
       }
     } catch (err) {
       if (err.code === 'DATABASE_ERROR') throw err;
-      // Fallback on network or schema error
-      console.warn('Supabase listening_history table unavailable, falling back to in-memory store:', err.message);
+      const dbErr = new Error(`Database aggregation error: ${err.message}`);
+      dbErr.code = 'DATABASE_ERROR';
+      throw dbErr;
     }
   }
 
@@ -131,14 +128,14 @@ function processRawPlaybackRows(rows, options = {}) {
     return (
       row.user_id &&
       row.song_id &&
-      typeof row.listened_duration === 'number' &&
-      row.listened_duration > 0
+      typeof row.duration_listened === 'number' &&
+      row.duration_listened > 0
     );
   });
 
   const totalPlays = eligibleRows.length;
   const uniqueTracksCount = new Set(eligibleRows.map((r) => r.song_id)).size;
-  const totalDurationSeconds = eligibleRows.reduce((sum, r) => sum + r.listened_duration, 0);
+  const totalDurationSeconds = eligibleRows.reduce((sum, r) => sum + r.duration_listened, 0);
 
   const genreMap = new Map();
   eligibleRows.forEach((row) => {
@@ -153,7 +150,7 @@ function processRawPlaybackRows(rows, options = {}) {
       accumulatedSeconds: 0,
       playsCount: 0,
     };
-    curr.accumulatedSeconds += row.listened_duration;
+    curr.accumulatedSeconds += row.duration_listened;
     curr.playsCount += 1;
     genreMap.set(genreKey, curr);
   });
@@ -173,17 +170,19 @@ function executeInMemoryAggregation(userId, cutoffDate, options = {}) {
   const eligibleRows = inMemoryHistory.filter((entry) => {
     if (entry.user_id !== userId) return false;
     if (!entry.song_id) return false;
-    if (!entry.listened_duration || entry.listened_duration <= 0) return false;
+    const duration = entry.duration_listened ?? entry.listened_duration;
+    if (!duration || duration <= 0) return false;
+    const playedAt = new Date(entry.played_at).getTime();
+    if (!Number.isFinite(playedAt) || playedAt < Date.now() - 365 * 24 * 3600 * 1000) return false;
     if (cutoffDate) {
-      const playedAtTime = new Date(entry.played_at).getTime();
-      if (Number.isNaN(playedAtTime) || playedAtTime < cutoffDate.getTime()) return false;
+      if (playedAt < cutoffDate.getTime()) return false;
     }
     return true;
   });
 
   const totalPlays = eligibleRows.length;
   const uniqueTracksCount = new Set(eligibleRows.map((r) => r.song_id)).size;
-  const totalDurationSeconds = eligibleRows.reduce((sum, r) => sum + r.listened_duration, 0);
+  const totalDurationSeconds = eligibleRows.reduce((sum, r) => sum + (r.duration_listened ?? r.listened_duration), 0);
 
   const genreMap = new Map();
   eligibleRows.forEach((row) => {
@@ -198,7 +197,7 @@ function executeInMemoryAggregation(userId, cutoffDate, options = {}) {
       accumulatedSeconds: 0,
       playsCount: 0,
     };
-    curr.accumulatedSeconds += row.listened_duration;
+    curr.accumulatedSeconds += row.duration_listened ?? row.listened_duration;
     curr.playsCount += 1;
     genreMap.set(genreKey, curr);
   });
